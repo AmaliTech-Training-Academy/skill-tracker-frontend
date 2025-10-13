@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Mainpage } from './features/home/mainpage/mainpage';
 import { planRoutes } from './features/home/planAndPayment/plan.routes';
 import { authRoutes } from './features/auth/auth.routes';
+import { interestsRoutes } from './features/interestandlevelsel/interests.routes';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -15,5 +16,10 @@ export const routes: Routes = [
   {
     path: 'auth',
     children: authRoutes,
+  },
+
+  {
+    path: 'interests',
+    children: interestsRoutes,
   },
 ];
