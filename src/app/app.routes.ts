@@ -1,3 +1,13 @@
 import { Routes } from '@angular/router';
+import { Mainpage } from './features/home/mainpage/mainpage';
+import { planRoutes } from './features/home/planAndPayment/plan.routes';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: Mainpage },
+
+  {
+    path: 'plan',
+    children: planRoutes,
+  },
+];
