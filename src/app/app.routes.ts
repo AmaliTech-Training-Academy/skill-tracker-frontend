@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'interests',
+    path: 'personalize',
     children: interestsRoutes,
   },
 ];
