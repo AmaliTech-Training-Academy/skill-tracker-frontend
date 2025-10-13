@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { Mainpage } from './features/home/mainpage/mainpage';
 import { planRoutes } from './features/home/planAndPayment/plan.routes';
+import { authRoutes } from './features/auth/auth.routes';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -9,5 +10,10 @@ export const routes: Routes = [
   {
     path: 'plan',
     children: planRoutes,
+  },
+
+  {
+    path: 'auth',
+    children: authRoutes,
   },
 ];
