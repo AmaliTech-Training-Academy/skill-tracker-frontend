@@ -7,7 +7,6 @@
     "types": [
       "jasmine"
     ],
-    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/**/*.ts"
