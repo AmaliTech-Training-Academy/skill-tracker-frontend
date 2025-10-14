@@ -1,0 +1,14 @@
+<div class="p-4">
+  <h2>API Test</h2>
+
+  <button (click)="getUsers()" class="btn">Get Users (Success)</button>
+  <button (click)="getWithError()" class="btn btn-danger">Get Invalid URL (Error)</button>
+
+  @if (loading()) {
+    <div>Loading...</div>
+  } @else if (data) {
+    <pre>{{ data | json }}</pre>
+  } @else if (errorMessage) {
+    <pre style="color: red">{{ errorMessage }}</pre>
+  }
+</div>
