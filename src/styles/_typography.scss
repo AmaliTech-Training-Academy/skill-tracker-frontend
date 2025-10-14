@@ -1,0 +1,25 @@
+$font-family-primary: 'Roboto', sans-serif;
+
+@mixin typography($size, $line-height, $weight) {
+  font-size: $size;
+  line-height: $line-height;
+  font-weight: $weight;
+  font-family: $font-family-primary;
+}
+
+/* Headings */
+@mixin h1 { @include typography(64px, 80px, 500); }
+@mixin h2 { @include typography(60px, 72px, 400); }
+@mixin h3 { @include typography(52px, 64px, 500); }
+@mixin h4 { @include typography(48px, 56px, 500); }
+@mixin h5 { @include typography(40px, 48px, 500); }
+@mixin h6 { @include typography(36px, 44px, 400); }
+@mixin h7 { @include typography(32px, 40px, 400); }
+@mixin h8 { @include typography(28px, 36px, 400); }
+
+/* Body text */
+@mixin h9 { @include typography(24px, 32px, 400); }
+@mixin h10 { @include typography(24px, 28px, 400); }
+@mixin h11 { @include typography(20px, 24px, 400); }
+@mixin h12 { @include typography(20px, 24px, 400); }
+@mixin h13 { @include typography(16px, 20px, 400); }
