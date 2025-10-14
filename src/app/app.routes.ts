@@ -1,31 +1,29 @@
 import { Routes } from '@angular/router';
-import { Mainpage } from './features/home/mainpage/mainpage';
-import { planRoutes } from './features/home/planAndPayment/plan.routes';
-import { authRoutes } from './features/auth/auth.routes';
-import { interestsRoutes } from './features/interestandlevelsel/interests.routes';
-import { DashboardRoutes } from './features/dashboard/dashboard.routes';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: Mainpage },
-
   {
-    path: 'plan',
-    children: planRoutes,
-  },
-
-  {
-    path: 'auth',
-    children: authRoutes,
-  },
-
-  {
-    path: 'personalize',
-    children: interestsRoutes,
+    path: '',
+    loadComponent: () =>
+      import('./layout/landing-screen/landing-screen').then((c) => c.LandingScreen),
+    children: [
+      { path: '', loadComponent: () => import('./features/home/home').then((c) => c.Home) },
+      {
+        path: 'signup',
+        loadComponent: () => import('./features/signup/signup').then((c) => c.Signup),
+      },
+      { path: 'login', loadComponent: () => import('./features/login/login').then((c) => c.Login) },
+    ],
   },
 
   {
     path: 'dashboard',
-    children: DashboardRoutes,
+    loadComponent: () => import('./layout/dashboard/dashboard').then((c) => c.Dashboard),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/dashboard/dashboard').then((c) => c.Dashboard),
+      },
+      { path: 'tasks', loadComponent: () => import('./features/tasks/tasks').then((c) => c.Tasks) },
+    ],
   },
 ];
