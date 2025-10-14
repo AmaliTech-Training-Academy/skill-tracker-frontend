@@ -2,6 +2,7 @@
   <h2>API Test</h2>
 
   <button (click)="getUsers()" class="btn">Get Users (Success)</button>
+  <button (click)="createPost()" class="btn">Create Post (POST)</button>
   <button (click)="getWithError()" class="btn btn-danger">Get Invalid URL (Error)</button>
 
   @if (loading()) {
