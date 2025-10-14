@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { ApiService } from '@app/core';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-api-test',
@@ -37,6 +38,36 @@ export class ApiTest {
         error: (err) => {
           this.errorMessage = err.message;
           this.loading.set(false);
+        },
+      });
+  }
+
+  /**
+   * Test: Successfult POST request
+   */
+  createPost() {
+    this.reset();
+    this.loading.set(true);
+
+    const newPost = {
+      title: 'My Test Post',
+      body: 'This is a fake post for testing the ApiService.post() method.',
+      userId: 1,
+    };
+
+    this.api
+      .post<{ id: number; title: string; body: string; userId: number }>('posts', newPost, {
+        retryCount: 1,
+      })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (res) => {
+          console.log('POST response', res);
+          this.data = res;
+        },
+        error: (err) => {
+          console.error('POST error:', err);
+          this.errorMessage = err.message;
         },
       });
   }
