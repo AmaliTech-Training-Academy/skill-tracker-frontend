@@ -33,7 +33,21 @@ export class ApiService {
       );
   }
 
-  post() {}
+  post<Res, Req = unknown>(
+    url: string,
+    body: Req,
+    options: ApiRequestOptions = {},
+  ): Observable<Res> {
+    return this.http
+      .post<Res>(this.fullUrl(url), body, {
+        params: this.buildParams(options.params),
+        headers: this.buildHeaders(options.headers),
+      })
+      .pipe(
+        retry(options.retryCount ?? 2),
+        catchError((error) => this.handleError(error)),
+      );
+  }
 
   put() {}
 
@@ -66,7 +80,7 @@ export class ApiService {
     if (!headers) return undefined;
     if (headers instanceof HttpHeaders) return headers;
 
-    let httpHeaders = new HttpHeaders();
+    let httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
     Object.entries(headers).forEach(([key, value]) => {
       httpHeaders = httpHeaders.set(key, value);
     });
