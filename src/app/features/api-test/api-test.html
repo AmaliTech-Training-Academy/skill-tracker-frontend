@@ -4,6 +4,7 @@
   <button (click)="getUsers()" class="btn">Get Users (Success)</button>
   <button (click)="createPost()" class="btn">Create Post (POST)</button>
   <button (click)="getWithError()" class="btn btn-danger">Get Invalid URL (Error)</button>
+  <button (click)="deletePost()" class="btn btn-secondary">Delete Post (DELETE)</button>
 
   @if (loading()) {
     <div>Loading...</div>
