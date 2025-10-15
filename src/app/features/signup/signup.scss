@@ -59,7 +59,6 @@
 .error-message {
     @include h13;
     color: $red-text;
-    /* Use the red text color for errors */
     margin-top: 4px;
 }
 

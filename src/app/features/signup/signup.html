@@ -10,60 +10,105 @@
                 </p>
             </div>
 
-            <form class="signup-form">
+            <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
                 <!-- Email Field -->
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Email" />
+                    <input type="email" id="email" formControlName="email" placeholder="Email" />
+                    @if (signupForm.get('email')?.touched && signupForm.get('email')?.hasError('required')) {
+                    <span class="error-message">Email is required.</span>
+                    } @else if (signupForm.get('email')?.touched && signupForm.get('email')?.hasError('email')) {
+                    <span class="error-message">Enter a valid email address.</span>
+                    }
                 </div>
 
                 <!-- Password Field -->
                 <div class="form-group password-field">
                     <label for="password">Password</label>
                     <div class="input-wrapper">
-                        <input type="password" id="password" placeholder="***********" />
-                        <span class="password-toggle">
-                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
+                        <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+                            placeholder="***********" />
+                        <span class="password-toggle" (click)="showPassword.set(!showPassword())">
+                            @if (showPassword()) {
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M3.5868 13.7788C5.36623 15.5478 8.46953 17.9999 12.0002 17.9999C15.5308 17.9999 18.6335 15.5478 20.413 13.7788C20.8823 13.3123 21.1177 13.0782 21.2671 12.6201C21.3738 12.2933 21.3738 11.7067 21.2671 11.3799C21.1177 10.9218 20.8823 10.6877 20.413 10.2211C18.6335 8.45208 15.5308 6 12.0002 6C8.46953 6 5.36623 8.45208 3.5868 10.2211C3.11714 10.688 2.88229 10.9216 2.7328 11.3799C2.62618 11.7067 2.62618 12.2933 2.7328 12.6201C2.88229 13.0784 3.11714 13.3119 3.5868 13.7788Z"
+                                    stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M10 12C10 13.1046 10.8954 14 12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12Z"
+                                    stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                
+                            }
+                            @else{
+                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M4.5 4.25012L19.5 20.7501M14.5225 15.2749C13.7866 15.9438 12.8151 16.293 11.8217 16.2457C10.8283 16.1983 9.89443 15.7583 9.22545 15.0224C8.55647 14.2866 8.2072 13.3151 8.25446 12.3217C8.30172 11.3283 8.74164 10.3944 9.47746 9.72532M6.93698 6.93077C3.11486 8.86629 1.5 12.5001 1.5 12.5001C1.5 12.5001 4.5 19.2494 12 19.2494C13.7572 19.2634 15.4926 18.8586 17.0623 18.0686M19.5571 16.3532C21.6011 14.5225 22.5 12.5001 22.5 12.5001C22.5 12.5001 19.5 5.74939 12 5.74939C11.3504 5.74833 10.7019 5.80114 10.061 5.90728M12.7057 8.81648C13.5027 8.96953 14.2287 9.37687 14.7746 9.97742C15.3205 10.578 15.657 11.3393 15.7336 12.1473"
-                                    stroke="#888888" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
+                                    stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-
+                            }
                         </span>
                     </div>
+                     @if (signupForm.get('password')?.touched && signupForm.get('password')?.hasError('required')) {
+                    <span class="error-message">Password is required.</span>
+                    } @else if (signupForm.get('password')?.touched &&
+                    signupForm.get('password')?.hasError('minlength')) {
+                    <span class="error-message">Password must be at least 8 characters.</span>
+                    }
                 </div>
 
                 <!-- Confirm Password Field -->
                 <div class="form-group password-field">
                     <label for="confirmPassword">Confirm Password</label>
                     <div class="input-wrapper">
-                        <input type="password" id="confirmPassword" placeholder="***********" />
-                        <span class="password-toggle">
-                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
+                        <input [type]="showConfirmPassword() ? 'text' : 'password' " id="confirmPassword" 
+                        formControlName="confirmPassword" placeholder="***********" />
+                        <span class="password-toggle" (click)="showConfirmPassword.set(!showConfirmPassword())">
+                            @if (showConfirmPassword()) {
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M3.5868 13.7788C5.36623 15.5478 8.46953 17.9999 12.0002 17.9999C15.5308 17.9999 18.6335 15.5478 20.413 13.7788C20.8823 13.3123 21.1177 13.0782 21.2671 12.6201C21.3738 12.2933 21.3738 11.7067 21.2671 11.3799C21.1177 10.9218 20.8823 10.6877 20.413 10.2211C18.6335 8.45208 15.5308 6 12.0002 6C8.46953 6 5.36623 8.45208 3.5868 10.2211C3.11714 10.688 2.88229 10.9216 2.7328 11.3799C2.62618 11.7067 2.62618 12.2933 2.7328 12.6201C2.88229 13.0784 3.11714 13.3119 3.5868 13.7788Z"
+                                    stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path
+                                    d="M10 12C10 13.1046 10.8954 14 12 14C13.1046 14 14 13.1046 14 12C14 10.8954 13.1046 10 12 10C10.8954 10 10 10.8954 10 12Z"
+                                    stroke="#888888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                
+                            }
+                            @else{
+                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M4.5 4.25012L19.5 20.7501M14.5225 15.2749C13.7866 15.9438 12.8151 16.293 11.8217 16.2457C10.8283 16.1983 9.89443 15.7583 9.22545 15.0224C8.55647 14.2866 8.2072 13.3151 8.25446 12.3217C8.30172 11.3283 8.74164 10.3944 9.47746 9.72532M6.93698 6.93077C3.11486 8.86629 1.5 12.5001 1.5 12.5001C1.5 12.5001 4.5 19.2494 12 19.2494C13.7572 19.2634 15.4926 18.8586 17.0623 18.0686M19.5571 16.3532C21.6011 14.5225 22.5 12.5001 22.5 12.5001C22.5 12.5001 19.5 5.74939 12 5.74939C11.3504 5.74833 10.7019 5.80114 10.061 5.90728M12.7057 8.81648C13.5027 8.96953 14.2287 9.37687 14.7746 9.97742C15.3205 10.578 15.657 11.3393 15.7336 12.1473"
-                                    stroke="#888888" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
+                                    stroke="#888888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
-
+                            }
                         </span>
                     </div>
+                    @if (signupForm.get('confirmPassword')?.touched &&
+                    signupForm.get('confirmPassword')?.hasError('required')) {
+                    <span class="error-message">Confirm Password is required.</span>
+                    }
                 </div>
 
                 <!-- Terms Checkbox -->
                 <div class="terms-checkbox">
-                    <input type="checkbox" id="terms" />
+                    <input type="checkbox" id="terms" formControlName="termsAccepted"/>
                     <label for="terms">
                         I've read <a href="#" class="link">terms and conditions</a>
                     </label>
                 </div>
+                @if (signupForm.get('termsAccepted')?.touched &&
+                signupForm.get('termsAccepted')?.hasError('requiredTrue')) {
+                <span class="error-message" style="margin-top: -12px;">You must accept the terms.</span>
+                }
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn-primary" [disabled]="isSubmitting() || signupForm.invalid">
+                    @if (isSubmitting()) {
+                    <span class="loader"></span> Signing Up...
+                    } @else {
                     Create Account
+                    }
                 </button>
             </form>
 
@@ -76,14 +121,14 @@
 
                 <!-- Social Sign-in Buttons -->
                 <div class="button-wrapper">
-                    <button class="btn-social google">
-                        <img src="assets/google-icon.png" alt="Google logo" class="social-icon" />
-                        <span>Sign in with Google</span>
-                    </button>
-                    <button class="btn-social github">
-                        <img src="assets/github-icon.png" alt="Github logo" class="social-icon" />
-                        <span>Sign in with GitHub</span>
-                    </button>
+                    <button class="btn-social google" (click)="signInWithGoogle()">
+                    <img src="assets/google-icon.png" alt="Google logo" class="social-icon" />
+                    <span>Sign in with Google</span>
+                </button>
+                <button class="btn-social github" (click)="signInWithGithub()">
+                    <img src="assets/github-icon.png" alt="Github logo" class="social-icon" />
+                    <span>Sign in with GitHub</span>
+                </button>
                 </div>
             </div>
         </div>
