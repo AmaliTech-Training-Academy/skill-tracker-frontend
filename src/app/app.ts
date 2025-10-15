@@ -6,7 +6,7 @@ import { ApiTest } from './features/api-test/api-test';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ApiTest],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
