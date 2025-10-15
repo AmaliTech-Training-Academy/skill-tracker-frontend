@@ -1,5 +1,3 @@
----
-
 # 🧭 API Service Guide
 
 ## Overview
@@ -7,11 +5,11 @@
 The `ApiService` provides a **centralized, reusable wrapper** around Angular’s `HttpClient`.
 It helps simplify HTTP calls across the app by handling:
 
-* ✅ Base URL management
-* ✅ Common headers and parameters
-* ✅ Retry logic
-* ✅ Centralized error handling
-* ✅ Type-safe requests and responses
+- ✅ Base URL management
+- ✅ Common headers and parameters
+- ✅ Retry logic
+- ✅ Centralized error handling
+- ✅ Type-safe requests and responses
 
 ---
 
