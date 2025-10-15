@@ -6,19 +6,8 @@
 .login-input--group {
     @include base-field;
 
-
-//   .toggle-btn {
-//     position: absolute;
-//     top: 50%;
-//     right: 0.75rem;
-//     transform: translateY(-50%);
-//     background: none;
-//     border: none;
-//     cursor: pointer;
-//   }
-
   .error-message {
-    color: red;
+    color: $red-text;
     font-size: 0.8rem;
     margin-top: 0.25rem;
   }
@@ -38,9 +27,7 @@
                 padding: 16px 12px;
                 border-radius: 4px;
                 overflow: hidden;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                @include flex-between;
 
                 input{
                     border: none;
