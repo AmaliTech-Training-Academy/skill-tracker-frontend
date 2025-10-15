@@ -153,12 +153,16 @@
 .btn-primary {
     @include button-primary;
     margin-top: 8px;
-    @include h9;
+    @include h11;
     height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+
+    @include tablet {
+        @include h10;
+    }
 }
 
 
@@ -291,6 +295,41 @@
                 color: $green-success;
             }
         }
+    }
+}
+
+.toast-container {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 350px;
+    width: calc(100% - 40px);
+    animation: slideIn 0.3s ease-out;
+
+    @include tablet{
+        left: auto;
+        right: 20px;
+        transform: none;
+        max-width: 400px;
+        width: auto;
+    }
+}
+
+.toast-success {
+    @include alert-success;
+    color: $green-success;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }
 

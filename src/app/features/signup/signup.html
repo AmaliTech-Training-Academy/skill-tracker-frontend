@@ -1,4 +1,32 @@
 <div class="signup-page">
+    <!-- Success Toast -->
+    @if (showSuccessToast()) {
+    <div class="toast-container">
+        <div class="toast-success">
+            <div class="alert-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 24L20.4853 32.4853L37.454 15.5146" stroke="#358439" stroke-width="4"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+
+            </div>
+            <div class="alert-content">
+                <div class="alert-header">
+                    <div class="alert-title">Account Created</div>
+                    <div class="alert-close" (click)="showSuccessToast.set(false)">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.5 1.5L1.5 10.5M10.5 10.5L1.5 1.5" stroke="#66BB6A" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                    </div>
+                </div>
+                <div class="alert-message">Hurray, Your account is created! We've sent a 6 digit code to your email
+                </div>
+            </div>
+        </div>
+    </div>
+    }
 
     <main class="signup-container">
         <div class="card">

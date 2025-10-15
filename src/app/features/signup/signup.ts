@@ -17,6 +17,7 @@ export class Signup {
   isSubmitting = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
+  showSuccessToast = signal(false);
 
   // Signal to track password value for reactivity
   passwordValue = signal('');
@@ -94,7 +95,11 @@ export class Signup {
       .subscribe({
         next: () => {
           console.log('Account created successfully!', formValue);
-          // Navigate to dashboard or show success message
+          this.showSuccessToast.set(true);
+          // Auto-hide toast after 5 seconds
+          setTimeout(() => {
+            this.showSuccessToast.set(false);
+          }, 5000);
         },
         error: (err) => {
           console.error('Sign up failed:', err);
