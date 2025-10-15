@@ -27,7 +27,9 @@
                     <label for="password">Password</label>
                     <div class="input-wrapper">
                         <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
-                            placeholder="***********" />
+                            placeholder="***********" 
+                            [class.ng-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)"
+                            [class.ng-touched]="signupForm.get('password')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)" />
                         <span class="password-toggle" (click)="showPassword.set(!showPassword())">
                             @if (showPassword()) {
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +64,9 @@
                     <label for="confirmPassword">Confirm Password</label>
                     <div class="input-wrapper">
                         <input [type]="showConfirmPassword() ? 'text' : 'password' " id="confirmPassword" 
-                        formControlName="confirmPassword" placeholder="***********" />
+                        formControlName="confirmPassword" placeholder="***********"
+                        [class.ng-invalid]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)"
+                        [class.ng-touched]="signupForm.get('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)" />
                         <span class="password-toggle" (click)="showConfirmPassword.set(!showConfirmPassword())">
                             @if (showConfirmPassword()) {
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -87,6 +91,9 @@
                     @if (signupForm.get('confirmPassword')?.touched &&
                     signupForm.get('confirmPassword')?.hasError('required')) {
                     <span class="error-message">Confirm Password is required.</span>
+                    } @else if (signupForm.get('confirmPassword')?.touched &&
+                    signupForm.hasError('passwordsMismatch')) {
+                    <span class="error-message">Passwords do not match.</span>
                     }
                 </div>
 
