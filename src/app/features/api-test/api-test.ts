@@ -29,35 +29,23 @@ export class ApiTest {
   loading = signal(false);
   errorMessage = '';
 
-  /**
-   * Test: Successful GET request
-   */
   getUsers() {
     this.reset();
     this.loading.set(true);
 
     this.api
-      .get('users', {
-        params: { _limit: 5 },
-        headers: { 'Custom-Header': 'DemoTest' },
-        retryCount: 1,
-      })
+      .get('users')
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => {
-          console.log(' yes ', res);
           this.data = res;
-          this.loading.set(false);
         },
         error: (err) => {
           this.errorMessage = err.message;
-          this.loading.set(false);
         },
       });
   }
 
-  /**
-   * Test: Successfull POST request
-   */
   createPost() {
     this.reset();
     this.loading.set(true);
@@ -69,9 +57,7 @@ export class ApiTest {
     };
 
     this.api
-      .post<{ id: number; title: string; body: string; userId: number }>('posts', newPost, {
-        retryCount: 1,
-      })
+      .post<{ id: number; title: string; body: string; userId: number }>('posts', newPost)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => {
@@ -85,18 +71,12 @@ export class ApiTest {
       });
   }
 
-  /**
-   * Test: Delete request
-   */
   deletePost() {
     this.reset();
     this.loading.set(true);
 
     this.api
-      .delete('posts/1', {
-        headers: { 'Custom-Header': 'DeleteTest' },
-        retryCount: 1,
-      })
+      .delete('posts/1')
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -108,9 +88,6 @@ export class ApiTest {
       });
   }
 
-  /**
-   * Test: Update Method
-   */
   updatePost() {
     this.reset();
     this.loading.set(true);
@@ -122,7 +99,7 @@ export class ApiTest {
     };
 
     this.api
-      .put('posts/1', updatedPost)
+      .update('posts/1', updatedPost)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => {
@@ -135,14 +112,11 @@ export class ApiTest {
       });
   }
 
-  /**
-   * Test: Error handling by calling an invalid endpoint
-   */
   getWithError() {
     this.reset();
     this.loading.set(true);
 
-    this.api.get('invalid-endpoint', { retryCount: 0 }).subscribe({
+    this.api.get('invalid-endpoint').subscribe({
       next: (res) => {
         this.data = res;
         this.loading.set(false);
