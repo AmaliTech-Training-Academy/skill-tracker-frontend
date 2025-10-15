@@ -1,1 +1,91 @@
-<p>signup works!</p>
+<div class="signup-page">
+
+    <main class="signup-container">
+        <div class="card">
+            <div class="card-header-text">
+                <h1 class="card-title">Create Your Free Account</h1>
+                <p class="card-subtitle">
+                    Join thousands of learners leveling up their skills with personalized
+                    challenges and real-time feedback
+                </p>
+            </div>
+
+            <form class="signup-form">
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Email" />
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group password-field">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder="***********" />
+                        <span class="password-toggle">
+                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M4.5 4.25012L19.5 20.7501M14.5225 15.2749C13.7866 15.9438 12.8151 16.293 11.8217 16.2457C10.8283 16.1983 9.89443 15.7583 9.22545 15.0224C8.55647 14.2866 8.2072 13.3151 8.25446 12.3217C8.30172 11.3283 8.74164 10.3944 9.47746 9.72532M6.93698 6.93077C3.11486 8.86629 1.5 12.5001 1.5 12.5001C1.5 12.5001 4.5 19.2494 12 19.2494C13.7572 19.2634 15.4926 18.8586 17.0623 18.0686M19.5571 16.3532C21.6011 14.5225 22.5 12.5001 22.5 12.5001C22.5 12.5001 19.5 5.74939 12 5.74939C11.3504 5.74833 10.7019 5.80114 10.061 5.90728M12.7057 8.81648C13.5027 8.96953 14.2287 9.37687 14.7746 9.97742C15.3205 10.578 15.657 11.3393 15.7336 12.1473"
+                                    stroke="#888888" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group password-field">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="***********" />
+                        <span class="password-toggle">
+                            <svg width="24" height="25" viewBox="0 0 24 25" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M4.5 4.25012L19.5 20.7501M14.5225 15.2749C13.7866 15.9438 12.8151 16.293 11.8217 16.2457C10.8283 16.1983 9.89443 15.7583 9.22545 15.0224C8.55647 14.2866 8.2072 13.3151 8.25446 12.3217C8.30172 11.3283 8.74164 10.3944 9.47746 9.72532M6.93698 6.93077C3.11486 8.86629 1.5 12.5001 1.5 12.5001C1.5 12.5001 4.5 19.2494 12 19.2494C13.7572 19.2634 15.4926 18.8586 17.0623 18.0686M19.5571 16.3532C21.6011 14.5225 22.5 12.5001 22.5 12.5001C22.5 12.5001 19.5 5.74939 12 5.74939C11.3504 5.74833 10.7019 5.80114 10.061 5.90728M12.7057 8.81648C13.5027 8.96953 14.2287 9.37687 14.7746 9.97742C15.3205 10.578 15.657 11.3393 15.7336 12.1473"
+                                    stroke="#888888" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Terms Checkbox -->
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" />
+                    <label for="terms">
+                        I've read <a href="#" class="link">terms and conditions</a>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="footer">
+                <!-- Divider -->
+                <div class="divider">
+                    <span class="divider-text">Already have an account? <a href="#" class="link">Login</a></span>
+                </div>
+                <div class="or-divider">or</div>
+
+                <!-- Social Sign-in Buttons -->
+                <div class="button-wrapper">
+                    <button class="btn-social google">
+                        <img src="assets/google-icon.png" alt="Google logo" class="social-icon" />
+                        <span>Sign in with Google</span>
+                    </button>
+                    <button class="btn-social github">
+                        <img src="assets/github-icon.png" alt="Github logo" class="social-icon" />
+                        <span>Sign in with GitHub</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
