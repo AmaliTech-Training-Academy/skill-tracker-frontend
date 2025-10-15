@@ -49,7 +49,21 @@ export class ApiService {
       );
   }
 
-  put() {}
+  put<Res, Req = unknown>(
+    url: string,
+    body: Req,
+    options: ApiRequestOptions = {},
+  ): Observable<Res> {
+    return this.http
+      .put<Res>(this.fullUrl(url), body, {
+        params: this.buildParams(options.params),
+        headers: this.buildHeaders(options.headers),
+      })
+      .pipe(
+        retry(options.retryCount ?? 2),
+        catchError((error) => this.handleError(error)),
+      );
+  }
 
   delete() {}
 
