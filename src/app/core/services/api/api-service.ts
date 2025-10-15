@@ -51,7 +51,17 @@ export class ApiService {
 
   put() {}
 
-  delete() {}
+  delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
+    return this.http
+      .delete<void>(this.fullUrl(url), {
+        params: this.buildParams(options.params),
+        headers: this.buildHeaders(options.headers),
+      })
+      .pipe(
+        retry(options.retryCount ?? 2),
+        catchError((error) => this.handleError(error)),
+      );
+  }
 
   // A Full Url Utility Builder
   private fullUrl(endpoint: string): string {
