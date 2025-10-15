@@ -1,0 +1,68 @@
+@use 'colors' as *;
+@use 'components' as *;
+@use 'mixins' as *;
+
+.toast-container {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 350px;
+    width: calc(100% - 40px);
+    animation: slideIn 0.3s ease-out;
+    opacity: 1;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+
+    @include tablet {
+        left: auto;
+        right: 20px;
+        transform: none;
+        max-width: 400px;
+        width: auto;
+    }
+
+    &.toast-exit {
+        opacity: 0;
+        transform: translateX(100%);
+        
+        @include tablet {
+            transform: translateX(100%);
+        }
+    }
+}
+
+.toast {
+    // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    &.toast-success {
+        @include alert-success;
+       
+       &{
+            color: $green-success;
+       } 
+    }
+    
+    &.toast-error {
+        @include alert-error;
+    }
+    
+    &.toast-info {
+        @include alert-info;
+    }
+    
+    &.toast-warning {
+        @include alert-warning;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

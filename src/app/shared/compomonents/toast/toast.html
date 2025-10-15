@@ -1,0 +1,43 @@
+@if (show()) {
+<div class="toast-container" [class.toast-exit]="exiting()">
+    <div class="toast" [ngClass]="'toast-' + config.type">
+        <div class="alert-icon">
+            @if (config.type === 'success') {
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 24L20.4853 32.4853L37.454 15.5146" stroke="#358439" stroke-width="4" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            } @else if (config.type === 'error') {
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M35.9999 35.9999L24 24M24 24L12 12M24 24L36.0001 12M24 24L12 36.0001" stroke="#DB2A27"
+                    stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            } @else if (config.type === 'info') {
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M24 22V32M24 42C14.0589 42 6 33.9411 6 24C6 14.0589 14.0589 6 24 6C33.9411 6 42 14.0589 42 24C42 33.9411 33.9411 42 24 42ZM24.0996 16V16.2L23.9004 16.2004V16H24.0996Z"
+                    stroke="#3366FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            } @else if (config.type === 'warning') {
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M24 18.0001V26.0001M8.75781 30.3997C6.93894 33.5501 6.02977 35.1259 6.16563 36.4184C6.28412 37.5458 6.87584 38.5701 7.79297 39.2364C8.84407 40.0001 10.6618 40.0001 14.2971 40.0001H33.7029C37.3382 40.0001 39.1556 40.0001 40.2068 39.2364C41.1239 38.5701 41.7159 37.5458 41.8344 36.4184C41.9702 35.1259 41.0613 33.5501 39.2425 30.3997L29.543 13.5997C27.7241 10.4494 26.8143 8.87444 25.627 8.34582C24.5913 7.88473 23.408 7.88473 22.3724 8.34582C21.1856 8.87422 20.2763 10.4492 18.4589 13.5969L8.75781 30.3997ZM24.1016 32.0001V32.2001L23.9004 32.2005V32.0001H24.1016Z"
+                    stroke="#F99E07" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            }
+        </div>
+        <div class="alert-content">
+            <div class="alert-header">
+                <div class="alert-title">{{ config.title }}</div>
+                <div class="alert-close" (click)="onClose()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.5 1.5L1.5 10.5M10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+            <div class="alert-message">{{ config.message }}</div>
+        </div>
+    </div>
+</div>
+}
