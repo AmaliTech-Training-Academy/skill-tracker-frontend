@@ -105,7 +105,7 @@ export class Signup {
         next: () => {
           console.log('Account created successfully!', formValue);
           this.showToast.set(true);
-          // Auto-hide after 3 seconds
+          // Show for 3 seconds before starting exit
           setTimeout(() => {
             this.toastExiting.set(true);
             setTimeout(() => {
