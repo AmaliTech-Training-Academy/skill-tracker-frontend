@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faEye as farEye, faEyeSlash as farEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { LoginService } from './login.service';
 
 @Component({
   selector: 'app-login',
@@ -20,10 +21,14 @@ export class Login {
   password = '';
   showPassword = false;
 
-  faEye = farEye;
-  faEyeSlash = farEyeSlash;
+  // make icons accessible to the template
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
-  constructor(private faLibrary: FaIconLibrary) {
+  constructor(
+    private faLibrary: FaIconLibrary,
+    private loginService: LoginService,
+  ) {
     this.faLibrary.addIcons(faEye, faEyeSlash, farEye, farEyeSlash);
   }
 
@@ -32,12 +37,16 @@ export class Login {
   }
 
   login() {
-    if (this.email === 'user@example.com' && this.password === 'password') {
-      this.successMessage = 'Login successful!';
-      this.errorMessage = '';
-    } else {
-      this.errorMessage = 'Invalid email or password.';
-      this.successMessage = '';
-    }
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.loginService.login(this.email, this.password).subscribe({
+      next: (response) => {
+        this.successMessage = response.message;
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      },
+    });
   }
 }
