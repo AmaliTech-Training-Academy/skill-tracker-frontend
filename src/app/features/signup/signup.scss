@@ -265,6 +265,35 @@
     }
 }
 
+.password-requirements {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 0;
+    @include flex-column;
+    gap: 4px;
+
+    li {
+        @include flex-center;
+        justify-content: flex-start;
+        gap: 8px;
+        @include h13;
+        color: $red-text;
+        
+        svg {
+            flex-shrink: 0;
+            color: $red-text;
+        }
+
+        &.success {
+            color: $green-success;
+            
+            svg {
+                color: $green-success;
+            }
+        }
+    }
+}
+
 /* Responsive adjustments */
 @include mobile-large {
     .card-title {

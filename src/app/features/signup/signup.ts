@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { of, pipe, delay } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
@@ -18,17 +18,60 @@ export class Signup {
   showPassword = signal(false);
   showConfirmPassword = signal(false);
 
+  // Signal to track password value for reactivity
+  passwordValue = signal('');
+
+  // Computed signal for password requirements
+  passwordRequirements = computed(() => {
+    const value = this.passwordValue();
+    return [
+      {
+        key: 'hasUppercase',
+        message: '1 uppercase letter',
+        error: !value || !/[A-Z]/.test(value),
+      },
+      {
+        key: 'hasLowercase',
+        message: '1 lowercase letter',
+        error: !value || !/[a-z]/.test(value),
+      },
+      {
+        key: 'hasNumber',
+        message: '1 number',
+        error: !value || !/[0-9]/.test(value),
+      },
+      {
+        key: 'hasSpecialChar',
+        message: '1 special character (e.g. ! , @, #, $, %, &, *)',
+        error: !value || !/[!@#$%&*]/.test(value),
+      },
+    ];
+  });
+
   // Inject FormBuilder and initialize the form
   constructor(private fb: FormBuilder) {
     this.signupForm = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
+        password: [
+          '',
+          [
+            CustomValidators.hasUppercase,
+            CustomValidators.hasLowercase,
+            CustomValidators.hasNumber,
+            CustomValidators.hasSpecialChar,
+          ],
+        ],
         confirmPassword: ['', [Validators.required]],
         termsAccepted: [false, [Validators.requiredTrue]],
       },
       { validators: CustomValidators.passwordMatchValidator },
     );
+
+    // Subscribe to password changes to update signal
+    this.signupForm.get('password')?.valueChanges.subscribe((value) => {
+      this.passwordValue.set(value || '');
+    });
   }
 
   // Authentication methods
