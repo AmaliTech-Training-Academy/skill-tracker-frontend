@@ -1,1 +1,66 @@
-<p>login works!</p>
+<div class="onboarding-login">
+  <div class="alert-container">
+    <div class="alert alert-success" role="alert" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+    <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <h1>Welcome Back 👋</h1>
+  <p>Sign in to continue your personalized learning journey</p>
+
+  <form (ngSubmit)="login()">
+    <div class="login-input--group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
+        placeholder="Email"
+        required
+      />
+    </div>
+
+    <div class="login-inputgroup-password">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="password"
+        placeholder="***********"
+        required
+      />
+      
+    </div>
+
+    <a href="forgotpassword">Forgot Password?</a>
+
+    <button class="login-button" type="submit">Login</button>
+
+   
+  </form>
+
+   <p class="login-donthave-account">Don't have an account? <a href="register">Sign Up</a></p>
+
+    <p class="login-or">or</p>
+
+    <div class="login-other--login">
+
+    <button type="button" class="google-login">
+        <img src="" alt="google logo">
+        <p class="login-alternative--text">Sign in with Google</p>
+    </button>
+
+    <button type="button" class="facebook-login">
+        <img src="" alt="apple logo">
+        <p class="login-alternative--text">Sign in with Apple</p>
+    </button>
+
+    </div>
+
+</div>
+
