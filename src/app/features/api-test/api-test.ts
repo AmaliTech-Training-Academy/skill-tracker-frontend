@@ -3,6 +3,19 @@ import { CommonModule, JsonPipe } from '@angular/common';
 import { ApiService } from '@app/core';
 import { finalize } from 'rxjs';
 
+interface Post {
+  id: number;
+  title: string;
+  body: string;
+  userId: number;
+}
+
+interface UpdatedPostDto {
+  title: string;
+  body: string;
+  userId: number;
+}
+
 @Component({
   selector: 'app-api-test',
   imports: [CommonModule, JsonPipe],
@@ -43,7 +56,7 @@ export class ApiTest {
   }
 
   /**
-   * Test: Successfult POST request
+   * Test: Successfull POST request
    */
   createPost() {
     this.reset();
@@ -67,6 +80,33 @@ export class ApiTest {
         },
         error: (err) => {
           console.error('POST error:', err);
+          this.errorMessage = err.message;
+        },
+      });
+  }
+
+  /**
+   * Test: Update Method
+   */
+  updatePost() {
+    this.reset();
+    this.loading.set(true);
+
+    const updatedPost: UpdatedPostDto = {
+      title: 'Updated Title',
+      body: 'This post has been updated successfully',
+      userId: 1,
+    };
+
+    this.api
+      .put('posts/1', updatedPost)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (res) => {
+          console.log('PUT response:', res);
+          this.data = res;
+        },
+        error: (err) => {
           this.errorMessage = err.message;
         },
       });
