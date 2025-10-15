@@ -21,17 +21,16 @@ import { InputFieldComponent } from '../../shared/input-field/input-field';
   styleUrls: ['./login.scss'],
 })
 export class Login {
-  successMessage = '';
-  errorMessage = '';
-  loading = false;
-  loginForm!: FormGroup; // ✅ Declare it, don’t initialize yet
+  public successMessage = '';
+  public errorMessage = '';
+  public loading = false;
+  public loginForm!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private faLibrary: FaIconLibrary,
     private loginService: LoginService,
   ) {
-    // ✅ Initialize inside constructor (now fb is ready)
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -40,7 +39,7 @@ export class Login {
     this.faLibrary.addIcons(faEye, faEyeSlash);
   }
 
-  // ✅ Explicit casts to FormControl
+  //Explicit casts to FormControl
   get emailControl(): FormControl {
     return this.loginForm.get('email') as FormControl;
   }
