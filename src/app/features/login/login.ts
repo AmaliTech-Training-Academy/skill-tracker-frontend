@@ -1,71 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormControl,
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { LoginService } from './login.service';
-import { InputFieldComponent } from '../../shared/input-field/input-field';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, RouterLink, InputFieldComponent],
+  imports: [CommonModule, FormsModule, RouterLink, FontAwesomeModule],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
-export class Login {
+export class Login implements OnDestroy {
   public successMessage = '';
   public errorMessage = '';
+  public email = '';
+  public password = '';
+  public showPassword = false;
   public loading = false;
-  public loginForm!: FormGroup;
+
+  // active subscriptions
+  private subscription?: Subscription;
 
   constructor(
-    private fb: FormBuilder,
-    private faLibrary: FaIconLibrary,
     private loginService: LoginService,
+    private faLibrary: FaIconLibrary,
   ) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
-
     this.faLibrary.addIcons(faEye, faEyeSlash);
   }
 
-  //Explicit casts to FormControl
-  get emailControl(): FormControl {
-    return this.loginForm.get('email') as FormControl;
+  public togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
-  get passwordControl(): FormControl {
-    return this.loginForm.get('password') as FormControl;
-  }
-
-  login() {
-    if (this.loginForm.invalid) return;
-
-    this.loading = true;
+  public login(): void {
     this.successMessage = '';
     this.errorMessage = '';
 
-    const { email, password } = this.loginForm.value;
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Please fill in both fields.';
+      return;
+    }
 
-    this.loginService.login(email, password).subscribe({
-      next: (response) => {
-        this.successMessage = response.message;
+    this.loading = true;
+
+    // Clean up any previous subscription before making a new one
+    this.subscription?.unsubscribe();
+
+    this.subscription = this.loginService.login(this.email, this.password).subscribe({
+      next: (res) => {
         this.loading = false;
+        this.successMessage = res.message;
       },
       error: (err) => {
-        this.errorMessage = err.message;
         this.loading = false;
+        this.errorMessage = err.message ?? 'Login failed';
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 }
