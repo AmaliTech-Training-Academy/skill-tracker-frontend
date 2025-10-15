@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { of, pipe, delay } from 'rxjs';
+import { of, delay } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
+import { Toast } from 'src/app/shared/compomonents/toast/toast';
+import { ToastConfig } from 'src/app/core/models/toast-model';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, Toast],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
 })
@@ -17,7 +19,14 @@ export class Signup {
   isSubmitting = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
-  showSuccessToast = signal(false);
+  showToast = signal(false);
+  toastExiting = signal(false);
+
+  toastConfig: ToastConfig = {
+    type: 'success',
+    title: 'Account Created',
+    message: "Hurray, Your account is created! We've sent a 6 digit code to your email",
+  };
 
   // Signal to track password value for reactivity
   passwordValue = signal('');
@@ -95,11 +104,15 @@ export class Signup {
       .subscribe({
         next: () => {
           console.log('Account created successfully!', formValue);
-          this.showSuccessToast.set(true);
-          // Auto-hide toast after 5 seconds
+          this.showToast.set(true);
+          // Auto-hide after 3 seconds
           setTimeout(() => {
-            this.showSuccessToast.set(false);
-          }, 5000);
+            this.toastExiting.set(true);
+            setTimeout(() => {
+              this.showToast.set(false);
+              this.toastExiting.set(false);
+            }, 300);
+          }, 4000);
         },
         error: (err) => {
           console.error('Sign up failed:', err);
@@ -119,5 +132,13 @@ export class Signup {
   signInWithGithub() {
     console.log('Initiating GitHub Sign-in...');
     // Implement GitHub Auth logic here
+  }
+
+  onToastClose() {
+    this.toastExiting.set(true);
+    setTimeout(() => {
+      this.showToast.set(false);
+      this.toastExiting.set(false);
+    }, 300);
   }
 }
