@@ -15,24 +15,21 @@ export class LoginService {
   constructor() {}
 
   login(email: string, password: string): Observable<any> {
-    // Simulate a short API delay (like a real HTTP call)
     const apiDelay = 1000;
 
-    if (email === this.dummyUser.email && password === this.dummyUser.password) {
-      // Simulate successful login
+    const { email: dummyEmail, password: dummyPassword } = this.dummyUser;
+
+    if (email === dummyEmail && password === dummyPassword) {
       return of({
         success: true,
         message: 'Login successful!',
-        user: {
-          email: this.dummyUser.email,
-        },
+        user: { email: dummyEmail },
       }).pipe(delay(apiDelay));
-    } else {
-      // Simulate failed login
-      return throwError(() => ({
-        success: false,
-        message: 'Invalid email or password.',
-      })).pipe(delay(apiDelay));
     }
+
+    return throwError(() => ({
+      success: false,
+      message: 'Invalid email or password.',
+    })).pipe(delay(apiDelay));
   }
 }
