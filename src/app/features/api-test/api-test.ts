@@ -86,6 +86,29 @@ export class ApiTest {
   }
 
   /**
+   * Test: Delete request
+   */
+  deletePost() {
+    this.reset();
+    this.loading.set(true);
+
+    this.api
+      .delete('posts/1', {
+        headers: { 'Custom-Header': 'DeleteTest' },
+        retryCount: 1,
+      })
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          this.data = { message: 'Post deleted successfully' };
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        },
+      });
+  }
+
+  /**
    * Test: Update Method
    */
   updatePost() {
