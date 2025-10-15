@@ -26,12 +26,56 @@
         margin-top: 24px;
         margin-bottom: 24px;
 
+        .error-message {
+        color: #e74c3c;
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+
 
         .login-input--group{
             @include base-field;
         }
 
         .login-inputgroup-password{
+           
+             label {
+            @include h13;
+            color: $gray-text-strong;
+            }
+            .input-password{
+                @include h12;
+                background-color: transparent;
+                color: $gray-stroke-strong;
+                border: 1px solid $gray-stroke-strong;
+                padding: 16px 12px;
+                border-radius: 4px;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                input{
+                    border: none;
+                    outline: none;
+                    width: 90%;
+                    background-color: transparent;
+                    color: $gray-stroke-strong;
+                    @include h12;
+
+                }
+
+                .password-toggle{
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: $gray-stroke-strong;
+                    font-size: 1.2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
 
         }
 

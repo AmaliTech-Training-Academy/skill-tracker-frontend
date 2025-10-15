@@ -11,7 +11,8 @@
   <h1>Welcome Back 👋</h1>
   <p>Sign in to continue your personalized learning journey</p>
 
-  <form (ngSubmit)="login()">
+  <form #loginForm="ngForm" (ngSubmit)="login()" novalidate>
+    <!-- Email -->
     <div class="login-input--group">
       <label for="email">Email</label>
       <input
@@ -19,48 +20,65 @@
         id="email"
         name="email"
         [(ngModel)]="email"
+        #emailCtrl="ngModel"
         placeholder="Email"
         required
+        email
       />
+      <!-- Email validation messages -->
+      <div class="error-message" *ngIf="emailCtrl.invalid && emailCtrl.touched">
+        <small *ngIf="emailCtrl.errors?.['required']">Email is required.</small>
+        <small *ngIf="emailCtrl.errors?.['email']">Please enter a valid email address.</small>
+      </div>
     </div>
 
+    <!-- Password -->
     <div class="login-inputgroup-password">
       <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        placeholder="***********"
-        required
-      />
-      
+      <div class="input-password">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          #passwordCtrl="ngModel"
+          placeholder="***********"
+          required
+          minlength="6"
+        />
+        <button type="button" class="password-toggle" (click)="togglePasswordVisibility()" tabindex="-1">
+          <fa-icon [icon]="showPassword ? faEyeSlash : faEye"></fa-icon>
+        </button>
+      </div>
+      <!-- Password validation messages -->
+      <div class="error-message" *ngIf="passwordCtrl.invalid && passwordCtrl.touched">
+        <small *ngIf="passwordCtrl.errors?.['required']">Password is required.</small>
+        <small *ngIf="passwordCtrl.errors?.['minlength']">Password must be at least 6 characters.</small>
+      </div>
     </div>
 
-    <a href="forgotpassword">Forgot Password?</a>
+    <a routerLink="auth/forgotpassword">Forgot Password?</a>
 
-    <button class="login-button" type="submit">Login</button>
-
-   
+    <button class="login-button" type="submit" [disabled]="loginForm.invalid">
+      Login
+    </button>
   </form>
 
-   <p class="login-donthave-account">Don't have an account? <a href="register">Sign Up</a></p>
+  <p class="login-donthave-account">
+    Don't have an account? <a routerLink="auth/signup">Sign Up</a>
+  </p>
 
-    <p class="login-or">or</p>
+  <p class="login-or">or</p>
 
-    <div class="login-other--login">
-
+  <div class="login-other--login">
     <button type="button" class="google-login">
-        <img src="" alt="google logo">
-        <p class="login-alternative--text">Sign in with Google</p>
+      <img src="assets/images/google.png" alt="google logo" />
+      <p class="login-alternative--text">Sign in with Google</p>
     </button>
 
     <button type="button" class="facebook-login">
-        <img src="" alt="apple logo">
-        <p class="login-alternative--text">Sign in with Apple</p>
+      <img src="assets/images/apple.png" alt="apple logo" />
+      <p class="login-alternative--text">Sign in with Apple</p>
     </button>
-
-    </div>
-
+  </div>
 </div>
-
