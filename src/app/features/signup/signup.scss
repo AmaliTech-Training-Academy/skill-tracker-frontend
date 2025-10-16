@@ -55,7 +55,6 @@
     width: 100%;
 }
 
-/* Validation Error Message Style */
 .error-message {
     @include h13;
     color: $red-text;
@@ -67,15 +66,11 @@
     @include base-field;
     width: 100%;
 
-    /* Override input for specific elements */
     input[type="email"],
     input[type="password"],
     input[type="text"] {
-        /* Added text type for when showPassword is true */
         @include h13;
-        /* Adjusted font size for input text */
         height: 50px;
-        /* Ensure consistent height */
         box-sizing: border-box;
     }
 
@@ -86,7 +81,6 @@
 
     /* Style input in error state if parent form group has the passwordsMismatch error */
     .input-wrapper input:focus-within {
-        /* Fix focus ring issue when error is present */
         border-color: $brand-text;
         box-shadow: 0 0 0 1px $brand-text;
     }
@@ -106,7 +100,6 @@
         input {
             width: 100%;
             padding-right: 40px;
-            /* Space for the icon */
         }
 
         .password-toggle {
@@ -297,7 +290,6 @@
     }
 }
 
-/* Responsive adjustments */
 @include mobile-large {
     .card-title {
         @include h6;

@@ -23,6 +23,16 @@ export class ToastService {
     this.displayToast();
   }
 
+  showInfo(title: string, message: string) {
+    this.toastConfig.set({ type: ToastType.INFO, title, message });
+    this.displayToast();
+  }
+
+  showWarning(title: string, message: string) {
+    this.toastConfig.set({ type: ToastType.WARNING, title, message });
+    this.displayToast();
+  }
+
   private displayToast() {
     this.showToast.set(true);
     setTimeout(() => {

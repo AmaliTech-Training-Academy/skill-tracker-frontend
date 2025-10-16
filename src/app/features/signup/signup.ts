@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, computed, OnDestroy, OnInit } from '@angular/core';
+import { Component, signal, computed, OnDestroy, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { of, delay, Subscription } from 'rxjs';
+import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { Toast } from 'src/app/shared/compomonents/toast/toast';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
@@ -13,16 +13,36 @@ import { ToastService } from 'src/app/core/services/toast/toast-service';
   styleUrl: './signup.scss',
 })
 export class Signup implements OnInit, OnDestroy {
-  signupForm!: FormGroup;
-
   // UI state signals
   isSubmitting = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
 
+  fb = inject(FormBuilder);
+  toastService = inject(ToastService);
+
   // Signal to track password value for reactivity
   passwordValue = signal('');
-  private passwordSubscription?: Subscription;
+  private destroy$ = new Subject<void>();
+
+  // Reactive form initialization
+  signupForm = this.fb.group(
+    {
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          CustomValidators.hasUppercase,
+          CustomValidators.hasLowercase,
+          CustomValidators.hasNumber,
+          CustomValidators.hasSpecialChar,
+        ],
+      ],
+      confirmPassword: ['', [Validators.required]],
+      termsAccepted: [false, [Validators.requiredTrue]],
+    },
+    { validators: CustomValidators.passwordMatchValidator },
+  );
 
   // Computed signal for password requirements
   passwordRequirements = computed(() => {
@@ -51,34 +71,13 @@ export class Signup implements OnInit, OnDestroy {
     ];
   });
 
-  constructor(
-    private fb: FormBuilder,
-    public toastService: ToastService,
-  ) {}
-
   ngOnInit() {
-    this.signupForm = this.fb.group(
-      {
-        email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [
-            CustomValidators.hasUppercase,
-            CustomValidators.hasLowercase,
-            CustomValidators.hasNumber,
-            CustomValidators.hasSpecialChar,
-          ],
-        ],
-        confirmPassword: ['', [Validators.required]],
-        termsAccepted: [false, [Validators.requiredTrue]],
-      },
-      { validators: CustomValidators.passwordMatchValidator },
-    );
-
     // Subscribe to password changes to update signal
-    this.passwordSubscription = this.signupForm.get('password')?.valueChanges.subscribe((value) => {
-      this.passwordValue.set(value || '');
-    });
+    this.formField('password')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.passwordValue.set(value || '');
+      });
   }
 
   // Authentication methods
@@ -93,7 +92,7 @@ export class Signup implements OnInit, OnDestroy {
 
     // Simulate an API call
     of(true)
-      .pipe(delay(2000))
+      .pipe(delay(2000), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(
@@ -135,6 +134,7 @@ export class Signup implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.passwordSubscription?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
