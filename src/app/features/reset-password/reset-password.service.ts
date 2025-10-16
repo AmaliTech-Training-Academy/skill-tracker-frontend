@@ -13,7 +13,7 @@ import {
   providedIn: 'root',
 })
 export class ResetPasswordService {
-  private readonly BASE_URL = 'https://faisal.com/auth/password';
+  private readonly BASE_URL = 'https://app.com/auth/password';
 
   constructor(private http: HttpClient) {}
 

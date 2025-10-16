@@ -7,18 +7,29 @@ import {
   FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { ResetPasswordService } from './reset-password.service';
 
+// Font Awesome imports
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputFieldComponent,
+    HttpClientModule,
+    FontAwesomeModule,
+  ],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
 })
-export class ResetPasswordComponent implements OnDestroy {
+export class ResetPassword implements OnDestroy {
   public successMessage = '';
   public errorMessage = '';
   public loading = false;
@@ -31,10 +42,18 @@ export class ResetPasswordComponent implements OnDestroy {
   public hasNumber = false;
   public hasSpecialChar = false;
 
+  // Expose icons for template
+  public faCheck = faCheck;
+  public faTimes = faTimes;
+
   constructor(
     private fb: FormBuilder,
     private resetPasswordService: ResetPasswordService,
+    private library: FaIconLibrary,
   ) {
+    // register icons
+    this.library.addIcons(faCheck, faTimes);
+
     this.loginForm = this.fb.group({
       password1: [
         '',
