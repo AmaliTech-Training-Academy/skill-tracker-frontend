@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { of, delay, Subscription } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { Toast } from 'src/app/shared/compomonents/toast/toast';
-import { ToastConfig } from 'src/app/core/models/toast-model';
+import { ToastService } from 'src/app/core/services/toast/toast-service';
 
 @Component({
   selector: 'app-signup',
@@ -19,14 +19,6 @@ export class Signup implements OnInit, OnDestroy {
   isSubmitting = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
-  showToast = signal(false);
-  toastExiting = signal(false);
-
-  toastConfig: ToastConfig = {
-    type: 'success',
-    title: 'Account Created',
-    message: "Hurray, Your account is created! We've sent a 6 digit code to your email",
-  };
 
   // Signal to track password value for reactivity
   passwordValue = signal('');
@@ -59,7 +51,10 @@ export class Signup implements OnInit, OnDestroy {
     ];
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    public toastService: ToastService,
+  ) {}
 
   ngOnInit() {
     this.signupForm = this.fb.group(
@@ -105,30 +100,16 @@ export class Signup implements OnInit, OnDestroy {
       .pipe(delay(2000))
       .subscribe({
         next: () => {
-          this.showToast.set(true);
-          // Show for 3 seconds before starting exit
-          setTimeout(() => {
-            this.toastExiting.set(true);
-            setTimeout(() => {
-              this.showToast.set(false);
-              this.toastExiting.set(false);
-            }, 300);
-          }, 4000);
+          this.toastService.showSuccess(
+            'Account Created',
+            "Hurray, Your account is created! We've sent a 6 digit code to your email",
+          );
         },
         error: (err) => {
-          this.toastConfig = {
-            type: 'error',
-            title: 'Signup Failed',
-            message: 'Unable to create your account. Please try again.',
-          };
-          this.showToast.set(true);
-          setTimeout(() => {
-            this.toastExiting.set(true);
-            setTimeout(() => {
-              this.showToast.set(false);
-              this.toastExiting.set(false);
-            }, 300);
-          }, 4000);
+          this.toastService.showError(
+            'Signup Failed',
+            'Unable to create your account. Please try again.',
+          );
         },
         complete: () => {
           this.isSubmitting.set(false);
@@ -147,11 +128,7 @@ export class Signup implements OnInit, OnDestroy {
   }
 
   onToastClose() {
-    this.toastExiting.set(true);
-    setTimeout(() => {
-      this.showToast.set(false);
-      this.toastExiting.set(false);
-    }, 300);
+    this.toastService.closeToast();
   }
 
   ngOnDestroy() {

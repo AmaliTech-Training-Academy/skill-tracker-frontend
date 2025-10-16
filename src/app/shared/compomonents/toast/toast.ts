@@ -10,12 +10,11 @@ import { ToastConfig } from 'src/app/core/models/toast-model';
 })
 export class Toast {
   @Input() config!: ToastConfig;
-  @Input() show = signal(false);
-  @Input() exiting = signal(false);
+  @Input() show!: boolean;
+  @Input() exiting!: boolean;
   @Output() close = new EventEmitter<void>();
 
   onClose() {
-    this.show.set(false);
     this.close.emit();
   }
 }

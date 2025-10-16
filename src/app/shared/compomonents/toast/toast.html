@@ -1,5 +1,5 @@
-@if (show()) {
-<div class="toast-container" [class.toast-exit]="exiting()">
+@if (show) {
+<div class="toast-container" [class.toast-exit]="exiting">
     <div class="toast" [ngClass]="'toast-' + config.type">
         <div class="alert-icon">
             @if (config.type === 'success') {
