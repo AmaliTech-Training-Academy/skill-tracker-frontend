@@ -114,8 +114,19 @@ export class Signup {
           }, 4000);
         },
         error: (err) => {
-          console.error('Sign up failed:', err);
-          // Show error message in the UI
+          this.toastConfig = {
+            type: 'error',
+            title: 'Signup Failed',
+            message: 'Unable to create your account. Please try again.',
+          };
+          this.showToast.set(true);
+          setTimeout(() => {
+            this.toastExiting.set(true);
+            setTimeout(() => {
+              this.showToast.set(false);
+              this.toastExiting.set(false);
+            }, 300);
+          }, 4000);
         },
         complete: () => {
           this.isSubmitting.set(false);
