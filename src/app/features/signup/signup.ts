@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, computed, OnDestroy } from '@angular/core';
+import { Component, signal, computed, OnDestroy, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { of, delay, Subscription } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
@@ -12,8 +12,8 @@ import { ToastConfig } from 'src/app/core/models/toast-model';
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
 })
-export class Signup implements OnDestroy {
-  signupForm: FormGroup;
+export class Signup implements OnInit, OnDestroy {
+  signupForm!: FormGroup;
 
   // UI state signals
   isSubmitting = signal(false);
@@ -59,8 +59,9 @@ export class Signup implements OnDestroy {
     ];
   });
 
-  // Inject FormBuilder and initialize the form
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit() {
     this.signupForm = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
