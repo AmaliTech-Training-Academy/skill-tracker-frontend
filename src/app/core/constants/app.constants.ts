@@ -3,4 +3,4 @@ export const APP_CONSTANTS = {
     COUNT: 2,
     DELAY_MS: 1000,
   },
-};
+} as const;
