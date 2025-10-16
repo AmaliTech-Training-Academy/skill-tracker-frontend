@@ -3,35 +3,42 @@
 ## Overview
 
 The `ApiService` provides a **centralized, reusable wrapper** around Angular’s `HttpClient`.
-It helps simplify HTTP calls across the app by handling:
+It simplifies HTTP calls across the app by handling:
 
 - ✅ Base URL management
 - ✅ Common headers and parameters
-- ✅ Retry logic
-- ✅ Centralized error handling
 - ✅ Type-safe requests and responses
+- ✅ Centralized error handling (via **ErrorInterceptor**)
+- ✅ Automatic retry logic (via **RetryInterceptor**)
 
 ---
 
 ## 🧩 Location
 
-**File:** `src/app/core/services/api-service.ts`
+**File:** `src/app/core/services/api/api-service.ts`
 
 ---
 
 ## 🚀 Basic Usage
 
-All methods return **RxJS `Observable`** streams, so you can `.subscribe()` or use `async` pipes.
+All methods return **RxJS `Observable`** streams.
+You can either `.subscribe()` directly or use them with the `async` pipe in templates.
 
 ```typescript
-import { ApiService } from '@app/core';
-```
+import { ApiService } from '@app/core/services/api/api-service';
 
-Example injection:
-
-```typescript
 constructor(private api: ApiService) {}
 ```
+
+💯 Excellent observation — you’re absolutely right.
+
+If you already have an **AuthInterceptor** that automatically attaches the `Authorization` header with the bearer token, then you **don’t need to manually pass headers** in your `ApiService` calls (except for special cases like file uploads or custom headers).
+
+Let’s clean up your documentation to reflect that.
+
+---
+
+Here’s the updated section for your guide 👇
 
 ---
 
@@ -42,23 +49,21 @@ constructor(private api: ApiService) {}
 Fetches data from an API endpoint.
 
 ```typescript
-this.api
-  .get<User[]>('users', {
-    params: { _limit: 5 },
-    headers: { Authorization: 'Bearer token' },
-    retryCount: 1,
-  })
-  .subscribe({
-    next: (res) => console.log(res),
-    error: (err) => console.error(err.message),
-  });
+this.api.get<User[]>('users', { params: { _limit: 5 } }).subscribe({
+  next: (res) => console.log(res),
+  error: (err) => console.error(err.message),
+});
 ```
 
 **Options:**
 
 - `params`: Query parameters (`HttpParams` or object)
-- `headers`: Custom headers (`HttpHeaders` or object)
-- `retryCount`: Number of automatic retries (default: `2`)
+- `headers`: _(Optional)_ Custom headers — **only needed for special cases** like custom tokens or file uploads.
+
+> 🧠 Note: The **AuthInterceptor** automatically appends your `Authorization: Bearer <token>` header for authenticated requests.
+> You don’t need to include it manually.
+
+> 🔄 Retry behavior is handled globally by the **RetryInterceptor** — no need to configure retries manually.
 
 ---
 
@@ -67,7 +72,7 @@ this.api
 Sends data to create a resource.
 
 ```typescript
-interface CreatePostDto {
+interface CreatePost {
   title: string;
   body: string;
   userId: number;
@@ -80,19 +85,22 @@ interface PostResponse {
   userId: number;
 }
 
-const newPost: CreatePostDto = {
+const payload: CreatePost = {
   title: 'Hello world',
   body: 'This is a sample post',
   userId: 1,
 };
 
-this.api.post<PostResponse, CreatePostDto>('posts', newPost).subscribe({
+this.api.post<PostResponse, CreatePost>('posts', payload).subscribe({
   next: (res) => console.log('Created:', res),
   error: (err) => console.error(err.message),
 });
 ```
 
-✅ Automatically includes the `Content-Type: application/json` header.
+✅ Automatically includes:
+
+- `Content-Type: application/json`
+- `Authorization` (via `AuthInterceptor`)
 
 ---
 
@@ -101,14 +109,14 @@ this.api.post<PostResponse, CreatePostDto>('posts', newPost).subscribe({
 Updates an existing resource.
 
 ```typescript
-interface UpdatePostDto {
+interface UpdatePost {
   title: string;
   body: string;
   userId: number;
 }
 
 this.api
-  .put<PostResponse, UpdatePostDto>('posts/1', {
+  .put<PostResponse, UpdatePost>('posts/1', {
     title: 'Updated title',
     body: 'Updated content',
     userId: 1,
@@ -123,7 +131,7 @@ this.api
 
 ### 4. `delete()`
 
-Deletes a resource by URL.
+Deletes a resource.
 
 ```typescript
 this.api.delete('posts/1').subscribe({
@@ -132,97 +140,10 @@ this.api.delete('posts/1').subscribe({
 });
 ```
 
-If your API returns a response body on delete:
+If your API returns a response body after deletion:
 
 ```typescript
-this.api.delete('posts/1').subscribe((res) => console.log(res.message));
-```
-
----
-
-## ⚙️ Options Object
-
-Every method accepts an optional `ApiRequestOptions` object:
-
-```typescript
-interface ApiRequestOptions {
-  retryCount?: number;
-  params?: HttpParams | { [param: string]: string | number | boolean };
-  headers?: HttpHeaders | { [header: string]: string | string[] };
-}
-```
-
----
-
-## 🧠 Error Handling
-
-All errors are automatically passed through your custom `ErrorHandlerService`.
-It normalizes messages and handles common HTTP status codes like `400`, `401`, `404`, and `500`.
-
-Example:
-
-```typescript
-this.api.get('invalid-endpoint').subscribe({
-  error: (err) => console.error(err.message),
-});
-```
-
-Might log:
-
-> `"The requested resource was not found."`
-
----
-
-## 🧰 Utility Functions (Internal)
-
-| Function                    | Purpose                                                    |
-| --------------------------- | ---------------------------------------------------------- |
-| `fullUrl(endpoint: string)` | Joins `environment.url` with endpoint safely               |
-| `buildParams(params)`       | Converts object or `HttpParams` to query string            |
-| `buildHeaders(headers)`     | Merges provided headers with defaults (JSON Content-Type)  |
-| `handleError(error)`        | Delegates to `ErrorHandlerService` for consistent messages |
-
----
-
-## 🧪 Example Component (for Testing)
-
-```typescript
-@Component({
-  selector: 'app-api-test',
-  template: `
-    <button (click)="getUsers()">GET</button>
-    <button (click)="createPost()">POST</button>
-    <button (click)="updatePost()">PUT</button>
-    <button (click)="deletePost()">DELETE</button>
-    <pre>{{ data | json }}</pre>
-  `,
-})
-export class ApiTestComponent {
-  data: any;
-  loading = false;
-
-  constructor(private api: ApiService) {}
-
-  getUsers() {
-    this.api.get('users', { params: { _limit: 5 } }).subscribe((res) => (this.data = res));
-  }
-
-  createPost() {
-    this.api
-      .post('posts', { title: 'Demo', body: 'Example', userId: 1 })
-      .subscribe((res) => (this.data = res));
-  }
-
-  updatePost() {
-    this.api
-      .put('posts/1', { title: 'Updated', body: 'Content', userId: 1 })
-      .subscribe((res) => (this.data = res));
-  }
-
-  deletePost() {
-    this.api.delete('posts/1').subscribe(() => (this.data = { message: 'Deleted' }));
-  }
-}
+this.api.delete('posts/1').subscribe((res) => console.log(res));
 ```
 
 ---
@@ -230,9 +151,9 @@ export class ApiTestComponent {
 ## 🔐 Best Practices
 
 - Always use **typed requests and responses** for maintainability.
-- Use `retryCount` carefully — usually 1–2 retries are enough.
-- Handle all business logic in your services, not components.
-- Keep API endpoints centralized (e.g., `environment.url`).
+- Don’t manually handle retries — let the **RetryInterceptor** do that.
+- Keep components dumb: handle logic inside services.
+- Use centralized constants and environments for configuration.
 
 ---
 

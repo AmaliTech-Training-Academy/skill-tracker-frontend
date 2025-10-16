@@ -1,8 +1,5 @@
-import { Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
-import { ApiService } from '@app/core';
-import { ApiTest } from './features/api-test/api-test';
 import { Toast } from './shared/compomonents/toast/toast';
 
 @Component({
@@ -10,11 +7,9 @@ import { Toast } from './shared/compomonents/toast/toast';
   imports: [RouterOutlet, Toast],
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
   protected readonly title = signal('SkillBoost');
   name = 'Angular';
-  http = inject(ApiService);
-
-  constructor() {}
 }
