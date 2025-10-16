@@ -61,7 +61,6 @@ export class ApiTest {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => {
-          console.log('POST response', res);
           this.data = res;
         },
         error: (err) => {
@@ -103,7 +102,6 @@ export class ApiTest {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res) => {
-          console.log('PUT response:', res);
           this.data = res;
         },
         error: (err) => {
