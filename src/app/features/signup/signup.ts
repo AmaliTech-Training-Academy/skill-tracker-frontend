@@ -131,6 +131,15 @@ export class Signup implements OnInit, OnDestroy {
     this.toastService.closeToast();
   }
 
+  formField(fieldName: string) {
+    return this.signupForm.get(fieldName);
+  }
+
+  hasFieldError(fieldName: string, errorType: string): boolean {
+    const field = this.formField(fieldName);
+    return (field?.touched && field?.hasError(errorType)) || false;
+  }
+
   ngOnDestroy() {
     this.passwordSubscription?.unsubscribe();
   }

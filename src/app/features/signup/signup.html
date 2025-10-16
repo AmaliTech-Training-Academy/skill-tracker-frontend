@@ -18,9 +18,9 @@
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" formControlName="email" placeholder="Email" />
-                    @if (signupForm.get('email')?.touched && signupForm.get('email')?.hasError('required')) {
+                    @if (hasFieldError('email', 'required')) {
                     <span class="error-message">Email is required.</span>
-                    } @else if (signupForm.get('email')?.touched && signupForm.get('email')?.hasError('email')) {
+                    } @else if (hasFieldError('email', 'email')) {
                     <span class="error-message">Enter a valid email address.</span>
                     }
                 </div>
@@ -31,8 +31,8 @@
                     <div class="input-wrapper">
                         <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
                             placeholder="***********"
-                            [class.ng-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)"
-                            [class.ng-touched]="signupForm.get('password')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)" />
+                            [class.ng-invalid]="formField('password')?.invalid && formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
+                            [class.ng-touched]="formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
                         <span class="password-toggle" (click)="showPassword.set(!showPassword())">
                             @if (showPassword()) {
                                 <img src="assets/eye.png" alt="showPassword">
@@ -43,7 +43,7 @@
                         </span>
                     </div>
 
-                    @if (signupForm.get('password')?.touched || signupForm.get('password')?.value) {
+                    @if (formField('password')?.touched || formField('password')?.value) {
                     <ul class="password-requirements">
                         @for (requirement of passwordRequirements(); track requirement.key) {
                         <li [class.success]="!requirement.error">
@@ -65,8 +65,8 @@
                     <div class="input-wrapper">
                         <input [type]="showConfirmPassword() ? 'text' : 'password' " id="confirmPassword"
                             formControlName="confirmPassword" placeholder="***********"
-                            [class.ng-invalid]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)"
-                            [class.ng-touched]="signupForm.get('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && signupForm.get('confirmPassword')?.touched)" />
+                            [class.ng-invalid]="formField('confirmPassword')?.invalid && formField('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
+                            [class.ng-touched]="formField('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
                         <span class="password-toggle" (click)="showConfirmPassword.set(!showConfirmPassword())">
                             @if (showConfirmPassword()) {
                                 <img src="assets/eye.png" alt="showPassword">
@@ -76,10 +76,9 @@
                             }
                         </span>
                     </div>
-                    @if (signupForm.get('confirmPassword')?.touched &&
-                    signupForm.get('confirmPassword')?.hasError('required')) {
+                    @if (hasFieldError('confirmPassword', 'required')) {
                     <span class="error-message">Confirm Password is required.</span>
-                    } @else if (signupForm.get('confirmPassword')?.touched &&
+                    } @else if (formField('confirmPassword')?.touched &&
                     signupForm.hasError('passwordsMismatch')) {
                     <span class="error-message">Passwords do not match.</span>
                     }
@@ -92,8 +91,7 @@
                         I've read <a href="#" class="link">terms and conditions</a>
                     </label>
                 </div>
-                @if (signupForm.get('termsAccepted')?.touched &&
-                signupForm.get('termsAccepted')?.hasError('requiredTrue')) {
+                @if (hasFieldError('termsAccepted', 'requiredTrue')) {
                 <span class="error-message" style="margin-top: -12px;">You must accept the terms.</span>
                 }
 
