@@ -23,14 +23,7 @@ export class AuthService {
   readonly currentUser = signal<AuthResponse['user'] | null>(null);
 
   login(payload: LoginRequest) {
-    return this.api.post<AuthResponse>('auth/login', payload).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.token);
-        this.currentUser.set(res.user);
-        this.isAuthenticated.set(true);
-      },
-      error: () => this.logout(),
-    });
+    return this.api.post<AuthResponse>('auth/login', payload);
   }
 
   logout() {
