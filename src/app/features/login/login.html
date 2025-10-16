@@ -24,7 +24,7 @@
       type="email"
       id="email"
       placeholder="Email"
-      [control]="emailControl"
+      [control]="getControl('email')"
     ></app-input-field>
 
     <app-input-field
@@ -32,7 +32,7 @@
       type="password"
       id="password"
       placeholder="***********"
-      [control]="passwordControl"
+      [control]="getControl('password')"
     ></app-input-field>
 
     <a routerLink="auth/forgotpassword">Forgot Password?</a>

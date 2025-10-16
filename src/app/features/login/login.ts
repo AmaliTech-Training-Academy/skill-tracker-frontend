@@ -8,16 +8,14 @@ import {
   FormControl,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { Subject, takeUntil } from 'rxjs';
 import { LoginService } from './login.service';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, RouterLink, InputFieldComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputFieldComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
@@ -25,34 +23,30 @@ export class Login implements OnDestroy {
   public successMessage = '';
   public errorMessage = '';
   public loading = false;
-  public loginForm!: FormGroup;
+  public loginForm: FormGroup;
 
-  // store subscriptions to clean up
-  private subscriptions = new Subscription();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
-    private faLibrary: FaIconLibrary,
     private loginService: LoginService,
   ) {
-    this.loginForm = this.fb.group({
+    this.loginForm = this.createForm();
+  }
+
+  private createForm(): FormGroup {
+    return this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-
-    this.faLibrary.addIcons(faEye, faEyeSlash);
   }
 
-  // Explicit casts to FormControl
-  get emailControl(): FormControl {
-    return this.loginForm.get('email') as FormControl;
+  // Generic control getter
+  getControl(controlName: string): FormControl {
+    return this.loginForm.get(controlName) as FormControl;
   }
 
-  get passwordControl(): FormControl {
-    return this.loginForm.get('password') as FormControl;
-  }
-
-  login() {
+  login(): void {
     if (this.loginForm.invalid) return;
 
     this.loading = true;
@@ -61,23 +55,23 @@ export class Login implements OnDestroy {
 
     const { email, password } = this.loginForm.value;
 
-    const sub = this.loginService.login(email, password).subscribe({
-      next: (response) => {
-        this.successMessage = response.message;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-        this.loading = false;
-      },
-    });
-
-    // add to subscriptions for cleanup
-    this.subscriptions.add(sub);
+    this.loginService
+      .login(email, password)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.successMessage = response.message;
+          this.loading = false;
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+          this.loading = false;
+        },
+      });
   }
 
-  // Cleanup
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
