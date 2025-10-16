@@ -103,7 +103,6 @@ export class Signup {
       .pipe(delay(2000))
       .subscribe({
         next: () => {
-          console.log('Account created successfully!', formValue);
           this.showToast.set(true);
           // Show for 3 seconds before starting exit
           setTimeout(() => {
