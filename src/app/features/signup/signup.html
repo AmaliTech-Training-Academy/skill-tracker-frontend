@@ -29,7 +29,15 @@
                             placeholder="***********"
                             [class.ng-invalid]="formField('password')?.invalid && formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
                             [class.ng-touched]="formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
-                        <span class="password-toggle" (click)="showPassword.set(!showPassword())">
+                        <span
+                            class="password-toggle"
+                            role="button"
+                            tabindex="0"
+                            [attr.aria-pressed]="showPassword()"
+                            aria-label="Toggle password visibility"
+                            (click)="showPassword.set(!showPassword())"
+                            (keydown.enter)="showPassword.set(!showPassword())"
+                            (keydown.space)="showPassword.set(!showPassword()); $event.preventDefault()">
                             @if (showPassword()) {
                                 <img src="assets/eye.png" alt="showPassword">
                             }
