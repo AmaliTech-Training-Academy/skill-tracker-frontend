@@ -1,50 +1,49 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { ApiService } from '@app/core';
-import { finalize } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
+
+interface UpdatedPostDto {
+  title: string;
+  body: string;
+  userId: number;
+}
 
 @Component({
   selector: 'app-api-test',
   imports: [CommonModule, JsonPipe],
   templateUrl: './api-test.html',
   styleUrl: './api-test.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ApiTest {
+export class ApiTest implements OnDestroy {
   private api = inject(ApiService);
+  private destroy$ = new Subject<void>();
 
-  data: any;
+  data: unknown;
   loading = signal(false);
   errorMessage = '';
 
-  /**
-   * Test: Successful GET request
-   */
   getUsers() {
     this.reset();
     this.loading.set(true);
 
     this.api
-      .get('users', {
-        params: { _limit: 5 },
-        headers: { 'Custom-Header': 'DemoTest' },
-        retryCount: 1,
-      })
+      .get('users')
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroy$),
+      )
       .subscribe({
         next: (res) => {
-          console.log(' yes ', res);
           this.data = res;
-          this.loading.set(false);
         },
         error: (err) => {
           this.errorMessage = err.message;
-          this.loading.set(false);
         },
       });
   }
 
-  /**
-   * Test: Successfult POST request
-   */
   createPost() {
     this.reset();
     this.loading.set(true);
@@ -56,13 +55,13 @@ export class ApiTest {
     };
 
     this.api
-      .post<{ id: number; title: string; body: string; userId: number }>('posts', newPost, {
-        retryCount: 1,
-      })
-      .pipe(finalize(() => this.loading.set(false)))
+      .post<{ id: number; title: string; body: string; userId: number }>('posts', newPost)
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroy$),
+      )
       .subscribe({
         next: (res) => {
-          console.log('POST response', res);
           this.data = res;
         },
         error: (err) => {
@@ -72,19 +71,16 @@ export class ApiTest {
       });
   }
 
-  /**
-   * Test: Delete request
-   */
   deletePost() {
     this.reset();
     this.loading.set(true);
 
     this.api
-      .delete('posts/1', {
-        headers: { 'Custom-Header': 'DeleteTest' },
-        retryCount: 1,
-      })
-      .pipe(finalize(() => this.loading.set(false)))
+      .delete('posts/1')
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroy$),
+      )
       .subscribe({
         next: () => {
           this.data = { message: 'Post deleted successfully' };
@@ -95,27 +91,58 @@ export class ApiTest {
       });
   }
 
-  /**
-   * Test: Error handling by calling an invalid endpoint
-   */
+  updatePost() {
+    this.reset();
+    this.loading.set(true);
+
+    const updatedPost: UpdatedPostDto = {
+      title: 'Updated Title',
+      body: 'This post has been updated successfully',
+      userId: 1,
+    };
+
+    this.api
+      .update('posts/1', updatedPost)
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: (res) => {
+          this.data = res;
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        },
+      });
+  }
+
   getWithError() {
     this.reset();
     this.loading.set(true);
 
-    this.api.get('invalid-endpoint', { retryCount: 0 }).subscribe({
-      next: (res) => {
-        this.data = res;
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.errorMessage = err.message;
-        this.loading.set(false);
-      },
-    });
+    this.api
+      .get('invalid-endpoint')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.data = res;
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+          this.loading.set(false);
+        },
+      });
   }
 
   private reset() {
     this.data = null;
     this.errorMessage = '';
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
