@@ -1,14 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { ApiService } from '@app/core';
 import { finalize } from 'rxjs';
-
-interface Post {
-  id: number;
-  title: string;
-  body: string;
-  userId: number;
-}
 
 interface UpdatedPostDto {
   title: string;
@@ -21,11 +14,12 @@ interface UpdatedPostDto {
   imports: [CommonModule, JsonPipe],
   templateUrl: './api-test.html',
   styleUrl: './api-test.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ApiTest {
   private api = inject(ApiService);
 
-  data: any;
+  data: unknown;
   loading = signal(false);
   errorMessage = '';
 
