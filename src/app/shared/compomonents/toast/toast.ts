@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
-import { ToastConfig } from 'src/app/core/models/toast-model';
+import { ToastConfig, ToastType } from 'src/app/core/models/toast-model';
 
 @Component({
   selector: 'app-toast',
@@ -13,6 +13,8 @@ export class Toast {
   @Input() show!: boolean;
   @Input() exiting!: boolean;
   @Output() close = new EventEmitter<void>();
+
+  ToastType = ToastType;
 
   onClose() {
     this.close.emit();

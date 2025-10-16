@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { ToastConfig } from '../../models/toast-model';
+import { ToastConfig, ToastType } from '../../models/toast-model';
 
 @Injectable({
   providedIn: 'root',
@@ -8,18 +8,18 @@ export class ToastService {
   showToast = signal(false);
   toastExiting = signal(false);
   toastConfig = signal<ToastConfig>({
-    type: 'success',
+    type: ToastType.SUCCESS,
     title: '',
     message: '',
   });
 
   showSuccess(title: string, message: string) {
-    this.toastConfig.set({ type: 'success', title, message });
+    this.toastConfig.set({ type: ToastType.SUCCESS, title, message });
     this.displayToast();
   }
 
   showError(title: string, message: string) {
-    this.toastConfig.set({ type: 'error', title, message });
+    this.toastConfig.set({ type: ToastType.ERROR, title, message });
     this.displayToast();
   }
 

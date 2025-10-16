@@ -83,13 +83,9 @@ export class Signup implements OnInit, OnDestroy {
 
   // Authentication methods
   async onSubmit() {
-    // Mark all controls as touched to show errors if invalid
     this.signupForm.markAllAsTouched();
 
-    if (this.signupForm.invalid) {
-      console.error('Form is invalid. Cannot submit.');
-      return;
-    }
+    if (this.signupForm.invalid) return;
 
     this.isSubmitting.set(true);
 
@@ -118,12 +114,10 @@ export class Signup implements OnInit, OnDestroy {
   }
 
   signInWithGoogle() {
-    console.log('Initiating Google Sign-in...');
     // Implement Google Auth logic here
   }
 
   signInWithGithub() {
-    console.log('Initiating GitHub Sign-in...');
     // Implement GitHub Auth logic here
   }
 

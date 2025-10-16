@@ -1,5 +1,12 @@
+export enum ToastType {
+  SUCCESS = 'success',
+  ERROR = 'error',
+  INFO = 'info',
+  WARNING = 'warning',
+}
+
 export interface ToastConfig {
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: ToastType;
   title: string;
   message: string;
 }

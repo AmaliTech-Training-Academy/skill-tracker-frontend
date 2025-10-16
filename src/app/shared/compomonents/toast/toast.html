@@ -2,13 +2,13 @@
 <div class="toast-container" [class.toast-exit]="exiting">
     <div class="toast" [ngClass]="'toast-' + config.type">
         <div class="alert-icon">
-            @if (config.type === 'success') {
+            @if (config.type === ToastType.SUCCESS) {
                 <img src="assets/alert-check.png" alt="showPassword">
-            } @else if (config.type === 'error') {
+            } @else if (config.type === ToastType.ERROR) {
                 <img src="assets/alert-error.png" alt="showPassword">
-            } @else if (config.type === 'info') {
+            } @else if (config.type === ToastType.INFO) {
                 <img src="assets/alert-info.png" alt="showPassword">
-            } @else if (config.type === 'warning') {
+            } @else if (config.type === ToastType.WARNING) {
                 <img src="assets/alert-warning.png" alt="showPassword">
             }
         </div>
