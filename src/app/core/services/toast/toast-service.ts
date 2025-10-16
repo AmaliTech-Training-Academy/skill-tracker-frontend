@@ -7,69 +7,59 @@ import { ToastConfig, ToastType } from '../../models/toast-model';
   providedIn: 'root',
 })
 export class ToastService {
-  private readonly TOAST_DISPLAY_DURATION = 4000;
-  private readonly TOAST_EXIT_ANIMATION_DURATION = 300;
+  private readonly DEFAULT_DURATION = 4000;
+  private readonly EXIT_ANIMATION_DURATION = 300;
   private destroy$ = new Subject<void>();
 
-  showToast = signal(false);
-  toastExiting = signal(false);
-  toastConfig = signal<ToastConfig>({
+  // Global toast state
+  isVisible = signal(false);
+  isExiting = signal(false);
+  config = signal<ToastConfig>({
     type: ToastType.SUCCESS,
     title: '',
     message: '',
   });
 
-  showSuccess(title: string, message: string) {
-    this.toastConfig.set({ type: ToastType.SUCCESS, title, message });
-    this.displayToast();
-  }
+  show(config: ToastConfig, duration: number = this.DEFAULT_DURATION) {
+    this.config.set(config);
+    this.isVisible.set(true);
+    this.isExiting.set(false);
 
-  showError(title: string, message: string) {
-    this.toastConfig.set({ type: ToastType.ERROR, title, message });
-    this.displayToast();
-  }
-
-  showInfo(title: string, message: string) {
-    this.toastConfig.set({ type: ToastType.INFO, title, message });
-    this.displayToast();
-  }
-
-  showWarning(title: string, message: string) {
-    this.toastConfig.set({ type: ToastType.WARNING, title, message });
-    this.displayToast();
-  }
-
-  private displayToast() {
-    this.showToast.set(true);
-
-    timer(this.TOAST_DISPLAY_DURATION)
+    timer(duration)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.startExitAnimation();
       });
   }
 
-  private startExitAnimation() {
-    this.toastExiting.set(true);
-
-    timer(this.TOAST_EXIT_ANIMATION_DURATION)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.hideToast();
-      });
+  showSuccess(title: string, message: string, duration?: number) {
+    this.show({ type: ToastType.SUCCESS, title, message }, duration);
   }
 
-  private hideToast() {
-    this.showToast.set(false);
-    this.toastExiting.set(false);
+  showError(title: string, message: string, duration?: number) {
+    this.show({ type: ToastType.ERROR, title, message }, duration);
   }
 
-  closeToast() {
+  showInfo(title: string, message: string, duration?: number) {
+    this.show({ type: ToastType.INFO, title, message }, duration);
+  }
+
+  showWarning(title: string, message: string, duration?: number) {
+    this.show({ type: ToastType.WARNING, title, message }, duration);
+  }
+
+  close() {
     this.startExitAnimation();
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
+  private startExitAnimation() {
+    this.isExiting.set(true);
+
+    timer(this.EXIT_ANIMATION_DURATION)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.isVisible.set(false);
+        this.isExiting.set(false);
+      });
   }
 }

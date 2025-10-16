@@ -11,12 +11,11 @@ import {
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
-import { Toast } from 'src/app/shared/compomonents/toast/toast';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, ReactiveFormsModule, Toast],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -126,10 +125,6 @@ export class Signup implements OnInit, OnDestroy {
 
   signInWithGithub() {
     // Implement GitHub Auth logic here
-  }
-
-  onToastClose() {
-    this.toastService.closeToast();
   }
 
   formField(fieldName: string) {
