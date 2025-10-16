@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, computed, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  OnDestroy,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
@@ -11,6 +19,7 @@ import { ToastService } from 'src/app/core/services/toast/toast-service';
   imports: [CommonModule, ReactiveFormsModule, Toast],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Signup implements OnInit, OnDestroy {
   isSubmitting = signal(false);
