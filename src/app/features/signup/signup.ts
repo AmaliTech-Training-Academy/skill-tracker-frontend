@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { of, delay } from 'rxjs';
+import { of, delay, Subscription } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { Toast } from 'src/app/shared/compomonents/toast/toast';
 import { ToastConfig } from 'src/app/core/models/toast-model';
@@ -12,7 +12,7 @@ import { ToastConfig } from 'src/app/core/models/toast-model';
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
 })
-export class Signup {
+export class Signup implements OnDestroy {
   signupForm: FormGroup;
 
   // UI state signals
@@ -30,6 +30,7 @@ export class Signup {
 
   // Signal to track password value for reactivity
   passwordValue = signal('');
+  private passwordSubscription?: Subscription;
 
   // Computed signal for password requirements
   passwordRequirements = computed(() => {
@@ -79,7 +80,7 @@ export class Signup {
     );
 
     // Subscribe to password changes to update signal
-    this.signupForm.get('password')?.valueChanges.subscribe((value) => {
+    this.passwordSubscription = this.signupForm.get('password')?.valueChanges.subscribe((value) => {
       this.passwordValue.set(value || '');
     });
   }
@@ -150,5 +151,9 @@ export class Signup {
       this.showToast.set(false);
       this.toastExiting.set(false);
     }, 300);
+  }
+
+  ngOnDestroy() {
+    this.passwordSubscription?.unsubscribe();
   }
 }
