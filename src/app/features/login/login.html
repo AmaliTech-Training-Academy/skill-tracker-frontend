@@ -1,11 +1,16 @@
 <div class="onboarding-login">
   <div class="alert-container">
-    <div class="alert alert-success" role="alert" *ngIf="successMessage">
-      {{ successMessage }}
-    </div>
-    <div class="alert alert-danger" role="alert" *ngIf="errorMessage">
-      {{ errorMessage }}
-    </div>
+    @if (successMessage) {
+      <div class="alert alert-success" role="alert">
+        {{ successMessage }}
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
   </div>
 
   <h1>Welcome Back 👋</h1>

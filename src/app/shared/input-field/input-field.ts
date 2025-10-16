@@ -8,24 +8,29 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
   selector: 'app-input-field',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
-  template: `
-    <div class="login-input--group" *ngIf="type !== 'password'; else passwordField">
+  template: `<div class="login-input--group">
+    @if (type !== 'password') {
       <label [for]="id">{{ label }}</label>
       <input [type]="type" [id]="id" [formControl]="control" [placeholder]="placeholder" />
 
       <!-- Validation -->
-      <div class="error-message" *ngIf="control.invalid && control.touched">
-        <small *ngIf="control.errors?.['required']">{{ label }} is required.</small>
-        <small *ngIf="control.errors?.['email']">Please enter a valid email.</small>
-        <small *ngIf="control.errors?.['minlength']">
-          {{ label }} must be at least
-          {{ control.errors?.['minlength'].requiredLength }} characters.
-        </small>
-      </div>
-    </div>
-
-    <!-- Password field -->
-    <ng-template #passwordField>
+      @if (control.invalid && control.touched) {
+        <div class="error-message">
+          @if (control.errors?.['required']) {
+            <small>{{ label }} is required.</small>
+          }
+          @if (control.errors?.['email']) {
+            <small>Please enter a valid email.</small>
+          }
+          @if (control.errors?.['minlength']) {
+            <small>
+              {{ label }} must be at least
+              {{ control.errors?.['minlength'].requiredLength }} characters.
+            </small>
+          }
+        </div>
+      }
+    } @else {
       <div class="login-inputgroup-password">
         <label [for]="id">{{ label }}</label>
         <div class="input-password">
@@ -46,16 +51,22 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
         </div>
 
         <!-- Validation -->
-        <div class="error-message" *ngIf="control.invalid && control.touched">
-          <small *ngIf="control.errors?.['required']">{{ label }} is required.</small>
-          <small *ngIf="control.errors?.['minlength']">
-            {{ label }} must be at least
-            {{ control.errors?.['minlength'].requiredLength }} characters.
-          </small>
-        </div>
+        @if (control.invalid && control.touched) {
+          <div class="error-message">
+            @if (control.errors?.['required']) {
+              <small>{{ label }} is required.</small>
+            }
+            @if (control.errors?.['minlength']) {
+              <small>
+                {{ label }} must be at least
+                {{ control.errors?.['minlength'].requiredLength }} characters.
+              </small>
+            }
+          </div>
+        }
       </div>
-    </ng-template>
-  `,
+    }
+  </div> `,
   styleUrls: ['./input-field.scss'],
 })
 export class InputFieldComponent {
