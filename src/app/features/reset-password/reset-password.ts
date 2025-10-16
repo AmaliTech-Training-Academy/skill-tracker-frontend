@@ -18,15 +18,14 @@ import { ResetPasswordService } from './reset-password.service';
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
 })
-export class ResetPassword implements OnDestroy {
+export class ResetPasswordComponent implements OnDestroy {
   public successMessage = '';
   public errorMessage = '';
   public loading = false;
   public loginForm!: FormGroup;
-
   private subscription?: Subscription;
 
-  // password strength indicators
+  // Password strength indicators
   public hasUppercase = false;
   public hasLowercase = false;
   public hasNumber = false;
@@ -72,7 +71,7 @@ export class ResetPassword implements OnDestroy {
     this.hasSpecialChar = /[!@#$%^&*]/.test(value);
   }
 
-  resetpassword() {
+  resetpassword(): void {
     if (this.loginForm.invalid) return;
 
     const { password1, password2 } = this.loginForm.value;
@@ -86,13 +85,19 @@ export class ResetPassword implements OnDestroy {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.subscription = this.resetPasswordService.resetPassword(password1).subscribe({
-      next: (response) => {
-        this.successMessage = response.message;
+    const payload = {
+      resetToken: 'unique-secure-token-from-email',
+      newPassword: password1,
+    };
+
+    this.subscription = this.resetPasswordService.resetPassword(payload).subscribe({
+      next: (message) => {
+        this.successMessage = message;
         this.loading = false;
+        this.loginForm.reset();
       },
       error: (err) => {
-        this.errorMessage = err.message;
+        this.errorMessage = err.message || 'Password reset failed.';
         this.loading = false;
       },
     });
