@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
 export interface ApiRequestOptions {
-  params?: HttpParams | { [param: string]: string | number | boolean };
-  headers?: HttpHeaders | { [header: string]: string | string[] };
+  params?: HttpParams | Record<string, string | number | boolean>;
+  headers?: HttpHeaders | Record<string, string | string[]>;
 }
 
 @Injectable({
@@ -15,8 +15,6 @@ export interface ApiRequestOptions {
 export class ApiService {
   private http = inject(HttpClient);
   private readonly BASE_URL = environment.url;
-
-  constructor() {}
 
   get<T>(url: string, options: ApiRequestOptions = {}): Observable<T> {
     return this.http.get<T>(this.buildApiUrl(url), options);

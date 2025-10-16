@@ -1,1 +1,125 @@
-<p>signup works!</p>
+<div class="signup-page">
+    <main class="signup-container">
+        <div class="card">
+            <div class="card-header-text">
+                <h1 class="card-title">Create Your Free Account</h1>
+                <p class="card-subtitle">
+                    Join thousands of learners leveling up their skills with personalized
+                    challenges and real-time feedback
+                </p>
+            </div>
+
+            <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" formControlName="email" placeholder="Email" />
+                    @if (hasFieldError('email', 'required')) {
+                    <span class="error-message">Email is required.</span>
+                    } @else if (hasFieldError('email', 'email')) {
+                    <span class="error-message">Enter a valid email address.</span>
+                    }
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group password-field">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
+                            placeholder="***********"
+                            [class.ng-invalid]="formField('password')?.invalid && formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
+                            [class.ng-touched]="formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
+                        <span class="password-toggle" (click)="showPassword.set(!showPassword())">
+                            @if (showPassword()) {
+                                <img src="assets/eye.png" alt="showPassword">
+                            }
+                            @else{
+                                 <img src="assets/cancel-eye.png" alt="hidePassword">
+                            }
+                        </span>
+                    </div>
+
+                    @if (formField('password')?.touched || formField('password')?.value) {
+                    <ul class="password-requirements">
+                        @for (requirement of passwordRequirements(); track requirement.key) {
+                        <li [class.success]="!requirement.error">
+                            @if (!requirement.error) {
+                                <img src="assets/check.png" alt="check-icon">
+                            } @else {
+                                <img src="assets/circle-error.png" alt="error-icon">
+                            }
+                            {{ requirement.message }}
+                        </li>
+                        }
+                    </ul>
+                    }
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group password-field">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input [type]="showConfirmPassword() ? 'text' : 'password' " id="confirmPassword"
+                            formControlName="confirmPassword" placeholder="***********"
+                            [class.ng-invalid]="formField('confirmPassword')?.invalid && formField('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
+                            [class.ng-touched]="formField('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
+                        <span class="password-toggle" (click)="showConfirmPassword.set(!showConfirmPassword())">
+                            @if (showConfirmPassword()) {
+                                <img src="assets/eye.png" alt="showPassword">
+                            }
+                            @else{
+                                <img src="assets/cancel-eye.png" alt="hidePassword">
+                            }
+                        </span>
+                    </div>
+                    @if (hasFieldError('confirmPassword', 'required')) {
+                    <span class="error-message">Confirm Password is required.</span>
+                    } @else if (formField('confirmPassword')?.touched &&
+                    signupForm.hasError('passwordsMismatch')) {
+                    <span class="error-message">Passwords do not match.</span>
+                    }
+                </div>
+
+                <!-- Terms Checkbox -->
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" formControlName="termsAccepted" />
+                    <label for="terms">
+                        I've read <a href="#" class="link">terms and conditions</a>
+                    </label>
+                </div>
+                @if (hasFieldError('termsAccepted', 'requiredTrue')) {
+                <span class="error-message" style="margin-top: -12px;">You must accept the terms.</span>
+                }
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary" [disabled]="isSubmitting() || signupForm.invalid">
+                    @if (isSubmitting()) {
+                    <span class="loader"></span> Signing Up...
+                    } @else {
+                    Create Account
+                    }
+                </button>
+            </form>
+
+            <div class="footer">
+                <!-- Divider -->
+                <div class="divider">
+                    <span class="divider-text">Already have an account? <a href="#" class="link">Login</a></span>
+                </div>
+                <div class="or-divider">or</div>
+
+                <!-- Social Sign-in Buttons -->
+                <div class="button-wrapper">
+                    <button class="btn-social google" (click)="signInWithGoogle()">
+                        <img src="assets/google-icon.png" alt="Google logo" class="social-icon" />
+                        <span>Sign in with Google</span>
+                    </button>
+                    <button class="btn-social github" (click)="signInWithGithub()">
+                        <img src="assets/github-icon.png" alt="Github logo" class="social-icon" />
+                        <span>Sign in with GitHub</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,29 @@
+@if (show) {
+<div class="toast-container" [class.toast-exit]="exiting">
+    <div class="toast" [ngClass]="'toast-' + config.type">
+        <div class="alert-icon">
+            @if (config.type === ToastType.SUCCESS) {
+                <img src="assets/alert-check.png" alt="showPassword">
+            } @else if (config.type === ToastType.ERROR) {
+                <img src="assets/alert-error.png" alt="showPassword">
+            } @else if (config.type === ToastType.INFO) {
+                <img src="assets/alert-info.png" alt="showPassword">
+            } @else if (config.type === ToastType.WARNING) {
+                <img src="assets/alert-warning.png" alt="showPassword">
+            }
+        </div>
+        <div class="alert-content">
+            <div class="alert-header">
+                <div class="alert-title">{{ config.title }}</div>
+                <div class="alert-close" (click)="onClose()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.5 1.5L1.5 10.5M10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+            </div>
+            <div class="alert-message">{{ config.message }}</div>
+        </div>
+    </div>
+</div>
+}
