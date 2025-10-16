@@ -1,10 +1,16 @@
 import { Injectable, signal } from '@angular/core';
+import { timer, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ToastConfig, ToastType } from '../../models/toast-model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToastService {
+  private readonly TOAST_DISPLAY_DURATION = 4000;
+  private readonly TOAST_EXIT_ANIMATION_DURATION = 300;
+  private destroy$ = new Subject<void>();
+
   showToast = signal(false);
   toastExiting = signal(false);
   toastConfig = signal<ToastConfig>({
@@ -35,20 +41,35 @@ export class ToastService {
 
   private displayToast() {
     this.showToast.set(true);
-    setTimeout(() => {
-      this.toastExiting.set(true);
-      setTimeout(() => {
-        this.showToast.set(false);
-        this.toastExiting.set(false);
-      }, 300);
-    }, 4000);
+
+    timer(this.TOAST_DISPLAY_DURATION)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.startExitAnimation();
+      });
+  }
+
+  private startExitAnimation() {
+    this.toastExiting.set(true);
+
+    timer(this.TOAST_EXIT_ANIMATION_DURATION)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.hideToast();
+      });
+  }
+
+  private hideToast() {
+    this.showToast.set(false);
+    this.toastExiting.set(false);
   }
 
   closeToast() {
-    this.toastExiting.set(true);
-    setTimeout(() => {
-      this.showToast.set(false);
-      this.toastExiting.set(false);
-    }, 300);
+    this.startExitAnimation();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

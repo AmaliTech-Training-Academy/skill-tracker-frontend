@@ -13,7 +13,6 @@ import { ToastService } from 'src/app/core/services/toast/toast-service';
   styleUrl: './signup.scss',
 })
 export class Signup implements OnInit, OnDestroy {
-  // UI state signals
   isSubmitting = signal(false);
   showPassword = signal(false);
   showConfirmPassword = signal(false);
