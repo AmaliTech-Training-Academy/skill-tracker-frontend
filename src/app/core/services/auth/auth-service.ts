@@ -30,7 +30,7 @@ export class AuthService {
     localStorage.removeItem('token');
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
-    this.router.navigate(['/login']);
+    this.router.navigateByUrl('/login');
   }
 
   getToken(): string | null {
