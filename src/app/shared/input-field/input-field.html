@@ -1,1 +1,42 @@
-<p>input-field works!</p>
+<div class="login-input--group">
+  @if (type !== 'password') {
+    <label [for]="id">{{ label }}</label>
+    <input [type]="type" [id]="id" [formControl]="control" [placeholder]="placeholder" />
+
+    @if (control.invalid && control.touched) {
+      <div class="error-message">
+        @for (errorKey of getErrorKeys(); track errorKey) {
+          <small>{{ getErrorMessage(errorKey) }}</small>
+        }
+      </div>
+    }
+  } @else {
+    <div class="login-inputgroup-password">
+      <label [for]="id">{{ label }}</label>
+      <div class="input-password">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          [id]="id"
+          [formControl]="control"
+          [placeholder]="placeholder"
+        />
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="togglePasswordVisibility()"
+          tabindex="-1"
+        >
+          <fa-icon [icon]="showPassword ? faEyeSlash : faEye"></fa-icon>
+        </button>
+      </div>
+
+      @if (control.invalid && control.touched) {
+        <div class="error-message">
+          @for (errorKey of getErrorKeys(); track errorKey) {
+            <small>{{ getErrorMessage(errorKey) }}</small>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

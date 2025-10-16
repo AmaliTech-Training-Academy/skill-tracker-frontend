@@ -3,71 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-input-field',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
-  template: `<div class="login-input--group">
-    @if (type !== 'password') {
-      <label [for]="id">{{ label }}</label>
-      <input [type]="type" [id]="id" [formControl]="control" [placeholder]="placeholder" />
-
-      <!-- Validation -->
-      @if (control.invalid && control.touched) {
-        <div class="error-message">
-          @if (control.errors?.['required']) {
-            <small>{{ label }} is required.</small>
-          }
-          @if (control.errors?.['email']) {
-            <small>Please enter a valid email.</small>
-          }
-          @if (control.errors?.['minlength']) {
-            <small>
-              {{ label }} must be at least
-              {{ control.errors?.['minlength'].requiredLength }} characters.
-            </small>
-          }
-        </div>
-      }
-    } @else {
-      <div class="login-inputgroup-password">
-        <label [for]="id">{{ label }}</label>
-        <div class="input-password">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            [id]="id"
-            [formControl]="control"
-            [placeholder]="placeholder"
-          />
-          <button
-            type="button"
-            class="password-toggle"
-            (click)="togglePasswordVisibility()"
-            tabindex="-1"
-          >
-            <fa-icon [icon]="showPassword ? faEyeSlash : faEye"></fa-icon>
-          </button>
-        </div>
-
-        <!-- Validation -->
-        @if (control.invalid && control.touched) {
-          <div class="error-message">
-            @if (control.errors?.['required']) {
-              <small>{{ label }} is required.</small>
-            }
-            @if (control.errors?.['minlength']) {
-              <small>
-                {{ label }} must be at least
-                {{ control.errors?.['minlength'].requiredLength }} characters.
-              </small>
-            }
-          </div>
-        }
-      </div>
-    }
-  </div> `,
+  templateUrl: './input-field.html',
   styleUrls: ['./input-field.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputFieldComponent {
   @Input() label = '';
@@ -80,7 +24,25 @@ export class InputFieldComponent {
   faEyeSlash = faEyeSlash;
   showPassword = false;
 
-  togglePasswordVisibility() {
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  getErrorKeys(): string[] {
+    return this.control.errors ? Object.keys(this.control.errors) : [];
+  }
+
+  getErrorMessage(errorKey: string): string {
+    const errors: Record<string, string> = {
+      required: `${this.label} is required.`,
+      email: 'Please enter a valid email.',
+      minlength: `${this.label} must be at least ${
+        this.control.errors?.['minlength']?.requiredLength
+      } characters.`,
+      maxlength: `${this.label} must not exceed ${
+        this.control.errors?.['maxlength']?.requiredLength
+      } characters.`,
+    };
+    return errors[errorKey] || 'Invalid input.';
   }
 }
