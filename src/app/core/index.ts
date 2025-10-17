@@ -12,3 +12,7 @@ export * from './guards/auth-guard';
 
 // constants
 export * from './constants/app.constants';
+
+// models
+export * from './models/app-error.model';
+export * from './models/auth.model';
