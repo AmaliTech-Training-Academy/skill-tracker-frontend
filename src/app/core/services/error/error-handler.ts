@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AppError } from '../../models/app-error.model';
+import { AppError, ValidationDetail, AppErrorType } from '../../models/app-error.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorHandlerService {
-  constructor() {}
-
-  getError(error: any): AppError {
+  getError(error: unknown): AppError {
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
         return {
           message: 'No internet connection. Please check your network settings.',
-          type: 'network',
+          type: AppErrorType.NETWORK,
           raw: error,
         };
       }
@@ -23,39 +21,44 @@ export class ErrorHandlerService {
         error.error?.error ||
         (typeof error.error === 'string' ? error.error : null);
 
-      const details =
-        Array.isArray(error.error?.details) && error.error.details.length > 0
-          ? error.error.details
-          : undefined;
+      const rawValidationErrors = error.error?.errors;
+      let validationErrors: ValidationDetail[] | undefined;
+
+      if (Array.isArray(rawValidationErrors)) {
+        validationErrors = rawValidationErrors.map((err) => ({
+          field: err.field || 'general',
+          message: err.message || 'Validation failed for a field.',
+        }));
+      }
 
       switch (error.status) {
         case 400:
           return {
             message: backendMessage || 'Bad request. Please check your input.',
             status: error.status,
-            type: 'client',
-            details,
+            type: AppErrorType.CLIENT,
+            validationErrors,
             raw: error,
           };
         case 401:
           return {
             message: 'Unauthorized. Please log in again.',
             status: error.status,
-            type: 'auth',
+            type: AppErrorType.AUTH,
             raw: error,
           };
         case 403:
           return {
             message: 'Forbidden. You do not have permission to perform this action.',
             status: error.status,
-            type: 'auth',
+            type: AppErrorType.AUTH,
             raw: error,
           };
         case 404:
           return {
             message: 'The requested resource was not found.',
             status: error.status,
-            type: 'client',
+            type: AppErrorType.CLIENT,
             raw: error,
           };
         default:
@@ -63,38 +66,46 @@ export class ErrorHandlerService {
             return {
               message: 'A server error occurred. Please try again later.',
               status: error.status,
-              type: 'server',
+              type: AppErrorType.SERVER,
               raw: error,
             };
           }
           return {
             message: backendMessage || 'An unexpected error occurred.',
             status: error.status,
-            type: 'unknown',
+            type: AppErrorType.UNKNOWN,
             raw: error,
           };
       }
     }
+
     // Non-HTTP or unexpected errors (e.g., runtime)
+    const message = this.isErrorWithMessage(error)
+      ? error.message
+      : 'An unexpected application error occurred.';
+
     return {
-      message: error?.message || 'An unexpected application error occurred.',
-      type: 'unknown',
+      message,
+      type: AppErrorType.UNKNOWN,
       raw: error,
     };
   }
 
-  /**
-   * Show an error using a native alert (temporary UI)
-   */
-  notifyError(error: any): void {
+  private isErrorWithMessage(error: unknown): error is { message: string } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'message' in error &&
+      typeof (error as { message: string }).message === 'string'
+    );
+  }
+
+  notifyError(error: unknown): void {
     const appError = this.getError(error);
     window.alert(appError.message);
   }
 
-  /**
-   * Log error (extend this to send to Sentry, backend, etc.)
-   */
-  logError(error: any): void {
+  logError(error: unknown): void {
     console.error('App Error Log:', error);
     // Future: send to monitoring service like Sentry or backend API
   }
