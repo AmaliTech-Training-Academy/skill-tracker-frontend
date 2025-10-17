@@ -1,0 +1,33 @@
+<div class="form-group" [ngClass]="{ 'password-field': type === 'password' }">
+  <label [for]="id">{{ label }}</label>
+
+  <div class="input-wrapper">
+    <input
+      [type]="showPassword ? 'text' : type"
+      [id]="id"
+      [formControl]="control"
+      [placeholder]="placeholder"
+      [class.ng-invalid]="control.invalid && control.touched"
+      [class.ng-touched]="control.touched"
+    />
+
+    @if (type === 'password') {
+      <span class="password-toggle" (click)="togglePasswordVisibility()">
+        @if (showPassword) {
+          <img src="assets/eye.png" alt="showPassword" />
+        } @else {
+          <img src="assets/cancel-eye.png" alt="hidePassword" />
+        }
+      </span>
+    }
+  </div>
+
+  <!-- Validation Errors -->
+  @if (control.touched && control.invalid) {
+    <div class="error-message">
+      @for (errorKey of getErrorKeys(); track errorKey) {
+        <small>{{ getErrorMessage(errorKey) }}</small>
+      }
+    </div>
+  }
+</div>

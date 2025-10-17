@@ -1,1 +1,62 @@
-<p>login works!</p>
+<div class="onboarding-login">
+
+  <!-- implementation of the toaster component later -->
+  <div class="alert-container">
+    @if (successMessage) {
+      <div class="alert alert-success" role="alert">
+        {{ successMessage }}
+      </div>
+    }
+
+    @if (errorMessage) {
+      <div class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+    }
+  </div>
+
+  <h1>Welcome Back 👋</h1>
+  <p>Sign in to continue your personalized learning journey</p>
+
+  <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+    <app-input-field
+      label="Email"
+      type="email"
+      id="email"
+      placeholder="Email"
+      [control]="getControl('email')"
+    ></app-input-field>
+
+    <app-input-field
+      label="Password"
+      type="password"
+      id="password"
+      placeholder="***********"
+      [control]="getControl('password')"
+    ></app-input-field>
+
+    <a routerLink="auth/forgotpassword">Forgot Password?</a>
+
+    <button class="login-button" type="submit" [disabled]="loginForm.invalid || loading">
+      {{ loading ? 'Logging in...' : 'Login' }}
+    </button>
+  </form>
+
+  <p class="login-donthave-account">
+    Don't have an account? <a routerLink="auth/signup">Sign Up</a>
+  </p>
+
+  <p class="login-or">or</p>
+
+  <div class="login-other--login">
+    <button type="button" class="google-login">
+      <img src="assets/google-icon.png" alt="google logo" />
+      <p class="login-alternative--text">Sign in with Google</p>
+    </button>
+
+    <button type="button" class="facebook-login">
+      <img src="assets/github-icon.png" alt="apple logo" />
+      <p class="login-alternative--text">Sign in with Github</p>
+    </button>
+  </div>
+</div>

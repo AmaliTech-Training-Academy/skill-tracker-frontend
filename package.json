@@ -30,6 +30,10 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@fortawesome/angular-fontawesome": "^3.0.0",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-regular-svg-icons": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -42,6 +46,7 @@
     "@ngx-env/builder": "^20.1.1",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "20.4.0",
+    "dotenv": "^17.2.3",
     "eslint": "^9.37.0",
     "husky": "^9.1.7",
     "jasmine-core": "~5.9.0",
@@ -52,6 +57,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "lint-staged": "^16.2.4",
     "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.46.0"
   },
