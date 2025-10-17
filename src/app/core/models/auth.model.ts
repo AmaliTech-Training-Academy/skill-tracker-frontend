@@ -1,3 +1,8 @@
+export interface ApiResponse<T> {
+  message: string;
+  data: T;
+}
+
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
@@ -14,20 +19,18 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface RegistrationSuccessResponse {
-  message: string;
-  data: {
-    userId: string;
-    emailMasked: string;
-    sessionId: string;
-  };
+export interface RegistrationData {
+  userId: string;
+  emailMasked: string;
+  sessionId: string;
 }
 
-export interface VerificationSuccessResponse {
-  message: string;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-    userProfileId: string;
-  };
+export type RegistrationSuccessResponse = ApiResponse<RegistrationData>;
+
+export interface VerificationData {
+  accessToken: string;
+  refreshToken: string;
+  userProfileId: string;
 }
+
+export type VerificationSuccessResponse = ApiResponse<VerificationData>;
