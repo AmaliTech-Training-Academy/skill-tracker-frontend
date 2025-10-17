@@ -1,144 +1,117 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
-import { CommonModule, JsonPipe } from '@angular/common';
-import { ApiService } from '@app/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { finalize, Subject, takeUntil } from 'rxjs';
-
-interface UpdatedPostDto {
-  title: string;
-  body: string;
-  userId: number;
-}
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import {
+  ErrorHandlerService,
+  AuthService,
+  AppError,
+  RegisterRequest,
+  FormErrorService,
+} from '@app/core';
 
 @Component({
   selector: 'app-api-test',
-  imports: [CommonModule, JsonPipe],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './api-test.html',
   styleUrl: './api-test.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ApiTest implements OnDestroy {
-  private api = inject(ApiService);
+export class ApiTest implements OnDestroy, OnInit {
   private destroy$ = new Subject<void>();
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly errorHandler = inject(ErrorHandlerService);
+  private readonly formErrorService = inject(FormErrorService);
+  private readonly router = inject(Router);
 
-  data: unknown;
-  loading = signal(false);
-  errorMessage = '';
+  registerForm!: FormGroup;
+  isLoading = signal(false);
 
-  getUsers() {
-    this.reset();
-    this.loading.set(true);
+  private passwordComplexityValidator(control: AbstractControl): ValidationErrors | null {
+    const value: string = control.value || '';
+    if (!value) return null;
 
-    this.api
-      .get('users')
-      .pipe(
-        finalize(() => this.loading.set(false)),
-        takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: (res) => {
-          this.data = res;
-        },
-        error: (err) => {
-          this.errorMessage = err.message;
-        },
-      });
+    const errors: ValidationErrors = {};
+    const minLength = 8;
+    const maxLength = 64;
+    const specialCharPattern = /[!@$*%?&]/;
+
+    if (value.length < minLength || value.length > maxLength) {
+      errors['length'] = { requiredLength: minLength, actualLength: value.length };
+    }
+    if (!/[A-Z]/.test(value)) {
+      errors['uppercase'] = true;
+    }
+    if (!/[a-z]/.test(value)) {
+      errors['lowercase'] = true;
+    }
+    if (!/[0-9]/.test(value)) {
+      errors['number'] = true;
+    }
+    if (!specialCharPattern.test(value)) {
+      errors['specialChar'] = true;
+    }
+
+    return Object.keys(errors).length ? errors : null;
   }
 
-  createPost() {
-    this.reset();
-    this.loading.set(true);
-
-    const newPost = {
-      title: 'My Test Post',
-      body: 'This is a fake post for testing the ApiService.post() method.',
-      userId: 1,
-    };
-
-    this.api
-      .post<{ id: number; title: string; body: string; userId: number }>('posts', newPost)
-      .pipe(
-        finalize(() => this.loading.set(false)),
-        takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: (res) => {
-          this.data = res;
-        },
-        error: (err) => {
-          console.error('POST error:', err);
-          this.errorMessage = err.message;
-        },
-      });
+  ngOnInit(): void {
+    this.registerForm = this.fb.nonNullable.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, this.passwordComplexityValidator]],
+    });
   }
 
-  deletePost() {
-    this.reset();
-    this.loading.set(true);
+  get email() {
+    return this.registerForm.get('email');
+  }
 
-    this.api
-      .delete('posts/1')
+  get password() {
+    return this.registerForm.get('password');
+  }
+
+  onSubmit(): void {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    const payload: RegisterRequest = this.registerForm.value;
+
+    this.authService
+      .register(payload)
       .pipe(
-        finalize(() => this.loading.set(false)),
+        finalize(() => this.isLoading.set(false)),
         takeUntil(this.destroy$),
       )
       .subscribe({
         next: () => {
-          this.data = { message: 'Post deleted successfully' };
+          this.router.navigate(['/verify-otp']);
         },
-        error: (err) => {
-          this.errorMessage = err.message;
-        },
-      });
-  }
+        error: (rawError) => {
+          const appError: AppError = this.errorHandler.getError(rawError);
+          this.formErrorService.mapApiErrors(this.registerForm, appError);
 
-  updatePost() {
-    this.reset();
-    this.loading.set(true);
-
-    const updatedPost: UpdatedPostDto = {
-      title: 'Updated Title',
-      body: 'This post has been updated successfully',
-      userId: 1,
-    };
-
-    this.api
-      .update('posts/1', updatedPost)
-      .pipe(
-        finalize(() => this.loading.set(false)),
-        takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: (res) => {
-          this.data = res;
-        },
-        error: (err) => {
-          this.errorMessage = err.message;
+          this.errorHandler.logError(rawError);
         },
       });
-  }
-
-  getWithError() {
-    this.reset();
-    this.loading.set(true);
-
-    this.api
-      .get('invalid-endpoint')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.data = res;
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.errorMessage = err.message;
-          this.loading.set(false);
-        },
-      });
-  }
-
-  private reset() {
-    this.data = null;
-    this.errorMessage = '';
   }
 
   ngOnDestroy(): void {

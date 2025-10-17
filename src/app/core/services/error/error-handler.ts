@@ -107,6 +107,6 @@ export class ErrorHandlerService {
 
   logError(error: unknown): void {
     console.error('App Error Log:', error);
-    // Future: send to monitoring service like Sentry or backend API
+    // TODO: send to monitoring service like Sentry or backend API
   }
 }

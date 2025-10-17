@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../api/api-service';
 import { delay, Observable, of, tap, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   AuthResponse,
   RegisterRequest,
@@ -30,14 +31,16 @@ export class AuthService {
     // --- MOCK LOGIC ---
     if (this.isMocking) {
       if (payload.email === 'test@exists.com') {
-        const mockError = {
+        const mockHttpError = new HttpErrorResponse({
           status: 400,
           error: {
             message: 'Registration failed due to invalid data.',
             errors: [{ field: 'email', message: 'Email already registered.' }],
           },
-        };
-        return throwError(() => mockError).pipe(delay(this.MOCK_LATENCY_MS));
+          url: 'auth/register',
+          statusText: 'Bad Request',
+        });
+        return throwError(() => mockHttpError).pipe(delay(this.MOCK_LATENCY_MS));
       }
 
       const mockResponse: RegistrationSuccessResponse = {
@@ -80,18 +83,23 @@ export class AuthService {
     // --- MOCK LOGIC ---
     if (this.isMocking) {
       if (otp === '000000') {
-        const mockError = {
+        const mockHttpError = new HttpErrorResponse({
           status: 400,
           error: { message: 'Invalid or expired verification code.', errors: [] },
-        };
-        return throwError(() => mockError).pipe(delay(MOCK_LATENCY_MS));
+          url: 'auth/verify-email-otp',
+          statusText: 'Bad Request',
+        });
+
+        return throwError(() => mockHttpError).pipe(delay(MOCK_LATENCY_MS));
       }
       if (sessionId === 'invalid-session') {
-        const mockError = {
+        const mockHttpError = new HttpErrorResponse({
           status: 404,
           error: { message: 'Session not found.', errors: [] },
-        };
-        return throwError(() => mockError).pipe(delay(MOCK_LATENCY_MS));
+          url: 'auth/verify-email-otp',
+          statusText: 'Not Found',
+        });
+        return throwError(() => mockHttpError).pipe(delay(this.MOCK_LATENCY_MS));
       }
 
       const mockResponse: VerificationSuccessResponse = {
@@ -126,8 +134,43 @@ export class AuthService {
     );
   }
 
-  login(payload: LoginRequest) {
-    return this.api.post<AuthResponse>('auth/login', payload);
+  login(payload: LoginRequest): Observable<AuthResponse> {
+    // --- MOCK LOGIN LOGIC ---
+    if (this.isMocking) {
+      if (payload.email === 'user@fail.com') {
+        const mockHttpError = new HttpErrorResponse({
+          status: 401,
+          error: { message: 'Invalid credentials or account not verified.', errors: [] },
+          url: 'auth/login',
+          statusText: 'Unauthorized',
+        });
+        return throwError(() => mockHttpError).pipe(delay(this.MOCK_LATENCY_MS));
+      }
+
+      const mockResponse: AuthResponse = {
+        accessToken: 'mock-auth-token-valid',
+        refreshToken: 'mock-refresh-token-valid',
+        user: { id: 456, name: 'Skill User', email: payload.email },
+      };
+
+      return of(mockResponse).pipe(
+        delay(this.MOCK_LATENCY_MS),
+        tap((response) => {
+          this.setTokens(response.accessToken, response.refreshToken);
+          this.isAuthenticated.set(true);
+          this.currentUser.set(response.user);
+          this.router.navigateByUrl('/dashboard');
+        }),
+      );
+    }
+
+    return this.api.post<AuthResponse>('auth/login', payload).pipe(
+      tap((response) => {
+        this.setTokens(response.accessToken, response.refreshToken);
+        this.isAuthenticated.set(true);
+        this.currentUser.set(response.user);
+      }),
+    );
   }
 
   logout() {
