@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppError, ValidationDetail, AppErrorType } from '../../models/app-error.model';
+import { ToastService } from '../toast/toast-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ErrorHandlerService {
+  // eslint-disable-next-line @angular-eslint/prefer-inject
+  constructor(private toast: ToastService) {}
+
   getError(error: unknown): AppError {
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
@@ -102,7 +106,7 @@ export class ErrorHandlerService {
 
   notifyError(error: unknown): void {
     const appError = this.getError(error);
-    window.alert(appError.message);
+    this.toast.showError('Error', appError.message);
   }
 
   logError(error: unknown): void {
