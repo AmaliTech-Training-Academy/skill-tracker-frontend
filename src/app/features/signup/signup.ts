@@ -106,7 +106,7 @@ export class Signup implements OnInit, OnDestroy {
             'Account Created',
             "Hurray, Your account is created! We've sent a 6 digit code to your email",
           );
-          this.router.navigate(['/email-verification']);
+          this.router.navigateByUrl('/email-verification');
         },
         error: () => {
           this.toastService.showError(
