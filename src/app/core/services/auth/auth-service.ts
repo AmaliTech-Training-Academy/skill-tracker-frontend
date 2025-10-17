@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../api/api-service';
 import { delay, Observable, of, tap, throwError } from 'rxjs';
@@ -15,8 +15,12 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly router = inject(Router);
-  private readonly api = inject(ApiService);
+  // eslint-disable-next-line @angular-eslint/prefer-inject
+  constructor(
+    private readonly router: Router,
+    private readonly api: ApiService,
+  ) {}
+
   private readonly SESSION_ID_KEY = 'temp_session_id';
   readonly registrationSessionId = signal<string | null>(this.getTempSessionId());
 
@@ -55,8 +59,9 @@ export class AuthService {
       return of(mockResponse).pipe(
         delay(this.MOCK_LATENCY_MS),
         tap((response) => {
-          this.setTempSessionId(response.data.sessionId);
-          this.registrationSessionId.set(response.data.sessionId);
+          const { sessionId } = response.data;
+          this.setTempSessionId(sessionId);
+          this.registrationSessionId.set(sessionId);
         }),
       );
     }
@@ -64,9 +69,10 @@ export class AuthService {
     // --- REAL API LOGIC ---
     return this.api.post<RegistrationSuccessResponse>('auth/register', payload).pipe(
       tap((response) => {
-        if (response.data.sessionId) {
-          this.setTempSessionId(response.data.sessionId);
-          this.registrationSessionId.set(response.data.sessionId);
+        const { sessionId } = response.data;
+        if (sessionId) {
+          this.setTempSessionId(sessionId);
+          this.registrationSessionId.set(sessionId);
         } else {
           throw new Error('Registration failed: Missing session identifier.');
         }
@@ -114,7 +120,8 @@ export class AuthService {
       return of(mockResponse).pipe(
         delay(MOCK_LATENCY_MS),
         tap((response) => {
-          this.setTokens(response.data.accessToken, response.data.refreshToken);
+          const { accessToken, refreshToken } = response.data;
+          this.setTokens(accessToken, refreshToken);
           this.clearTempSessionId();
           this.isAuthenticated.set(true);
           this.router.navigateByUrl('/onboarding');
@@ -125,10 +132,11 @@ export class AuthService {
     const payload = { sessionId, otp };
     return this.api.post<VerificationSuccessResponse>('auth/verify-email-otp', payload).pipe(
       tap((response) => {
-        this.setTokens(response.data.accessToken, response.data.refreshToken);
+        const { accessToken, refreshToken, userProfileId } = response.data;
+        this.setTokens(accessToken, refreshToken);
         this.clearTempSessionId();
         this.isAuthenticated.set(true);
-        this.currentUser.set({ id: response.data.userProfileId, name: '', email: '' });
+        this.currentUser.set({ id: userProfileId, name: '', email: '' });
         this.router.navigateByUrl('/onboarding');
       }),
     );
