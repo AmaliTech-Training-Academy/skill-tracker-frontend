@@ -13,19 +13,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/signup/signup').then((c) => c.Signup),
       },
       { path: 'login', loadComponent: () => import('./features/login/login').then((c) => c.Login) },
-      {
-        path: 'test',
-        loadComponent: () => import('./features/api-test/api-test').then((c) => c.ApiTest),
-      },
-      {
-        path: 'verify-otp',
-        loadComponent: () => import('./features/otp-test/otp-test').then((c) => c.OtpTest),
-      },
-      {
-        path: 'onboarding',
-        loadComponent: () =>
-          import('./features/onboarding-test/onboarding-test').then((c) => c.OnboardingTest),
-      },
     ],
   },
 
