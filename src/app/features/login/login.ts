@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoginService } from './login.service';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
+import { ToastService } from 'src/app/core/services/toast/toast-service';
 
 @Component({
   selector: 'app-login',
@@ -18,19 +19,20 @@ import { InputFieldComponent } from '../../shared/input-field/input-field';
   imports: [CommonModule, ReactiveFormsModule, RouterLink, InputFieldComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login implements OnDestroy {
-  public successMessage = '';
-  public errorMessage = '';
-  public loading = false;
-  public loginForm: FormGroup;
+  successMessage = '';
+  errorMessage = '';
+  loading = false;
+  loginForm: FormGroup;
 
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
+  private readonly fb = inject(FormBuilder);
+  private readonly loginService = inject(LoginService);
+  private readonly toastService = inject(ToastService);
 
-  constructor(
-    private fb: FormBuilder,
-    private loginService: LoginService,
-  ) {
+  constructor() {
     this.loginForm = this.createForm();
   }
 
@@ -41,13 +43,14 @@ export class Login implements OnDestroy {
     });
   }
 
-  // Generic control getter
   getControl(controlName: string): FormControl {
     return this.loginForm.get(controlName) as FormControl;
   }
 
   login(): void {
-    if (this.loginForm.invalid) return;
+    if (this.loginForm.invalid) {
+      return;
+    }
 
     this.loading = true;
     this.successMessage = '';
@@ -59,12 +62,15 @@ export class Login implements OnDestroy {
       .login(email, password)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
-          this.successMessage = response.message;
+        next: () => {
+          this.toastService.showSuccess(
+            'Login Successful',
+            'Logged in successfully! Redirecting you to your dashboard...',
+          );
           this.loading = false;
         },
-        error: (err) => {
-          this.errorMessage = err.message;
+        error: () => {
+          this.toastService.showError('Login Failed', 'Incorrect email or password.');
           this.loading = false;
         },
       });
