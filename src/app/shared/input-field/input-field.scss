@@ -1,0 +1,54 @@
+@use 'mixins' as *;
+@use 'colors' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.login-input--group {
+    @include base-field;
+
+  .error-message {
+    color: $red-text;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+  }
+}
+
+.login-inputgroup-password{
+           
+             label {
+            @include h13;
+            color: $gray-text-strong;
+            }
+            .input-password{
+                @include h12;
+                background-color: transparent;
+                color: $gray-stroke-strong;
+                border: 1px solid $gray-stroke-strong;
+                padding-right: 12px;
+                border-radius: 4px;
+                overflow: hidden;
+                @include flex-between;
+
+                input{
+                    border: none;
+                    outline: none;
+                    width: 90%;
+                    background-color: transparent;
+                    color: $gray-stroke-strong;
+                    @include h12;
+
+                }
+
+                .password-toggle{
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: $gray-stroke-strong;
+                    font-size: 1.2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+
+        }
