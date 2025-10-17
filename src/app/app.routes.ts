@@ -13,6 +13,13 @@ export const routes: Routes = [
         loadComponent: () => import('./features/signup/signup').then((c) => c.Signup),
       },
       { path: 'login', loadComponent: () => import('./features/login/login').then((c) => c.Login) },
+      {
+        path: 'email-verification',
+        loadComponent: () =>
+          import('./features/email-verification/email-verification').then(
+            (c) => c.EmailVerification,
+          ),
+      },
     ],
   },
 
