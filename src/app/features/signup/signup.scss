@@ -1,0 +1,297 @@
+@use 'colors' as *;
+@use 'typography' as *;
+@use 'mixins' as *;
+@use 'components' as *;
+
+.signup-page {
+    @include flex-column;
+    align-items: center;
+    margin: 2rem;
+
+    @include mobile-large {
+        margin: 0 2rem 2rem;
+    }
+}
+
+.signup-container {
+    width: 100%;
+    max-width: 608px;
+}
+
+.card {
+    @include flex-column;
+    gap: 2rem;
+    width: 100%;
+
+    .card-header-text {
+        @include flex-column;
+        gap: 0.75rem;
+
+        .card-title {
+            @include h8;
+            color: $gray-text-strong;
+
+            @include mobile-large {
+                @include h6;
+            }
+        }
+
+        .card-subtitle {
+            @include h13;
+            color: $gray-stroke-strong;
+
+            @include tablet {
+                @include h9;
+            }
+        }
+    }
+
+}
+
+
+.signup-form {
+    @include flex-column;
+    gap: 16px;
+    width: 100%;
+}
+
+.error-message {
+    @include h13;
+    color: $red-text;
+    margin-top: 4px;
+}
+
+/* Apply base-field mixin for form fields */
+.form-group {
+    @include base-field;
+    width: 100%;
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        @include h13;
+        height: 50px;
+        box-sizing: border-box;
+    }
+
+    /* Style input when invalid and touched */
+    input.ng-invalid.ng-touched {
+        border-color: $red-text;
+    }
+
+    /* Style input in error state if parent form group has the passwordsMismatch error */
+    .input-wrapper input:focus-within {
+        border-color: $brand-text;
+        box-shadow: 0 0 0 1px $brand-text;
+    }
+
+    .input-wrapper input.ng-invalid.ng-touched {
+        border-color: $red-text;
+        box-shadow: none;
+    }
+}
+
+.password-field {
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        input {
+            width: 100%;
+            padding-right: 40px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            color: $gray-text-weak;
+            cursor: pointer;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: $brand-text;
+    }
+
+    label {
+        @include h13;
+        color: $gray-stroke-strong;
+
+        @include tablet{
+                @include h9;
+            }
+
+        .link {
+            color: $brand-text;
+            text-decoration: none;
+        }
+    }
+}
+
+/* Apply button-primary mixin */
+.btn-primary {
+    @include button-primary;
+    margin-top: 8px;
+    @include h11;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    @include tablet {
+        @include h10;
+    }
+}
+
+
+
+.footer {
+    @include flex-column;
+    gap: 1rem;
+
+    .divider {
+        text-align: center;
+        @include h13;
+
+        @include tablet {
+            @include h9
+        }
+
+        .divider-text {
+            color: $gray-stroke-strong;
+
+            .link {
+                color: $brand-text;
+                text-decoration: none;
+            }
+        }
+    }
+
+    .or-divider {
+        @include h13;
+        color: $gray-stroke-strong;
+        text-align: center;
+
+        @include tablet {
+            @include h9
+        }
+    }
+
+    /* Social Buttons */
+    .button-wrapper {
+        @include flex-center;
+        gap: 2rem;
+
+        @include tablet {
+            @include flex-column;
+            gap: 0.625rem;
+        }
+
+        .btn-social {
+            background-color: transparent;
+            color: $gray-text-strong;
+            border: 2px solid #E2E8F0;
+            border-radius: 50%;
+            padding: 1rem;
+            @include flex-center;
+
+            @include tablet {
+                width: 100%;
+                border-radius: 8px;
+                gap: 1rem;
+                border: 2px solid $gray-fill;
+            }
+
+            &:hover {
+                cursor: pointer;
+                background-color: $gray-fill;
+            }
+
+            .social-icon {
+                width: 24px;
+                height: 24px;
+                flex-shrink: 0;
+            }
+
+            span {
+                display: none;
+                @include h13;
+                color: #1E293B;
+
+                @include tablet {
+                    display: inline;
+                }
+            }
+        }
+    }
+}
+
+/* Simple Loader for submitting state */
+.loader {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.password-requirements {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 0;
+    @include flex-column;
+    gap: 4px;
+
+    li {
+        @include flex-center;
+        justify-content: flex-start;
+        gap: 8px;
+        @include h13;
+        color: $red-text;
+        
+        svg {
+            flex-shrink: 0;
+            color: $red-text;
+        }
+
+        &.success {
+            color: $green-success;
+            
+            svg {
+                color: $green-success;
+            }
+        }
+    }
+}
+
+@include mobile-large {
+    .card-title {
+        @include h6;
+    }
+}
