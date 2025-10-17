@@ -1,54 +1,132 @@
-@use 'mixins' as *;
 @use 'colors' as *;
 @use 'typography' as *;
+@use 'mixins' as *;
 @use 'components' as *;
+/* Base input field container */
+.form-group {
+  @include base-field;
+  width: 100%;
 
-.login-input--group {
-    @include base-field;
+  label {
+    display: block;
+    margin-bottom: 4px;
+    color: $gray-text-strong;
+    @include h13;
+  }
 
+  input[type='email'],
+  input[type='password'],
+  input[type='text'] {
+    @include h13;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    border: 1px solid $gray-stroke-strong;
+    border-radius: 5px;
+    padding: 0 12px;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:focus {
+      border-color: $brand-text;
+      box-shadow: 0 0 0 1px $brand-text;
+      outline: none;
+    }
+
+    &.ng-invalid.ng-touched {
+      border-color: $red-text;
+    }
+  }
+
+  /* Wrapper for positioning eye toggle */
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input {
+      padding-right: 40px; // space for eye icon
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  /* Error message styling */
   .error-message {
+    @include h13;
     color: $red-text;
-    font-size: 0.8rem;
-    margin-top: 0.25rem;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    small {
+      display: block;
+    }
   }
 }
 
-.login-inputgroup-password{
-           
-             label {
-            @include h13;
-            color: $gray-text-strong;
-            }
-            .input-password{
-                @include h12;
-                background-color: transparent;
-                color: $gray-stroke-strong;
-                border: 1px solid $gray-stroke-strong;
-                padding-right: 12px;
-                border-radius: 4px;
-                overflow: hidden;
-                @include flex-between;
+/* Password-specific styling */
+.password-field {
+  .input-wrapper {
+    input {
+      padding-right: 40px;
+    }
 
-                input{
-                    border: none;
-                    outline: none;
-                    width: 90%;
-                    background-color: transparent;
-                    color: $gray-stroke-strong;
-                    @include h12;
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      color: $gray-text-weak;
 
-                }
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}
 
-                .password-toggle{
-                    background: none;
-                    border: none;
-                    cursor: pointer;
-                    color: $gray-stroke-strong;
-                    font-size: 1.2rem;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
+/* Password strength / requirement list */
+.password-requirements {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+  @include flex-column;
+  gap: 4px;
 
-        }
+  li {
+    @include flex-center;
+    justify-content: flex-start;
+    gap: 8px;
+    @include h13;
+    color: $red-text;
+
+    img,
+    svg {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+    }
+
+    &.success {
+      color: $green-success;
+
+      img,
+      svg {
+        color: $green-success;
+      }
+    }
+  }
+}

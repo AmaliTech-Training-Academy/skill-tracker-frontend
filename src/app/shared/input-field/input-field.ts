@@ -1,14 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-input-field',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './input-field.html',
   styleUrls: ['./input-field.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,8 +17,6 @@ export class InputFieldComponent {
   @Input() id = '';
   @Input({ required: true }) control!: FormControl;
 
-  faEye = faEye;
-  faEyeSlash = faEyeSlash;
   showPassword = false;
 
   togglePasswordVisibility(): void {
@@ -42,6 +37,7 @@ export class InputFieldComponent {
       maxlength: `${this.label} must not exceed ${
         this.control.errors?.['maxlength']?.requiredLength
       } characters.`,
+      passwordsMismatch: 'Passwords do not match.',
     };
     return errors[errorKey] || 'Invalid input.';
   }

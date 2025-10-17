@@ -1,41 +1,32 @@
-<div class="login-input--group">
-  @if (type !== 'password') {
-    <label [for]="id">{{ label }}</label>
-    <input [type]="type" [id]="id" [formControl]="control" [placeholder]="placeholder" />
+<div class="form-group" [ngClass]="{ 'password-field': type === 'password' }">
+  <label [for]="id">{{ label }}</label>
 
-    @if (control.invalid && control.touched) {
-      <div class="error-message">
-        @for (errorKey of getErrorKeys(); track errorKey) {
-          <small>{{ getErrorMessage(errorKey) }}</small>
+  <div class="input-wrapper">
+    <input
+      [type]="showPassword ? 'text' : type"
+      [id]="id"
+      [formControl]="control"
+      [placeholder]="placeholder"
+      [class.ng-invalid]="control.invalid && control.touched"
+      [class.ng-touched]="control.touched"
+    />
+
+    @if (type === 'password') {
+      <span class="password-toggle" (click)="togglePasswordVisibility()">
+        @if (showPassword) {
+          <img src="assets/eye.png" alt="showPassword" />
+        } @else {
+          <img src="assets/cancel-eye.png" alt="hidePassword" />
         }
-      </div>
+      </span>
     }
-  } @else {
-    <div class="login-inputgroup-password">
-      <label [for]="id">{{ label }}</label>
-      <div class="input-password">
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          [id]="id"
-          [formControl]="control"
-          [placeholder]="placeholder"
-        />
-        <button
-          type="button"
-          class="password-toggle"
-          (click)="togglePasswordVisibility()"
-          tabindex="-1"
-        >
-          <fa-icon [icon]="showPassword ? faEyeSlash : faEye"></fa-icon>
-        </button>
-      </div>
+  </div>
 
-      @if (control.invalid && control.touched) {
-        <div class="error-message">
-          @for (errorKey of getErrorKeys(); track errorKey) {
-            <small>{{ getErrorMessage(errorKey) }}</small>
-          }
-        </div>
+  <!-- Validation Errors -->
+  @if (control.touched && control.invalid) {
+    <div class="error-message">
+      @for (errorKey of getErrorKeys(); track errorKey) {
+        <small>{{ getErrorMessage(errorKey) }}</small>
       }
     </div>
   }
