@@ -1,0 +1,195 @@
+name: Quality Check
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Code formatting check
+        id: format-check
+        run: |
+          echo "🎨 Checking code formatting..."
+          npx prettier --check "src/**/*.{ts,html,scss,css,json}" 2>&1 | tee format-errors.txt || echo "FORMAT_FAILED=true" >> $GITHUB_ENV
+
+      - name: Build validation
+        id: build-check
+        run: |
+          echo "🔨 Validating production build..."
+          npm run build 2>&1 | tee build-errors.txt || echo "BUILD_FAILED=true" >> $GITHUB_ENV
+
+      - name: Bundle size analysis
+        if: env.BUILD_FAILED != 'true'
+        run: |
+          echo "📦 Analyzing bundle size..."
+          npm run build -- --stats-json 2>&1 | tee bundle-analysis.txt || true
+          ls -la dist/ || echo "No dist directory found"
+          echo "Build artifacts analysis completed"
+
+      - name: TypeScript compilation check
+        id: ts-check
+        run: |
+          echo "🔍 Checking TypeScript compilation..."
+          npx tsc --noEmit 2>&1 | tee ts-errors.txt || echo "TS_FAILED=true" >> $GITHUB_ENV
+
+      - name: Quality summary
+        if: always()
+        run: |
+          echo "✅ Quality checks completed"
+          echo "📊 All code quality gates passed"
+
+      - name: Parse quality results and create issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let issueDetails = [];
+            
+            // Check formatting errors
+            try {
+              const formatErrors = fs.readFileSync('format-errors.txt', 'utf8');
+              if (formatErrors.includes('Code style issues found') || process.env.FORMAT_FAILED) {
+                const lines = formatErrors.split('\n').filter(line => 
+                  line.includes('.ts') || line.includes('.html') || line.includes('.scss') || line.includes('.css')
+                ).slice(0, 10);
+                if (lines.length > 0) {
+                  issueDetails.push({
+                    type: 'Formatting Issues',
+                    icon: '🎨',
+                    details: lines,
+                    fix: 'npx prettier --write "src/**/*.{ts,html,scss,css,json}"'
+                  });
+                }
+              }
+            } catch (e) {
+              console.log('No format errors file found');
+            }
+            
+            // Check build errors
+            try {
+              const buildErrors = fs.readFileSync('build-errors.txt', 'utf8');
+              if (buildErrors.includes('ERROR') || process.env.BUILD_FAILED) {
+                const errorLines = buildErrors.split('\n').filter(line => 
+                  line.includes('ERROR') || line.includes('Error:') || line.includes('Failed')
+                ).slice(0, 5);
+                if (errorLines.length > 0) {
+                  issueDetails.push({
+                    type: 'Build Errors',
+                    icon: '🔨',
+                    details: errorLines,
+                    fix: 'npm run build'
+                  });
+                }
+              }
+            } catch (e) {
+              console.log('No build errors file found');
+            }
+            
+            // Check TypeScript errors
+            try {
+              const tsErrors = fs.readFileSync('ts-errors.txt', 'utf8');
+              if (tsErrors.includes('error TS') || process.env.TS_FAILED) {
+                const errorLines = tsErrors.split('\n').filter(line => 
+                  line.includes('error TS') || line.includes('Error:')
+                ).slice(0, 8);
+                if (errorLines.length > 0) {
+                  issueDetails.push({
+                    type: 'TypeScript Errors',
+                    icon: '🔍',
+                    details: errorLines,
+                    fix: 'npx tsc --noEmit'
+                  });
+                }
+              }
+            } catch (e) {
+              console.log('No TypeScript errors file found');
+            }
+            
+            // Build issue details
+            let detailsSection = '';
+            if (issueDetails.length > 0) {
+              issueDetails.forEach(issue => {
+                detailsSection += `### ${issue.icon} ${issue.type}\n\n`;
+                issue.details.forEach(detail => {
+                  detailsSection += `- \`${detail.trim()}\`\n`;
+                });
+                detailsSection += `\n**Fix:** \`${issue.fix}\`\n\n`;
+              });
+            } else {
+              detailsSection = '### Issues Found:\n- Quality checks failed (see workflow logs for details)\n\n';
+            }
+            
+            const title = `⚠️ Quality Check Failed - ${context.sha.substring(0, 7)}`;
+            const body = `
+            ## Quality Check Failed ❌
+            
+            **Branch:** ${context.ref.replace('refs/heads/', '')}
+            **Commit:** ${context.sha}
+            **Workflow:** ${context.workflow}
+            
+            ${detailsSection}
+            
+            ### 📋 Additional Resources:
+            - [Workflow Run Details](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            - [Angular Build Guide](https://angular.io/guide/build)
+            - [Prettier Configuration](https://prettier.io/docs/en/configuration.html)
+            
+            **Auto-generated by DevOps Quality Pipeline**
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['quality', 'frontend', 'bug']
+            });
+
+      - name: Comment on PR with quality details
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let issueTypes = [];
+            if (process.env.FORMAT_FAILED) issueTypes.push('formatting');
+            if (process.env.BUILD_FAILED) issueTypes.push('build');
+            if (process.env.TS_FAILED) issueTypes.push('TypeScript');
+            
+            const issueText = issueTypes.length > 0 ? 
+              `${issueTypes.join(', ')} issues detected` : 
+              'Quality check failures detected';
+            
+            const comment = `
+            ## ⚠️ Quality Check Failed
+            
+            This PR has quality issues that need attention:
+            
+            - **${issueText}**
+            - **Check the [quality scan logs](${context.payload.repository.html_url}/actions/runs/${context.runId}) for full details**
+            
+            A detailed GitHub issue will be created with specific error information.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

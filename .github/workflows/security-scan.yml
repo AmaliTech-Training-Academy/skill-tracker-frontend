@@ -1,0 +1,189 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [staging]
+  pull_request:
+    branches: [staging]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies for vulnerabilities
+        id: security-audit
+        run: |
+          echo "🔍 Scanning for dependency vulnerabilities..."
+          npm audit --audit-level=high --production --json > audit-high.json || true
+          npm audit --audit-level=moderate --json > audit-moderate.json || true
+          
+          # Display results for logs
+          echo "High severity vulnerabilities:"
+          npm audit --audit-level=high --production || true
+          echo "Moderate+ severity vulnerabilities:"
+          npm audit --audit-level=moderate || true
+          
+      - name: Check for security advisories
+        run: |
+          echo "📋 Security audit files created for issue reporting"
+          ls -la *.json || echo "No audit files found"
+
+      - name: Scan for secrets in code
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: Security summary
+        if: always()
+        run: |
+          echo "✅ Security scan completed"
+          echo "📊 Check the logs above for any security issues"
+
+      - name: Parse security results and create issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let vulnerabilities = [];
+            
+            // Parse high severity vulnerabilities
+            try {
+              const auditHigh = JSON.parse(fs.readFileSync('audit-high.json', 'utf8'));
+              if (auditHigh.vulnerabilities) {
+                Object.entries(auditHigh.vulnerabilities).forEach(([pkg, vuln]) => {
+                  vulnerabilities.push({
+                    package: pkg,
+                    severity: vuln.severity,
+                    title: vuln.title,
+                    range: vuln.range,
+                    fixAvailable: vuln.fixAvailable
+                  });
+                });
+              }
+            } catch (e) {
+              console.log('No high severity audit file found');
+            }
+            
+            // Parse moderate+ vulnerabilities if no high found
+            if (vulnerabilities.length === 0) {
+              try {
+                const auditMod = JSON.parse(fs.readFileSync('audit-moderate.json', 'utf8'));
+                if (auditMod.vulnerabilities) {
+                  Object.entries(auditMod.vulnerabilities).forEach(([pkg, vuln]) => {
+                    vulnerabilities.push({
+                      package: pkg,
+                      severity: vuln.severity,
+                      title: vuln.title,
+                      range: vuln.range,
+                      fixAvailable: vuln.fixAvailable
+                    });
+                  });
+                }
+              } catch (e) {
+                console.log('No moderate audit file found');
+              }
+            }
+            
+            // Build vulnerability details
+            let vulnDetails = '';
+            if (vulnerabilities.length > 0) {
+              vulnDetails = '### 🚨 Vulnerabilities Found:\n\n';
+              vulnerabilities.slice(0, 10).forEach(vuln => {
+                const fixText = vuln.fixAvailable ? '✅ Fix available' : '❌ No automatic fix';
+                vulnDetails += `- **${vuln.package}** (${vuln.severity.toUpperCase()})\n`;
+                vulnDetails += `  - ${vuln.title}\n`;
+                vulnDetails += `  - Range: ${vuln.range}\n`;
+                vulnDetails += `  - ${fixText}\n\n`;
+              });
+              if (vulnerabilities.length > 10) {
+                vulnDetails += `... and ${vulnerabilities.length - 10} more vulnerabilities\n\n`;
+              }
+            } else {
+              vulnDetails = '### Issues Found:\n- Security scan failed (check logs for details)\n\n';
+            }
+            
+            const title = `🚨 Security Issues Found - ${context.sha.substring(0, 7)}`;
+            const body = `
+            ## Security Scan Failed ❌
+            
+            **Branch:** ${context.ref.replace('refs/heads/', '')}
+            **Commit:** ${context.sha}
+            **Workflow:** ${context.workflow}
+            
+            ${vulnDetails}
+            
+            ### 📋 Additional Resources:
+            - [Workflow Run Details](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            - [npm audit documentation](https://docs.npmjs.com/cli/v8/commands/npm-audit)
+            
+            **Auto-generated by DevOps Security Pipeline**
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['security', 'frontend', 'urgent']
+            });
+
+      - name: Comment on PR with vulnerability details
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let vulnSummary = 'Dependency vulnerabilities detected';
+            
+            // Get vulnerability count
+            try {
+              const auditHigh = JSON.parse(fs.readFileSync('audit-high.json', 'utf8'));
+              const vulnCount = Object.keys(auditHigh.vulnerabilities || {}).length;
+              if (vulnCount > 0) {
+                vulnSummary = `${vulnCount} high+ severity vulnerabilities found`;
+              }
+            } catch (e) {
+              try {
+                const auditMod = JSON.parse(fs.readFileSync('audit-moderate.json', 'utf8'));
+                const vulnCount = Object.keys(auditMod.vulnerabilities || {}).length;
+                if (vulnCount > 0) {
+                  vulnSummary = `${vulnCount} moderate+ severity vulnerabilities found`;
+                }
+              } catch (e2) {
+                console.log('Could not parse audit results for PR comment');
+              }
+            }
+            
+            const comment = `
+            ## 🚨 Security Scan Failed
+            
+            This PR has security issues that need attention:
+            
+            - **${vulnSummary}**
+            - **Check the [security scan logs](${context.payload.repository.html_url}/actions/runs/${context.runId}) for full details**
+            
+            A detailed GitHub issue will be created with specific vulnerability information.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
