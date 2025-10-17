@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import { timer, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ToastConfig, ToastType } from '../../models/toast-model';
@@ -6,7 +6,7 @@ import { ToastConfig, ToastType } from '../../models/toast-model';
 @Injectable({
   providedIn: 'root',
 })
-export class ToastService {
+export class ToastService implements OnDestroy {
   private readonly DEFAULT_DURATION = 4000;
   private readonly EXIT_ANIMATION_DURATION = 300;
   private destroy$ = new Subject<void>();
@@ -61,5 +61,10 @@ export class ToastService {
         this.isVisible.set(false);
         this.isExiting.set(false);
       });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

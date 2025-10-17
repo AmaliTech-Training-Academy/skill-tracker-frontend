@@ -3,64 +3,72 @@
 @use 'mixins' as *;
 
 .toast-container {
-    position: fixed;
-    top: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    max-width: 350px;
-    width: calc(100% - 40px);
-    animation: slideIn 0.3s ease-out;
-    opacity: 1;
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: 350px;
+  width: calc(100% - 40px);
+  animation: slideIn 0.3s ease-out;
+  opacity: 1;
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+
+  @include tablet {
+    left: auto;
+    right: 20px;
+    transform: none;
+    max-width: 400px;
+    width: auto;
+  }
+
+  &.toast-exit {
+    opacity: 0;
+    transform: translateX(100%);
 
     @include tablet {
-        left: auto;
-        right: 20px;
-        transform: none;
-        max-width: 400px;
-        width: auto;
+      transform: translateX(100%);
     }
-
-    &.toast-exit {
-        opacity: 0;
-        transform: translateX(100%);
-        
-        @include tablet {
-            transform: translateX(100%);
-        }
-    }
+  }
 }
 
 .toast {
-    &.toast-success {
-        @include alert-success;
-       
-       &{
-            color: $green-success;
-       } 
+  &.toast-success {
+    @include alert-success;
+
+    & {
+      color: $green-success;
     }
-    
-    &.toast-error {
-        @include alert-error;
-    }
-    
-    &.toast-info {
-        @include alert-info;
-    }
-    
-    &.toast-warning {
-        @include alert-warning;
-    }
+  }
+
+  &.toast-error {
+    @include alert-error;
+  }
+
+  &.toast-info {
+    @include alert-info;
+  }
+
+  &.toast-warning {
+    @include alert-warning;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+  }
 }
 
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
