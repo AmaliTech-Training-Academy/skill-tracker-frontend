@@ -7,11 +7,10 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
-
-import { Subject } from 'rxjs';
-// import { LoginService } from './login.service';
+import { Subject, takeUntil } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { ForgotPasswordService } from './forgot-password.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -23,15 +22,15 @@ import { ToastService } from 'src/app/core/services/toast/toast-service';
 })
 export class ForgotPassword implements OnDestroy {
   loading = false;
-  loginForm: FormGroup;
+  forgotPasswordForm: FormGroup;
 
   private readonly destroy$ = new Subject<void>();
   private readonly fb = inject(FormBuilder);
-  // private readonly loginService = inject(LoginService);
   private readonly toastService = inject(ToastService);
+  private readonly forgotPasswordService = inject(ForgotPasswordService);
 
   constructor() {
-    this.loginForm = this.createForm();
+    this.forgotPasswordForm = this.createForm();
   }
 
   private createForm(): FormGroup {
@@ -41,38 +40,35 @@ export class ForgotPassword implements OnDestroy {
   }
 
   getControl(controlName: string): FormControl {
-    return this.loginForm.get(controlName) as FormControl;
+    return this.forgotPasswordForm.get(controlName) as FormControl;
   }
 
   login(): void {
-    if (this.loginForm.invalid) {
-      return;
-    }
+    if (this.forgotPasswordForm.invalid) return;
 
     this.loading = true;
+    const { email } = this.forgotPasswordForm.value;
 
-    // const email  = this.loginForm.value.email;
-
-    // this.loginService
-    //   .login(email, password)
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe({
-    //     next: () => {
-    //       this.toastService.showSuccess(
-    //         'Login Successful',
-    //         'Logged in successfully! Redirecting you to your dashboard...',
-    //       );
-    //       this.loading = false;
-    //     },
-    //     error: () => {
-    //       this.toastService.showError('Login Failed', 'Incorrect email or password.');
-    //       this.loading = false;
-    //     },
-    //   });
+    this.forgotPasswordService
+      .sendResetLink(email)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess(
+            'Check your Inbox',
+            'A link to reset your password has been sent to your email.',
+          );
+          this.loading = false;
+        },
+        error: () => {
+          this.toastService.showError('Error', 'This email does not exist in our records.');
+          this.loading = false;
+        },
+      });
   }
 
-  public trydifferentemail(): void {
-    this.getControl('email').setValue(' ');
+  trydifferentemail(): void {
+    this.getControl('email').reset('');
   }
 
   ngOnDestroy(): void {
