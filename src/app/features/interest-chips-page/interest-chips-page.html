@@ -1,0 +1,11 @@
+<div class="chips-container">
+  <app-interests-chip
+    *ngFor="let badge of badges"
+    [label]="badge.label"
+    [icon]="badge.icon"
+    [selected]="selectedBadges.includes(badge.id)"
+    (chipSelect)="toggleBadge(badge.id)"
+  ></app-interests-chip>
+</div>
+
+<p>Selected: {{ selectedBadges.length ? selectedBadges.join(', ') : 'None' }}</p>

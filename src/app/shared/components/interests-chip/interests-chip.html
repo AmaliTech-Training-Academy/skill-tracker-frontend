@@ -1,0 +1,8 @@
+<div
+  class="badge"
+  [class.selected]="selected"
+  (click)="onClick()"
+>
+  <img [src]="icon" alt="{{ label }}" class="icon" />
+  <span class="label">{{ label }}</span>
+</div>

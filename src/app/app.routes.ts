@@ -20,6 +20,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/login/login').then((c) => c.Login),
       },
       {
+        path: 'interests',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/interest-chips-page/interest-chips-page').then(
+            (c) => c.InterestsPageComponent,
+          ),
+      },
+      {
         path: 'email-verification',
         canActivate: [guestGuard],
         loadComponent: () =>
