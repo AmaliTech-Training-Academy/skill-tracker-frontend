@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth-guard';
-import { guestGuard } from './core/guards/guest-guard';
+import { authGuard, guestGuard, onboardingGuard } from '@app/core';
 
 export const routes: Routes = [
   {
@@ -29,6 +28,7 @@ export const routes: Routes = [
       },
       {
         path: 'onboarding/level-selection',
+        canActivate: [onboardingGuard],
         loadComponent: () =>
           import('./features/level-selection/level-selection').then((c) => c.LevelSelection),
       },
