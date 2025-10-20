@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -20,32 +20,26 @@ import { ForgotPasswordService } from './forgot-password.service';
   styleUrls: ['./forgot-password.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ForgotPassword implements OnDestroy {
+export class ForgotPassword implements OnInit, OnDestroy {
   loading = false;
-  forgotPasswordForm!: FormGroup;
+  forgotPasswordForm: FormGroup = new FormBuilder().group({
+    email: ['', [Validators.required, Validators.email]],
+  });
+
   private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private fb: FormBuilder,
     private toastService: ToastService,
     private forgotPasswordService: ForgotPasswordService
   ) {}
 
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  private initializeForm(): void {
-    this.forgotPasswordForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-    });
-  }
+  ngOnInit(): void {}
 
   getControl(controlName: string): FormControl {
     return this.forgotPasswordForm.get(controlName) as FormControl;
   }
 
-  login(): void {
+  submit(): void {
     if (this.forgotPasswordForm.invalid) return;
 
     this.loading = true;

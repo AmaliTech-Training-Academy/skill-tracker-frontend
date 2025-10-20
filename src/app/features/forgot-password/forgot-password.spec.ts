@@ -40,7 +40,7 @@ describe('ForgotPassword', () => {
     component.forgotPasswordForm.setValue({ email: 'test@example.com' });
     forgotPasswordServiceSpy.sendResetLink.and.returnValue(throwError(() => new Error('error')));
 
-    component.login();
+    component.submit();
 
     expect(toastServiceSpy.showError).toHaveBeenCalled();
   });
