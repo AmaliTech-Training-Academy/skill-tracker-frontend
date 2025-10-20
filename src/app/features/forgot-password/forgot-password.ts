@@ -17,19 +17,25 @@ import { ForgotPasswordService } from './forgot-password.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, InputFieldComponent],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.scss',
+  styleUrls: ['./forgot-password.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotPassword implements OnDestroy {
   loading = false;
-  forgotPasswordForm: FormGroup;
+  forgotPasswordForm!: FormGroup;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     private toastService: ToastService,
     private forgotPasswordService: ForgotPasswordService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  private initializeForm(): void {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
