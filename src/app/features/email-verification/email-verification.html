@@ -10,12 +10,14 @@
 
     <form [formGroup]="otpForm" class="otp-form" (ngSubmit)="onSubmit()">
       <div class="input-group">
-        <input maxlength="1" formControlName="otp1" (input)="onInput($event, otp2)" (keydown)="onKeyDown($event)" #otp1 />
-        <input maxlength="1" formControlName="otp2" (input)="onInput($event, otp3)" (keydown)="onKeyDown($event, otp1)" #otp2 />
-        <input maxlength="1" formControlName="otp3" (input)="onInput($event, otp4)" (keydown)="onKeyDown($event, otp2)" #otp3 />
-        <input maxlength="1" formControlName="otp4" (input)="onInput($event, otp5)" (keydown)="onKeyDown($event, otp3)" #otp4 />
-        <input maxlength="1" formControlName="otp5" (input)="onInput($event, otp6)" (keydown)="onKeyDown($event, otp4)" #otp5 />
-        <input maxlength="1" formControlName="otp6" (input)="onInput($event)" (keydown)="onKeyDown($event, otp5)" #otp6 />
+        @for (field of otpFields; track field.index) {
+          <input 
+            #otpInput
+            maxlength="1" 
+            [formControlName]="field.name"
+            (input)="onInput($event, field.index)"
+            (keydown)="onKeyDown($event, field.index)" />
+        }
       </div>
 
       <div class="actions">

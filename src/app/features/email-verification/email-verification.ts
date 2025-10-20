@@ -5,8 +5,17 @@ import {
   OnInit,
   OnDestroy,
   signal,
+  ViewChildren,
+  QueryList,
+  ElementRef,
 } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormControl,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
 import { takeUntil, Subject, of, delay } from 'rxjs';
@@ -23,24 +32,30 @@ export class EmailVerification implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private toastService = inject(ToastService);
+
   isSubmitting = signal(false);
   formValid = signal(false);
   timeLeft = signal(30);
   canResend = signal(false);
-  private destroy$ = new Subject<void>();
-  private timer$ = new Subject<void>();
 
-  // Reactive form for OTP inputs
-  otpForm: FormGroup = this.fb.group({
-    otp1: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-    otp2: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-    otp3: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-    otp4: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-    otp5: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-    otp6: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-  });
+  private destroy$ = new Subject<void>();
+
+  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
+
+  otpFields = Array.from({ length: 6 }, (_, i) => ({ name: `otp${i}`, index: i }));
+
+  otpForm!: FormGroup;
 
   ngOnInit() {
+    const controls: Record<string, FormControl> = {};
+    this.otpFields.forEach((field) => {
+      controls[field.name] = new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^[0-9]$/),
+      ]);
+    });
+    this.otpForm = this.fb.group(controls);
+
     this.otpForm.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.formValid.set(this.otpForm.valid);
     });
@@ -50,8 +65,6 @@ export class EmailVerification implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
-    this.timer$.next();
-    this.timer$.complete();
   }
 
   startTimer() {
@@ -74,7 +87,7 @@ export class EmailVerification implements OnInit, OnDestroy {
     this.startTimer();
   }
 
-  onInput(event: Event, nextInput?: HTMLInputElement) {
+  onInput(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
 
@@ -83,25 +96,22 @@ export class EmailVerification implements OnInit, OnDestroy {
       return;
     }
 
-    if (value && nextInput) {
-      nextInput.focus();
+    if (value && index < this.otpFields.length - 1) {
+      const nextInput = this.otpInputs.toArray()[index + 1];
+      nextInput?.nativeElement.focus();
     }
   }
 
-  onKeyDown(event: KeyboardEvent, prevInput?: HTMLInputElement) {
+  onKeyDown(event: KeyboardEvent, index: number) {
     const input = event.target as HTMLInputElement;
 
-    if (event.key === 'Backspace' && !input.value && prevInput) {
-      prevInput.focus();
+    if (event.key === 'Backspace' && !input.value && index > 0) {
+      const prevInput = this.otpInputs.toArray()[index - 1];
+      prevInput?.nativeElement.focus();
     }
   }
 
-  getOtpCode(): string {
-    return Object.values(this.otpForm.value).join('');
-  }
-
-  // Authentication methods
-  async onSubmit() {
+  onSubmit() {
     this.otpForm.markAllAsTouched();
 
     if (this.otpForm.invalid) return;
