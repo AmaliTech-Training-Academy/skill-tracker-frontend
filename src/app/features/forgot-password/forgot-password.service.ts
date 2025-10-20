@@ -1,5 +1,4 @@
-// mock service
-//actual service is implemented implemented by victor
+
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError, delay } from 'rxjs';
 
@@ -18,5 +17,3 @@ export class ForgotPasswordService {
     }
   }
 }
-
-// mock service

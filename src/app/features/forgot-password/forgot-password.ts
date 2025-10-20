@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -17,24 +17,20 @@ import { ForgotPasswordService } from './forgot-password.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, InputFieldComponent],
   templateUrl: './forgot-password.html',
-  styleUrls: ['./forgot-password.scss'],
+  styleUrl: './forgot-password.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotPassword implements OnDestroy {
   loading = false;
   forgotPasswordForm: FormGroup;
-
   private readonly destroy$ = new Subject<void>();
-  private readonly fb = inject(FormBuilder);
-  private readonly toastService = inject(ToastService);
-  private readonly forgotPasswordService = inject(ForgotPasswordService);
 
-  constructor() {
-    this.forgotPasswordForm = this.createForm();
-  }
-
-  private createForm(): FormGroup {
-    return this.fb.group({
+  constructor(
+    private fb: FormBuilder,
+    private toastService: ToastService,
+    private forgotPasswordService: ForgotPasswordService
+  ) {
+    this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
   }
@@ -56,7 +52,7 @@ export class ForgotPassword implements OnDestroy {
         next: () => {
           this.toastService.showSuccess(
             'Check your Inbox',
-            'A link to reset your password has been sent to your email.',
+            'A link to reset your password has been sent to your email.'
           );
           this.loading = false;
         },
