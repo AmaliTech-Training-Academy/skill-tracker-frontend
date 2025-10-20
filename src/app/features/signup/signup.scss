@@ -41,7 +41,7 @@
       color: $gray-stroke-strong;
 
       @include mobile-large {
-        @include h9;
+        @include h11;
       }
     }
   }
@@ -130,7 +130,7 @@
     color: $gray-stroke-strong;
 
     @include mobile-large {
-      @include h9;
+      @include h11;
     }
 
     .link {
@@ -165,7 +165,7 @@
     @include h13;
 
     @include mobile-large {
-      @include h9;
+      @include h11;
     }
 
     .divider-text {
@@ -184,7 +184,7 @@
     text-align: center;
 
     @include mobile-large {
-      @include h9;
+      @include h11;
     }
   }
 

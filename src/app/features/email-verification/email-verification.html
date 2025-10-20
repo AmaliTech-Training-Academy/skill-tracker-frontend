@@ -21,8 +21,12 @@
       <div class="actions">
         <p class="resend-info">
           Didn't get the code?
-          <button type="button" class="resend-link">Resend Code </button>
-          <span class="timer"> in 00:30</span>
+          @if (canResend()) {
+            <button type="button" class="resend-link" (click)="resendCode()">Resend Code</button>
+          } @else {
+            <button type="button" class="resend-link" disabled>Resend Code</button>
+            <span class="timer"> in {{ (timeLeft() * 1000) | date:'mm:ss':'UTC' }}</span>
+          }
         </p>
         <p class="edit-email">
           Entered the wrong email? <a class="link" routerLink="/signup">Go Back</a>

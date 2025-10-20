@@ -10,10 +10,11 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
 import { takeUntil, Subject, of, delay } from 'rxjs';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-email-verification',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, DatePipe],
   templateUrl: './email-verification.html',
   styleUrl: './email-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +25,10 @@ export class EmailVerification implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   isSubmitting = signal(false);
   formValid = signal(false);
+  timeLeft = signal(30);
+  canResend = signal(false);
   private destroy$ = new Subject<void>();
+  private timer$ = new Subject<void>();
 
   // Reactive form for OTP inputs
   otpForm: FormGroup = this.fb.group({
@@ -40,11 +44,34 @@ export class EmailVerification implements OnInit, OnDestroy {
     this.otpForm.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.formValid.set(this.otpForm.valid);
     });
+    this.startTimer();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+    this.timer$.next();
+    this.timer$.complete();
+  }
+
+  startTimer() {
+    this.timeLeft.set(30);
+    this.canResend.set(false);
+
+    const countdown = setInterval(() => {
+      const current = this.timeLeft();
+      if (current > 0) {
+        this.timeLeft.set(current - 1);
+      } else {
+        this.canResend.set(true);
+        clearInterval(countdown);
+      }
+    }, 1000);
+  }
+
+  resendCode() {
+    this.toastService.showInfo('Code Sent', 'A new verification code has been sent to your email.');
+    this.startTimer();
   }
 
   onInput(event: Event, nextInput?: HTMLInputElement) {
