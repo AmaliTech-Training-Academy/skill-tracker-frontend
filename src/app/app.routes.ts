@@ -27,6 +27,11 @@ export const routes: Routes = [
             (c) => c.EmailVerification,
           ),
       },
+      {
+        path: 'onboarding/level-selection',
+        loadComponent: () =>
+          import('./features/level-selection/level-selection').then((c) => c.LevelSelection),
+      },
     ],
   },
 
