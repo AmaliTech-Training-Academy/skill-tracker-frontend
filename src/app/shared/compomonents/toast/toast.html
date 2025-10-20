@@ -15,12 +15,13 @@
         <div class="alert-content">
             <div class="alert-header">
                 <div class="alert-title">{{ config.title }}</div>
-                <div class="alert-close" (click)="onClose()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+                <button type="button" class="alert-close" (click)="onClose()" (keydown.enter)="onClose()" (keydown.space)="onClose()" aria-label="Close notification">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.5 1.5L1.5 10.5M10.5 10.5L1.5 1.5" stroke="currentColor" stroke-width="1.5"
                             stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                </div>
+                </button>
             </div>
             <div class="alert-message">{{ config.message }}</div>
         </div>

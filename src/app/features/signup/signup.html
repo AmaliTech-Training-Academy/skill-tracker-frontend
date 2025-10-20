@@ -29,7 +29,15 @@
                             placeholder="***********"
                             [class.ng-invalid]="formField('password')?.invalid && formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
                             [class.ng-touched]="formField('password')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
-                        <span class="password-toggle" (click)="showPassword.set(!showPassword())">
+                        <span
+                            class="password-toggle"
+                            role="button"
+                            tabindex="0"
+                            [attr.aria-pressed]="showPassword()"
+                            aria-label="Toggle password visibility"
+                            (click)="showPassword.set(!showPassword())"
+                            (keydown.enter)="showPassword.set(!showPassword())"
+                            (keydown.space)="showPassword.set(!showPassword()); $event.preventDefault()">
                             @if (showPassword()) {
                                 <img src="assets/eye.png" alt="showPassword">
                             }
@@ -63,7 +71,15 @@
                             formControlName="confirmPassword" placeholder="***********"
                             [class.ng-invalid]="formField('confirmPassword')?.invalid && formField('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)"
                             [class.ng-touched]="formField('confirmPassword')?.touched || (signupForm.hasError('passwordsMismatch') && formField('confirmPassword')?.touched)" />
-                        <span class="password-toggle" (click)="showConfirmPassword.set(!showConfirmPassword())">
+                        <span
+                            class="password-toggle"
+                            role="button"
+                            tabindex="0"
+                            [attr.aria-pressed]="showConfirmPassword()"
+                            aria-label="Toggle confirm password visibility"
+                            (click)="showConfirmPassword.set(!showConfirmPassword())"
+                            (keydown.enter)="showConfirmPassword.set(!showConfirmPassword())"
+                            (keydown.space)="showConfirmPassword.set(!showConfirmPassword()); $event.preventDefault()">
                             @if (showConfirmPassword()) {
                                 <img src="assets/eye.png" alt="showPassword">
                             }

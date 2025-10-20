@@ -8,7 +8,8 @@ import {
   inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
@@ -27,6 +28,7 @@ export class Signup implements OnInit, OnDestroy {
 
   fb = inject(FormBuilder);
   toastService = inject(ToastService);
+  router = inject(Router);
 
   // Signal to track password value for reactivity
   passwordValue = signal('');
@@ -95,8 +97,6 @@ export class Signup implements OnInit, OnDestroy {
 
     this.isSubmitting.set(true);
 
-    const formValue = this.signupForm.value;
-
     // Simulate an API call
     of(true)
       .pipe(delay(2000), takeUntil(this.destroy$))
@@ -106,8 +106,9 @@ export class Signup implements OnInit, OnDestroy {
             'Account Created',
             "Hurray, Your account is created! We've sent a 6 digit code to your email",
           );
+          this.router.navigateByUrl('/email-verification');
         },
-        error: (err) => {
+        error: () => {
           this.toastService.showError(
             'Signup Failed',
             'Unable to create your account. Please try again.',

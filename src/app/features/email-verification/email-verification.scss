@@ -1,0 +1,116 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+@use 'colors' as *;
+@use 'components' as *;
+
+.verification-container {
+  @include flex-center;
+}
+
+.card {
+  @include flex-column;
+  gap: 4.969rem;
+  padding: 2rem 1.25rem;
+  max-width: 345px;
+  width: 100%;
+
+  @include mobile-large {
+    max-width: 608px;
+  }
+}
+
+.header {
+  @include flex-column;
+  gap: 1rem;
+
+  .title {
+    @include h8;
+    color: $gray-text-strong;
+
+    @include tablet {
+      @include h6;
+    }
+  }
+
+  .subtitle {
+    @include h13;
+    color: $gray-text-weak;
+
+    @include tablet {
+      @include h9;
+    }
+  }
+}
+
+.otp-form {
+  @include flex-column;
+  gap: 2rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.713rem;
+  padding: 1.2rem 0;
+
+  @include tablet {
+    gap: 1.663rem;
+  }
+}
+
+.input-group input {
+  width: 2.3rem;
+  height: 2.3rem;
+  font-size: 1.6rem;
+  text-align: center;
+  border: 2px solid $brand-text;
+  border-radius: 4px;
+  outline: none;
+
+  @include mobile-large {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  @include tablet {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+.actions {
+  @include h13;
+  @include flex-column;
+  gap: 2rem;
+  color: $gray-text-strong;
+
+  @include tablet {
+    @include h9;
+  }
+
+  .resend-link {
+    @include h13;
+    background: none;
+    border: none;
+    color: $brand-text;
+    cursor: pointer;
+
+    @include tablet {
+      @include h9;
+    }
+  }
+
+  .link {
+    color: $brand-text;
+    cursor: pointer;
+  }
+}
+
+.btn-primary {
+  @include button-primary;
+  @include h11;
+
+  @include tablet {
+    @include h9;
+    margin-top: 3rem;
+  }
+}
