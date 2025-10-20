@@ -33,9 +33,13 @@ export class EmailVerification implements OnInit, OnDestroy {
   private router = inject(Router);
   private toastService = inject(ToastService);
 
+  private readonly DELAY_MS = 2000;
+  private readonly VERIFICATION_TIME_SEC = 30;
+  private readonly INTERVAL_MS = 1000;
+
   isSubmitting = signal(false);
   formValid = signal(false);
-  timeLeft = signal(30);
+  timeLeft = signal(this.VERIFICATION_TIME_SEC);
   canResend = signal(false);
 
   private destroy$ = new Subject<void>();
@@ -79,7 +83,7 @@ export class EmailVerification implements OnInit, OnDestroy {
         this.canResend.set(true);
         clearInterval(countdown);
       }
-    }, 1000);
+    }, this.INTERVAL_MS);
   }
 
   resendCode() {
@@ -120,7 +124,7 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     // Simulate an API call
     of(true)
-      .pipe(delay(2000), takeUntil(this.destroy$))
+      .pipe(delay(this.VERIFICATION_TIME_SEC), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(
