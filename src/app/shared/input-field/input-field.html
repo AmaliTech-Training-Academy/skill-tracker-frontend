@@ -12,13 +12,17 @@
     />
 
     @if (type === 'password') {
-      <span class="password-toggle" (click)="togglePasswordVisibility()">
+      <button type="button" class="password-toggle"
+        (click)="togglePasswordVisibility()"
+        (keydown.enter)="$event.preventDefault(); togglePasswordVisibility()"
+        (keydown.space)="$event.preventDefault(); togglePasswordVisibility()"
+        [attr.aria-pressed]="showPassword ? 'true' : 'false'">
         @if (showPassword) {
           <img src="assets/eye.png" alt="showPassword" />
         } @else {
           <img src="assets/cancel-eye.png" alt="hidePassword" />
         }
-      </span>
+      </button>
     }
   </div>
 
