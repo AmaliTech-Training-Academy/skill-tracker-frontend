@@ -102,8 +102,10 @@
   }
 
   .link {
+    border: none;
+    background: none;
     color: $brand-text;
-    text-decoration: none;
+    @include h13;
     cursor: pointer;
   }
 }

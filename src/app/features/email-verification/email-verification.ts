@@ -16,14 +16,14 @@ import {
   Validators,
   FormControl,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
 import { takeUntil, Subject, of, delay } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-email-verification',
-  imports: [ReactiveFormsModule, RouterLink, DatePipe],
+  imports: [ReactiveFormsModule, DatePipe],
   templateUrl: './email-verification.html',
   styleUrl: './email-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -143,5 +143,9 @@ export class EmailVerification implements OnInit, OnDestroy {
           this.isSubmitting.set(false);
         },
       });
+  }
+
+  goToSignUp() {
+    this.router.navigateByUrl('/signup');
   }
 }

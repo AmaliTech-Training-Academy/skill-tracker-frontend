@@ -11,12 +11,8 @@
     <form [formGroup]="otpForm" class="otp-form" (ngSubmit)="onSubmit()">
       <div class="input-group">
         @for (field of otpFields; track field.index) {
-          <input 
-            #otpInput
-            maxlength="1" 
-            [formControlName]="field.name"
-            (input)="onInput($event, field.index)"
-            (keydown)="onKeyDown($event, field.index)" />
+        <input #otpInput maxlength="1" [formControlName]="field.name" (input)="onInput($event, field.index)"
+          (keydown)="onKeyDown($event, field.index)" />
         }
       </div>
 
@@ -24,23 +20,25 @@
         <p class="resend-info">
           Didn't get the code?
           @if (canResend()) {
-            <button type="button" class="resend-link" (click)="resendCode()">Resend Code</button>
+          <button type="button" class="resend-link" (click)="resendCode()">Resend Code</button>
           } @else {
-            <button type="button" class="resend-link" disabled>Resend Code</button>
-            <span class="timer"> in {{ (timeLeft() * 1000) | date:'mm:ss':'UTC' }}</span>
+          <button type="button" class="resend-link" disabled>Resend Code</button>
+          <span class="timer"> in {{ (timeLeft() * 1000) | date:'mm:ss':'UTC' }}</span>
           }
         </p>
         <p class="edit-email">
-          Entered the wrong email? <a class="link" routerLink="/signup">Go Back</a>
+          Entered the wrong email? <button class="link" type="button" (click)="goToSignUp()">
+            Go Back
+          </button>
         </p>
       </div>
 
       <button class="btn-primary" type="submit" [disabled]="!formValid() || isSubmitting()">
-          @if(isSubmitting()){
-            <span class="spinner"></span> Verifying...
-          } @else {
-            Verify and Continue
-          }
+        @if(isSubmitting()){
+        <span class="spinner"></span> Verifying...
+        } @else {
+        Verify and Continue
+        }
       </button>
     </form>
   </div>
