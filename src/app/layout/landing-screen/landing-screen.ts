@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Navigation } from '../../shared/compomonents/navigation/navigation';
-import { Footer } from '../../shared/compomonents/footer/footer';
+import { Navigation } from '../../shared/components/navigation/navigation';
+import { Footer } from '../../shared/components/footer/footer';
 
 @Component({
   selector: 'app-landing-screen',
