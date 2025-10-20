@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
@@ -11,7 +18,7 @@ import { takeUntil, Subject, of, delay } from 'rxjs';
   styleUrl: './email-verification.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EmailVerification implements OnInit {
+export class EmailVerification implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private toastService = inject(ToastService);
@@ -30,9 +37,14 @@ export class EmailVerification implements OnInit {
   });
 
   ngOnInit() {
-    this.otpForm.statusChanges.subscribe(() => {
+    this.otpForm.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.formValid.set(this.otpForm.valid);
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onInput(event: Event, nextInput?: HTMLInputElement) {
