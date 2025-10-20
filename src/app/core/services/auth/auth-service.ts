@@ -26,6 +26,14 @@ export class AuthService {
     return this.api.post<AuthResponse>('auth/login', payload);
   }
 
+  public hasCompletedOnboarding(): boolean {
+    // TODO: Check a profile state property
+    // return this.userProfile.onboardingComplete === true;
+
+    // For a first-time user: return false
+    return false;
+  }
+
   logout() {
     localStorage.removeItem('token');
     this.currentUser.set(null);
