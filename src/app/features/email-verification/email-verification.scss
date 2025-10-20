@@ -9,7 +9,7 @@
 
 .card {
   @include flex-column;
-  gap: 4.969rem;
+  gap: 2rem;
   padding: 2rem 1.25rem;
   max-width: 345px;
   width: 100%;
@@ -58,8 +58,8 @@
 }
 
 .input-group input {
-  width: 2.3rem;
-  height: 2.3rem;
+  width: 2.1rem;
+  height: 2.1rem;
   font-size: 1.125rem;
   color: $gray-text-strong;
   text-align: center;
@@ -69,13 +69,13 @@
 
   @include mobile-large {
     font-size: 2rem;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 3rem;
+    height: 3rem;
   }
 
   @include tablet {
-    width: 4rem;
-    height: 4rem;
+    width: 3.7rem;
+    height: 3.7rem;
   }
 }
 
@@ -114,7 +114,7 @@
 
   @include tablet {
     @include h11;
-    margin-top: 3rem;
+    margin-top: 1.5rem;
   }
 }
 
