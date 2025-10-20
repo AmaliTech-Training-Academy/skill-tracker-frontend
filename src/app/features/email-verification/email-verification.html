@@ -8,28 +8,34 @@
       </p>
     </div>
 
-    <form class="otp-form">
+    <form [formGroup]="otpForm" class="otp-form" (ngSubmit)="onSubmit()">
       <div class="input-group">
-        <input type="text" maxlength="1" />
-        <input type="text" maxlength="1" />
-        <input type="text" maxlength="1" />
-        <input type="text" maxlength="1" />
-        <input type="text" maxlength="1" />
-        <input type="text" maxlength="1" />
+        <input maxlength="1" formControlName="otp1" (input)="onInput($event, otp2)" (keydown)="onKeyDown($event)" #otp1 />
+        <input maxlength="1" formControlName="otp2" (input)="onInput($event, otp3)" (keydown)="onKeyDown($event, otp1)" #otp2 />
+        <input maxlength="1" formControlName="otp3" (input)="onInput($event, otp4)" (keydown)="onKeyDown($event, otp2)" #otp3 />
+        <input maxlength="1" formControlName="otp4" (input)="onInput($event, otp5)" (keydown)="onKeyDown($event, otp3)" #otp4 />
+        <input maxlength="1" formControlName="otp5" (input)="onInput($event, otp6)" (keydown)="onKeyDown($event, otp4)" #otp5 />
+        <input maxlength="1" formControlName="otp6" (input)="onInput($event)" (keydown)="onKeyDown($event, otp5)" #otp6 />
       </div>
 
       <div class="actions">
         <p class="resend-info">
           Didn't get the code?
-          <button type="button" class="resend-link">Resend Code </button> 
+          <button type="button" class="resend-link">Resend Code </button>
           <span class="timer"> in 00:30</span>
         </p>
         <p class="edit-email">
-          Entered the wrong email? <a class="link">Go Back</a>
+          Entered the wrong email? <a class="link" routerLink="/signup">Go Back</a>
         </p>
       </div>
 
-      <button type="button" class="btn-primary">Verify and Continue</button>
+      <button class="btn-primary" type="submit" [disabled]="!formValid() || isSubmitting()">
+          @if(isSubmitting()){
+            <span class="spinner"></span> Verifying...
+          } @else {
+            Verify Email
+          }
+      </button>
     </form>
   </div>
 </div>
