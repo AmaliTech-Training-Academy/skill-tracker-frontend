@@ -68,12 +68,13 @@
   outline: none;
 
   @include mobile-large {
-    font-size: 2rem;
+    font-size: 1.5rem;
     width: 3rem;
     height: 3rem;
   }
 
   @include tablet {
+    font-size: 1.9rem;
     width: 3.7rem;
     height: 3.7rem;
   }
@@ -107,6 +108,10 @@
     color: $brand-text;
     @include h13;
     cursor: pointer;
+
+    @include tablet {
+      @include h11;
+    }
   }
 }
 

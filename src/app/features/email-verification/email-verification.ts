@@ -124,7 +124,7 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     // Simulate an API call
     of(true)
-      .pipe(delay(this.VERIFICATION_TIME_SEC), takeUntil(this.destroy$))
+      .pipe(delay(this.DELAY_MS), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(
