@@ -15,7 +15,6 @@ import {
   providedIn: 'root',
 })
 export class AuthService {
-  // eslint-disable-next-line @angular-eslint/prefer-inject
   constructor(
     private readonly router: Router,
     private readonly api: ApiService,

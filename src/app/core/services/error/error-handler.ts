@@ -7,7 +7,6 @@ import { ToastService } from '../toast/toast-service';
   providedIn: 'root',
 })
 export class ErrorHandlerService {
-  // eslint-disable-next-line @angular-eslint/prefer-inject
   constructor(private toast: ToastService) {}
 
   getError(error: unknown): AppError {
