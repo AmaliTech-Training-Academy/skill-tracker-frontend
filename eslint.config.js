@@ -12,8 +12,16 @@ module.exports = tseslint.config(
       ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
     ],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.app.json',
+        ecmaVersion: 2020,
+        sourceType: 'module',
+      },
+    },
     processor: angular.processInlineTemplates,
     rules: {
+      '@angular-eslint/prefer-inject': 'off',
       '@angular-eslint/directive-selector': [
         'error',
         {
