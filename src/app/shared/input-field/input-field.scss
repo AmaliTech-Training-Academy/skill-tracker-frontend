@@ -87,6 +87,8 @@
     }
 
     .password-toggle {
+      border: none;
+      background: none;
       position: absolute;
       right: 12px;
       color: $gray-text-weak;
