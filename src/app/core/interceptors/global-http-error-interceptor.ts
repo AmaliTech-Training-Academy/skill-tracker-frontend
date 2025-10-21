@@ -4,10 +4,8 @@ import { catchError, throwError, retry } from 'rxjs';
 
 import { APP_CONSTANTS } from '../constants/app.constants';
 import { AuthService } from '../services/auth/auth-service';
-import { ErrorHandlerService } from '../services/error/error-handler';
 
 export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const errorHandler = inject(ErrorHandlerService);
   const authService = inject(AuthService);
   const MAX_RETRIES = APP_CONSTANTS.RETRY.COUNT;
 
@@ -25,8 +23,6 @@ export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         authService.logout();
       }
-
-      errorHandler.notifyError(error);
 
       return throwError(() => error);
     }),
