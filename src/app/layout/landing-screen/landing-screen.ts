@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, WritableSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, WritableSignal, signal, OnInit } from '@angular/core';
 import { NavigationEnd, RouterOutlet, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
@@ -12,16 +12,17 @@ import { APP_CONSTANTS } from '@app/core';
   styleUrl: './landing-screen.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LandingScreen {
+export class LandingScreen implements OnInit {
   private readonly fullPageRoutePaths: string[] = [
     APP_CONSTANTS.FULL_PAGE_ROUTES.LEVEL_SELECTION,
     APP_CONSTANTS.FULL_PAGE_ROUTES.INTEREST_SELECTION,
   ];
 
-  public isFullPageLayout: WritableSignal<boolean>;
+  public isFullPageLayout: WritableSignal<boolean> = signal(false);
 
-  // eslint-disable-next-line @angular-eslint/prefer-inject
-  constructor(private router: Router) {
+  constructor(private router: Router) {}
+
+  ngOnInit() {
     const initialUrl = this.router.url;
     const isInitialFullPage = this.fullPageRoutePaths.some((path) => initialUrl.includes(path));
 
