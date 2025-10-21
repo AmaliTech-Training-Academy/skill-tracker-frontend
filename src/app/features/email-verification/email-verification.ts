@@ -17,7 +17,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { ToastService } from '@app/core';
 import { takeUntil, Subject, of, delay } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
