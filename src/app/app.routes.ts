@@ -29,7 +29,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
 
-      {
+      },
       {
         path: 'email-verification',
         canActivate: [guestGuard],
