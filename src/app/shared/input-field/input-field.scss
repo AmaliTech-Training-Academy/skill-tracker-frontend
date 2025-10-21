@@ -46,16 +46,15 @@
     align-items: center;
 
     input {
-      padding-right: 40px; // space for eye icon
+      padding-right: 40px;
     }
 
     .password-toggle {
+      @include flex-center;
       position: absolute;
       right: 12px;
       cursor: pointer;
-      display: flex;
       align-items: center;
-      justify-content: center;
 
       img {
         width: 20px;
