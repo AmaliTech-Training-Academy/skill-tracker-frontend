@@ -47,7 +47,7 @@ describe('ForgotPassword', () => {
 
   it('should reset the email field when trydifferentemail() is called', () => {
     component.getControl('email').setValue('user@example.com');
-    component.trydifferentemail();
+    component.tryDifferentEmail();
     expect(component.getControl('email').value).toBe('');
   });
 });

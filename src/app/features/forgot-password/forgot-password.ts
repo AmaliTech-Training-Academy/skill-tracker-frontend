@@ -1,12 +1,6 @@
-import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormControl,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
@@ -20,22 +14,29 @@ import { ForgotPasswordService } from './forgot-password.service';
   styleUrls: ['./forgot-password.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ForgotPassword implements  OnDestroy {
+export class ForgotPassword implements OnInit, OnDestroy {
+  forgotPasswordForm!: FormGroup;
   loading = false;
-  forgotPasswordForm: FormGroup = new FormBuilder().group({
-    email: ['', [Validators.required, Validators.email]],
-  });
-
   private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private toastService: ToastService,
-    private forgotPasswordService: ForgotPasswordService
+    private readonly formBuilder: FormBuilder,
+    private readonly toastService: ToastService,
+    private readonly forgotPasswordService: ForgotPasswordService
   ) {}
 
+  ngOnInit(): void {
+    this.initForm();
+  }
 
-  getControl(controlName: string): FormControl {
-    return this.forgotPasswordForm.get(controlName) as FormControl;
+  private initForm(): void {
+    this.forgotPasswordForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+    });
+  }
+
+  getControl(name: string): FormControl {
+    return this.forgotPasswordForm.get(name) as FormControl;
   }
 
   submit(): void {
@@ -56,13 +57,16 @@ export class ForgotPassword implements  OnDestroy {
           this.loading = false;
         },
         error: () => {
-          this.toastService.showError('Error', 'This email does not exist in our records.');
+          this.toastService.showError(
+            'Error',
+            'This email does not exist in our records.'
+          );
           this.loading = false;
         },
       });
   }
 
-  trydifferentemail(): void {
+  tryDifferentEmail(): void {
     this.getControl('email').reset('');
   }
 
