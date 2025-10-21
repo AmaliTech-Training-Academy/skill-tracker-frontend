@@ -8,12 +8,13 @@ import {
   inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
 import { InputFieldComponent } from 'src/app/shared/input-field/input-field';
+import { getFormControl } from 'src/app/shared/utils/form-utils';
 
 @Component({
   selector: 'app-signup',
@@ -82,7 +83,7 @@ export class Signup implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Subscribe to password changes to update signal
-    this.getFormControl('password')
+    this.getFormControl(this.signupForm, 'password')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.passwordValue.set(value || '');
@@ -97,9 +98,7 @@ export class Signup implements OnInit, OnDestroy {
     // Implement GitHub Auth logic here
   }
 
-  getFormControl(fieldName: string) {
-    return this.signupForm.get(fieldName) as FormControl;
-  }
+  getFormControl = getFormControl;
 
   goToLogin() {
     this.router.navigateByUrl('/login');

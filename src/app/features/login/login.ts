@@ -1,17 +1,12 @@
 import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormControl,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoginService } from './login.service';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { getFormControl } from 'src/app/shared/utils/form-utils';
 
 @Component({
   selector: 'app-login',
@@ -32,6 +27,8 @@ export class Login implements OnDestroy {
   private readonly loginService = inject(LoginService);
   private readonly toastService = inject(ToastService);
 
+  getFormControl = getFormControl;
+
   constructor() {
     this.loginForm = this.createForm();
   }
@@ -41,10 +38,6 @@ export class Login implements OnDestroy {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
-  }
-
-  getControl(controlName: string): FormControl {
-    return this.loginForm.get(controlName) as FormControl;
   }
 
   login(): void {

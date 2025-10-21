@@ -16,7 +16,7 @@
                     type="email"
                     id="email"
                     placeholder="Email"
-                    [control]="getFormControl('email')">
+                    [control]="getFormControl(signupForm,'email')">
                 </app-input-field>
 
                 <!-- Password Field -->
@@ -25,7 +25,7 @@
                     type="password"
                     id="password"
                     placeholder="***********"
-                    [control]="getFormControl('password')"
+                    [control]="getFormControl(signupForm,'password')"
                     [passwordRequirements]="passwordRequirements()"
                     [showPasswordRequirements]="true">
                 </app-input-field>
@@ -36,7 +36,7 @@
                     type="password"
                     id="confirmPassword"
                     placeholder="***********"
-                    [control]="getFormControl('confirmPassword')"
+                    [control]="getFormControl(signupForm,'confirmPassword')"
                     [formHasPasswordMismatch]="signupForm.hasError('passwordsMismatch')">
                 </app-input-field>
 
