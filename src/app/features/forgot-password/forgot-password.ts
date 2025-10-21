@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { ToastService } from '@app/core';
 import { ForgotPasswordService } from './forgot-password.service';
+import { getFormControl } from '@app/shared';
 
 @Component({
   selector: 'app-forgot-password',
@@ -15,15 +16,13 @@ import { ForgotPasswordService } from './forgot-password.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotPassword implements OnInit, OnDestroy {
-  forgotPasswordForm!: FormGroup;
-  loading = false;
+  public forgotPasswordForm!: FormGroup;
+  public loading = false;
   private readonly destroy$ = new Subject<void>();
-
-  constructor(
-    private readonly formBuilder: FormBuilder,
-    private readonly toastService: ToastService,
-    private readonly forgotPasswordService: ForgotPasswordService
-  ) {}
+  
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly toastService: ToastService = inject(ToastService);
+  private readonly forgotPasswordService = inject(ForgotPasswordService);
 
   ngOnInit(): void {
     this.initForm();
@@ -35,11 +34,9 @@ export class ForgotPassword implements OnInit, OnDestroy {
     });
   }
 
-  getControl(name: string): FormControl {
-    return this.forgotPasswordForm.get(name) as FormControl;
-  }
+  public getControl = getFormControl;
 
-  submit(): void {
+  public submit(): void {
     if (this.forgotPasswordForm.invalid) return;
 
     this.loading = true;
@@ -66,8 +63,8 @@ export class ForgotPassword implements OnInit, OnDestroy {
       });
   }
 
-  tryDifferentEmail(): void {
-    this.getControl('email').reset('');
+  public tryDifferentEmail(): void {
+    this.getControl(this.forgotPasswordForm,'email').reset('');
   }
 
   ngOnDestroy(): void {

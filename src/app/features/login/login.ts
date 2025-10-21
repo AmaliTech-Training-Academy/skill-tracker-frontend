@@ -5,8 +5,8 @@ import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoginService } from './login.service';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { ToastService } from 'src/app/core/services/toast/toast-service';
-import { getFormControl } from 'src/app/shared/utils/form-utils';
+import { ToastService } from '@app/core';
+import { getFormControl } from '@app/shared';
 
 @Component({
   selector: 'app-login',
