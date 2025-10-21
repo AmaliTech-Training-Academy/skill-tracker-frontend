@@ -13,10 +13,10 @@ export const onboardingGuard: CanActivateFn = (route, state) => {
 
   const hasCompleted = authService.hasCompletedOnboarding();
 
-  if (!hasCompleted) {
-    return true;
+  if (hasCompleted) {
+    router.navigateByUrl('/dashboard');
+    return false;
   }
 
-  router.navigate(['/dashboard']);
-  return false;
+  return true;
 };
