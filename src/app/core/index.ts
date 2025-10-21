@@ -9,6 +9,8 @@ export * from './interceptors/global-http-error-interceptor';
 
 // guards
 export * from './guards/auth-guard';
+export * from './guards/onboarding-guard';
+export * from './guards/guest-guard';
 
 // constants
 export * from './constants/app.constants';

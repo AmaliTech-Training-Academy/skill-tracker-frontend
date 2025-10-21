@@ -3,4 +3,8 @@ export const APP_CONSTANTS = {
     COUNT: 2,
     DELAY_MS: 1000,
   },
+  FULL_PAGE_ROUTES: {
+    LEVEL_SELECTION: '/onboarding/level-selection',
+    INTEREST_SELECTION: '/onboarding/interest-selection',
+  },
 } as const;
