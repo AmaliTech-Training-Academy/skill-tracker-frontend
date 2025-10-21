@@ -13,7 +13,6 @@ export const routes: Routes = [
         canActivate: [guestGuard],
         loadComponent: () => import('./features/signup/signup').then((c) => c.Signup),
       },
-      {
         path: 'login',
         canActivate: [guestGuard],
         loadComponent: () => import('./features/login/login').then((c) => c.Login),
@@ -23,6 +22,13 @@ export const routes: Routes = [
         canActivate: [guestGuard],
         loadComponent: () => import('./features/forgot-password/forgot-password').then((c) => c.ForgotPassword),
       },
+        
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
+
+      {
       {
         path: 'email-verification',
         canActivate: [guestGuard],
@@ -37,6 +43,7 @@ export const routes: Routes = [
         canActivate: [onboardingGuard],
         loadComponent: () =>
           import('./features/level-selection/level-selection').then((c) => c.LevelSelection),
+
       },
     ],
   },
