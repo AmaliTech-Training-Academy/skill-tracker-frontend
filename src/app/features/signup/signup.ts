@@ -13,34 +13,35 @@ import { Router } from '@angular/router';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from 'src/app/shared/validators/custom-validators';
 import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { InputFieldComponent } from 'src/app/shared/input-field/input-field';
+import { getFormControl } from 'src/app/shared/utils/form-utils';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Signup implements OnInit, OnDestroy {
   isSubmitting = signal(false);
-  showPassword = signal(false);
-  showConfirmPassword = signal(false);
 
   fb = inject(FormBuilder);
   toastService = inject(ToastService);
   router = inject(Router);
 
-  // Signal to track password value for reactivity
   passwordValue = signal('');
   private destroy$ = new Subject<void>();
+  private readonly SIGNUP_DELAY_MS = 2000;
 
-  // Reactive form initialization
   signupForm = this.fb.group(
     {
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
         [
+          Validators.required,
+          Validators.minLength(8),
           CustomValidators.hasUppercase,
           CustomValidators.hasLowercase,
           CustomValidators.hasNumber,
@@ -82,14 +83,27 @@ export class Signup implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Subscribe to password changes to update signal
-    this.formField('password')
+    this.getFormControl(this.signupForm, 'password')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.passwordValue.set(value || '');
       });
   }
 
-  // Authentication methods
+  signInWithGoogle() {
+    // Implement Google Auth logic here
+  }
+
+  signInWithGithub() {
+    // Implement GitHub Auth logic here
+  }
+
+  getFormControl = getFormControl;
+
+  goToLogin() {
+    this.router.navigateByUrl('/login');
+  }
+
   async onSubmit() {
     this.signupForm.markAllAsTouched();
 
@@ -99,7 +113,7 @@ export class Signup implements OnInit, OnDestroy {
 
     // Simulate an API call
     of(true)
-      .pipe(delay(2000), takeUntil(this.destroy$))
+      .pipe(delay(this.SIGNUP_DELAY_MS), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(
@@ -118,23 +132,6 @@ export class Signup implements OnInit, OnDestroy {
           this.isSubmitting.set(false);
         },
       });
-  }
-
-  signInWithGoogle() {
-    // Implement Google Auth logic here
-  }
-
-  signInWithGithub() {
-    // Implement GitHub Auth logic here
-  }
-
-  formField(fieldName: string) {
-    return this.signupForm.get(fieldName);
-  }
-
-  hasFieldError(fieldName: string, errorType: string): boolean {
-    const field = this.formField(fieldName);
-    return (field?.touched && field?.hasError(errorType)) || false;
   }
 
   ngOnDestroy() {

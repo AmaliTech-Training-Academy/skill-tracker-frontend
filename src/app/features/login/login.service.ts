@@ -13,8 +13,6 @@ export class LoginService {
     password: 'password',
   };
 
-  constructor() {}
-
   login(email: string, password: string): Observable<LoginSuccessResponse | LoginErrorResponse> {
     const apiDelay = 1000;
 
