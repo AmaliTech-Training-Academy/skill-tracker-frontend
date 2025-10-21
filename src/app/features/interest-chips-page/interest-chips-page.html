@@ -9,13 +9,7 @@ interests
   ></app-interests-chip>
 </div>
 
-<p>Selected: {{ selectedBadges.length ? selectedBadges.join(', ') : 'None' }}</p>
 <br>
-
-
-
-
-<p>levels</p>
 
 <app-skill-level-selector
   skillLabel="HTML & CSS (Web Basics)"
@@ -29,4 +23,4 @@ interests
   (levelSelected)="onLevelSelected($event)"
 ></app-skill-level-selector>
 
-<p>Selected Level: {{ selectedLevel }}</p>
+

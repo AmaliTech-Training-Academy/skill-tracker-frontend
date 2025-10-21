@@ -27,7 +27,7 @@
     color: $gray-text-strong;
 
     @media (max-width: 600px) {
-       @include h13;
+      @include h13;
     }
   }
 }
@@ -38,7 +38,6 @@
 }
 
 .level-chip {
-  
   padding: 6px 35px;
   border: 1px solid transparent;
   border-radius: 20px;
@@ -50,8 +49,42 @@
     opacity: 0.9;
   }
 
+  &[data-level='beginner'] {
+    background-color: #f3faf3;
+    color: #358439;
+  }
+
+  &[data-level='intermediate'] {
+    background-color: #eef4ff;
+    color: #142fe1;
+  }
+
+  &[data-level='advanced'] {
+    background-color: #fffbeb;
+    color: #dd7602;
+  }
+
+  &.selected {
+    color: #fff;
+
+    &[data-level='beginner'] {
+      background-color: #358439;
+      border-color: #358439;
+    }
+
+    &[data-level='intermediate'] {
+      background-color: #142fe1;
+      border-color: #142fe1;
+    }
+
+    &[data-level='advanced'] {
+      background-color: #dd7602;
+      border-color: #dd7602;
+    }
+  }
+
   @media (max-width: 600px) {
     padding: 6px 20px;
     height: 40px;
-    }
+  }
 }

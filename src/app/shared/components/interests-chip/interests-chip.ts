@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class InterestsChipComponent {
   @Input() label = '';
-  @Input() icon = ''; // image URL
+  @Input() icon = '';
   @Input() selected = false;
 
   @Output() chipSelect = new EventEmitter<void>();

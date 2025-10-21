@@ -1,25 +1,19 @@
 <div class="skill-card">
-  <!-- Skill Header -->
   <div class="skill-header">
-    <img [src]="skillIcon" alt="{{ skillLabel }}" class="icon" />
+    <img [src]="skillIcon" [alt]="skillLabel" class="icon" />
     <span class="label">{{ skillLabel }}</span>
   </div>
 
-  <!-- Level Buttons -->
   <div class="levels">
-    <button
-      *ngFor="let level of levels"
-      class="level-chip"
-      [ngStyle]="{
-        backgroundColor: selectedLevel === level.name
-          ? level.selectedBg
-          : level.BackgroundColor,
-        color: selectedLevel === level.name ? '#fff' : level.color,
-        borderColor: selectedLevel === level.name ? level.selectedBg : 'transparent'
-      }"
-      (click)="selectLevel(level.name)"
-    >
-      {{ level.name }}
-    </button>
+    @for (level of levels; track level.name) {
+      <button
+        class="level-chip"
+        [class.selected]="selectedLevel === level.name"
+        [attr.data-level]="level.name.toLowerCase()"
+        (click)="selectLevel(level.name)"
+      >
+        {{ level.name }}
+      </button>
+    }
   </div>
 </div>

@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InterestsChipComponent } from 'src/app/shared/components/interests-chip/interests-chip';
 import { SkillLevelSelectorComponent } from 'src/app/shared/components/skill-level-selector/skill-level-selector';
+
 @Component({
   selector: 'app-interests-page',
   standalone: true,
@@ -19,6 +20,8 @@ export class InterestsPageComponent {
     { id: 'angular', label: 'Angular', icon: 'assets/angular-icon.png' },
   ];
 
+  selectedLevel = '';
+
   toggleBadge(id: string): void {
     if (this.selectedBadges.includes(id)) {
       this.selectedBadges = this.selectedBadges.filter((b) => b !== id);
@@ -27,13 +30,7 @@ export class InterestsPageComponent {
     }
   }
 
-  selectedLevel = '';
-
-    onLevelSelected(level: string) {
-      this.selectedLevel = level;
-    }
-
-
-    
-
+  onLevelSelected(level: string): void {
+    this.selectedLevel = level;
+  }
 }
