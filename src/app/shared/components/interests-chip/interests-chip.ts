@@ -16,7 +16,7 @@ export class InterestsChipComponent {
 
   @Output() chipSelect = new EventEmitter<void>();
 
-  onClick(): void {
+  onSelect(): void {
     this.chipSelect.emit();
   }
 }

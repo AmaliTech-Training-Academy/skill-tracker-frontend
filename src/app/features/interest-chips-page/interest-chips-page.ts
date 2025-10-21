@@ -24,7 +24,7 @@ export class InterestsPageComponent {
 
   toggleBadge(id: string): void {
     if (this.selectedBadges.includes(id)) {
-      this.selectedBadges = this.selectedBadges.filter((b) => b !== id);
+      this.selectedBadges = this.selectedBadges.filter((badge) => badge !== id);
     } else {
       this.selectedBadges = [...this.selectedBadges, id];
     }

@@ -50,36 +50,36 @@
   }
 
   &[data-level='beginner'] {
-    background-color: #f3faf3;
-    color: #358439;
+    background-color: $green-fill;
+    color: $green-success;
   }
 
   &[data-level='intermediate'] {
-    background-color: #eef4ff;
-    color: #142fe1;
+    background-color: $brand-fill;
+    color: $brand-stroke-strong;
   }
 
   &[data-level='advanced'] {
-    background-color: #fffbeb;
-    color: #dd7602;
+    background-color: $orange-fill;
+    color: $orange-text;
   }
 
   &.selected {
-    color: #fff;
+    color: $background-white;
 
     &[data-level='beginner'] {
-      background-color: #358439;
-      border-color: #358439;
+      background-color: $green-success;
+      border-color: $green-success;
     }
 
     &[data-level='intermediate'] {
-      background-color: #142fe1;
-      border-color: #142fe1;
+      background-color: $brand-text;
+      border-color: $brand-text;
     }
 
     &[data-level='advanced'] {
-      background-color: #dd7602;
-      border-color: #dd7602;
+      background-color: $orange-text;
+      border-color: $orange-text;
     }
   }
 
