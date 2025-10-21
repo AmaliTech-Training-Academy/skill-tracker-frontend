@@ -18,6 +18,11 @@ export const routes: Routes = [
         canActivate: [guestGuard],
         loadComponent: () => import('./features/login/login').then((c) => c.Login),
       },
+       {
+        path: 'forgot-password',
+        canActivate: [guestGuard],
+        loadComponent: () => import('./features/forgot-password/forgot-password').then((c) => c.ForgotPassword),
+      },
       {
         path: 'email-verification',
         canActivate: [guestGuard],
@@ -25,6 +30,7 @@ export const routes: Routes = [
           import('./features/email-verification/email-verification').then(
             (c) => c.EmailVerification,
           ),
+
       },
       {
         path: 'onboarding/level-selection',
