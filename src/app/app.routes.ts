@@ -13,6 +13,7 @@ export const routes: Routes = [
         canActivate: [guestGuard],
         loadComponent: () => import('./features/signup/signup').then((c) => c.Signup),
       },
+      {
         path: 'login',
         canActivate: [guestGuard],
         loadComponent: () => import('./features/login/login').then((c) => c.Login),
