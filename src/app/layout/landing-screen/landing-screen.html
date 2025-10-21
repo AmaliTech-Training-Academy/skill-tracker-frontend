@@ -1,6 +1,9 @@
-<app-navigation></app-navigation>
+@if (!isFullPageLayout()) {
+  <app-navigation></app-navigation>
+}
 <main>
-    <router-outlet></router-outlet>
+  <router-outlet></router-outlet>
 </main>
-<app-footer></app-footer>
-
+@if (!isFullPageLayout()) {
+  <app-footer></app-footer>
+}
