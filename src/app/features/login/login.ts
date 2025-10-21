@@ -1,6 +1,6 @@
 import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoginService } from './login.service';
@@ -20,7 +20,6 @@ export class Login implements OnDestroy {
   successMessage = '';
   errorMessage = '';
   loading = false;
-  loginForm: FormGroup;
 
   private readonly destroy$ = new Subject<void>();
   private readonly fb = inject(FormBuilder);
@@ -29,16 +28,10 @@ export class Login implements OnDestroy {
 
   getFormControl = getFormControl;
 
-  constructor() {
-    this.loginForm = this.createForm();
-  }
-
-  private createForm(): FormGroup {
-    return this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    });
-  }
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
   login(): void {
     if (this.loginForm.invalid) {
@@ -52,7 +45,7 @@ export class Login implements OnDestroy {
     const { email, password } = this.loginForm.value;
 
     this.loginService
-      .login(email, password)
+      .login(email!, password!)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
