@@ -5,8 +5,7 @@
 
 .level {
   background: $background-white;
-  @include flex-column;
-  @include flex-center;
+  @include flex(column, center, center);
   height: 100vh;
 
   &-container {
@@ -15,8 +14,7 @@
     background-color: white;
 
     & > span {
-      @include flex-row;
-      gap: 2px;
+      @include flex(row, center, center, 2px);
       margin-bottom: 32px;
     }
 
@@ -29,8 +27,7 @@
       border: none;
       color: $brand-text;
       cursor: pointer;
-      @include flex-row;
-      gap: 2px;
+      @include flex(row, center, center, 2px);
       margin-bottom: 32px;
     }
 
@@ -50,7 +47,7 @@
 
   &-btns {
     margin-top: 16px;
-    @include flex-column;
+    @include flex(column, center, center, 16px);
     gap: 16px;
 
     & button {
@@ -69,8 +66,7 @@
   }
 
   &--spinner {
-    @include flex-center;
-    @include flex-column;
+    @include flex(column, center, center);
 
     & img {
       margin-bottom: 32px;
@@ -93,14 +89,14 @@
     }
 
     &.loading-btn {
-      @include flex-row-center;
+      @include flex(row, center, center);
     }
 
     & button {
       @include button-primary;
       font-size: 16px;
 
-      @include flex-row-center;
+      @include flex(row, center, center);
       gap: 4px;
 
       & img.right-arrow {
@@ -125,8 +121,7 @@
     }
 
     &-btns {
-      @include flex-row;
-      @include flex-between;
+      @include flex(row, center, center, 16px);
     }
 
     &--spinner {
