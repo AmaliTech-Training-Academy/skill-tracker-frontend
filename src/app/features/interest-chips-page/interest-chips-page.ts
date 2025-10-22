@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InterestsChipComponent } from 'src/app/shared/components/interests-chip/interests-chip';
-import { SkillLevelSelectorComponent } from 'src/app/shared/components/skill-level-selector/skill-level-selector';
+import { InterestsChipComponent } from '@app/shared/components/interests-chip/interests-chip';
+import { SkillLevelSelectorComponent } from '@app/shared/components/skill-level-selector/skill-level-selector';
 
 @Component({
   selector: 'app-interests-page',
