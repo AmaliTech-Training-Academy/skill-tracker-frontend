@@ -31,6 +31,14 @@ export const routes: Routes = [
 
       },
       {
+        path: 'interests',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/interest-chips-page/interest-chips-page').then(
+            (c) => c.InterestsPageComponent,
+          ),
+      },
+      {
         path: 'email-verification',
         canActivate: [guestGuard],
         loadComponent: () =>
