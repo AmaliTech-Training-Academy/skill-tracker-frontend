@@ -9,7 +9,7 @@
 
 .card {
   @include flex-column;
-  gap: 4.969rem;
+  gap: 2rem;
   padding: 2rem 1.25rem;
   max-width: 345px;
   width: 100%;
@@ -37,7 +37,7 @@
     color: $gray-text-weak;
 
     @include tablet {
-      @include h9;
+      @include h11;
     }
   }
 }
@@ -58,22 +58,25 @@
 }
 
 .input-group input {
-  width: 2.3rem;
-  height: 2.3rem;
-  font-size: 1.6rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  font-size: 1.125rem;
+  color: $gray-text-strong;
   text-align: center;
   border: 2px solid $brand-text;
   border-radius: 4px;
   outline: none;
 
   @include mobile-large {
-    width: 3.5rem;
-    height: 3.5rem;
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
   }
 
   @include tablet {
-    width: 4rem;
-    height: 4rem;
+    font-size: 1.9rem;
+    width: 3.7rem;
+    height: 3.7rem;
   }
 }
 
@@ -84,7 +87,7 @@
   color: $gray-text-strong;
 
   @include tablet {
-    @include h9;
+    @include h11;
   }
 
   .resend-link {
@@ -95,13 +98,20 @@
     cursor: pointer;
 
     @include tablet {
-      @include h9;
+      @include h11;
     }
   }
 
   .link {
+    border: none;
+    background: none;
     color: $brand-text;
+    @include h13;
     cursor: pointer;
+
+    @include tablet {
+      @include h11;
+    }
   }
 }
 
@@ -110,7 +120,27 @@
   @include h11;
 
   @include tablet {
-    @include h9;
-    margin-top: 3rem;
+    @include h11;
+    margin-top: 1.5rem;
+  }
+}
+
+//Spinner styles
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
