@@ -15,8 +15,7 @@
     background-color: white;
 
     & > span {
-      display: flex;
-      align-items: center;
+      @include flex-row;
       gap: 2px;
       margin-bottom: 32px;
     }
@@ -94,18 +93,14 @@
     }
 
     &.loading-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      @include flex-row-center;
     }
 
     & button {
       @include button-primary;
       font-size: 16px;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      @include flex-row-center;
       gap: 4px;
 
       & img.right-arrow {

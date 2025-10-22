@@ -21,6 +21,12 @@
   align-items: center;
 }
 
+@mixin flex-row-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @mixin mobile-large {
   @media (min-width: 480px) {
     @content;
