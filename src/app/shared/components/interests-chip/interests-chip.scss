@@ -1,0 +1,35 @@
+@use 'mixins' as *;
+@use 'colors' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid $gray-stroke-weak;
+  @include h13;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin: 6px 6px;
+  background-color: transparent;
+  color: $gray-text-strong;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  &.selected {
+    background-color: $brand-text;
+    color: #fff;
+    border-color: $brand-text;
+  }
+
+  &:hover {
+    border-color: $brand-text;
+  }
+}

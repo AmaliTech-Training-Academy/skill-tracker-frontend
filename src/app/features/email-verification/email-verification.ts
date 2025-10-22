@@ -17,7 +17,7 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { ToastService } from '@app/core';
 import { takeUntil, Subject, of, delay } from 'rxjs';
 import { DatePipe } from '@angular/common';
 
@@ -31,24 +31,24 @@ import { DatePipe } from '@angular/common';
 export class EmailVerification implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private toastService = inject(ToastService);
+  private toastService: ToastService = inject(ToastService);
 
   private readonly DELAY_MS = 2000;
   private readonly VERIFICATION_TIME_SEC = 30;
   private readonly INTERVAL_MS = 1000;
 
-  isSubmitting = signal(false);
-  formValid = signal(false);
-  timeLeft = signal(this.VERIFICATION_TIME_SEC);
-  canResend = signal(false);
+  public isSubmitting = signal(false);
+  public formValid = signal(false);
+  public timeLeft = signal(this.VERIFICATION_TIME_SEC);
+  public canResend = signal(false);
 
   private destroy$ = new Subject<void>();
 
-  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
+  @ViewChildren('otpInput') private otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
-  otpFields = Array.from({ length: 6 }, (_, i) => ({ name: `otp${i}`, index: i }));
+  public otpFields = Array.from({ length: 6 }, (_, i) => ({ name: `otp${i}`, index: i }));
 
-  otpForm!: FormGroup;
+  public otpForm!: FormGroup;
 
   ngOnInit() {
     const controls: Record<string, FormControl> = {};
@@ -71,7 +71,7 @@ export class EmailVerification implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  startTimer() {
+  public startTimer() {
     this.timeLeft.set(30);
     this.canResend.set(false);
 
@@ -86,12 +86,12 @@ export class EmailVerification implements OnInit, OnDestroy {
     }, this.INTERVAL_MS);
   }
 
-  resendCode() {
+  public resendCode() {
     this.toastService.showInfo('Code Sent', 'A new verification code has been sent to your email.');
     this.startTimer();
   }
 
-  onInput(event: Event, index: number) {
+  public onInput(event: Event, index: number) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
 
@@ -106,7 +106,7 @@ export class EmailVerification implements OnInit, OnDestroy {
     }
   }
 
-  onKeyDown(event: KeyboardEvent, index: number) {
+  public onKeyDown(event: KeyboardEvent, index: number) {
     const input = event.target as HTMLInputElement;
 
     if (event.key === 'Backspace' && !input.value && index > 0) {
@@ -115,7 +115,7 @@ export class EmailVerification implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit() {
+  public onSubmit() {
     this.otpForm.markAllAsTouched();
 
     if (this.otpForm.invalid) return;
@@ -145,7 +145,7 @@ export class EmailVerification implements OnInit, OnDestroy {
       });
   }
 
-  goToSignUp() {
+  public goToSignUp() {
     this.router.navigateByUrl('/signup');
   }
 }

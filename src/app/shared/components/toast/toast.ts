@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ToastType } from 'src/app/core/models/toast-model';
-import { ToastService } from 'src/app/core/services/toast/toast-service';
+import { ToastType } from '@app/core';
+import { ToastService } from '@app/core';
 
 @Component({
   selector: 'app-toast',

@@ -172,8 +172,16 @@
       color: $gray-stroke-strong;
 
       .link {
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
         color: $brand-text;
         text-decoration: none;
+        @include h13;
+
+        @include mobile-large {
+          @include h11;
+        }
       }
     }
   }
@@ -226,8 +234,8 @@
 
       span {
         display: none;
-        @include h13;
-        color: #1e293b;
+        @include h11;
+        color: $gray-text-strong;
 
         @include mobile-large {
           display: inline;

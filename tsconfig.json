@@ -14,10 +14,8 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": ".",
     "paths": {
-      "@app/core": ["./src/app/core"],
-      "@app/store": ["./src/app/store"]
+      "@app/*": ["./src/app/*"]
     }
   },
   "angularCompilerOptions": {
