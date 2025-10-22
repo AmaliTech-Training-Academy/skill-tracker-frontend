@@ -3,7 +3,7 @@
 @use 'typography' as *;
 @use 'components' as *;
 
-.interest {
+.interests {
   background: $background-white;
   @include flex-column;
   @include flex-center;
@@ -12,23 +12,9 @@
   &-container {
     padding: 48px 16px;
     margin: 0px 24px;
-    background-color: white;
+    background-color: $gray-white;
 
     & > span {
-      @include flex-row;
-      gap: 2px;
-      margin-bottom: 32px;
-    }
-
-    & img {
-      width: 18px;
-    }
-
-    & .back-btn {
-      background-color: transparent;
-      border: none;
-      color: $brand-text;
-      cursor: pointer;
       @include flex-row;
       gap: 2px;
       margin-bottom: 32px;
@@ -49,7 +35,7 @@
   }
 
   &-btns {
-    margin-top: 16px;
+    margin-top: 26px;
     @include flex-column;
     gap: 16px;
 
@@ -58,61 +44,19 @@
       font-size: 16px;
     }
 
-    &--skip {
+    .interests-btns--skip {
       @include button-outline;
-      border: 1px solid $brand-stroke-strong;
     }
 
-    &--next {
+    .interests-btns--next {
       @include button-primary;
     }
   }
 
-  &--spinner {
-    @include flex-center;
-    @include flex-column;
-
-    & img {
-      margin-bottom: 32px;
-      width: 154px;
-    }
-
-    & div.content {
-      text-align: center;
-      margin-bottom: 32px;
-
-      & h1 {
-        @include h10;
-        margin-bottom: 24px;
-      }
-
-      & p {
-        @include h13;
-        color: $gray-text-strong;
-      }
-    }
-
-    &.loading-btn {
-      @include flex-row-center;
-    }
-
-    & button {
-      @include button-primary;
-      font-size: 16px;
-
-      @include flex-row-center;
-      gap: 4px;
-
-      & img.right-arrow {
-        width: 22px;
-        margin-bottom: 0;
-      }
-    }
-  }
 }
 
 @include tablet {
-  .interest {
+  .interests {
     &-container {
       padding: 48px 48px;
       & h1 {
@@ -129,34 +73,8 @@
       @include flex-between;
     }
 
-    &--spinner {
-      & div.content {
-        & h1 {
-          @include h9;
-          margin-bottom: 24px;
-        }
-      }
-    }
   }
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
-.custom-spinner {
-  width: 18px;
-  height: 18px;
-  margin: 0;
 
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-
-  animation: spin 0.8s linear infinite;
-}
