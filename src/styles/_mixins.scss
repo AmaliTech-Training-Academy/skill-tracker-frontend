@@ -21,6 +21,17 @@
   }
 }
 
+@mixin flex-row-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@mixin flex-row {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
 @mixin tablet {
   @media (min-width: 768px) {
     @content;
