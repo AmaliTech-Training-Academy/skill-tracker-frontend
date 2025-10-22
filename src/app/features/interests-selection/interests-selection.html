@@ -1,0 +1,23 @@
+<section class="interests-selection">
+    <h1>Choose up to 5 interests to personalize your experience</h1>
+
+    <p>Please select up to 5 skills to showcase in your profile. You can add more later if interested</p>
+
+    <div class="interests-chips-container">
+      
+    @for (badge of badges; track badge.id) {
+     
+    <app-interests-chip
+      [label]="badge.label"
+      [icon]="badge.icon"
+      [selected]="selectedBadges.includes(badge.id)"
+      (chipSelect)="toggleBadge(badge.id)"
+    />
+  }
+    </div>
+
+    <div class="interests-decision-buttons">
+        <button class="decision-next">Next</button>
+        <button class="decision-skip">Skip</button>
+    </div>
+</section>

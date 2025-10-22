@@ -1,0 +1,59 @@
+@use 'mixins' as *;
+@use 'colors' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+
+.interests-selection{
+   h1{
+    @include h12;
+    color: $background-overlay;
+    @include desktop{
+       @include h9;
+    }
+   }
+
+   p{
+    @include h13;
+    color: $gray-text-strong;
+    margin-top: 20px;
+   }
+
+   
+
+   
+    margin-inline: auto;
+    margin-top: 2rem;
+    background-color: $gray-white;
+    
+    .interests-chips-container{
+        width: 100%;
+        margin-block: 35px;
+    }
+
+    .interests-decision-buttons{
+     @include flex-column;
+     
+     width: 100%;
+     gap: 15px;
+     margin-bottom: 20px;
+
+    @include desktop{
+        @include flex-column;
+        flex-direction: row-reverse;
+    }
+
+    }
+
+    .decision-next{
+    @include button-primary;
+    }
+
+    .decision-skip{
+    @include button-outline;
+    }
+
+    
+
+   
+}

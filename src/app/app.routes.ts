@@ -30,8 +30,9 @@ export const routes: Routes = [
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
 
       },
+        
       {
-        path: 'interests',
+        path: 'interests-chips-level',
         canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/interest-chips-page/interest-chips-page').then(
@@ -46,6 +47,14 @@ export const routes: Routes = [
             (c) => c.EmailVerification,
           ),
 
+      },
+      {
+        path: 'onboarding/interest-selection',
+        canActivate: [guestGuard],
+        loadComponent: () =>
+          import('./features/interests-selection/interests-selection').then(
+            (c) => c.InterestsSelection,
+          ),
       },
       {
         path: 'onboarding/level-selection',
