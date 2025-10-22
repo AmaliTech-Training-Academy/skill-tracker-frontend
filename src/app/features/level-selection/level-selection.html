@@ -1,1 +1,55 @@
-<p>level-selection works!</p>
+@defer (when isComplete()) {
+  <section class="level">
+    <div class="level-container">
+      <div class="level--spinner">
+        <img src="assets/checked-circle.png" alt="checked" />
+        @if (isLoading()) {
+          <div class="content">
+            <h1>Building Your Personalised Skill Journey</h1>
+            <p>
+              Hang tight, we&apos;re setting things up for you. AI is tailoring tasks to match your
+              interests and skill level.
+            </p>
+          </div>
+          <button class="loading-btn" [disabled]="true">
+            <div class="custom-spinner"></div>
+          </button>
+        } @else {
+          <div class="content">
+            <h1>You&apos;re all set</h1>
+            <p>
+              Your personalized learning journey is ready.We&apos;ve created tasks based on your
+              interest and proficiency level
+            </p>
+          </div>
+          <button (click)="navigateToDashboard()">
+            Go to Dashboard
+            <img class="right-arrow" src="assets/right-arrow.png" alt="right arrow" />
+          </button>
+        }
+      </div>
+    </div>
+  </section>
+} @placeholder {
+  <section class="level">
+    <div class="level-container">
+      <button class="back-btn" (click)="goBack()">
+        <img src="assets/left-arrow.png" alt="Navigate back" />
+        <span>The Final Step</span>
+      </button>
+
+      <header>
+        <h1>Tell us your skill level</h1>
+        <p>
+          For each topic you slected, let us know how comfortable you feel. This helps us match you
+          with the right challenges
+        </p>
+      </header>
+      <div class="level-selection"></div>
+      <div class="level-btns">
+        <button class="level-btns--skip" (click)="onSkip()">Skip</button>
+        <button class="level-btns--next" (click)="onNext()">Next</button>
+      </div>
+    </div>
+  </section>
+}
