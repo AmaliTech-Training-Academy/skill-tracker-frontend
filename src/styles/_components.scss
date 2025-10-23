@@ -35,8 +35,7 @@
   color: $brand-text;
 
   &:hover {
-    background-color: $brand-text;
-    color: $brand-fill;
+    background-color: $brand-stroke-weak;
   }
 }
 

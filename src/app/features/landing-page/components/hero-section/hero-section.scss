@@ -1,0 +1,154 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.hero-container {
+    text-align: center;
+    @include flex-column;
+    flex-direction: column-reverse;
+    gap: 2.563rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    @include tablet {
+        text-align: left;
+        @include flex-between;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 4.794;
+    }
+}
+
+.hero-content {
+    @include flex-column;
+    flex-grow: 1;
+    gap: 1.5rem;
+
+    @include tablet {
+        max-width: 50%;
+    }
+}
+
+.hero-text {
+    @include flex-column;
+    gap: 2rem;
+
+    .hero-title {
+        @include h8;
+        color: $brand-text;
+        font-weight: 500;
+
+        @include tablet {
+            @include h6;
+            font-weight: 500;
+        }
+
+        @include desktop {
+            @include h3;
+            font-weight: 500;
+        }
+    }
+
+    .hero-subtitle {
+        @include h13;
+        color: $gray-text-weak;
+
+        @include tablet {
+            @include h12;
+        }
+    }
+}
+
+.hero-bottom {
+    @include flex-column;
+    gap: 1.5rem;
+
+    @include tablet {
+        flex-direction: column-reverse
+    }
+}
+
+.social-proof {
+    @include flex-center;
+    gap: 12px;
+
+    @include tablet {
+        justify-content: flex-start;
+    }
+
+    .avatars {
+        height: 42px;
+    }
+
+    .proof-count {
+        @include flex-column;
+        align-items: flex-start;
+        @include h9;
+        color: $gray-text-strong;
+        font-weight: 600;
+
+        .users {
+            @include h13;
+            color: $gray-text-weak;
+        }
+    }
+}
+
+.hero-actions {
+    @include flex-column;
+    gap: 2rem;
+    width: 100%;
+
+    @include tablet {
+        flex-direction: row;
+        max-width: 550px;
+
+        .btn-primary,
+        .btn-outline {
+            width: auto;
+        }
+    }
+
+    @media(min-width: 766px) and (max-width: 932px) {
+        @include flex-column;
+        gap: 1.5rem;
+    }
+
+    .btn-primary {
+        @include button-primary;
+    }
+
+    .btn-outline {
+        @include button-outline;
+    }
+}
+
+.hero-visual {
+    @include flex-center;
+    flex-grow: 1;
+    width: 100%;
+
+    @include tablet {
+        max-width: 50%; // Constrain visual width on desktop
+    }
+
+    .visual-placeholder {
+        width: 100%;
+        object-fit: contain;
+        object-position: center;
+
+        border-radius: 12px;
+        @include flex-center;
+
+        @include mobile-large {
+            height: 400px;
+        }
+
+        @include tablet {
+            height: 500px;
+        }
+
+    }
+}
