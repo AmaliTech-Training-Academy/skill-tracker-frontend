@@ -90,4 +90,37 @@ footer{
             margin-bottom: 30px;
         }
     }
+
+    @media (min-width: 768px) {
+        
+
+        .container{
+            flex-direction: row;
+            justify-content: space-between;
+            align-items:first baseline
+        }
+
+        .links-socials, .about-us{
+            width: 40%;
+        }
+
+        .copyright-terms{
+            @include flex-between;
+            flex-direction: row-reverse;
+        }
+
+        .terms {
+
+        li{
+            display: inline;
+            margin-left: 22px;
+           }
+
+        ul{
+            text-align: right;
+        }   
+       }
+
+        
+    }
 }
