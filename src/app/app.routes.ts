@@ -7,7 +7,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./layout/landing-screen/landing-screen').then((c) => c.LandingScreen),
     children: [
-      { path: '', loadComponent: () => import('./features/home/home').then((c) => c.Home) },
+      { path: '', loadComponent: () => import('./features/landing-page/landing-page').then((c) => c.LandingPage) },
       {
         path: 'signup',
         canActivate: [guestGuard],

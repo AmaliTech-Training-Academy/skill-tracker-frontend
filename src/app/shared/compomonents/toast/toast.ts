@@ -15,17 +15,9 @@ export class Toast {
 
   ToastType = ToastType;
 
-  get config() {
-    return this.toastService.config();
-  }
-
-  get show() {
-    return this.toastService.isVisible();
-  }
-
-  get exiting() {
-    return this.toastService.isExiting();
-  }
+  config$ = this.toastService.config$;
+  show$ = this.toastService.isVisible$;
+  exiting$ = this.toastService.isExiting$;
 
   onClose() {
     this.toastService.close();

@@ -35,7 +35,7 @@
       [control]="getFormControl(loginForm, 'password')"
     ></app-input-field>
 
-    <a routerLink="auth/forgotpassword">Forgot Password?</a>
+    <a routerLink="/forgot-password">Forgot Password?</a>
 
     <button class="login-button" type="submit" [disabled]="loginForm.invalid || loading">
       {{ loading ? 'Logging in...' : 'Login' }}
@@ -43,7 +43,7 @@
   </form>
 
   <p class="login-donthave-account">
-    Don't have an account? <a routerLink="auth/signup">Sign Up</a>
+    Don't have an account? <a routerLink="/signup">Sign Up</a>
   </p>
 
   <p class="login-or">or</p>
