@@ -5,26 +5,20 @@
 
 .hero-container {
     text-align: center;
-    @include flex-column;
-    flex-direction: column-reverse;
-    gap: 2.563rem;
+    @include flex(column-reverse, flex-start, stretch, 2.563rem);
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
 
     @include tablet {
         text-align: left;
-        @include flex-between;
-        flex-direction: row;
-        justify-content: space-between;
-        gap: 4.794;
+        @include flex(row, space-between, center, 4.794rem);
     }
 }
 
 .hero-content {
-    @include flex-column;
+    @include flex(column, flex-start, stretch, 1.5rem);
     flex-grow: 1;
-    gap: 1.5rem;
 
     @include tablet {
         max-width: 50%;
@@ -32,8 +26,7 @@
 }
 
 .hero-text {
-    @include flex-column;
-    gap: 2rem;
+    @include flex(column, flex-start, stretch, 2rem);
 
     .hero-title {
         @include h8;
@@ -62,8 +55,7 @@
 }
 
 .hero-bottom {
-    @include flex-column;
-    gap: 1.5rem;
+    @include flex(column, flex-start, stretch, 1.5rem);
 
     @include tablet {
         flex-direction: column-reverse
@@ -71,8 +63,7 @@
 }
 
 .social-proof {
-    @include flex-center;
-    gap: 12px;
+    @include flex(row, center, center, 12px);
 
     @include tablet {
         justify-content: flex-start;
@@ -83,8 +74,7 @@
     }
 
     .proof-count {
-        @include flex-column;
-        align-items: flex-start;
+        @include flex(column, flex-start, flex-start);
         @include h9;
         color: $gray-text-strong;
         font-weight: 600;
@@ -97,8 +87,7 @@
 }
 
 .hero-actions {
-    @include flex-column;
-    gap: 2rem;
+    @include flex(column, flex-start, stretch, 2rem);
     width: 100%;
 
     @include tablet {
@@ -112,8 +101,7 @@
     }
 
     @media(min-width: 766px) and (max-width: 932px) {
-        @include flex-column;
-        gap: 1.5rem;
+        @include flex(column, flex-start, stretch, 1.5rem);
     }
 
     .btn-primary {
@@ -126,7 +114,7 @@
 }
 
 .hero-visual {
-    @include flex-center;
+    @include flex(row, center, center);
     flex-grow: 1;
     width: 100%;
 
@@ -140,7 +128,7 @@
         object-position: center;
 
         border-radius: 12px;
-        @include flex-center;
+        @include flex(row, center, center);
 
         @include mobile-large {
             height: 400px;
