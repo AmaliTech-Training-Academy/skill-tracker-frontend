@@ -63,15 +63,9 @@
 
     .signup-btn {
       background-color: $brand-text;
-      color: $background-white;
-      width: 120px;
-      height: 40px;
-      padding: 10px 28px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
+      @include button-primary;
       transition: background-color 0.2s;
+      @include h12;
     }
 
     .signup-btn:hover {

@@ -27,8 +27,14 @@ footer{
     }
 
     .links-socials{
-        display: flex;
-        margin-top: 20px;
+        
+
+        display: none;
+
+        @include desktop{
+            display: flex;
+           margin-top: 20px;
+        }
     }
 
     .copyright-terms{
@@ -64,7 +70,8 @@ footer{
 
         .socials{
 
-            @include flex-between;
+            @include flex;
+            gap: 15px;
 
          a{
             text-decoration: none;
