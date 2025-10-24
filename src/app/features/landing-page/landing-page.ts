@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Features } from './components/features/features';
 import { HeroSection } from './components/hero-section/hero-section';
 import { SkillsDevelopment } from './components/skills-development/skills-development';
@@ -9,7 +9,8 @@ import { PricingModels } from './components/pricing-models/pricing-models';
   selector: 'app-landing-page',
   imports: [Features, HeroSection, SkillsDevelopment, LuminaCallout, PricingModels],
   templateUrl: './landing-page.html',
-  styleUrl: './landing-page.scss'
+  styleUrl: './landing-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LandingPage {
 
