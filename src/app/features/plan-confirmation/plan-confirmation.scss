@@ -1,0 +1,230 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.plan-confirmation {
+  background: $background-white;
+  @include flex-column;
+  @include flex-center;
+  height: 100vh;
+
+  &-container {
+    padding: 48px 16px;
+    margin: 0px 24px;
+    background-color: $gray-white;
+
+    & > span {
+      @include flex-row;
+      gap: 2px;
+      margin-bottom: 32px;
+    }
+
+    & h1 {
+      @include h12;
+      margin-bottom: 12px;
+    }
+
+    & p {
+      color: $gray-text-strong;
+    }
+    
+
+    @include desktop{
+    max-width: 825px;
+ 
+    }
+
+    & .back-btn {
+      background-color: transparent;
+      border: none;
+      color: $brand-text;
+      @include h13;
+      cursor: pointer;
+      @include flex(row, center, center, 2px);
+      margin-bottom: 32px;
+    }
+
+    .plan{
+
+        color: $gray-text-strong;
+        
+        .plan-type{
+          @include  h11;
+        }
+
+        .details{
+            @include h13;
+
+            ul{
+              margin-top: 10px;
+            }
+
+            li{
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-block: 30px;
+            };
+        }
+    }
+
+    .switch-plan{
+      margin-top: 20px;
+
+      p{
+        padding-block: 5px;
+
+        a{
+          text-decoration: none;
+          color: $brand-text;
+        }
+      }
+    }
+  }
+
+  &-selection {
+    margin-top: 48px;
+  }
+
+  &-btns {
+    margin-top: 26px;
+    @include flex-column;
+    gap: 16px;
+
+    & button {
+      @include button-base;
+      font-size: 16px;
+    }
+
+
+    .plan-confirmation-btns--next{
+      @include button-primary;
+    }
+  }
+
+  .payment-type-details{
+    margin-top: 20px;
+
+    form{
+    @include flex-column;
+    gap: 20px;
+    }
+
+    .paypal-container{
+     border: 1px solid $gray-white-weak;
+     height: 52px;
+     border-radius: 5px;
+     padding-inline: 10px;
+     @include flex-between;
+     @include h13;
+
+    }
+
+    .paypal-container{
+     border: 1px solid $gray-white-weak;
+     height: 52px;
+     border-radius: 5px;
+     padding-inline: 10px;
+     @include flex-between;
+     @include h13;
+
+    }
+
+    .label{
+      display: flex;
+      gap: 10px;
+    }
+
+    .credit-card{
+      border: 1px solid $gray-white-weak;
+      border-radius: 5px;
+      padding-inline: 10px;
+    }
+    
+    .credit-card--container{
+     height: 52px;
+     border-radius: 5px;
+     @include flex-between;
+     @include h13;
+
+     
+
+    }
+
+    .label{
+      display: flex;
+      gap: 10px;
+    }
+
+    .card-number{
+
+      margin-top: 20px;
+
+      label{
+        @include h13;
+        color: $gray-text-strong;
+      }
+    }
+    .card-input{
+      border: 1px solid $gray-white-weak;
+      border-radius: 5px;
+      width: 100%;
+      padding-inline: 10px;
+      height: 58px;
+      @include flex-between;
+
+      input{
+        height: 100%;
+        border: none;
+        width: 90%;
+
+        &:focus{
+         outline: none;
+        }
+      }
+     }
+
+     
+
+     .pay-button {
+      @include button-primary;
+    }
+
+
+  }
+
+  
+
+}
+
+@include desktop{
+   .card-data, .codes{
+      @include flex-between;
+      gap: 50px;
+     }
+}
+
+@include tablet {
+  .plan-confirmation {
+    &-container {
+      padding: 48px 48px;
+      & h1 {
+        @include h9;
+      }
+
+      & p {
+        max-width: 640px;
+      }
+    }
+
+    &-btns {
+      @include flex-row;
+      @include flex-between;
+    }
+
+  }
+}
+
+
+

@@ -9,6 +9,10 @@ export const routes: Routes = [
     children: [
       { path: '', loadComponent: () => import('./features/home/home').then((c) => c.Home) },
       {
+        path: 'plan-confirmation',
+        canActivate: [guestGuard],
+        loadComponent: () => import('./features/plan-confirmation/plan-confirmation').then((c) => c.PlanConfirmation),
+      },{
         path: 'signup',
         canActivate: [guestGuard],
         loadComponent: () => import('./features/signup/signup').then((c) => c.Signup),
