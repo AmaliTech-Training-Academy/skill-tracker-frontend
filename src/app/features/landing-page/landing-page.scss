@@ -1,6 +1,6 @@
 @use 'mixins' as *;
 
-main{
+section{
     margin: 4rem 2rem;
 
     @include tablet {
