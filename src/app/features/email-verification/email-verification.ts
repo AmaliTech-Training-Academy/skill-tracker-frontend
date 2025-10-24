@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '@app/core';
 import { takeUntil, Subject, of, delay } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { goToSignUp } from '@app/shared/utils/navigation';
 
 @Component({
   selector: 'app-email-verification',
@@ -146,6 +147,6 @@ export class EmailVerification implements OnInit, OnDestroy {
   }
 
   public goToSignUp() {
-    this.router.navigateByUrl('/signup');
+    goToSignUp(this.router);
   }
 }

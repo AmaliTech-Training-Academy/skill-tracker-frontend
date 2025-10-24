@@ -15,6 +15,7 @@ import { CustomValidators } from '@app/shared';
 import { ToastService } from '@app/core';
 import { InputFieldComponent } from '@app/shared';
 import { getFormControl } from '@app/shared';
+import { goToLogin } from '@app/shared/utils/navigation';
 
 @Component({
   selector: 'app-signup',
@@ -101,7 +102,7 @@ export class Signup implements OnInit, OnDestroy {
   getFormControl = getFormControl;
 
   goToLogin() {
-    this.router.navigateByUrl('/login');
+    goToLogin(this.router);
   }
 
   async onSubmit() {
