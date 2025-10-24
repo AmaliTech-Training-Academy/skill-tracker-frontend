@@ -25,17 +25,17 @@ import { goToLogin } from '@app/shared/utils/navigation';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Signup implements OnInit, OnDestroy {
-  isSubmitting = signal(false);
+  public isSubmitting = signal(false);
 
-  fb = inject(FormBuilder);
-  toastService = inject(ToastService);
-  router = inject(Router);
+  private fb = inject(FormBuilder);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
 
-  passwordValue = signal('');
+  public passwordValue = signal('');
   private destroy$ = new Subject<void>();
-  private readonly SIGNUP_DELAY_MS = 2000;
+  private readonly signupDelayMs = 2000;
 
-  signupForm = this.fb.group(
+  public signupForm = this.fb.group(
     {
       email: ['', [Validators.required, Validators.email]],
       password: [
@@ -56,7 +56,7 @@ export class Signup implements OnInit, OnDestroy {
   );
 
   // Computed signal for password requirements
-  passwordRequirements = computed(() => {
+  public passwordRequirements = computed(() => {
     const value = this.passwordValue();
     return [
       {
@@ -91,21 +91,21 @@ export class Signup implements OnInit, OnDestroy {
       });
   }
 
-  signInWithGoogle() {
+  public signInWithGoogle() {
     // Implement Google Auth logic here
   }
 
-  signInWithGithub() {
+  public signInWithGithub() {
     // Implement GitHub Auth logic here
   }
 
-  getFormControl = getFormControl;
+  public getFormControl = getFormControl;
 
-  goToLogin() {
+  public goToLogin() {
     goToLogin(this.router);
   }
 
-  async onSubmit() {
+  public async onSubmit() {
     this.signupForm.markAllAsTouched();
 
     if (this.signupForm.invalid) return;
@@ -114,7 +114,7 @@ export class Signup implements OnInit, OnDestroy {
 
     // Simulate an API call
     of(true)
-      .pipe(delay(this.SIGNUP_DELAY_MS), takeUntil(this.destroy$))
+      .pipe(delay(this.signupDelayMs), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(

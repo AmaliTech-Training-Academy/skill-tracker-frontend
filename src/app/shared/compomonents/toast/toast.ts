@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ToastType } from '@app/core';
 import { ToastService } from '@app/core';
+import { ToastType } from '@app/core';
 
 @Component({
   selector: 'app-toast',
@@ -12,14 +12,13 @@ import { ToastService } from '@app/core';
 })
 export class Toast {
   private toastService = inject(ToastService);
+  public toastType = ToastType;
 
-  ToastType = ToastType;
+  public config$ = this.toastService.config$;
+  public show$ = this.toastService.isVisible$;
+  public exiting$ = this.toastService.isExiting$;
 
-  config$ = this.toastService.config$;
-  show$ = this.toastService.isVisible$;
-  exiting$ = this.toastService.isExiting$;
-
-  onClose() {
+  public onClose() {
     this.toastService.close();
   }
 }

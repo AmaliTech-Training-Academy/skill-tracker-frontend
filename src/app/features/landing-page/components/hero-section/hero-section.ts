@@ -14,11 +14,11 @@ export class HeroSection {
   private router = inject(Router);
   private document = inject(DOCUMENT);
 
-  navigateToLogin(): void {
+  public navigateToLogin(): void {
     goToLogin(this.router);
   }
 
-  scrollToFeatures(): void {
+  public scrollToFeatures(): void {
     const featuresElement = this.document.querySelector<HTMLElement>('app-features');
     featuresElement?.scrollIntoView({ behavior: 'smooth' });
   }

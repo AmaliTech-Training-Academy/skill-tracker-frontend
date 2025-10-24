@@ -3,13 +3,13 @@
     @if (config$ | async; as config) {
     <div class="toast" [ngClass]="'toast-' + config.type">
         <div class="alert-icon">
-            @if (config.type === ToastType.SUCCESS) {
+            @if (config.type === toastType.SUCCESS) {
                 <img src="assets/alert-check.png" alt="success">
-            } @else if (config.type === ToastType.ERROR) {
+            } @else if (config.type === toastType.ERROR) {
                 <img src="assets/alert-error.png" alt="error">
-            } @else if (config.type === ToastType.INFO) {
+            } @else if (config.type === toastType.INFO) {
                 <img src="assets/alert-info.png" alt="info">
-            } @else if (config.type === ToastType.WARNING) {
+            } @else if (config.type === toastType.WARNING) {
                 <img src="assets/alert-warning.png" alt="warning">
             }
         </div>

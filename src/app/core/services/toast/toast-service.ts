@@ -11,31 +11,31 @@ export class ToastService {
   private store = inject(Store);
 
   // Selectors for toast state
-  readonly isVisible$ = this.store.select(selectIsToastVisible);
-  readonly isExiting$ = this.store.select(selectIsToastExiting);
-  readonly config$ = this.store.select(selectToastConfig);
+  public readonly isVisible$ = this.store.select(selectIsToastVisible);
+  public readonly isExiting$ = this.store.select(selectIsToastExiting);
+  public readonly config$ = this.store.select(selectToastConfig);
 
-  show(config: ToastConfig) {
+  public show(config: ToastConfig) {
     this.store.dispatch(showToast({ config }));
   }
 
-  showSuccess(title: string, message: string) {
+  public showSuccess(title: string, message: string) {
     this.show({ type: ToastType.SUCCESS, title, message });
   }
 
-  showError(title: string, message: string) {
+  public showError(title: string, message: string) {
     this.show({ type: ToastType.ERROR, title, message });
   }
 
-  showInfo(title: string, message: string) {
+  public showInfo(title: string, message: string) {
     this.show({ type: ToastType.INFO, title, message });
   }
 
-  showWarning(title: string, message: string) {
+  public showWarning(title: string, message: string) {
     this.show({ type: ToastType.WARNING, title, message });
   }
 
-  close() {
+  public close() {
     this.store.dispatch(startToastExit());
   }
 }
