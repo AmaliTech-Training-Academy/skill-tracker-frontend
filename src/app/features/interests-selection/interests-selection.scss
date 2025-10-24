@@ -28,6 +28,11 @@
     & p {
       color: $gray-text-strong;
     }
+
+    @include desktop{
+    max-width: 50%;
+ 
+    }
   }
 
   &-selection {

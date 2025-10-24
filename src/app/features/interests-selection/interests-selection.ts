@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { InterestsChipComponent } from '@app/shared/components/interests-chip/interests-chip';
 import { SkillsService, Skill } from './interests.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-interests-selection',
-  imports: [InterestsChipComponent],
+  imports: [InterestsChipComponent, RouterLink],
   templateUrl: './interests-selection.html',
   styleUrl: './interests-selection.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
