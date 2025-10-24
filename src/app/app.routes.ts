@@ -18,25 +18,17 @@ export const routes: Routes = [
         canActivate: [guestGuard],
         loadComponent: () => import('./features/login/login').then((c) => c.Login),
       },
-       {
+      {
         path: 'forgot-password',
         canActivate: [guestGuard],
-        loadComponent: () => import('./features/forgot-password/forgot-password').then((c) => c.ForgotPassword),
+        loadComponent: () =>
+          import('./features/forgot-password/forgot-password').then((c) => c.ForgotPassword),
       },
-        
+
       {
         path: 'reset-password',
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
-
-      },
-      {
-        path: 'interests',
-        canActivate: [guestGuard],
-        loadComponent: () =>
-          import('./features/interest-chips-page/interest-chips-page').then(
-            (c) => c.InterestsPageComponent,
-          ),
       },
       {
         path: 'email-verification',
@@ -45,18 +37,15 @@ export const routes: Routes = [
           import('./features/email-verification/email-verification').then(
             (c) => c.EmailVerification,
           ),
-
       },
       {
         path: 'onboarding/level-selection',
         canActivate: [onboardingGuard],
         loadComponent: () =>
           import('./features/level-selection/level-selection').then((c) => c.LevelSelection),
-
       },
     ],
   },
-
   {
     path: 'dashboard',
     canActivate: [authGuard],
