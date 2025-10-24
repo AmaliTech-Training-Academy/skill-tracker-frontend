@@ -5,7 +5,6 @@
         <div class="nav-menu">
          @for (item of navItems; track item.label) {
           <a 
-            
               [routerLink]="item.link"
               routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: item.exact }">
@@ -16,7 +15,7 @@
 
         <div class="nav-actions">
           <a routerLink="/login" class="login-btn">Login</a>
-          <a routerLink="signup" class="signup-btn">Sign Up</a>
+          <a routerLink="/signup" class="signup-btn">Sign Up</a>
         </div>
 
         <button class="hamburger" (click)="toggleMenu()">
@@ -47,7 +46,7 @@
       </div>
 
       <div class="mobile-actions">
-        <a href="#" class="mobile-login" (click)="toggleMenu()">Login</a>
-        <a href="#" class="mobile-signup" (click)="toggleMenu()">Sign Up</a>
+        <a routerLink="/login" class="mobile-login" (click)="toggleMenu()">Login</a>
+        <a routerLink="/signup" class="mobile-signup" (click)="toggleMenu()">Sign Up</a>
       </div>
     </div>
