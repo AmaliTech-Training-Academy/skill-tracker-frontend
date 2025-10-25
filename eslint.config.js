@@ -6,7 +6,7 @@ const angular = require('angular-eslint');
 module.exports = tseslint.config(
   {
     files: ['**/*.ts'],
-    ignores: ['**/*.spec.ts', 'src/**'],
+    ignores: ['**/*.spec.ts', 'jest.config.ts'],
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
@@ -126,6 +126,15 @@ module.exports = tseslint.config(
   {
     files: ['**/*.html'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
+    rules: {},
+  },
+  {
+    files: ['jest.config.ts'],
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
+    languageOptions: {
+      sourceType: 'module',
+      ecmaVersion: 'latest',
+    },
     rules: {},
   },
 );

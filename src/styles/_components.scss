@@ -15,6 +15,7 @@
 @mixin button-primary {
   @include button-base;
   background-color: $brand-text;
+  border: 2px solid transparent !important;
   color: $gray-fill;
 
   &:hover {
@@ -31,7 +32,7 @@
 @mixin button-outline {
   @include button-base;
   background-color: transparent;
-  border: 2px solid $brand-text;
+  border: 2px solid $brand-text !important;
   color: $brand-text;
 
   &:hover {

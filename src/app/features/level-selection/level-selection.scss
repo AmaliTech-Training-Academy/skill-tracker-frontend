@@ -1,0 +1,157 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.level {
+  background: $background-white;
+  @include flex(column, center, center);
+  height: 100vh;
+
+  &-container {
+    padding: 48px 16px;
+    margin: 0px 24px;
+    background-color: white;
+
+    & > span {
+      @include flex(row, center, center, 2px);
+      margin-bottom: 32px;
+    }
+
+    & img {
+      width: 18px;
+    }
+
+    & .back-btn {
+      background-color: transparent;
+      border: none;
+      color: $brand-text;
+      cursor: pointer;
+      @include flex(row, center, center, 2px);
+      margin-bottom: 32px;
+    }
+
+    & h1 {
+      @include h12;
+      margin-bottom: 12px;
+    }
+
+    & p {
+      color: $gray-text-strong;
+    }
+  }
+
+  &-selection {
+    margin-top: 48px;
+  }
+
+  &-btns {
+    margin-top: 16px;
+    @include flex(column, center, center, 16px);
+    gap: 16px;
+
+    & button {
+      @include button-base;
+      font-size: 16px;
+    }
+
+    &--skip {
+      @include button-outline;
+      border: 1px solid $brand-stroke-strong;
+    }
+
+    &--next {
+      @include button-primary;
+    }
+  }
+
+  &--spinner {
+    @include flex(column, center, center);
+
+    & img {
+      margin-bottom: 32px;
+      width: 154px;
+    }
+
+    & div.content {
+      text-align: center;
+      margin-bottom: 32px;
+
+      & h1 {
+        @include h10;
+        margin-bottom: 24px;
+      }
+
+      & p {
+        @include h13;
+        color: $gray-text-strong;
+      }
+    }
+
+    &.loading-btn {
+      @include flex(row, center, center);
+    }
+
+    & button {
+      @include button-primary;
+      font-size: 16px;
+
+      @include flex(row, center, center);
+      gap: 4px;
+
+      & img.right-arrow {
+        width: 22px;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@include tablet {
+  .level {
+    &-container {
+      padding: 48px 48px;
+      & h1 {
+        @include h9;
+      }
+
+      & p {
+        max-width: 640px;
+      }
+    }
+
+    &-btns {
+      @include flex(row, center, center, 16px);
+    }
+
+    &--spinner {
+      & div.content {
+        & h1 {
+          @include h9;
+          margin-bottom: 24px;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-spinner {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
