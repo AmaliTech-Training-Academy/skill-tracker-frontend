@@ -41,7 +41,7 @@ export const routes: Routes = [
       },
       {
         path: 'onboarding/interest-selection',
-        canActivate: [onboardingGuard],
+        // canActivate: [onboardingGuard],
         loadComponent: () =>
           import('./features/interests-selection/interests-selection').then(
             (c) => c.InterestsSelection,
