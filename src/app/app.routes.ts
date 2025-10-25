@@ -40,8 +40,15 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'interests',
+        loadComponent: () =>
+          import('./features/interest-chips-page/interest-chips-page').then(
+            (c) => c.InterestsPageComponent,
+          ),
+      },
+      {
         path: 'onboarding/interest-selection',
-        // canActivate: [onboardingGuard],
+        canActivate: [onboardingGuard],
         loadComponent: () =>
           import('./features/interests-selection/interests-selection').then(
             (c) => c.InterestsSelection,
