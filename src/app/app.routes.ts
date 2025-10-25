@@ -33,16 +33,20 @@ export const routes: Routes = [
         path: 'reset-password',
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
-
-
-      },
-       
+},
       {
         path: 'email-verification',
         canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/email-verification/email-verification').then(
             (c) => c.EmailVerification,
+          ),
+      },
+      {
+        path: 'interests',
+        loadComponent: () =>
+          import('./features/interest-chips-page/interest-chips-page').then(
+            (c) => c.InterestsPageComponent,
           ),
       },
       {
