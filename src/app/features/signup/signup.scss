@@ -133,9 +133,9 @@
   }
 }
 
-/* Apply button-primary mixin */
 .btn-primary {
   @include button-primary;
+  @include button-base($border-radius: 5rem);
   margin-top: 8px;
   @include h11;
   height: 50px;
