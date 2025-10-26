@@ -1,0 +1,27 @@
+interests
+<div class="chips-container">
+  @for (badge of badges; track badge.id) {
+    <app-interests-chip
+      [label]="badge.label"
+      [icon]="badge.icon"
+      [selected]="selectedBadges.includes(badge.id)"
+      (chipSelect)="toggleBadge(badge.id)"
+    />
+  }
+</div>
+
+<br>
+
+<app-skill-level-selector
+  skillLabel="HTML & CSS (Web Basics)"
+  skillIcon="assets/htmlcss-icon.png"
+  (levelSelected)="onLevelSelected($event)"
+></app-skill-level-selector>
+
+<app-skill-level-selector
+  skillLabel="Javascript"
+  skillIcon="assets/htmlcss-icon.png"
+  (levelSelected)="onLevelSelected($event)"
+></app-skill-level-selector>
+
+
