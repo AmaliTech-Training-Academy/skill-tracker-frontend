@@ -5,15 +5,12 @@
 
 .plan-confirmation {
   background: $background-white;
-  @include flex-column;
   @include flex-center;
-  height: 100vh;
 
   &-container {
     padding: 48px 16px;
-    margin: 0px 24px;
+    margin:24px;
     background-color: $gray-white;
-
     & > span {
       @include flex-row;
       gap: 2px;
@@ -121,20 +118,6 @@
 
     }
 
-    .paypal-container{
-     border: 1px solid $gray-white-weak;
-     height: 52px;
-     border-radius: 5px;
-     padding-inline: 10px;
-     @include flex-between;
-     @include h13;
-
-    }
-
-    .label{
-      display: flex;
-      gap: 10px;
-    }
 
     .credit-card{
       border: 1px solid $gray-white-weak;
@@ -157,33 +140,8 @@
       gap: 10px;
     }
 
-    .card-number{
-
-      margin-top: 20px;
-
-      label{
-        @include h13;
-        color: $gray-text-strong;
-      }
-    }
-    .card-input{
-      border: 1px solid $gray-white-weak;
-      border-radius: 5px;
-      width: 100%;
-      padding-inline: 10px;
-      height: 58px;
-      @include flex-between;
-
-      input{
-        height: 100%;
-        border: none;
-        width: 90%;
-
-        &:focus{
-         outline: none;
-        }
-      }
-     }
+    
+    
 
      
 
@@ -195,8 +153,79 @@
   }
 
   
+}
+.credit-card {
+  p{
+    margin: 20px auto;
+   width: 90%;
+   
+  }
+}
+
+.creditcard-data{
+   width: 90%;
+   margin: 20px auto;
+
+
+
+   .group-one{
+    margin-top: 20px;
+
+    @include desktop{
+      @include flex;
+      gap: 60px;
+    }
+   }
+
+   .expiry-cvv{
+    @include flex;
+    gap: 10px;
+    margin-top: 20px;
+
+    @include desktop{
+      margin-top: 0;
+      gap: 60px;
+    }
+   }
+}
+
+.cancellation-policy{
+  @include flex-column;
+  justify-content: center;
+  flex-direction: column-reverse;
+  gap: 20px;
+
+  .policy{ 
+  p{
+  @include h13;
+  color:  $gray-stroke-strong;
+  }
+  h1{
+  @include h12;
+  color:  $gray-text-strong;
+  }
+  }
+
+  img{
+    width: 150px;
+    margin-inline: auto; 
+
+    @include desktop{
+      width: 150px;
+    }
+  }
+
+  @include desktop{
+    @include flex;
+    gap: 90px;
+  }
 
 }
+
+
+
+
+
 
 @include desktop{
    .card-data, .codes{
