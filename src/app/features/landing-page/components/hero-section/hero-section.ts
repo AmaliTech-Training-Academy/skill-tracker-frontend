@@ -5,7 +5,6 @@ import { goToLogin } from '@app/shared/utils/navigation';
 
 @Component({
   selector: 'app-hero-section',
-  imports: [],
   templateUrl: './hero-section.html',
   styleUrl: './hero-section.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

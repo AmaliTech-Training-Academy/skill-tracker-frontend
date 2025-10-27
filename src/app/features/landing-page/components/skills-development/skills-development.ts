@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-skills-development',
-  imports: [],
   templateUrl: './skills-development.html',
-  styleUrl: './skills-development.scss'
+  styleUrl: './skills-development.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkillsDevelopment {
 
