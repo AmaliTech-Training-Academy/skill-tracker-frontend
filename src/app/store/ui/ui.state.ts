@@ -1,4 +1,4 @@
-import { ToastConfig, ToastType } from '@app/core';
+import { ToastConfig, ToastType } from '@app/core/models/toast-model';
 
 export interface ToastState {
   isVisible: boolean;
