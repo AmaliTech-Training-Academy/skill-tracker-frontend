@@ -119,7 +119,7 @@
     width: 100%;
 
     @include tablet {
-        max-width: 50%; // Constrain visual width on desktop
+        max-width: 50%; 
     }
 
     .visual-placeholder {
