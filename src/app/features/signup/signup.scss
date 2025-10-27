@@ -68,12 +68,11 @@
     box-sizing: border-box;
   }
 
-  /* Style input when invalid and touched */
+
   input.ng-invalid.ng-touched {
     border-color: $red-text;
   }
 
-  /* Style input in error state if parent form group has the passwordsMismatch error */
   .input-wrapper input:focus-within {
     border-color: $brand-text;
     box-shadow: 0 0 0 1px $brand-text;
@@ -135,7 +134,6 @@
 
 .btn-primary {
   @include button-primary;
-  @include button-base($border-radius: 5rem);
   margin-top: 8px;
   @include h11;
   height: 50px;

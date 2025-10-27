@@ -5,10 +5,9 @@ import {
   computed,
   OnDestroy,
   OnInit,
-  inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from '@app/shared';
@@ -25,35 +24,47 @@ import { goToLogin } from '@app/shared/utils/navigation';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Signup implements OnInit, OnDestroy {
+  public signupForm!: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private toastService: ToastService,
+    private router: Router,
+  ) {}
+
   public isSubmitting = signal(false);
-
-  private fb = inject(FormBuilder);
-  private toastService = inject(ToastService);
-  private router = inject(Router);
-
   public passwordValue = signal('');
   private destroy$ = new Subject<void>();
   private readonly signupDelayMs = 2000;
 
-  public signupForm = this.fb.group(
-    {
-      email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          CustomValidators.hasUppercase,
-          CustomValidators.hasLowercase,
-          CustomValidators.hasNumber,
-          CustomValidators.hasSpecialChar,
+  ngOnInit() {
+    this.signupForm = this.fb.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            CustomValidators.hasUppercase,
+            CustomValidators.hasLowercase,
+            CustomValidators.hasNumber,
+            CustomValidators.hasSpecialChar,
+          ],
         ],
-      ],
-      confirmPassword: ['', [Validators.required]],
-      termsAccepted: [false, [Validators.requiredTrue]],
-    },
-    { validators: CustomValidators.passwordMatchValidator },
-  );
+        confirmPassword: ['', [Validators.required]],
+        termsAccepted: [false, [Validators.requiredTrue]],
+      },
+      { validators: CustomValidators.passwordMatchValidator },
+    );
+
+    // Subscribe to password changes to update signal
+    this.getFormControl(this.signupForm, 'password')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.passwordValue.set(value || '');
+      });
+  }
 
   // Computed signal for password requirements
   public passwordRequirements = computed(() => {
@@ -81,15 +92,6 @@ export class Signup implements OnInit, OnDestroy {
       },
     ];
   });
-
-  ngOnInit() {
-    // Subscribe to password changes to update signal
-    this.getFormControl(this.signupForm, 'password')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.passwordValue.set(value || '');
-      });
-  }
 
   public signInWithGoogle() {
     // Implement Google Auth logic here
