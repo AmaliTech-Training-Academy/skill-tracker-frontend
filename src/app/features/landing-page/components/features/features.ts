@@ -1,20 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FeatureCard } from '../feature-card/feature-card';
-
-interface Feature {
-  title: string;
-  description: string;
-  icon: string;
-}
+import { Feature } from '@app/core/models/feature-card-model';
+import { FeatureSection } from '@app/shared/compomonents/feature-section/feature-section';
 
 @Component({
   selector: 'app-features',
-  imports: [],
+  imports: [FeatureSection],
   templateUrl: './features.html',
   styleUrl: './features.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Features {
+  public title = 'Ready to advance your technical skills?';
+  public subtitle = "That's where SkillDev comes in. We combine AI-powered practice with personalized feedback to help you master the skills that matter most.";
   public features: Feature[] = [
     {
       title: 'Personalized Learning',
