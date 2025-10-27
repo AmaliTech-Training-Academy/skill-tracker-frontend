@@ -29,6 +29,7 @@ export const routes: Routes = [
         path: 'reset-password',
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
+
       },
       {
         path: 'email-verification',
@@ -36,6 +37,21 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/email-verification/email-verification').then(
             (c) => c.EmailVerification,
+          ),
+      },
+      {
+        path: 'interests',
+        loadComponent: () =>
+          import('./features/interest-chips-page/interest-chips-page').then(
+            (c) => c.InterestsPageComponent,
+          ),
+      },
+      {
+        path: 'onboarding/interest-selection',
+        canActivate: [onboardingGuard],
+        loadComponent: () =>
+          import('./features/interests-selection/interests-selection').then(
+            (c) => c.InterestsSelection,
           ),
       },
       {
