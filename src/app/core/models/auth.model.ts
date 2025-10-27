@@ -1,6 +1,11 @@
 export interface ApiResponse<T> {
+  success: boolean;
   message: string;
   data: T;
+  metadata?: {
+    timestamp: string;
+    traceId: string;
+  };
 }
 
 export interface AuthResponse {
@@ -19,18 +24,36 @@ export interface LoginRequest {
   password: string;
 }
 
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
+
+export enum UserState {
+  REGISTERED = 'REGISTERED',
+  VERIFIED = 'VERIFIED',
+  ACTIVE = 'ACTIVE',
+}
+
+export enum PremiumTier {
+  FREE = 'FREE',
+  PREMIUM = 'PREMIUM',
+}
+
 export interface RegistrationData {
-  userId: string;
-  emailMasked: string;
-  sessionId: string;
+  id: string;
+  email: string;
+  username: string | null;
+  role: UserRole;
+  state: UserState;
+  is_verified: boolean;
+  premiumTier: PremiumTier;
+  language: string;
+  timezone: string;
+  updatedAt: string;
+  lastLoginAt: string | null;
 }
 
 export type RegistrationSuccessResponse = ApiResponse<RegistrationData>;
 
-export interface VerificationData {
-  accessToken: string;
-  refreshToken: string;
-  userProfileId: string;
-}
-
-export type VerificationSuccessResponse = ApiResponse<VerificationData>;
+export type VerificationSuccessResponse = ApiResponse<RegistrationData>;
