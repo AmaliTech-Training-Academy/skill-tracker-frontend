@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { goToLogin } from '@app/shared/utils/navigation';
+import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
 @Component({
   selector: 'app-hero-section',
@@ -12,7 +12,7 @@ export class HeroSection {
   constructor(private router: Router) {}
 
   public navigateToLogin(): void {
-    goToLogin(this.router);
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.LOGIN);
   }
 
   public scrollToFeatures(): void {

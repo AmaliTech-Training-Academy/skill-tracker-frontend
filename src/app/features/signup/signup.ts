@@ -14,7 +14,7 @@ import { CustomValidators } from '@app/shared';
 import { ToastService } from '@app/core';
 import { InputFieldComponent } from '@app/shared';
 import { getFormControl } from '@app/shared';
-import { goToLogin } from '@app/shared/utils/navigation';
+import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
 @Component({
   selector: 'app-signup',
@@ -104,7 +104,7 @@ export class Signup implements OnInit, OnDestroy {
   public getFormControl = getFormControl;
 
   public goToLogin() {
-    goToLogin(this.router);
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.LOGIN);
   }
 
   public async onSubmit() {
@@ -123,7 +123,7 @@ export class Signup implements OnInit, OnDestroy {
             'Account Created',
             "Hurray, Your account is created! We've sent a 6 digit code to your email",
           );
-          this.router.navigateByUrl('/email-verification');
+          this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.EMAIL_VERIFICATION);
         },
         error: () => {
           this.toastService.showError(
