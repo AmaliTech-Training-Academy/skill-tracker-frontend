@@ -1,0 +1,59 @@
+<aside class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <a class="sidebar-logo" (click)="onNavigate()" [routerLink]="['/dashboard']">SkillDev</a>
+    <button class="close-button" (click)="onNavigate()" aria-label="Close navigation menu">
+      <lucide-icon name="x" [size]="24" color="currentColor" [strokeWidth]="1.5" />
+    </button>
+  </div>
+
+  <div class="sidebar-menu">
+    <ul class="sidebar-menu-list">
+      @for (item of menuItems; track item.route) {
+        <li routerLinkActive="active-parent">
+          <a
+            class="sidebar-menu-item"
+            [routerLink]="item.route"
+            (click)="onNavigate()"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [attr.data-tour-id]="item.tourId"
+          >
+            <lucide-icon [name]="item.icon" [size]="20" color="currentColor" [strokeWidth]="1.5" />
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+
+    <div class="sidebar-menu-banner">
+      <h2>
+        Upgrade to <br />
+        Premium
+      </h2>
+      <p>Unlock AI coaching, advanced analytics, and unlimited practice tasks</p>
+      <button type="button" aria-label="Get Started with Premium to unlock more features">
+        Start Free Trial
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <ul class="sidebar-footer-list">
+      @for (item of footerItems; track item.route) {
+        <li routerLinkActive="active-parent">
+          <a
+            class="sidebar-footer-item"
+            [routerLink]="item.route"
+            (click)="onNavigate()"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            [attr.data-tour-id]="item.tourId"
+          >
+            <lucide-icon [name]="item.icon" [size]="20" color="currentColor" [strokeWidth]="1.5" />
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</aside>
