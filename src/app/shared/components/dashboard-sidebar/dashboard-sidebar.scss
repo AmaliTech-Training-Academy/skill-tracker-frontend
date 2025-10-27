@@ -47,6 +47,8 @@
     @include flex(row, space-between, center);
 
     & button.close-button {
+      background-color: transparent;
+      border: none;
       color: var(--color-gray-text-strong);
     }
   }
