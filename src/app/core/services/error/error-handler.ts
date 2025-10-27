@@ -9,7 +9,7 @@ import { ToastService } from '../toast/toast-service';
 export class ErrorHandlerService {
   constructor(private toast: ToastService) {}
 
-  getError(error: unknown): AppError {
+  public getError(error: unknown): AppError {
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
         return {
@@ -20,6 +20,7 @@ export class ErrorHandlerService {
       }
 
       const backendMessage =
+        error.error?.detail ||
         error.error?.message ||
         error.error?.error ||
         (typeof error.error === 'string' ? error.error : null);
@@ -37,7 +38,8 @@ export class ErrorHandlerService {
       switch (error.status) {
         case 400:
           return {
-            message: backendMessage || 'Bad request. Please check your input.',
+            message:
+              error.error?.message || backendMessage || 'Bad request. Please check your input.',
             status: error.status,
             type: AppErrorType.CLIENT,
             validationErrors,
@@ -45,21 +47,22 @@ export class ErrorHandlerService {
           };
         case 401:
           return {
-            message: 'Unauthorized. Please log in again.',
+            message: backendMessage || 'Unauthorized. Please log in again.',
             status: error.status,
             type: AppErrorType.AUTH,
             raw: error,
           };
         case 403:
           return {
-            message: 'Forbidden. You do not have permission to perform this action.',
+            message:
+              backendMessage || 'Forbidden. You do not have permission to perform this action.',
             status: error.status,
             type: AppErrorType.AUTH,
             raw: error,
           };
         case 404:
           return {
-            message: 'The requested resource was not found.',
+            message: backendMessage || 'The requested resource was not found.',
             status: error.status,
             type: AppErrorType.CLIENT,
             raw: error,
@@ -103,12 +106,12 @@ export class ErrorHandlerService {
     );
   }
 
-  notifyError(error: unknown): void {
+  public notifyError(error: unknown): void {
     const appError = this.getError(error);
     this.toast.showError('Error', appError.message);
   }
 
-  logError(error: unknown): void {
+  public logError(error: unknown): void {
     console.error('App Error Log:', error);
     // TODO: send to monitoring service like Sentry or backend API
   }
