@@ -1,0 +1,44 @@
+<header class="navbar mobile-header">
+  <div class="navbar-items">
+    <span class="logo">Dashboard</span>
+  </div>
+  <div class="navbar-info">
+    <span class="navbar-item" aria-label="You have 50 experience points">50 xp</span>
+    <button class="icon-button" aria-label="View notifications">
+      <lucide-icon name="bell-dot" [size]="24" color="currentColor" [strokeWidth]="1.5" />
+    </button>
+    <button
+      class="menu-button"
+      (click)="onToggleSidebar()"
+      aria-label="Toggle navigation menu"
+      [attr.aria-expanded]="isSidebarOpen"
+    >
+      <lucide-icon name="menu" [size]="24" color="currentColor" [strokeWidth]="1.5" />
+    </button>
+  </div>
+</header>
+<nav class="navbar desktop-navbar">
+  <div class="navbar-items">
+    <div class="navbar-info">
+      <span class="navbar-item" aria-label="You have 50 experience points">50 xp</span>
+      <button class="icon-button" aria-label="View notifications">
+        <lucide-icon name="bell-dot" [size]="24" color="currentColor" [strokeWidth]="1.5" />
+      </button>
+    </div>
+
+    <div class="navbar-profile">
+      <img
+        class="navbar-profile--avatar"
+        src="/assets/profile-avatar.png"
+        alt="Profile picture of Stephen Opoku"
+        loading="lazy"
+        width="42"
+        height="42"
+      />
+      <div>
+        <a href="#" class="navbar-profile--name">Stephen Opoku</a>
+        <p class="navbar-profile--type">Free</p>
+      </div>
+    </div>
+  </div>
+</nav>

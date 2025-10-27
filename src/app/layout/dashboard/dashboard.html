@@ -9,7 +9,7 @@
     <button class="sidebar-overlay" (click)="onNavigate()" aria-label="Close sidebar"></button>
   }
   <section class="main-content">
-    <app-dashboard-navigation (toggleSidebar)="toggleSidebar()" />
+    <app-dashboard-navigation (toggleSidebar)="toggleSidebar()" [isSidebarOpen]="isSidebarOpen()" />
     <router-outlet />
   </section>
 </main>
