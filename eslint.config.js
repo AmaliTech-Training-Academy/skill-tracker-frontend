@@ -91,7 +91,7 @@ module.exports = tseslint.config(
         },
         {
           selector: ['variable', 'function', 'method', 'classProperty', 'typeProperty'],
-          format: ['camelCase'],
+          format: ['camelCase', 'snake_case'],
           custom: {
             regex: '(My|my)(?=[A-Z]\\w*)',
             match: false,
@@ -114,7 +114,7 @@ module.exports = tseslint.config(
         {
           selector: 'interface',
           custom: {
-            regex: '[Ii](?=[A-Z]\\w*)',
+            regex: '^I[A-Z]',
             match: false,
           },
           format: ['PascalCase'],
