@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-lumina-callout',
-  imports: [],
   templateUrl: './lumina-callout.html',
-  styleUrl: './lumina-callout.scss'
+  styleUrl: './lumina-callout.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LuminaCallout {
 

@@ -1,25 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { DOCUMENT } from '@angular/common';
-import { goToLogin } from '@app/shared/utils/navigation';
+import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
 @Component({
   selector: 'app-hero-section',
-  imports: [],
   templateUrl: './hero-section.html',
   styleUrl: './hero-section.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSection {
-  private router = inject(Router);
-  private document = inject(DOCUMENT);
+  constructor(private router: Router) {}
 
   public navigateToLogin(): void {
-    goToLogin(this.router);
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.LOGIN);
   }
 
   public scrollToFeatures(): void {
-    const featuresElement = this.document.querySelector<HTMLElement>('app-features');
+    const featuresElement = document.querySelector<HTMLElement>('app-features');
     featuresElement?.scrollIntoView({ behavior: 'smooth' });
   }
 }

@@ -35,7 +35,7 @@
 
       <button class="btn-primary" type="submit" [disabled]="!formValid() || isSubmitting()">
         @if(isSubmitting()){
-        <span class="spinner"></span> Verifying...
+        <span class="loader"></span> Verifying...
         } @else {
         Verify and Continue
         }

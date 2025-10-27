@@ -9,7 +9,7 @@ interface Feature {
 
 @Component({
   selector: 'app-features',
-  imports: [FeatureCard],
+  imports: [],
   templateUrl: './features.html',
   styleUrl: './features.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
