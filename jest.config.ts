@@ -8,7 +8,7 @@ const config: Config = {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
   },
   testMatch: ['**/+(*.)+(spec).+(ts)'],
-  rootDir: __dirname,
+  rootDir: process.cwd(),
 };
 
 module.exports = config;
