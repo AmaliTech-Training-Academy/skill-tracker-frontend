@@ -73,6 +73,9 @@
     "*.{ts,js,scss,css,md}": [
       "eslint --fix",
       "prettier --write"
+    ],
+    "src/**/*.spec.ts": [
+      "jest --bail --passWithNoTests"
     ]
   }
 }
