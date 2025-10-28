@@ -9,38 +9,53 @@ export interface ApiRequestOptions {
   headers?: HttpHeaders | Record<string, string | string[]>;
 }
 
+const defaultOptions = {
+  withCredentials: true,
+};
+
+type HttpClientOptions = ApiRequestOptions & {
+  withCredentials?: boolean;
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private readonly BASE_URL = environment.url;
+  private readonly baseUrl = environment.url;
 
-  get<T>(url: string, options: ApiRequestOptions = {}): Observable<T> {
-    return this.http.get<T>(this.buildApiUrl(url), options);
+  public get<T>(url: string, options: ApiRequestOptions = {}): Observable<T> {
+    return this.http.get<T>(this.buildApiUrl(url), this.mergeOptions(options));
   }
 
-  post<Res, Req = unknown>(
+  public post<Res, Req = unknown>(
     url: string,
     body: Req,
     options: ApiRequestOptions = {},
   ): Observable<Res> {
-    return this.http.post<Res>(this.buildApiUrl(url), body, options);
+    return this.http.post<Res>(this.buildApiUrl(url), body, this.mergeOptions(options));
   }
 
-  update<Res, Req = unknown>(
+  public update<Res, Req = unknown>(
     url: string,
     body: Req,
     options: ApiRequestOptions = {},
   ): Observable<Res> {
-    return this.http.put<Res>(this.buildApiUrl(url), body, options);
+    return this.http.put<Res>(this.buildApiUrl(url), body, this.mergeOptions(options));
   }
 
-  delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
-    return this.http.delete<void>(this.buildApiUrl(url), options);
+  public delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
+    return this.http.delete<void>(this.buildApiUrl(url), this.mergeOptions(options));
   }
 
   private buildApiUrl(endpoint: string): string {
-    return `${this.BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    return `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  }
+
+  private mergeOptions(options: ApiRequestOptions): HttpClientOptions {
+    return {
+      ...options,
+      ...defaultOptions,
+    };
   }
 }
