@@ -1,11 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-plan-levels',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './plan-levels.html',
-  styleUrl: './plan-levels.scss',
+  styleUrls: ['./plan-levels.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlanLevels {
+export class PlanLevels implements OnChanges {
+  @Input() currentStep: number = 1;
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['currentStep']) {
+      console.log('Current step changed:', this.currentStep);
+    }
+  }
+
+  isActive(step: number): boolean {
+    return step === this.currentStep;
+  }
 }

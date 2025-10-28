@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InputFieldComponent } from '@app/shared';
 import { PlanLevels } from '@app/shared/compomonents/plan-levels/plan-levels';
 import { getFormControl } from '@app/shared';
+import { filter } from 'rxjs/operators';
 
 type SectionType = 'chosen-plan' | 'pay-page' | 'done-page';
 
@@ -27,6 +28,7 @@ export class PlanConfirmation implements OnInit {
   paymentForm!: FormGroup;
   currentSection: SectionType = 'chosen-plan';
   selectedPlan: Plan | null = null;
+  currentStep = 1; 
 
   private plans: Plan[] = [
     {
@@ -79,6 +81,7 @@ export class PlanConfirmation implements OnInit {
   ngOnInit(): void {
     this.initializePaymentForm();
     this.loadPlanFromRoute();
+    this.setupStepTracker(); 
   }
 
   private initializePaymentForm(): void {
@@ -106,6 +109,31 @@ export class PlanConfirmation implements OnInit {
     });
   }
 
+  private setupStepTracker(): void {
+  
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.updateCurrentStep();
+      });
+
+    this.updateCurrentStep(); 
+  }
+
+  private updateCurrentStep(): void {
+    switch (this.currentSection) {
+      case 'chosen-plan':
+        this.currentStep = 1;
+        break;
+      case 'pay-page':
+        this.currentStep = 2;
+        break;
+      case 'done-page':
+        this.currentStep = 3;
+        break;
+    }
+  }
+
   goBack(): void {
     if (this.currentSection === 'chosen-plan') {
       this.location.back();
@@ -120,6 +148,7 @@ export class PlanConfirmation implements OnInit {
 
   goToSection(section: SectionType): void {
     this.currentSection = section;
+    this.updateCurrentStep(); 
   }
 
   pay(): void {
@@ -127,7 +156,6 @@ export class PlanConfirmation implements OnInit {
       this.paymentForm.markAllAsTouched();
       return;
     }
-
     this.goToSection('done-page');
   }
 

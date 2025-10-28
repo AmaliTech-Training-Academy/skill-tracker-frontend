@@ -1,7 +1,11 @@
 <section class="plan-confirmation">
+
+  <!-- Plan Levels -->
   <div class="plan-levels">
-   <app-plan-levels></app-plan-levels>
+    <app-plan-levels [currentStep]="currentStep"></app-plan-levels>
   </div>
+
+  <!-- Plan Confirmation Container -->
   <div class="plan-confirmation-container">
 
     <!-- Chosen Plan -->
@@ -15,7 +19,7 @@
         <header>
           <h1>You're Almost There!</h1>
           <p>
-            You've chosen the <strong>{{ selectedPlan.name }} Plan</strong> — great choice! 
+            You've chosen the <strong>{{ selectedPlan.name }} Plan</strong> — great choice!
             @if (selectedPlan.price > 0) {
               Unlock the full SkillDev experience.
             } @else {
@@ -26,7 +30,6 @@
 
         <div class="plan-confirmation-selection plan">
           <h1 class="plan-type">Plan: {{ selectedPlan.name }}</h1>
-
           <div class="details">
             <p>What you get</p>
             <ul>
@@ -68,6 +71,8 @@
 
         <div class="payment-type-details">
           <form [formGroup]="paymentForm" (ngSubmit)="pay()">
+
+            <!-- Paypal -->
             <div class="paypal">
               <div class="paypal-container">
                 <div class="label">
@@ -78,6 +83,7 @@
               </div>
             </div>
 
+            <!-- Credit Card -->
             <div class="credit-card">
               <div class="credit-card--container">
                 <div class="label">
@@ -114,7 +120,7 @@
                       id="expiry"
                       placeholder="MM/YY"
                       [control]="getFormControl(paymentForm, 'expiry')"
-                  ></app-input-field>
+                    ></app-input-field>
 
                     <app-input-field
                       label="CVV"
@@ -128,6 +134,7 @@
               </div>
             </div>
 
+            <!-- Google Pay -->
             <div class="paypal">
               <div class="paypal-container">
                 <div class="label">
@@ -166,33 +173,28 @@
 
         <div class="plan-confirmation-selection plan">
           <h1 class="plan-type">Enjoy full access to advanced features, deeper insights, and a growing community of learners.</h1>
-
-          <button class="back-btn home" (click)="goBack()">
-            Back to Home
-          </button>
+          <button class="back-btn home" (click)="goBack()">Back to Home</button>
         </div>
 
         <div class="plan-confirmation-btns">
-          <button class="plan-confirmation-btns--next" (click)="goToDashboard()">
-            Go to Dashboard
-          </button>
+          <button class="plan-confirmation-btns--next" (click)="goToDashboard()">Go to Dashboard</button>
         </div>
       </div>
     }
   </div>
 
+  <!-- Cancellation Policy -->
   @if (currentSection === 'pay-page' && selectedPlan) {
-       <div class="cancellation-policy">
-          <div class="policy">
-            <h1>Cancellation Policy</h1>
-            <p>
-              You can cancel your subscription at any time from your account settings.
-              Once canceled, you'll retain access to premium features until the end of your current billing cycle.
-              We do not offer refunds for partial billing periods. If you experience any issues, our support team is here to help.
-            </p>
-          </div>
-
-          <img src="assets/cancellation-policy.png" alt="policy-image" />
-        </div>
-      }
+    <div class="cancellation-policy">
+      <div class="policy">
+        <h1>Cancellation Policy</h1>
+        <p>
+          You can cancel your subscription at any time from your account settings.
+          Once canceled, you'll retain access to premium features until the end of your current billing cycle.
+          We do not offer refunds for partial billing periods. If you experience any issues, our support team is here to help.
+        </p>
+      </div>
+      <img src="assets/cancellation-policy.png" alt="policy-image" />
+    </div>
+  }
 </section>

@@ -1,3 +1,23 @@
 <div class="plan-levels">
-    hytreea tyt
+  <div class="plan-levels-track">
+    
+    <div class="number" [class.active]="currentStep >= 1">01</div>
+    <div class="line" [class.active]="currentStep > 1"></div>
+    <div class="number" [class.active]="currentStep >= 2">02</div>
+    <div class="line" [class.active]="currentStep > 2"></div>
+    <div class="number" [class.active]="currentStep >= 3">03</div>
+
+    
+    <div class="label label-1" [class.active]="currentStep >= 1">
+      Plan Confirmation Screen
+    </div>
+    <div class="label-placeholder"></div>
+    <div class="label label-2" [class.active]="currentStep >= 2">
+      Payment Information
+    </div>
+    <div class="label-placeholder"></div>
+    <div class="label label-3" [class.active]="currentStep >= 3">
+      Payment Success
+    </div>
+  </div>
 </div>
