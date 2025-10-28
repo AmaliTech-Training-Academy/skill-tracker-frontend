@@ -8,11 +8,21 @@
   @include flex-column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; // Add this to ensure full screen height
+  width: 100%;
+  align-items: stretch;
+  min-height: 100vh; 
+
+  .plan-levels{
+    padding: 5px 5px;
+    margin-inline: 24px;
+    background-color: $gray-white;
+    border-radius: 10px;
+  }
+  
 
   &-container, .cancellation-policy {
     padding: 48px 16px;
-    margin: 24px;
+    margin: 24px auto;
     background-color: $gray-white;
     border-radius: 10px;
 
@@ -174,6 +184,7 @@
   flex-direction: column-reverse;
   gap: 20px;
 
+
   .policy { 
     p {
       @include h13;
@@ -186,7 +197,8 @@
   }
 
   img {
-    width: 150px;
+    width: 101px;
+    height: 101px;
     margin-inline: auto; 
 
     @include desktop {
@@ -197,6 +209,7 @@
   @include desktop {
     @include flex;
     gap: 90px;
+    padding-inline: 40px;
   }
 }
 

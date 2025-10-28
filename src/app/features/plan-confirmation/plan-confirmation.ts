@@ -3,6 +3,7 @@ import { CommonModule, Location } from '@angular/common';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InputFieldComponent } from '@app/shared';
+import { PlanLevels } from '@app/shared/compomonents/plan-levels/plan-levels';
 import { getFormControl } from '@app/shared';
 
 type SectionType = 'chosen-plan' | 'pay-page' | 'done-page';
@@ -17,7 +18,7 @@ interface Plan {
 @Component({
   selector: 'app-plan-confirmation',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, InputFieldComponent],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, InputFieldComponent, PlanLevels],
   templateUrl: './plan-confirmation.html',
   styleUrls: ['./plan-confirmation.scss'],
 })

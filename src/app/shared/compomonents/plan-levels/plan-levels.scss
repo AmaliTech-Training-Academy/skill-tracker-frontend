@@ -1,0 +1,16 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.plan-levels{
+    padding: 5px 5px;
+    width: 80%;
+    margin-inline: auto;
+    border: 1px solid red;
+
+    @include desktop {
+      max-width: 825px;
+    }
+
+}
