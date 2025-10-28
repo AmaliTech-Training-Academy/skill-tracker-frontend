@@ -4,9 +4,10 @@
   justify-content: center;
 }
 
-@mixin flex-column {
+@mixin flex-column ($gap: 0) {
   display: flex;
   flex-direction: column;
+  gap: $gap;
 }
 
 @mixin flex-row {
