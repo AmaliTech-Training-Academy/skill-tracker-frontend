@@ -8,16 +8,13 @@
   @include flex-column;
   justify-content: center;
   align-items: center;
+  min-height: 100vh; // Add this to ensure full screen height
 
   &-container, .cancellation-policy {
     padding: 48px 16px;
-    margin:24px;
+    margin: 24px;
     background-color: $gray-white;
-    & > span {
-      @include flex-row;
-      gap: 2px;
-      margin-bottom: 32px;
-    }
+    border-radius: 10px;
 
     & h1 {
       @include h12;
@@ -27,11 +24,9 @@
     & p {
       color: $gray-text-strong;
     }
-    
 
-    @include desktop{
-    max-width: 825px;
- 
+    @include desktop {
+      max-width: 825px;
     }
 
     & .back-btn {
@@ -44,37 +39,36 @@
       margin-bottom: 32px;
     }
 
-    .plan{
+    .plan {
+      color: $gray-text-strong;
+      
+      .plan-type {
+        @include h11;
+      }
 
-        color: $gray-text-strong;
-        
-        .plan-type{
-          @include  h11;
+      .details {
+        @include h13;
+
+        ul {
+          margin-top: 10px;
         }
 
-        .details{
-            @include h13;
-
-            ul{
-              margin-top: 10px;
-            }
-
-            li{
-              display: flex;
-              align-items: center;
-              gap: 10px;
-              margin-block: 30px;
-            };
+        li {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-block: 30px;
         }
+      }
     }
 
-    .switch-plan{
+    .switch-plan {
       margin-top: 20px;
 
-      p{
+      p {
         padding-block: 5px;
 
-        a{
+        a {
           text-decoration: none;
           color: $brand-text;
         }
@@ -96,147 +90,126 @@
       font-size: 16px;
     }
 
-
-    .plan-confirmation-btns--next{
+    .plan-confirmation-btns--next {
       @include button-primary;
     }
   }
 
-  .payment-type-details{
+  .payment-type-details {
     margin-top: 20px;
 
-    form{
-    @include flex-column;
-    gap: 20px;
+    form {
+      @include flex-column;
+      gap: 20px;
     }
 
-    .paypal-container{
-     border: 1px solid $gray-white-weak;
-     height: 52px;
-     border-radius: 5px;
-     padding-inline: 10px;
-     @include flex-between;
-     @include h13;
-
+    .paypal-container {
+      border: 1px solid $gray-white-weak;
+      height: 52px;
+      border-radius: 5px;
+      padding-inline: 10px;
+      @include flex-between;
+      @include h13;
     }
 
-
-    .credit-card{
+    .credit-card {
       border: 1px solid $gray-white-weak;
       border-radius: 5px;
       padding-inline: 10px;
     }
     
-    .credit-card--container{
-     height: 52px;
-     border-radius: 5px;
-     @include flex-between;
-     @include h13;
-
-     
-
+    .credit-card--container {
+      height: 52px;
+      border-radius: 5px;
+      @include flex-between;
+      @include h13;
     }
 
-    .label{
+    .label {
       display: flex;
       gap: 10px;
     }
 
-    
-    
-
-     
-
-     .pay-button {
+    .pay-button {
       @include button-primary;
     }
-
-
   }
-
-  
 }
+
 .credit-card {
-  p{
+  p {
     margin: 20px auto;
-   width: 90%;
-   
+    width: 90%;
   }
 }
 
-.creditcard-data{
-   width: 90%;
-   margin: 20px auto;
+.creditcard-data {
+  width: 90%;
+  margin: 20px auto;
 
-
-
-   .group-one{
+  .group-one {
     margin-top: 20px;
 
-    @include desktop{
+    @include desktop {
       @include flex;
       gap: 60px;
     }
-   }
+  }
 
-   .expiry-cvv{
+  .expiry-cvv {
     @include flex;
     gap: 10px;
     margin-top: 20px;
 
-    @include desktop{
+    @include desktop {
       margin-top: 0;
       gap: 60px;
     }
-   }
+  }
 }
 
-.cancellation-policy{
+.cancellation-policy {
   @include flex-column;
   justify-content: center;
   flex-direction: column-reverse;
   gap: 20px;
 
-  .policy{ 
-  p{
-  @include h13;
-  color:  $gray-stroke-strong;
-  }
-  h1{
-  @include h12;
-  color:  $gray-text-strong;
-  }
+  .policy { 
+    p {
+      @include h13;
+      color: $gray-stroke-strong;
+    }
+    h1 {
+      @include h12;
+      color: $gray-text-strong;
+    }
   }
 
-  img{
+  img {
     width: 150px;
     margin-inline: auto; 
 
-    @include desktop{
+    @include desktop {
       width: 150px;
     }
   }
 
-  @include desktop{
+  @include desktop {
     @include flex;
     gap: 90px;
   }
-
 }
 
-.home{
-   margin-top: 5rem; 
-   margin-bottom: 100px
+.home {
+  margin-top: 5rem; 
+  margin-bottom: 100px;
 }
 
-
-
-
-@include desktop{
-   .card-data, .codes{
-      @include flex-between;
-      gap: 50px;
-     }
+@include desktop {
+  .card-data, .codes {
+    @include flex-between;
+    gap: 50px;
+  }
 }
 
 @include tablet {
@@ -256,9 +229,5 @@
       @include flex-row;
       @include flex-between;
     }
-
   }
 }
-
-
-

@@ -9,7 +9,7 @@ export const routes: Routes = [
     children: [
       { path: '', loadComponent: () => import('./features/landing-page/landing-page').then((c) => c.LandingPage) },
       {
-        path: 'plan-confirmation',
+        path: 'plan-confirmation/:plan-id',
         canActivate: [guestGuard],
         loadComponent: () => import('./features/plan-confirmation/plan-confirmation').then((c) => c.PlanConfirmation),
       },{
