@@ -46,7 +46,7 @@ export interface RegistrationData {
   username: string | null;
   role: UserRole;
   state: UserState;
-  is_verified: boolean;
+  isVerified: boolean;
   premiumTier: PremiumTier;
   language: string;
   timezone: string;
