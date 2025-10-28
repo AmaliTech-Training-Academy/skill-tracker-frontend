@@ -2,11 +2,20 @@
 @use 'typography' as *;
 @use 'mixins' as *;
 
-@mixin button-base {
-  padding: 12px 25.5px;
+@mixin button-base (
+  $padding-y: 0.75rem,
+  $padding-x: 1.6rem,
+  $border-radius: 0.5rem,
+  $font-size: 1.25rem,      
+  $font-weight: 400,
+  $line-height: 1.5rem,
+) {
+  padding: $padding-y $padding-x;
   width: 100%;
-  border-radius: 8px;
-  @include h12;
+  border-radius: $border-radius;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  line-height: $line-height;
   cursor: pointer;
   border: none;
   transition: all 0.3s ease;
@@ -36,8 +45,7 @@
   color: $brand-text;
 
   &:hover {
-    background-color: $brand-text;
-    color: $brand-fill;
+    background-color: $brand-stroke-weak;
   }
 }
 
@@ -110,17 +118,17 @@
 }
 
 @mixin alert-error {
-  @include alert-box($red-fill, $red-stroke-weak, $red-text); // red tones
+  @include alert-box($red-fill, $red-stroke-weak, $red-text); 
 }
 
 @mixin alert-success {
-  @include alert-box($green-fill, $green-stroke-weak, $green-text); // green tones
+  @include alert-box($green-fill, $green-stroke-weak, $green-text); 
 }
 
 @mixin alert-info {
-  @include alert-box($brand-fill, $brand-stroke-weak, $brand-text); // brand blue tones
+  @include alert-box($brand-fill, $brand-stroke-weak, $brand-text); 
 }
 
 @mixin alert-warning {
-  @include alert-box($amber-fill, $amber-stroke-weak, $amber-text); // amber tones
+  @include alert-box($amber-fill, $amber-stroke-weak, $amber-text); 
 }
