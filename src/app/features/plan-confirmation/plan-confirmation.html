@@ -2,6 +2,7 @@
   <div class="plan-confirmation-container">
 
     <!-- 
+    <div class="chosen-plan">
     <button class="back-btn" (click)="goBack()">
   <img src="assets/left-arrow.png" alt="Navigate back" />
   Back
@@ -38,10 +39,12 @@
     Register to Pay
   </button>
 </div>
+
+</div>
  -->
 
 
- <div class="pay-page">
+ <!-- <div class="pay-page">
     <button class="back-btn" (click)="goBack()">
       <img src="assets/left-arrow.png" alt="Navigate back" /> Back
     </button>
@@ -74,7 +77,7 @@
           <p>Select your preferred payment method and complete your purchase securely.</p>
 
           <div class="creditcard-data">
-          <!-- New credit card number input -->
+         
           <app-input-field
             label="Card Number"
             type="credit-card"
@@ -85,7 +88,7 @@
 
           <div class="group-one">
 
-            <!-- holder name -->
+           
            <app-input-field
               label="Name"
               type="text"
@@ -98,7 +101,7 @@
             
 
 
-          <!-- New expiry date input -->
+          
           <app-input-field
             label="Expiry Date"
             type="month"
@@ -107,7 +110,7 @@
             [control]="getFormControl(paymentForm, 'expiry')"
           ></app-input-field>
 
-          <!-- New CVV input -->
+         
           <app-input-field
             label="CVV"
             type="cvv"
@@ -140,9 +143,40 @@
         <button type="submit" class="pay-button">Pay $99.9</button>
       </form>
     </div>
+    </div> -->
+   
+  <div class="done-page">
+      <button class="back-btn" (click)="goBack()">
+  <img src="assets/left-arrow.png" alt="Navigate back" />
+  Back
+</button>
+
+<header>
+  <h1>You’re In! Welcome to SkillDev Premium 🎉</h1>
+  <p>
+    You’ve successfully upgraded. It’s time to take your skill development to the next level.
+  </p>
+</header>
+
+<div class="plan-confirmation-selection plan">
+  <h1 class="plan-type">Enjoy full access to advanced features, deeper insights, and a growing community of learners.</h1>
+
+  <button class="back-btn home" (click)="goBack()">
+  Back to Home
+</button>
+</div>
+
+<div class="plan-confirmation-btns">
+  <button class="plan-confirmation-btns--next">
+    Go to Dashboard
+  </button>
+</div>
     </div>
-     
-    <div class="cancellation-policy">
+
+  </div>
+
+  <!-- cancellation policy -->
+  <!-- <div class="cancellation-policy">
      <div class="policy">
        <h1>Cancellation Policy</h1>
       <p>You can cancel your subscription at any time from your account settings. Once canceled, you’ll retain access to premium features until the end of your current billing cycle. We do not offer refunds for partial billing periods. If you experience any issues, our support team is here to help.</p>
@@ -150,8 +184,5 @@
 
       <img src="assets/cancellation-policy.png" alt="policy-image">
 
-    </div>
-    
-
-  </div>
+    </div> -->
 </section>

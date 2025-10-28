@@ -5,9 +5,11 @@
 
 .plan-confirmation {
   background: $background-white;
-  @include flex-center;
+  @include flex-column;
+  justify-content: center;
+  align-items: center;
 
-  &-container {
+  &-container, .cancellation-policy {
     padding: 48px 16px;
     margin:24px;
     background-color: $gray-white;
@@ -222,7 +224,10 @@
 
 }
 
-
+.home{
+   margin-top: 5rem; 
+   margin-bottom: 100px
+}
 
 
 
