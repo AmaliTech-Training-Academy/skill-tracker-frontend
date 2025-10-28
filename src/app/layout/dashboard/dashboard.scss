@@ -1,0 +1,57 @@
+@use 'mixins' as *;
+@use 'variables' as *;
+@use 'sass:map';
+
+.dashboard-layout {
+  @include flex(column);
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  position: relative;
+
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: map.get($z-layers, 'sidebar-overlay');
+    cursor: pointer;
+    animation: fadeIn 0.3s ease;
+    border: none;
+    padding: 0;
+    text-align: left;
+  }
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    @include flex(column);
+    background-color: var(--color-background-white);
+  }
+}
+
+@include tablet {
+  .dashboard-layout {
+    @include flex(row);
+    height: 100vh;
+    overflow: hidden;
+
+    .sidebar-overlay {
+      display: none;
+    }
+
+    .main-content {
+      padding: 0;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

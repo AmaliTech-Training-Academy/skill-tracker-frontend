@@ -1,3 +1,15 @@
-<app-dashboard-navigation></app-dashboard-navigation>
-<router-outlet></router-outlet>
-<app-dashboard-sidebar></app-dashboard-sidebar>
+<main class="dashboard-layout">
+  <app-dashboard-sidebar
+    [isOpen]="isSidebarOpen()"
+    [menuItems]="menuItems"
+    [footerItems]="footerItems"
+    (navigated)="onNavigate()"
+  />
+  @if (isSidebarOpen()) {
+    <button class="sidebar-overlay" (click)="onNavigate()" aria-label="Close sidebar"></button>
+  }
+  <section class="main-content">
+    <app-dashboard-navigation (toggleSidebar)="toggleSidebar()" [isSidebarOpen]="isSidebarOpen()" />
+    <router-outlet />
+  </section>
+</main>

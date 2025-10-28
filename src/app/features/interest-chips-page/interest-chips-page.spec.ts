@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardNavigation } from './dashboard-navigation';
+import { InterestsPageComponent } from './interest-chips-page';
 
-describe('DashboardNavigation', () => {
-  let component: DashboardNavigation;
-  let fixture: ComponentFixture<DashboardNavigation>;
+describe('InterestChipsPage', () => {
+  let component: InterestsPageComponent;
+  let fixture: ComponentFixture<InterestsPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardNavigation],
+      imports: [InterestsPageComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DashboardNavigation);
+    fixture = TestBed.createComponent(InterestsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
