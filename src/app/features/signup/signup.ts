@@ -5,16 +5,16 @@ import {
   computed,
   OnDestroy,
   OnInit,
-  inject,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, delay, Subject, takeUntil } from 'rxjs';
 import { CustomValidators } from '@app/shared';
 import { ToastService } from '@app/core';
 import { InputFieldComponent } from '@app/shared';
 import { getFormControl } from '@app/shared';
+import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
 @Component({
   selector: 'app-signup',
@@ -24,38 +24,50 @@ import { getFormControl } from '@app/shared';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Signup implements OnInit, OnDestroy {
-  isSubmitting = signal(false);
+  public signupForm!: FormGroup;
 
-  fb = inject(FormBuilder);
-  toastService = inject(ToastService);
-  router = inject(Router);
+  constructor(
+    private fb: FormBuilder,
+    private toastService: ToastService,
+    private router: Router,
+  ) {}
 
-  passwordValue = signal('');
+  public isSubmitting = signal(false);
+  public passwordValue = signal('');
   private destroy$ = new Subject<void>();
-  private readonly SIGNUP_DELAY_MS = 2000;
+  private readonly signupDelayMs = 2000;
 
-  signupForm = this.fb.group(
-    {
-      email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(8),
-          CustomValidators.hasUppercase,
-          CustomValidators.hasLowercase,
-          CustomValidators.hasNumber,
-          CustomValidators.hasSpecialChar,
+  ngOnInit() {
+    this.signupForm = this.fb.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            CustomValidators.hasUppercase,
+            CustomValidators.hasLowercase,
+            CustomValidators.hasNumber,
+            CustomValidators.hasSpecialChar,
+          ],
         ],
-      ],
-      confirmPassword: ['', [Validators.required]],
-      termsAccepted: [false, [Validators.requiredTrue]],
-    },
-    { validators: CustomValidators.passwordMatchValidator },
-  );
+        confirmPassword: ['', [Validators.required]],
+        termsAccepted: [false, [Validators.requiredTrue]],
+      },
+      { validators: CustomValidators.passwordMatchValidator },
+    );
+
+    // Subscribe to password changes to update signal
+    this.getFormControl(this.signupForm, 'password')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.passwordValue.set(value || '');
+      });
+  }
 
   // Computed signal for password requirements
-  passwordRequirements = computed(() => {
+  public passwordRequirements = computed(() => {
     const value = this.passwordValue();
     return [
       {
@@ -81,30 +93,21 @@ export class Signup implements OnInit, OnDestroy {
     ];
   });
 
-  ngOnInit() {
-    // Subscribe to password changes to update signal
-    this.getFormControl(this.signupForm, 'password')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.passwordValue.set(value || '');
-      });
-  }
-
-  signInWithGoogle() {
+  public signInWithGoogle() {
     // Implement Google Auth logic here
   }
 
-  signInWithGithub() {
+  public signInWithGithub() {
     // Implement GitHub Auth logic here
   }
 
-  getFormControl = getFormControl;
+  public getFormControl = getFormControl;
 
-  goToLogin() {
-    this.router.navigateByUrl('/login');
+  public goToLogin() {
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.LOGIN);
   }
 
-  async onSubmit() {
+  public async onSubmit() {
     this.signupForm.markAllAsTouched();
 
     if (this.signupForm.invalid) return;
@@ -113,14 +116,14 @@ export class Signup implements OnInit, OnDestroy {
 
     // Simulate an API call
     of(true)
-      .pipe(delay(this.SIGNUP_DELAY_MS), takeUntil(this.destroy$))
+      .pipe(delay(this.signupDelayMs), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(
             'Account Created',
             "Hurray, Your account is created! We've sent a 6 digit code to your email",
           );
-          this.router.navigateByUrl('/email-verification');
+          this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.EMAIL_VERIFICATION);
         },
         error: () => {
           this.toastService.showError(

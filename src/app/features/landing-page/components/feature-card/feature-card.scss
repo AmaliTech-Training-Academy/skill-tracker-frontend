@@ -1,0 +1,5 @@
+@use 'components' as *;
+
+.feature-card {
+  @include feature-card;
+}

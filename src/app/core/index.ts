@@ -19,4 +19,7 @@ export * from './constants/app.constants';
 // models
 export * from './models/app-error.model';
 export * from './models/auth.model';
-export * from './models/toast-model'
+export * from './models/toast-model';
+
+// icons
+export * from './icons/index';
