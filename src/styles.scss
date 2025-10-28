@@ -1,3 +1,4 @@
+@use 'styles/colors' as *;
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
@@ -6,7 +7,49 @@
   padding: 0;
 }
 
+:root {
+  --color-brand-text: #{$brand-text};
+  --color-brand-stroke-strong: #{$brand-stroke-strong};
+  --color-brand-stroke-weak: #{$brand-stroke-weak};
+  --color-brand-fill: #{$brand-fill};
+  --color-brand-fill-weak: #{$brand-fill-weak};
+
+  --color-red-text: #{$red-text};
+  --color-red-stroke-strong: #{$red-stroke-strong};
+  --color-red-stroke-weak: #{$red-stroke-weak};
+  --color-red-fill: #{$red-fill};
+
+  --color-amber-text: #{$amber-text};
+  --color-amber-text-strong: #{$amber-text-strong};
+  --color-amber-stroke-strong: #{$amber-stroke-strong};
+  --color-amber-stroke-weak: #{$amber-stroke-weak};
+  --color-amber-fill: #{$amber-fill};
+
+  --color-green-text: #{$green-text};
+  --color-green-success: #{$green-success};
+  --color-green-stroke-strong: #{$green-stroke-strong};
+  --color-green-stroke-weak: #{$green-stroke-weak};
+  --color-green-fill: #{$green-fill};
+
+  --color-gray-text-strong: #{$gray-text-strong};
+  --color-gray-text-weak: #{$gray-text-weak};
+  --color-gray-stroke-strong: #{$gray-stroke-strong};
+  --color-gray-stroke-weak: #{$gray-stroke-weak};
+  --color-gray-fill: #{$gray-fill};
+
+  --color-background-white: #{$background-white};
+  --color-background-dark: #{$background-dark};
+  --color-background-raised: #{$background-raised};
+  --color-background-overlay: #{$background-overlay};
+
+  --color-white: #{$white};
+}
+
 body {
   font-family: 'Roboto', sans-serif;
-  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }

@@ -114,7 +114,7 @@ module.exports = tseslint.config(
         {
           selector: 'interface',
           custom: {
-            regex: '[Ii](?=[A-Z]\\w*)',
+            regex: '^I[A-Z]',
             match: false,
           },
           format: ['PascalCase'],
