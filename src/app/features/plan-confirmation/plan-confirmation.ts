@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InputFieldComponent } from '@app/shared';
 import { getFormControl } from '@app/shared';
+
+type SectionType = 'chosen-plan' | 'pay-page' | 'done-page';
 
 @Component({
   selector: 'app-plan-confirmation',
@@ -12,9 +14,10 @@ import { getFormControl } from '@app/shared';
   templateUrl: './plan-confirmation.html',
   styleUrls: ['./plan-confirmation.scss'],
 })
-export class PlanConfirmation {
+export class PlanConfirmation implements OnInit {
   getFormControl = getFormControl;
-  paymentForm!: FormGroup; // ✅ define first, initialize later
+  paymentForm!: FormGroup;
+  currentSection: SectionType = 'chosen-plan';
 
   constructor(
     private router: Router,
@@ -22,7 +25,6 @@ export class PlanConfirmation {
     private fb: FormBuilder
   ) {}
 
-  // ✅ Safe initialization without using fb before setup
   ngOnInit(): void {
     this.paymentForm = this.fb.group({
       cardNumber: ['', [Validators.required, Validators.minLength(16)]],
@@ -33,7 +35,19 @@ export class PlanConfirmation {
   }
 
   goBack(): void {
-    this.location.back();
+    if (this.currentSection === 'chosen-plan') {
+      this.location.back();
+    } 
+    else if (this.currentSection === 'pay-page') {
+     this.goToSection('chosen-plan');
+    } 
+    else if (this.currentSection === 'done-page') {
+      this.router.navigate(['/']);
+    }
+  }
+
+  goToSection(section: SectionType): void {
+    this.currentSection = section;
   }
 
   pay(): void {
@@ -42,7 +56,11 @@ export class PlanConfirmation {
       return;
     }
 
-    console.log('Payment data:', this.paymentForm.value);
-    alert('Payment successful!');
+    
+    this.goToSection('done-page');
+  }
+
+  goToDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 }
