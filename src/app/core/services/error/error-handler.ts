@@ -19,35 +19,42 @@ export class ErrorHandlerService {
         };
       }
 
-      const backendMessage =
-        error.error?.detail ||
-        error.error?.message ||
-        error.error?.error ||
-        (typeof error.error === 'string' ? error.error : null);
+      const backendErrorBody = error.error as {
+        message?: string;
+        detail?: string;
+        errors?: { field?: string; message?: string }[];
+      };
 
-      const rawValidationErrors = error.error?.errors;
+      const backendMessage = backendErrorBody.message;
+      const backendDetail = backendErrorBody.detail;
+
       let validationErrors: ValidationDetail[] | undefined;
+      const rawValidationErrors = backendErrorBody.errors;
 
-      if (Array.isArray(rawValidationErrors)) {
+      if (Array.isArray(rawValidationErrors) && rawValidationErrors.length > 0) {
         validationErrors = rawValidationErrors.map((err) => ({
           field: err.field || 'general',
           message: err.message || 'Validation failed for a field.',
         }));
       }
 
+      const errorType400 = validationErrors ? AppErrorType.VALIDATION : AppErrorType.CLIENT;
+      const isServerError = error.status >= 500 && error.status < 600;
+
       switch (error.status) {
         case 400:
           return {
-            message:
-              error.error?.message || backendMessage || 'Bad request. Please check your input.',
+            message: backendMessage || 'Bad request. Please check your input.',
+            detail: backendDetail,
             status: error.status,
-            type: AppErrorType.CLIENT,
+            type: errorType400,
             validationErrors,
             raw: error,
           };
         case 401:
           return {
             message: backendMessage || 'Unauthorized. Please log in again.',
+            detail: backendDetail,
             status: error.status,
             type: AppErrorType.AUTH,
             raw: error,
@@ -56,6 +63,7 @@ export class ErrorHandlerService {
           return {
             message:
               backendMessage || 'Forbidden. You do not have permission to perform this action.',
+            detail: backendDetail,
             status: error.status,
             type: AppErrorType.AUTH,
             raw: error,
@@ -63,23 +71,27 @@ export class ErrorHandlerService {
         case 404:
           return {
             message: backendMessage || 'The requested resource was not found.',
+            detail: backendDetail,
+            status: error.status,
+            type: AppErrorType.CLIENT,
+            raw: error,
+          };
+        case 409:
+          return {
+            message: backendMessage || 'Data conflict. Please review your request.',
+            detail: backendDetail,
             status: error.status,
             type: AppErrorType.CLIENT,
             raw: error,
           };
         default:
-          if (error.status >= 500) {
-            return {
-              message: 'A server error occurred. Please try again later.',
-              status: error.status,
-              type: AppErrorType.SERVER,
-              raw: error,
-            };
-          }
           return {
-            message: backendMessage || 'An unexpected error occurred.',
+            message: isServerError
+              ? 'A server error occurred. Please try again later.'
+              : backendMessage || 'An unexpected error occurred.',
+            detail: backendDetail,
             status: error.status,
-            type: AppErrorType.UNKNOWN,
+            type: isServerError ? AppErrorType.SERVER : AppErrorType.UNKNOWN,
             raw: error,
           };
       }
