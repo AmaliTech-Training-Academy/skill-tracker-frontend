@@ -87,18 +87,15 @@
   }
 
   .stepper {
-  display: flex;
+ @include flex-between;
   flex-direction: row; 
-  align-items: center;
-  justify-content: space-between;
   gap: 1rem;
   width: 100%;
   overflow-x: auto; 
   padding: 1rem;
 
   .step {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     align-items: center;
     text-align: center;
 
@@ -107,9 +104,7 @@
       height: 32px;
       border-radius: 50%;
       background-color: $gray-stroke-weak;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      @include flex-center;
       font-weight: 600;
     }
 
