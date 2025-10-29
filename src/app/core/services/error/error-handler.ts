@@ -28,7 +28,7 @@ export class ErrorHandlerService {
       let validationErrors: ValidationDetail[] | undefined;
       const rawValidationErrors = backendErrorBody.errors;
 
-      if (Array.isArray(rawValidationErrors) && rawValidationErrors.length > 0) {
+      if (Array.isArray(rawValidationErrors) && rawValidationErrors.length) {
         validationErrors = rawValidationErrors.map((err) => ({
           field: err.field || 'general',
           message: err.message || 'Validation failed for a field.',
