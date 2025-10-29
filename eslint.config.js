@@ -129,7 +129,26 @@ module.exports = tseslint.config(
     rules: {},
   },
   {
-    files: ['jest.config.ts'],
+    files: ['**/*.spec.ts', 'setup-jest.ts'],
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...tseslint.configs.stylistic,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.spec.json',
+        ecmaVersion: 2020,
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-console': 'off',
+    },
+  },
+  {
+    files: ['jest.config.ts', 'jest.config.js'],
     extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
       sourceType: 'module',
