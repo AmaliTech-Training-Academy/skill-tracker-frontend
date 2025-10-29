@@ -108,7 +108,7 @@ export class PlanConfirmation implements OnInit, OnDestroy {
         'Early access to new Skill Arena game modes',
       ],
     },
-  ];
+  ] as const;
 
   ngOnInit(): void {
     this.loadPlanFromRoute();
