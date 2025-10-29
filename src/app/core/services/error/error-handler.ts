@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppError, AppErrorType } from '../../models/app-error.model';
-import { ApiErrorResponse, ValidationDetail } from '@app/core/models/api.model';
+import { ApiErrorResponse, isApiErrorResponse, ValidationDetail } from '@app/core/models/api.model';
 import { ToastService } from '../toast/toast-service';
 
 @Injectable({
@@ -20,77 +20,86 @@ export class ErrorHandlerService {
         };
       }
 
-      const backendErrorBody = error.error as ApiErrorResponse;
+      if (isApiErrorResponse(error.error)) {
+        const backendErrorBody = error.error;
 
-      const backendMessage = backendErrorBody.message;
-      const backendDetail = backendErrorBody.detail;
+        const backendMessage = backendErrorBody.message;
+        const backendDetail = backendErrorBody.detail;
 
-      let validationErrors: ValidationDetail[] | undefined;
-      const rawValidationErrors = backendErrorBody.errors;
+        let validationErrors: ValidationDetail[] | undefined;
+        const rawValidationErrors = backendErrorBody.errors;
 
-      if (Array.isArray(rawValidationErrors) && rawValidationErrors.length) {
-        validationErrors = rawValidationErrors.map((err) => ({
-          field: err.field || 'general',
-          message: err.message || 'Validation failed for a field.',
-        }));
-      }
+        if (Array.isArray(rawValidationErrors) && rawValidationErrors.length) {
+          validationErrors = rawValidationErrors.map((err) => ({
+            field: err.field || 'general',
+            message: err.message || 'Validation failed for a field.',
+          }));
+        }
 
-      const errorType400 = validationErrors ? AppErrorType.VALIDATION : AppErrorType.CLIENT;
-      const isServerError = error.status >= 500 && error.status < 600;
+        const errorType400 = validationErrors ? AppErrorType.VALIDATION : AppErrorType.CLIENT;
+        const isServerError = error.status >= 500 && error.status < 600;
 
-      switch (error.status) {
-        case 400:
-          return {
-            message: backendMessage || 'Bad request. Please check your input.',
-            detail: backendDetail,
-            status: error.status,
-            type: errorType400,
-            validationErrors,
-            raw: error,
-          };
-        case 401:
-          return {
-            message: backendMessage || 'Unauthorized. Please log in again.',
-            detail: backendDetail,
-            status: error.status,
-            type: AppErrorType.AUTH,
-            raw: error,
-          };
-        case 403:
-          return {
-            message:
-              backendMessage || 'Forbidden. You do not have permission to perform this action.',
-            detail: backendDetail,
-            status: error.status,
-            type: AppErrorType.AUTH,
-            raw: error,
-          };
-        case 404:
-          return {
-            message: backendMessage || 'The requested resource was not found.',
-            detail: backendDetail,
-            status: error.status,
-            type: AppErrorType.CLIENT,
-            raw: error,
-          };
-        case 409:
-          return {
-            message: backendMessage || 'Data conflict. Please review your request.',
-            detail: backendDetail,
-            status: error.status,
-            type: AppErrorType.CLIENT,
-            raw: error,
-          };
-        default:
-          return {
-            message: isServerError
-              ? 'A server error occurred. Please try again later.'
-              : backendMessage || 'An unexpected error occurred.',
-            detail: backendDetail,
-            status: error.status,
-            type: isServerError ? AppErrorType.SERVER : AppErrorType.UNKNOWN,
-            raw: error,
-          };
+        switch (error.status) {
+          case 400:
+            return {
+              message: backendMessage || 'Bad request. Please check your input.',
+              detail: backendDetail,
+              status: error.status,
+              type: errorType400,
+              validationErrors,
+              raw: error,
+            };
+          case 401:
+            return {
+              message: backendMessage || 'Unauthorized. Please log in again.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.AUTH,
+              raw: error,
+            };
+          case 403:
+            return {
+              message:
+                backendMessage || 'Forbidden. You do not have permission to perform this action.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.AUTH,
+              raw: error,
+            };
+          case 404:
+            return {
+              message: backendMessage || 'The requested resource was not found.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.CLIENT,
+              raw: error,
+            };
+          case 409:
+            return {
+              message: backendMessage || 'Data conflict. Please review your request.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.CLIENT,
+              raw: error,
+            };
+          default:
+            return {
+              message: isServerError
+                ? 'A server error occurred. Please try again later.'
+                : backendMessage || 'An unexpected error occurred.',
+              detail: backendDetail,
+              status: error.status,
+              type: isServerError ? AppErrorType.SERVER : AppErrorType.UNKNOWN,
+              raw: error,
+            };
+        }
+      } else {
+        return {
+          message: 'An unexpected server error occurred.',
+          status: error.status,
+          type: AppErrorType.SERVER,
+          raw: error,
+        };
       }
     }
 

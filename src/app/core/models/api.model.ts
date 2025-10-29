@@ -13,7 +13,6 @@ export interface ValidationDetail {
 export interface ApiErrorResponse {
   status: number;
   message: string;
-
   detail: string | null;
   instance: string;
   errors: ValidationDetail[] | null;
@@ -21,4 +20,21 @@ export interface ApiErrorResponse {
     traceId: string;
     timestamp: string;
   };
+}
+
+export function isApiErrorResponse(body: unknown): body is ApiErrorResponse {
+  if (typeof body !== 'object' || body === null) {
+    return false;
+  }
+
+  return (
+    'status' in body &&
+    typeof (body as ApiErrorResponse).status === 'number' &&
+    'message' in body &&
+    typeof (body as ApiErrorResponse).message === 'string' &&
+    'instance' in body &&
+    typeof (body as ApiErrorResponse).instance === 'string' &&
+    'detail' in body &&
+    typeof (body as ApiErrorResponse).message === 'string'
+  );
 }
