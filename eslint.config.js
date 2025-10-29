@@ -42,7 +42,7 @@ module.exports = tseslint.config(
       complexity: 'off',
       'max-classes-per-file': ['error', 1],
       eqeqeq: ['error', 'always'],
-      indent: 'off',
+      indent: ['error', 'on'],
       quotes: ['error', 'single'],
       semi: ['error', 'always'],
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
