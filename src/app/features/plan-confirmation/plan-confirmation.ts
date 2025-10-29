@@ -110,11 +110,6 @@ export class PlanConfirmation implements OnInit, OnDestroy {
     },
   ] as const;
 
-  ngOnInit(): void {
-    this.loadPlanFromRoute();
-    this.setupStepTracker();
-  }
-
   private loadPlanFromRoute(): void {
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
