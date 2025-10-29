@@ -4,8 +4,7 @@
 @use 'components' as *;
 
 .skill-card {
-  @include flex-column;
-  align-items: flex-start;
+  @include flex(column);
   background: transparent;
   padding: 12px 16px;
   width: fit-content;
@@ -13,8 +12,8 @@
 }
 
 .skill-header {
-  @include flex-center;
-  gap: 6px;
+  @include flex(row, center, center, 6px);
+
   margin-bottom: 10px;
 
   .icon {

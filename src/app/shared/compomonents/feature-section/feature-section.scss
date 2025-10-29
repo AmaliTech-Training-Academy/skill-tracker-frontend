@@ -3,49 +3,49 @@
 @use 'typography' as *;
 
 .features-section {
-    @include flex($direction: column, $justify: center, $align: center, $gap: 4rem);
-    padding: 4rem 0 0;
-    text-align: center;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
+  @include flex(column, center, center, 4rem);
+  padding: 4rem 0 0;
+  text-align: center;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .section-header {
-    @include flex-column($gap: 1rem);
-    max-width: 700px;
+  @include flex($direction: column, $gap: 1rem);
+  max-width: 700px;
 
-    .section-title {
-        @include h5;
-        color: $gray-text-strong;
+  .section-title {
+    @include h5;
+    color: $gray-text-strong;
+  }
+
+  .section-subtitle {
+    @include h13;
+    color: $gray-stroke-strong;
+
+    @include tablet {
+      @include h12;
     }
-
-    .section-subtitle {
-        @include h13;
-        color: $gray-stroke-strong;
-
-        @include tablet {
-            @include h12;
-        }
-    }
+  }
 }
 
 .features-grid {
-    @include flex($direction: column, $gap: 2rem);
-    width: 100%;
+  @include flex($direction: column, $gap: 2rem);
+  width: 100%;
 
+  @include tablet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &.skill-development {
     @include tablet {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
-    &.skill-development {
-        @include tablet {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        @include desktop {
-            grid-template-columns: repeat(4, 1fr);
-        }
+    @include desktop {
+      grid-template-columns: repeat(4, 1fr);
     }
+  }
 }

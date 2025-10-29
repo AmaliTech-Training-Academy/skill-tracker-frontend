@@ -2,13 +2,13 @@
 @use 'typography' as *;
 @use 'mixins' as *;
 
-@mixin button-base (
+@mixin button-base(
   $padding-y: 0.75rem,
   $padding-x: 1.6rem,
   $border-radius: 0.5rem,
-  $font-size: 1.25rem,      
+  $font-size: 1.25rem,
   $font-weight: 400,
-  $line-height: 1.5rem,
+  $line-height: 1.5rem
 ) {
   padding: $padding-y $padding-x;
   width: 100%;
@@ -61,8 +61,7 @@
 }
 
 @mixin base-field {
-  @include flex-column;
-  gap: 4px;
+  @include flex($direction: column, $gap: 4px);
 
   // label
   label {
@@ -84,9 +83,7 @@
 
 // alert-box
 @mixin alert-box($bg-color, $border-color, $text-color) {
-  @include flex-center;
-
-  gap: 1.25rem;
+  @include flex($direction: row, $justify: center, $align: center, $gap: 1.25rem);
   padding: 1rem;
   border-radius: 8px;
   border: 1px solid $border-color;
@@ -104,12 +101,10 @@
 
   .alert-content {
     flex: 1;
-    @include flex-column;
-    gap: 1rem;
+    @include flex($direction: column, $gap: 1rem);
 
     .alert-header {
-      display: flex;
-      justify-content: space-between;
+      @include flex($direction: row, $justify: space-between);
 
       .alert-title {
         font-size: 18px;
@@ -129,24 +124,24 @@
 }
 
 @mixin alert-error {
-  @include alert-box($red-fill, $red-stroke-weak, $red-text); 
+  @include alert-box($red-fill, $red-stroke-weak, $red-text);
 }
 
 @mixin alert-success {
-  @include alert-box($green-fill, $green-stroke-weak, $green-text); 
+  @include alert-box($green-fill, $green-stroke-weak, $green-text);
 }
 
 @mixin alert-info {
-  @include alert-box($brand-fill, $brand-stroke-weak, $brand-text); 
+  @include alert-box($brand-fill, $brand-stroke-weak, $brand-text);
 }
 
 @mixin alert-warning {
-  @include alert-box($amber-fill, $amber-stroke-weak, $amber-text); 
+  @include alert-box($amber-fill, $amber-stroke-weak, $amber-text);
 }
 
 //feature cards
 @mixin feature-card {
-  @include flex($direction: column, $align:flex-start, $gap: 1rem);
+  @include flex($direction: column, $align: flex-start, $gap: 1rem);
   padding: 1rem 1.5rem;
   border-radius: 4px;
   border: 1px solid $gray-fill;
@@ -156,26 +151,26 @@
     padding: 9px;
     width: 42px;
     height: 42px;
-    @include flex-center;
-    background-color: $brand-fill; 
-    color: $brand-text; 
+    @include flex(row, center, center);
+    background-color: $brand-fill;
+    color: $brand-text;
     border-radius: 50%;
   }
-  
+
   .card-title {
     @include typography(1.25rem, 1.5rem, 400);
     color: $gray-text-strong;
   }
-  
+
   .card-description {
-    @include h13; 
+    @include h13;
     color: $gray-stroke-strong;
   }
 }
 
 //feature cards
 @mixin feature-card {
-  @include flex($direction: column, $align:flex-start, $gap: 1rem);
+  @include flex($direction: column, $align: flex-start, $gap: 1rem);
   padding: 1rem 1.5rem;
   border-radius: 4px;
   border: 1px solid $gray-fill;
@@ -185,19 +180,19 @@
     padding: 9px;
     width: 42px;
     height: 42px;
-    @include flex-center;
-    background-color: $brand-fill; 
-    color: $brand-text; 
+    @include flex(row, center, center);
+    background-color: $brand-fill;
+    color: $brand-text;
     border-radius: 50%;
   }
-  
+
   .card-title {
     @include typography(1.25rem, 1.5rem, 400);
     color: $gray-text-strong;
   }
-  
+
   .card-description {
-    @include h13; 
+    @include h13;
     color: $gray-stroke-strong;
   }
 }
