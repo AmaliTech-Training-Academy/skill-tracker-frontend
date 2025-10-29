@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AppError, ValidationDetail, AppErrorType } from '../../models/app-error.model';
+import { AppError, AppErrorType } from '../../models/app-error.model';
+import { ApiErrorResponse, ValidationDetail } from '@app/core/models/api.model';
 import { ToastService } from '../toast/toast-service';
 
 @Injectable({
@@ -19,11 +20,7 @@ export class ErrorHandlerService {
         };
       }
 
-      const backendErrorBody = error.error as {
-        message?: string;
-        detail?: string;
-        errors?: { field?: string; message?: string }[];
-      };
+      const backendErrorBody = error.error as ApiErrorResponse;
 
       const backendMessage = backendErrorBody.message;
       const backendDetail = backendErrorBody.detail;

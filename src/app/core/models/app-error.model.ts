@@ -1,4 +1,5 @@
 import { HttpStatusCode } from '@angular/common/http';
+import { ValidationDetail } from './api.model';
 
 export enum AppErrorType {
   NETWORK = 'network',
@@ -9,16 +10,12 @@ export enum AppErrorType {
   UNKNOWN = 'unknown',
 }
 
-export interface ValidationDetail {
-  field: string;
-  message: string;
-}
-
 export interface AppError {
   message: string;
-  detail?: string;
+  detail?: string | null;
   status?: HttpStatusCode | number;
   type?: AppErrorType;
+  errors?: { field?: string; message?: string }[];
   validationErrors?: ValidationDetail[];
   raw?: unknown;
 }
