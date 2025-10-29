@@ -8,6 +8,14 @@ export interface PasswordRequirement {
   error: boolean;
 }
 
+type InputType =
+  | 'text'
+  | 'email'
+  | 'password'
+  | 'credit-card'
+  | 'cvv'
+  | 'month';
+
 @Component({
   selector: 'app-input-field',
   standalone: true,
@@ -18,7 +26,7 @@ export interface PasswordRequirement {
 })
 export class InputFieldComponent {
   @Input() label = '';
-  @Input() type: 'text' | 'email' | 'password' = 'text';
+  @Input() type: InputType = 'text';
   @Input() placeholder = '';
   @Input() id = '';
   @Input({ required: true }) control!: FormControl;
@@ -30,6 +38,29 @@ export class InputFieldComponent {
 
   togglePasswordVisibility(): void {
     this.showPassword.set(!this.showPassword());
+  }
+
+  
+  onCardInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '');
+    value = value.replace(/(.{4})/g, '$1 ').trim();
+    this.control.setValue(value, { emitEvent: false });
+  }
+
+  
+  onCVVInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '').slice(0, 4);
+    this.control.setValue(input.value, { emitEvent: false });
+  }
+
+ 
+  onMonthInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '').slice(0, 4);
+    if (value.length > 2) value = `${value.slice(0, 2)}/${value.slice(2)}`;
+    this.control.setValue(value, { emitEvent: false });
   }
 
   getErrorKeys(): string[] {
