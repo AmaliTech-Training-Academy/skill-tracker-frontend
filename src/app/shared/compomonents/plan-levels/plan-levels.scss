@@ -24,7 +24,7 @@
     border: 2px solid $gray-stroke-strong;
     border-radius: 50%;
     @include h13;
-    @include flex-center;
+    @include flex($direction: row, $justify: center, $align: center);
     color: $gray-stroke-strong;
     background-color: $gray-white;
     transition: all 0.25s ease;
@@ -104,7 +104,7 @@
       height: 32px;
       border-radius: 50%;
       background-color: $gray-stroke-weak;
-      @include flex-center;
+      @include flex($direction: row, $justify: center, $align: center);
       font-weight: 600;
     }
 

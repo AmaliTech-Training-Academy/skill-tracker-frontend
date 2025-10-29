@@ -3,36 +3,20 @@
 
   <div class="input-wrapper">
     <input
-      [type]="
-        type === 'credit-card' || type === 'cvv' || type === 'month'
-          ? 'text'
-          : showPassword() ? 'text' : type
-      "
+      [type]="showPassword() ? 'text' : type"
       [id]="id"
       [formControl]="control"
       [placeholder]="placeholder"
-      (input)="
-        type === 'credit-card'
-          ? onCardInput($event)
-          : type === 'cvv'
-          ? onCVVInput($event)
-          : type === 'month'
-          ? onMonthInput($event)
-          : null
-      "
       [class.ng-invalid]="(control.invalid && control.touched) || shouldShowPasswordMismatchError"
       [class.ng-touched]="control.touched || shouldShowPasswordMismatchError"
     />
 
     @if (type === 'password') {
-      <button
-        type="button"
-        class="password-toggle"
+      <button type="button" class="password-toggle"
         (click)="togglePasswordVisibility()"
         (keydown.enter)="$event.preventDefault(); togglePasswordVisibility()"
         (keydown.space)="$event.preventDefault(); togglePasswordVisibility()"
-        [attr.aria-pressed]="showPassword() ? 'true' : 'false'"
-      >
+        [attr.aria-pressed]="showPassword() ? 'true' : 'false'">
         @if (showPassword()) {
           <img [src]="eyeIcon" alt="showPassword" />
         } @else {
@@ -48,9 +32,9 @@
       @for (requirement of passwordRequirements; track requirement.key) {
         <li [class.success]="!requirement.error">
           @if (!requirement.error) {
-            <img src="assets/check.png" alt="check-icon" />
+            <img src="assets/check.png" alt="check-icon">
           } @else {
-            <img src="assets/circle-error.png" alt="error-icon" />
+            <img src="assets/circle-error.png" alt="error-icon">
           }
           {{ requirement.message }}
         </li>

@@ -1,14 +1,14 @@
 <section class="plan-confirmation">
 
-  <!-- Plan Levels -->
+  
   <div class="plan-levels">
     <app-plan-levels [currentStep]="currentStep"></app-plan-levels>
   </div>
 
-  <!-- Plan Confirmation Container -->
+ 
   <div class="plan-confirmation-container">
 
-    <!-- Chosen Plan -->
+  
     @if (currentSection === 'chosen-plan' && selectedPlan) {
       <div class="chosen-plan">
         <button class="back-btn" (click)="goBack()">
@@ -57,7 +57,7 @@
       </div>
     }
 
-    <!-- Pay Page -->
+   
     @if (currentSection === 'pay-page' && selectedPlan) {
       <div class="pay-page">
         <button class="back-btn" (click)="goToSection('chosen-plan')">
@@ -72,7 +72,7 @@
         <div class="payment-type-details">
           <form [formGroup]="paymentForm" (ngSubmit)="pay()">
 
-            <!-- Paypal -->
+            
             <div class="paypal">
               <div class="paypal-container">
                 <div class="label">
@@ -83,7 +83,7 @@
               </div>
             </div>
 
-            <!-- Credit Card -->
+            
             <div class="credit-card">
               <div class="credit-card--container">
                 <div class="label">
@@ -134,7 +134,7 @@
               </div>
             </div>
 
-            <!-- Google Pay -->
+            
             <div class="paypal">
               <div class="paypal-container">
                 <div class="label">
@@ -156,7 +156,7 @@
       </div>
     }
 
-    <!-- Done Page -->
+    
     @if (currentSection === 'done-page' && selectedPlan) {
       <div class="done-page">
         <button class="back-btn" (click)="goToSection('pay-page')">
@@ -183,7 +183,7 @@
     }
   </div>
 
-  <!-- Cancellation Policy -->
+ 
   @if (currentSection === 'pay-page' && selectedPlan) {
     <div class="cancellation-policy">
       <div class="policy">

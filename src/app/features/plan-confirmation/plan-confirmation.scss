@@ -5,7 +5,7 @@
 
 .plan-confirmation {
   background: $background-white;
-  @include flex-column;
+  @include flex(column);
   justify-content: center;
   align-items: stretch; 
   width: 100%;
@@ -91,7 +91,7 @@
 
   &-btns {
     margin-top: 26px;
-    @include flex-column;
+    @include flex(column,16px);
     gap: 16px;
 
     button {
@@ -108,7 +108,7 @@
     margin-top: 20px;
 
     form {
-      @include flex-column;
+      @include flex(column);
       gap: 20px;
     }
 
@@ -117,7 +117,7 @@
       height: 52px;
       border-radius: 5px;
       padding-inline: 10px;
-      @include flex-between;
+      @include flex($direction: row, $justify: space-between);
       @include h13;
     }
 
@@ -129,7 +129,7 @@
       &--container {
         height: 52px;
         border-radius: 5px;
-        @include flex-between;
+        @include flex($direction: row, $justify: space-between);
         @include h13;
       }
 
@@ -176,7 +176,7 @@
 }
 
 .cancellation-policy {
-  @include flex-column;
+  @include flex(column);
   justify-content: center;
   flex-direction: column-reverse;
   gap: 20px;
@@ -218,7 +218,7 @@
 @include desktop {
   .card-data,
   .codes {
-    @include flex-between;
+    @include flex($direction: row, $justify: space-between);
     gap: 50px;
   }
 }
@@ -239,7 +239,7 @@
 
     &-btns {
       @include flex-row;
-      @include flex-between;
+      @include flex($direction: row, $justify: space-between);
     }
   }
 }

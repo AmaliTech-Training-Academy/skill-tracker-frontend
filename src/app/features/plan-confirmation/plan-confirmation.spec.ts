@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Location } from '@angular/common';
 import { of } from 'rxjs';
 import { PlanConfirmation } from './plan-confirmation';
@@ -7,25 +7,30 @@ import { PlanConfirmation } from './plan-confirmation';
 describe('PlanConfirmation', () => {
   let component: PlanConfirmation;
   let fixture: ComponentFixture<PlanConfirmation>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockActivatedRoute: any;
-  let mockLocation: jest.Mocked<Location>;
+  let mockRouter: Partial<Router>;
+  let mockActivatedRoute: Partial<ActivatedRoute>;
+  let mockLocation: Partial<Location>;
 
   beforeEach(async () => {
+    const mockParamMap: ParamMap = {
+      get: (key: string) => key === 'plan-id' ? '2' : null,
+      has: (key: string) => key === 'plan-id',
+      getAll: (key: string) => key === 'plan-id' ? ['2'] : [],
+      keys: ['plan-id']
+    };
+
     mockRouter = {
       navigate: jest.fn(),
       events: of()
-    } as any;
+    };
     
     mockActivatedRoute = {
-      paramMap: of({
-        get: (key: string) => key === 'plan-id' ? '2' : null
-      })
+      paramMap: of(mockParamMap)
     };
     
     mockLocation = {
       back: jest.fn()
-    } as any;
+    };
 
     await TestBed.configureTestingModule({
       imports: [PlanConfirmation],
