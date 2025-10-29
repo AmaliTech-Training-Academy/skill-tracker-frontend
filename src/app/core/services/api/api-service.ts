@@ -1,13 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
-
-export interface ApiRequestOptions {
-  params?: HttpParams | Record<string, string | number | boolean>;
-  headers?: HttpHeaders | Record<string, string | string[]>;
-}
+import { ApiRequestOptions } from '@app/core/models/api.model';
 
 const defaultOptions = {
   withCredentials: true,
@@ -33,7 +29,7 @@ export class ApiService {
     body: Req,
     options: ApiRequestOptions = {},
   ): Observable<Res> {
-    return this.http.post<Res>(this.buildApiUrl(url), body, this.mergeOptions(options));
+    return this.requestWithBody('post', url, body, options);
   }
 
   public update<Res, Req = unknown>(
@@ -41,7 +37,7 @@ export class ApiService {
     body: Req,
     options: ApiRequestOptions = {},
   ): Observable<Res> {
-    return this.http.put<Res>(this.buildApiUrl(url), body, this.mergeOptions(options));
+    return this.requestWithBody('put', url, body, options);
   }
 
   public delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
@@ -57,5 +53,24 @@ export class ApiService {
       ...options,
       ...defaultOptions,
     };
+  }
+
+  private requestWithBody<Res, Req>(
+    method: 'post' | 'put' | 'patch',
+    url: string,
+    body: Req,
+    options: ApiRequestOptions,
+  ): Observable<Res> {
+    const fullUrl = this.buildApiUrl(url);
+    const mergedOptions = this.mergeOptions(options);
+
+    switch (method) {
+      case 'post':
+        return this.http.post<Res>(fullUrl, body, mergedOptions);
+      case 'put':
+        return this.http.put<Res>(fullUrl, body, mergedOptions);
+      case 'patch':
+        return this.http.patch<Res>(fullUrl, body, mergedOptions);
+    }
   }
 }
