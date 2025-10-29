@@ -6,7 +6,7 @@
 .lumina-callout {
     background: {
         color: $brand-text;
-        image: url('../../../../../assets/lumina-bg.png');
+        image: url('/assets/lumina-bg.png');
         repeat: no-repeat;
         size: cover;
         position: center;
@@ -31,7 +31,7 @@
     max-width: 1200px;
 
     .content-wrapper {
-        @include flex-column(2.2rem);
+        @include flex(column, flex-start, stretch, 2.2rem);
         text-align: left;
         color: $gray-fill;
         max-width: 240px;
