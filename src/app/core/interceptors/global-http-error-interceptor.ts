@@ -1,18 +1,13 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError, retry } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 
-import { APP_CONSTANTS } from '../constants/app.constants';
 import { AuthService } from '../services/auth/auth-service';
 
 export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const maxRetries = APP_CONSTANTS.RETRY.COUNT;
 
   return next(req).pipe(
-    retry({
-      count: maxRetries,
-    }),
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         authService.logout();
