@@ -64,3 +64,9 @@
     @content;
   }
 }
+
+@mixin desktop-large {
+  @media (min-width: 1400px) {
+    @content;
+  }
+}

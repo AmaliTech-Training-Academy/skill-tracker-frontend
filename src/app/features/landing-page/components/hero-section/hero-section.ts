@@ -11,8 +11,8 @@ import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 export class HeroSection {
   constructor(private router: Router) {}
 
-  public navigateToLogin(): void {
-    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.LOGIN);
+  public navigateToSignup(): void {
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.SIGNUP);
   }
 
   public scrollToFeatures(): void {

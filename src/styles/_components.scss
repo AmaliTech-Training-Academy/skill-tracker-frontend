@@ -49,6 +49,17 @@
   }
 }
 
+@mixin button-transparent {
+  @include button-base;
+  background-color: $gray-fill;
+  border: 2px solid $gray-fill !important;
+  color: $brand-text;
+
+  &:hover {
+    background-color: $brand-fill;
+  }
+}
+
 @mixin base-field {
   @include flex-column;
   gap: 4px;
