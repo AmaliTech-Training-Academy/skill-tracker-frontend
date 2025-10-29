@@ -1,28 +1,14 @@
-module.exports = {
+import type { Config } from 'jest';
+
+const config: Config = {
   preset: 'jest-preset-angular',
-  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
-  testEnvironment: 'jsdom',
-  transform: {
-    '^.+\\.(ts|js|html)$': 'jest-preset-angular',
-  },
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/index.ts',
-    '!src/**/*.module.ts',
-    '!src/main.ts',
-    '!src/polyfills.ts',
-  ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['html', 'text-summary', 'lcov'],
-  testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.(ts|js)',
-    '<rootDir>/src/**/(*.)+(spec|test).(ts|js)',
-  ],
+  setupFilesAfterEnv: ['<rootDir>/src/setup-jest.ts'],
+  moduleDirectories: ['node_modules', '<rootDir>'],
   moduleNameMapper: {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
-    '^@core/(.*)$': '<rootDir>/src/app/core/$1',
-    '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
-    '^@features/(.*)$': '<rootDir>/src/app/features/$1',
   },
+  testMatch: ['**/+(*.)+(spec).+(ts)'],
+  rootDir: process.cwd(),
 };
+
+module.exports = config;
