@@ -1,0 +1,192 @@
+<section class="plan-confirmation">
+  <div class="plan-levels">
+    <app-plan-levels [currentStep]="currentStep"></app-plan-levels>
+  </div>
+
+  <div class="plan-confirmation-container">
+
+    @if (currentSection === Section.ChosenPlan && selectedPlan) {
+      <div class="chosen-plan">
+        <button class="back-btn" (click)="goBack()">
+          <img src="assets/left-arrow.png" alt="Navigate back" />
+          Back
+        </button>
+
+        <header>
+          <h1>You're Almost There!</h1>
+          <p>
+            You've chosen the <strong>{{ selectedPlan.name }} Plan</strong> — great choice!
+            @if (selectedPlan.price) {
+              Unlock the full SkillDev experience.
+            } @else {
+              Start your learning journey with SkillDev.
+            }
+          </p>
+        </header>
+
+        <div class="plan-confirmation-selection plan">
+          <h1 class="plan-type">Plan: {{ selectedPlan.name }}</h1>
+          <div class="details">
+            <p>What you get</p>
+            <ul>
+              @for (feature of selectedPlan.features; track feature) {
+                <li>
+                  <img src="assets/checkmark.png" alt="check mark" />
+                  {{ feature }}
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+
+        <div class="plan-confirmation-btns">
+          @if (selectedPlan.price) {
+            <button class="plan-confirmation-btns--next" (click)="goToSection(Section.PayPage)">
+              Register to Pay
+            </button>
+          } @else {
+            <button class="plan-confirmation-btns--next" (click)="goToDashboard()">
+              Get Started
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (currentSection === Section.PayPage && selectedPlan) {
+      <div class="pay-page">
+        <button class="back-btn" (click)="goToSection(Section.ChosenPlan)">
+          <img src="assets/left-arrow.png" alt="Navigate back" /> Back
+        </button>
+
+        <header>
+          <h1>Choose How You Want to Pay</h1>
+          <p>Select your preferred payment method and complete your purchase securely.</p>
+        </header>
+
+        <div class="payment-type-details">
+          <form [formGroup]="paymentForm" (ngSubmit)="pay()">
+
+            <div class="paypal">
+              <div class="paypal-container">
+                <div class="label">
+                  <input type="radio" name="payment" />
+                  <p>Paypal</p>
+                </div>
+                <img src="assets/paypal.png" alt="paypal logo" />
+              </div>
+            </div>
+
+            <div class="credit-card">
+              <div class="credit-card--container">
+                <div class="label">
+                  <input type="radio" name="payment" />
+                  <p>Credit Card</p>
+                </div>
+                <img src="assets/credit-card.png" alt="credit-card logo" />
+              </div>
+
+              <p>Select your preferred payment method and complete your purchase securely.</p>
+
+              <div class="creditcard-data">
+                <app-input-field
+                  label="Card Number"
+                  type="credit-card"
+                  id="cardNumber"
+                  placeholder="1234 5678 9012 3456"
+                  [control]="getFormControl(paymentForm, 'cardNumber')"
+                ></app-input-field>
+
+                <div class="group-one">
+                  <app-input-field
+                    label="Name"
+                    type="text"
+                    id="fullName"
+                    placeholder="Card name"
+                    [control]="getFormControl(paymentForm, 'fullName')"
+                  ></app-input-field>
+
+                  <div class="expiry-cvv">
+                  <app-input-field
+                    label="Expiry Date"
+                    type="month"
+                    id="expiry"
+                    placeholder="MM/YY"
+                    [control]="getFormControl(paymentForm, 'expiry')"
+                    ></app-input-field>
+
+                  <app-input-field
+                    label="CVV"
+                    type="cvv"
+                    id="cvv"
+                    placeholder="CVV"
+                    [control]="getFormControl(paymentForm, 'cvv')"
+                    ></app-input-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="paypal">
+              <div class="paypal-container">
+                <div class="label">
+                  <input type="radio" name="payment" />
+                  <p>Google Pay</p>
+                </div>
+                <img src="assets/GooglePay.png" alt="gpay logo" />
+              </div>
+            </div>
+
+            <div class="switch-plan">
+              <p>Switch Plan Text</p>
+              <p>Not sure? <a routerLink="/#plan">Choose another plan</a></p>
+            </div>
+
+            <button type="submit" class="pay-button">Pay {{ getFormattedPrice() }}</button>
+          </form>
+        </div>
+      </div>
+    }
+
+    @if (currentSection === Section.DonePage && selectedPlan) {
+      <div class="done-page">
+        <button class="back-btn" (click)="goToSection(Section.PayPage)">
+          <img src="assets/left-arrow.png" alt="Navigate back" />
+          Back
+        </button>
+
+        <header>
+          <h1>You're In! Welcome to SkillDev {{ selectedPlan.name }} 🎉</h1>
+          <p>
+            You've successfully upgraded. It's time to take your skill development to the next level.
+          </p>
+        </header>
+
+        <div class="plan-confirmation-selection plan">
+          <h1 class="plan-type">
+            Enjoy full access to advanced features, deeper insights, and a growing community of learners.
+          </h1>
+          <button class="back-btn home" (click)="goBack()">Back to Home</button>
+        </div>
+
+        <div class="plan-confirmation-btns">
+          <button class="plan-confirmation-btns--next" (click)="goToDashboard()">Go to Dashboard</button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (currentSection === Section.PayPage && selectedPlan) {
+    <div class="cancellation-policy">
+      <div class="policy">
+        <h1>Cancellation Policy</h1>
+        <p>
+          You can cancel your subscription at any time from your account settings.
+          Once canceled, you'll retain access to premium features until the end of your current billing cycle.
+          We do not offer refunds for partial billing periods. If you experience any issues, our support team is here to help.
+        </p>
+      </div>
+      <img src="assets/cancellation-policy.png" alt="policy-image" />
+    </div>
+  }
+</section>
