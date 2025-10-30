@@ -1,29 +1,31 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, throwError, retry } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 
-import { APP_CONSTANTS } from '../constants/app.constants';
 import { AuthService } from '../services/auth/auth-service';
+import { ToastService } from '../services/toast/toast-service';
+import { ErrorHandlerService } from '../services/error/error-handler';
 
 export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const MAX_RETRIES = APP_CONSTANTS.RETRY.COUNT;
+  const toastService = inject(ToastService);
+  const errorHandlerService = inject(ErrorHandlerService);
 
   return next(req).pipe(
-    retry({
-      count: MAX_RETRIES,
-      delay: (error: HttpErrorResponse) => {
-        if (error.status === 0 || error.status >= 500) {
-          throw error;
-        }
-        throw error;
-      },
-    }),
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
         authService.logout();
       }
 
+      const isNetworkError = error.status === 0;
+      const isServerError = error.status >= 500 && error.status < 600;
+
+      if (isNetworkError || isServerError) {
+        const appError = errorHandlerService.getError(error);
+
+        toastService.showError('Error', appError.message);
+      }
+      
       return throwError(() => error);
     }),
   );

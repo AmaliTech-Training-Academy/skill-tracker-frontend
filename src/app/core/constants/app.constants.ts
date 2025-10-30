@@ -12,6 +12,12 @@ export const APP_CONSTANTS = {
     SIGNUP: '/signup',
     FORGOT_PASSWORD: '/forgot-password',
     RESET_PASSWORD: '/reset-password',
-    EMAIL_VERIFICATION: '/email-verification'
-  }
+    EMAIL_VERIFICATION: '/email-verification',
+  },
+  API_ENDPOINTS: {
+    REGISTER: 'auth/register',
+    LOGIN: 'auth/login',
+    VERIFY_OTP: 'auth/verify',
+    LOGOUT: 'auth/logout',
+  },
 } as const;

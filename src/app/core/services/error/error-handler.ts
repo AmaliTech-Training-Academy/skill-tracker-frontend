@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AppError, ValidationDetail, AppErrorType } from '../../models/app-error.model';
+import { AppError, AppErrorType } from '../../models/app-error.model';
+import { ApiErrorResponse, isApiErrorResponse, ValidationDetail } from '@app/core/models/api.model';
 import { ToastService } from '../toast/toast-service';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { ToastService } from '../toast/toast-service';
 export class ErrorHandlerService {
   constructor(private toast: ToastService) {}
 
-  getError(error: unknown): AppError {
+  public getError(error: unknown): AppError {
     if (error instanceof HttpErrorResponse) {
       if (!navigator.onLine) {
         return {
@@ -19,66 +20,86 @@ export class ErrorHandlerService {
         };
       }
 
-      const backendMessage =
-        error.error?.message ||
-        error.error?.error ||
-        (typeof error.error === 'string' ? error.error : null);
+      if (isApiErrorResponse(error.error)) {
+        const backendErrorBody = error.error;
 
-      const rawValidationErrors = error.error?.errors;
-      let validationErrors: ValidationDetail[] | undefined;
+        const backendMessage = backendErrorBody.message;
+        const backendDetail = backendErrorBody.detail;
 
-      if (Array.isArray(rawValidationErrors)) {
-        validationErrors = rawValidationErrors.map((err) => ({
-          field: err.field || 'general',
-          message: err.message || 'Validation failed for a field.',
-        }));
-      }
+        let validationErrors: ValidationDetail[] | undefined;
+        const rawValidationErrors = backendErrorBody.errors;
 
-      switch (error.status) {
-        case 400:
-          return {
-            message: backendMessage || 'Bad request. Please check your input.',
-            status: error.status,
-            type: AppErrorType.CLIENT,
-            validationErrors,
-            raw: error,
-          };
-        case 401:
-          return {
-            message: 'Unauthorized. Please log in again.',
-            status: error.status,
-            type: AppErrorType.AUTH,
-            raw: error,
-          };
-        case 403:
-          return {
-            message: 'Forbidden. You do not have permission to perform this action.',
-            status: error.status,
-            type: AppErrorType.AUTH,
-            raw: error,
-          };
-        case 404:
-          return {
-            message: 'The requested resource was not found.',
-            status: error.status,
-            type: AppErrorType.CLIENT,
-            raw: error,
-          };
-        default:
-          if (error.status >= 500) {
+        if (Array.isArray(rawValidationErrors) && rawValidationErrors.length) {
+          validationErrors = rawValidationErrors.map((err) => ({
+            field: err.field || 'general',
+            message: err.message || 'Validation failed for a field.',
+          }));
+        }
+
+        const errorType400 = validationErrors ? AppErrorType.VALIDATION : AppErrorType.CLIENT;
+        const isServerError = error.status >= 500 && error.status < 600;
+
+        switch (error.status) {
+          case 400:
             return {
-              message: 'A server error occurred. Please try again later.',
+              message: backendMessage || 'Bad request. Please check your input.',
+              detail: backendDetail,
               status: error.status,
-              type: AppErrorType.SERVER,
+              type: errorType400,
+              validationErrors,
               raw: error,
             };
-          }
-          return {
-            message: backendMessage || 'An unexpected error occurred.',
-            status: error.status,
-            type: AppErrorType.UNKNOWN,
-            raw: error,
-          };
+          case 401:
+            return {
+              message: backendMessage || 'Unauthorized. Please log in again.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.AUTH,
+              raw: error,
+            };
+          case 403:
+            return {
+              message:
+                backendMessage || 'Forbidden. You do not have permission to perform this action.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.AUTH,
+              raw: error,
+            };
+          case 404:
+            return {
+              message: backendMessage || 'The requested resource was not found.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.CLIENT,
+              raw: error,
+            };
+          case 409:
+            return {
+              message: backendMessage || 'Data conflict. Please review your request.',
+              detail: backendDetail,
+              status: error.status,
+              type: AppErrorType.CLIENT,
+              raw: error,
+            };
+          default:
+            return {
+              message: isServerError
+                ? 'A server error occurred. Please try again later.'
+                : backendMessage || 'An unexpected error occurred.',
+              detail: backendDetail,
+              status: error.status,
+              type: isServerError ? AppErrorType.SERVER : AppErrorType.UNKNOWN,
+              raw: error,
+            };
+        }
+      } else {
+        return {
+          message: 'An unexpected server error occurred.',
+          status: error.status,
+          type: AppErrorType.SERVER,
+          raw: error,
+        };
       }
     }
 
@@ -103,12 +124,12 @@ export class ErrorHandlerService {
     );
   }
 
-  notifyError(error: unknown): void {
+  public notifyError(error: unknown): void {
     const appError = this.getError(error);
     this.toast.showError('Error', appError.message);
   }
 
-  logError(error: unknown): void {
+  public logError(error: unknown): void {
     console.error('App Error Log:', error);
     // TODO: send to monitoring service like Sentry or backend API
   }

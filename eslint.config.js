@@ -42,7 +42,7 @@ module.exports = tseslint.config(
       complexity: 'off',
       'max-classes-per-file': ['error', 1],
       eqeqeq: ['error', 'always'],
-      indent: ['error', 2],
+      indent: ['error', 'on'],
       quotes: ['error', 'single'],
       semi: ['error', 'always'],
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
@@ -91,7 +91,7 @@ module.exports = tseslint.config(
         },
         {
           selector: ['variable', 'function', 'method', 'classProperty', 'typeProperty'],
-          format: ['camelCase'],
+          format: ['camelCase', 'snake_case'],
           custom: {
             regex: '(My|my)(?=[A-Z]\\w*)',
             match: false,

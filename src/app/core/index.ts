@@ -5,7 +5,6 @@ export * from './services/error/error-handler';
 export * from './services/toast/toast-service';
 
 // interceptors
-export * from './interceptors/auth-interceptor';
 export * from './interceptors/global-http-error-interceptor';
 
 // guards

@@ -1,46 +1,76 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
+import { ApiRequestOptions } from '@app/core/models/api.model';
 
-export interface ApiRequestOptions {
-  params?: HttpParams | Record<string, string | number | boolean>;
-  headers?: HttpHeaders | Record<string, string | string[]>;
-}
+const defaultOptions = {
+  withCredentials: true,
+};
+
+type HttpClientOptions = ApiRequestOptions & {
+  withCredentials?: boolean;
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private readonly BASE_URL = environment.url;
+  private readonly baseUrl = environment.url;
 
-  get<T>(url: string, options: ApiRequestOptions = {}): Observable<T> {
-    return this.http.get<T>(this.buildApiUrl(url), options);
+  public get<T>(url: string, options: ApiRequestOptions = {}): Observable<T> {
+    return this.http.get<T>(this.buildApiUrl(url), this.mergeOptions(options));
   }
 
-  post<Res, Req = unknown>(
+  public post<Res, Req = unknown>(
     url: string,
     body: Req,
     options: ApiRequestOptions = {},
   ): Observable<Res> {
-    return this.http.post<Res>(this.buildApiUrl(url), body, options);
+    return this.requestWithBody('post', url, body, options);
   }
 
-  update<Res, Req = unknown>(
+  public update<Res, Req = unknown>(
     url: string,
     body: Req,
     options: ApiRequestOptions = {},
   ): Observable<Res> {
-    return this.http.put<Res>(this.buildApiUrl(url), body, options);
+    return this.requestWithBody('put', url, body, options);
   }
 
-  delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
-    return this.http.delete<void>(this.buildApiUrl(url), options);
+  public delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
+    return this.http.delete<void>(this.buildApiUrl(url), this.mergeOptions(options));
   }
 
   private buildApiUrl(endpoint: string): string {
-    return `${this.BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+    return `${this.baseUrl}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+  }
+
+  private mergeOptions(options: ApiRequestOptions): HttpClientOptions {
+    return {
+      ...options,
+      ...defaultOptions,
+    };
+  }
+
+  private requestWithBody<Res, Req>(
+    method: 'post' | 'put' | 'patch',
+    url: string,
+    body: Req,
+    options: ApiRequestOptions,
+  ): Observable<Res> {
+    const fullUrl = this.buildApiUrl(url);
+    const mergedOptions = this.mergeOptions(options);
+
+    switch (method) {
+      case 'post':
+        return this.http.post<Res>(fullUrl, body, mergedOptions);
+      case 'put':
+        return this.http.put<Res>(fullUrl, body, mergedOptions);
+      case 'patch':
+        return this.http.patch<Res>(fullUrl, body, mergedOptions);
+    }
   }
 }
