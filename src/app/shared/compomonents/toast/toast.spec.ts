@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 describe('Toast', () => {
   let component: Toast;
   let fixture: ComponentFixture<Toast>;
-  let mockToastService: jest.Mocked<ToastService>;
+  let mockToastService: jest.Mocked<Pick<ToastService, 'config$' | 'isVisible$' | 'isExiting$' | 'close'>>;
 
   beforeEach(async () => {
     mockToastService = {
@@ -15,7 +15,7 @@ describe('Toast', () => {
       isVisible$: of(true),
       isExiting$: of(false),
       close: jest.fn()
-    } as any;
+    } as jest.Mocked<Pick<ToastService, 'config$' | 'isVisible$' | 'isExiting$' | 'close'>>;
 
     await TestBed.configureTestingModule({
       imports: [Toast],

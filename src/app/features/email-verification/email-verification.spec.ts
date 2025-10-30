@@ -120,10 +120,10 @@ describe('EmailVerification', () => {
       target: mockInput 
     } as unknown as KeyboardEvent;
     
-    const mockPrevInput = { nativeElement: { focus: jest.fn() } } as any;
+    const mockPrevInput = { nativeElement: { focus: jest.fn() } } as { nativeElement: { focus: jest.Mock } };
     component['otpInputs'] = {
       toArray: () => [mockPrevInput, mockInput]
-    } as any;
+    } as Partial<{ toArray: () => { nativeElement: { focus: jest.Mock } }[] }>;
     
     component.onKeyDown(mockEvent, 1);
     expect(mockPrevInput.nativeElement.focus).toHaveBeenCalled();
