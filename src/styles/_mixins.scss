@@ -1,33 +1,3 @@
-@mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@mixin flex-column ($gap: 0) {
-  display: flex;
-  flex-direction: column;
-  gap: $gap;
-}
-
-@mixin flex-row {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-}
-
-@mixin flex-between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@mixin flex-row-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 @mixin flex($direction: row, $justify: flex-start, $align: stretch, $gap: 0) {
   display: flex;
   flex-direction: $direction;
@@ -42,16 +12,6 @@
   }
 }
 
-@mixin flex-row-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-@mixin flex-row {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-}
 
 @mixin tablet {
   @media (min-width: 768px) {

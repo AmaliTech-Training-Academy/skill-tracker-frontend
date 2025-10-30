@@ -2,7 +2,7 @@
 @use 'typography' as *;
 @use 'mixins' as *;
 @use 'components' as *;
-/* Base input field container */
+
 .form-group {
   @include base-field;
   width: 100%;
@@ -39,22 +39,19 @@
     }
   }
 
-  /* Wrapper for positioning eye toggle */
   .input-wrapper {
     position: relative;
-    display: flex;
-    align-items: center;
+    @include flex($direction: row, $align: center);
 
     input {
       padding-right: 40px;
     }
 
     .password-toggle {
-      @include flex-center;
+      @include flex(row, center, center);
       position: absolute;
       right: 12px;
       cursor: pointer;
-      align-items: center;
 
       img {
         width: 20px;
@@ -63,14 +60,11 @@
     }
   }
 
-  /* Error message styling */
   .error-message {
     @include h13;
     color: $red-text;
     margin-top: 4px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    @include flex($direction: column, $gap: 2px);
 
     small {
       display: block;
@@ -78,7 +72,6 @@
   }
 }
 
-/* Password-specific styling */
 .password-field {
   .input-wrapper {
     input {
@@ -99,18 +92,14 @@
   }
 }
 
-/* Password strength / requirement list */
 .password-requirements {
   list-style: none;
   padding: 0;
   margin: 8px 0 0 0;
-  @include flex-column;
-  gap: 4px;
+  @include flex($direction: column, $gap: 4px);
 
   li {
-    @include flex-center;
-    justify-content: flex-start;
-    gap: 8px;
+    @include flex(row, flex-start, center, 8px);
     @include h13;
     color: $red-text;
 
