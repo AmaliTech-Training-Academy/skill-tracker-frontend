@@ -3,131 +3,119 @@
 @use 'typography' as *;
 @use 'components' as *;
 
-footer{
-    @include flex-column;
-    @include h13;
-    background-color: $background-dark;
-    color: $background-white;
-    padding: 40px 20px;
+footer {
+  @include flex(column);
+  @include h13;
+  background-color: $background-dark;
+  color: $background-white;
+  padding: 40px 20px;
 
-    .container{
-    @include flex-column;
-    gap: 20px;
+  .container {
+    @include flex($direction: column, $gap: 20px);
     padding: 30px;
     border: 1px solid $background-white;
+  }
+
+  .about-us {
+    gap: 20px;
+
+    .title {
+      margin-bottom: 20px;
+      @include h11;
+    }
+  }
+
+  .links-socials {
+    display: none;
+
+    @include desktop {
+      @include flex(row);
+      margin-top: 20px;
+    }
+  }
+
+  .copyright-terms {
+    margin-top: 30px;
+    @include flex(row);
+  }
+
+  .links {
+    width: 50%;
+
+    .title {
+      margin-bottom: 20px;
+      @include h11;
+    }
+    a {
+      text-decoration: none;
+      color: $background-white;
     }
 
-    .about-us{
-        gap: 20px;
+    li {
+      list-style-type: none;
+      margin-bottom: 15px;
+    }
+  }
 
-        .title{
-            margin-bottom: 20px;
-            @include h11;
-        }
+  .connect {
+    width: 50%;
+
+    .title {
+      margin-bottom: 20px;
+      @include h11;
     }
 
-    .links-socials{
-        
+    .socials {
+      @include flex($direction: row, $gap: 15px);
 
-        display: none;
+      a {
+        text-decoration: none;
+        color: $background-white;
+      }
 
-        @include desktop{
-            display: flex;
-           margin-top: 20px;
-        }
+      li {
+        list-style-type: none;
+        margin-bottom: 30px;
+      }
+    }
+  }
+
+  .terms {
+    width: 60%;
+    a {
+      text-decoration: none;
+      color: $background-white;
     }
 
-    .copyright-terms{
-       margin-top: 30px;
-       display: flex;
+    li {
+      list-style-type: none;
+      margin-bottom: 30px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      @include flex(row, space-between, baseline);
     }
 
-    .links{
-        width: 50%;
-
-        .title{
-            margin-bottom: 20px;
-            @include h11;
-        }
-        a{
-            text-decoration: none;
-            color: $background-white;
-        }
-
-        li{
-            list-style-type: none;
-            margin-bottom: 15px;
-        }
+    .links-socials,
+    .about-us {
+      width: 40%;
     }
 
-    .connect{
-        width: 50%;
-
-        .title{
-            margin-bottom: 20px;
-            @include h11;
-        }
-
-        .socials{
-
-            @include flex;
-            gap: 15px;
-
-         a{
-            text-decoration: none;
-            color: $background-white;
-        }
-
-        li{
-            list-style-type: none;
-            margin-bottom: 30px;
-        }
-        }
+    .copyright-terms {
+      @include flex($direction: row-reverse, $align: space-between);
     }
 
-    .terms{
-        width: 60%;
-        a{
-            text-decoration: none;
-            color: $background-white;
-        }
+    .terms {
+      li {
+        display: inline;
+        margin-left: 22px;
+      }
 
-        li{
-            list-style-type: none;
-            margin-bottom: 30px;
-        }
+      ul {
+        text-align: right;
+      }
     }
-
-    @media (min-width: 768px) {
-        
-
-        .container{
-            flex-direction: row;
-            justify-content: space-between;
-            align-items:first baseline
-        }
-
-        .links-socials, .about-us{
-            width: 40%;
-        }
-
-        .copyright-terms{
-            @include flex-between;
-            flex-direction: row-reverse;
-        }
-
-        .terms {
-
-        li{
-            display: inline;
-            margin-left: 22px;
-           }
-
-        ul{
-            text-align: right;
-        }   
-       }
-
-        
-    }
+  }
 }
