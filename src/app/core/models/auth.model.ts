@@ -8,20 +8,23 @@ export interface ApiResponse<T> {
   };
 }
 
-export interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: { id: number | string; name: string; email: string };
-}
-
 export interface RegisterRequest {
   email: string;
   password: string;
 }
 
+export interface VerifyEmailRequest {
+  code: string;
+  email: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
+}
+
+export interface LoginSuccessData {
+  message: string;
 }
 
 export enum UserRole {
@@ -40,7 +43,7 @@ export enum PremiumTier {
   PREMIUM = 'PREMIUM',
 }
 
-export interface RegistrationData {
+export interface User {
   id: string;
   email: string;
   username: string | null;
@@ -54,6 +57,19 @@ export interface RegistrationData {
   lastLoginAt: string | null;
 }
 
-export type RegistrationSuccessResponse = ApiResponse<RegistrationData>;
+export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 
-export type VerificationSuccessResponse = ApiResponse<RegistrationData>;
+export interface UserSkill {
+  skillId: string;
+  level: SkillLevel | null;
+}
+
+export interface CompleteOnboardingRequest {
+  skills: UserSkill[];
+}
+
+export type RegistrationSuccessResponse = ApiResponse<User>;
+export type VerificationSuccessResponse = ApiResponse<User>;
+export type LoginSuccessResponse = ApiResponse<LoginSuccessData>;
+export type ProfileSuccessResponse = ApiResponse<User>;
+export type CompleteOnboardingSuccessResponse = ApiResponse<User>;
