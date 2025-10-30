@@ -8,19 +8,19 @@ import { EmailVerification } from './email-verification';
 describe('EmailVerification', () => {
   let component: EmailVerification;
   let fixture: ComponentFixture<EmailVerification>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockToastService: jest.Mocked<ToastService>;
+  let mockRouter: jest.Mocked<Pick<Router, 'navigateByUrl'>>;
+  let mockToastService: jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError' | 'showInfo'>>;
 
   beforeEach(async () => {
     mockRouter = {
       navigateByUrl: jest.fn()
-    } as any;
+    } as jest.Mocked<Pick<Router, 'navigateByUrl'>>;
 
     mockToastService = {
       showSuccess: jest.fn(),
       showError: jest.fn(),
       showInfo: jest.fn()
-    } as any;
+    } as jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError' | 'showInfo'>>;
 
     await TestBed.configureTestingModule({
       imports: [EmailVerification, ReactiveFormsModule],
