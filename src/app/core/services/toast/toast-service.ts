@@ -10,7 +10,6 @@ import { selectIsToastVisible, selectIsToastExiting, selectToastConfig } from '@
 export class ToastService {
   private store = inject(Store);
 
-  // Selectors for toast state
   public readonly isVisible$ = this.store.select(selectIsToastVisible);
   public readonly isExiting$ = this.store.select(selectIsToastExiting);
   public readonly config$ = this.store.select(selectToastConfig);

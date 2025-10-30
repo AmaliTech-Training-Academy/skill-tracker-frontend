@@ -6,13 +6,13 @@ import { showToast, startToastExit } from '@app/store';
 
 describe('ToastService', () => {
   let service: ToastService;
-  let mockStore: jest.Mocked<Store>;
+  let mockStore: jest.Mocked<Pick<Store, 'dispatch' | 'select'>>;
 
   beforeEach(() => {
     mockStore = {
       dispatch: jest.fn(),
       select: jest.fn()
-    } as any;
+    } as jest.Mocked<Pick<Store, 'dispatch' | 'select'>>;
 
     TestBed.configureTestingModule({
       providers: [
