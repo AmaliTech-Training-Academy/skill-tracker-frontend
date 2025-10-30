@@ -17,13 +17,16 @@ import { UIEffects } from './store/ui/ui.effects';
 import { LucideAngularModule } from 'lucide-angular';
 import { appIcons } from '@app/core';
 
+import { authReducer } from './store/auth/auth.reducer';
+import { AuthEffects } from './store/auth/auth.effects';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([globalHttpErrorInterceptor])),
-    provideStore({ ui: uiReducer }),
-    provideEffects([UIEffects]),
+    provideStore({ ui: uiReducer, auth: authReducer }),
+    provideEffects([UIEffects, AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouterStore(),
     importProvidersFrom(LucideAngularModule.pick(appIcons)),
