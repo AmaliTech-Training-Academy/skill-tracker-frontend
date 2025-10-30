@@ -9,18 +9,18 @@ import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 describe('Signup', () => {
   let component: Signup;
   let fixture: ComponentFixture<Signup>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockToastService: jest.Mocked<ToastService>;
+  let mockRouter: jest.Mocked<Pick<Router, 'navigateByUrl'>>;
+  let mockToastService: jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError'>>;
 
   beforeEach(async () => {
     mockRouter = {
       navigateByUrl: jest.fn()
-    } as any;
+    } as jest.Mocked<Pick<Router, 'navigateByUrl'>>;
 
     mockToastService = {
       showSuccess: jest.fn(),
       showError: jest.fn()
-    } as any;
+    } as jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError'>>;
 
     await TestBed.configureTestingModule({
       imports: [Signup, ReactiveFormsModule],
@@ -101,7 +101,6 @@ describe('Signup', () => {
   });
 
   it('should submit valid form and navigate to email verification', async () => {
-    // Fill form with valid data
     component.signupForm.patchValue({
       email: 'test@example.com',
       password: 'StrongPass123!',
@@ -113,7 +112,6 @@ describe('Signup', () => {
     
     expect(component.isSubmitting()).toBe(true);
     
-    // Wait for async operation to complete
     setTimeout(() => {
       expect(mockToastService.showSuccess).toHaveBeenCalledWith(
         'Account Created',
