@@ -3,14 +3,11 @@ import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api/api-service';
 import {
-  LoginSuccessResponse,
+  UserResponse,
   LoginRequest,
   RegisterRequest,
   VerifyEmailRequest,
-  RegistrationSuccessResponse,
-  VerificationSuccessResponse,
   CompleteOnboardingRequest,
-  CompleteOnboardingSuccessResponse,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '@app/core';
 
@@ -22,27 +19,22 @@ const { API_ENDPOINTS } = APP_CONSTANTS;
 export class AuthService {
   constructor(private readonly api: ApiService) {}
 
-  public register(payload: RegisterRequest): Observable<RegistrationSuccessResponse> {
-    return this.api.post<RegistrationSuccessResponse>(API_ENDPOINTS.REGISTER, payload);
+  public register(payload: RegisterRequest): Observable<UserResponse> {
+    return this.api.post<UserResponse>(API_ENDPOINTS.REGISTER, payload);
   }
 
-  public login(payload: LoginRequest): Observable<LoginSuccessResponse> {
-    return this.api.post<LoginSuccessResponse>(API_ENDPOINTS.LOGIN, payload);
+  public login(payload: LoginRequest): Observable<UserResponse> {
+    return this.api.post<UserResponse>(API_ENDPOINTS.LOGIN, payload);
   }
 
-  public verifyEmail(payload: VerifyEmailRequest): Observable<VerificationSuccessResponse> {
-    const params = new HttpParams().set('code', payload.code).set('email', payload.email);
+  public verifyEmail({ code, email }: VerifyEmailRequest): Observable<UserResponse> {
+    const params = new HttpParams().set('code', code).set('email', email);
 
-    return this.api.post<VerificationSuccessResponse>(API_ENDPOINTS.VERIFY_OTP, null, { params });
+    return this.api.post<UserResponse>(API_ENDPOINTS.VERIFY_OTP, null, { params });
   }
 
-  public completeOnboarding(
-    payload: CompleteOnboardingRequest,
-  ): Observable<CompleteOnboardingSuccessResponse> {
-    return this.api.post<CompleteOnboardingSuccessResponse>(
-      API_ENDPOINTS.COMPLETE_ONBOARDING,
-      payload,
-    );
+  public completeOnboarding(payload: CompleteOnboardingRequest): Observable<UserResponse> {
+    return this.api.post<UserResponse>(API_ENDPOINTS.COMPLETE_ONBOARDING, payload);
   }
   public logout(): Observable<void> {
     return this.api.post<void>(API_ENDPOINTS.LOGOUT, {});

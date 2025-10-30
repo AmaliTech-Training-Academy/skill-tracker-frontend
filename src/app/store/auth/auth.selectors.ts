@@ -1,57 +1,51 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { AuthState, initialAuthState } from './auth.state';
+import { AuthState } from './auth.state';
 
 export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
 export const selectIsRegistering = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.isRegistering ?? initialAuthState.isRegistering,
+  (state: AuthState) => state.isRegistering,
 );
 
 export const selectRegistrationError = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.registrationError ?? initialAuthState.registrationError,
+  (state: AuthState) => state.registrationError,
 );
 
 export const selectRegistrationSuccess = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) =>
-    state?.registrationSuccess ?? initialAuthState.registrationSuccess,
+  (state: AuthState) => state.registrationSuccess,
 );
 
-export const selectCurrentUser = createSelector(
-  selectAuthState,
-  (state: AuthState | undefined) => state?.user ?? initialAuthState.user,
-);
+export const selectCurrentUser = createSelector(selectAuthState, (state: AuthState) => state.user);
 
 export const selectIsAuthenticated = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.isAuthenticated ?? initialAuthState.isAuthenticated,
+  (state: AuthState) => state.isAuthenticated,
 );
 
 export const selectIsVerifying = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.isVerifying ?? initialAuthState.isVerifying,
+  (state: AuthState) => state.isVerifying,
 );
 
 export const selectVerificationError = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.verificationError ?? initialAuthState.verificationError,
+  (state: AuthState) => state.verificationError,
 );
 
 export const selectVerificationSuccess = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) =>
-    state?.verificationSuccess ?? initialAuthState.verificationSuccess,
+  (state: AuthState) => state.verificationSuccess,
 );
 
 export const selectIsCompletingOnboarding = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) =>
-    state?.isCompleteOnboarding ?? initialAuthState.isCompleteOnboarding,
+  (state: AuthState) => state.isCompleteOnboarding,
 );
 
 export const selectOnboardingError = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.onboardingError ?? initialAuthState.onboardingError,
+  (state: AuthState) => state.onboardingError,
 );

@@ -52,7 +52,7 @@ describe('AuthService', () => {
         expect(response).toEqual(mockResponse);
       });
 
-      const req = httpMock.expectOne(`${environment.url}/${APP_CONSTANTS.API_ENDPOINTS.REGISTER}`);
+      const req = httpMock.expectOne(`${environment.url}${APP_CONSTANTS.API_ENDPOINTS.REGISTER}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(mockPayload);
       req.flush(mockResponse);
@@ -78,7 +78,7 @@ describe('AuthService', () => {
         expect(response).toEqual(mockResponse);
       });
 
-      const req = httpMock.expectOne(`${environment.url}/${APP_CONSTANTS.API_ENDPOINTS.LOGIN}`);
+      const req = httpMock.expectOne(`${environment.url}${APP_CONSTANTS.API_ENDPOINTS.LOGIN}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(mockPayload);
       req.flush(mockResponse);
@@ -93,12 +93,12 @@ describe('AuthService', () => {
         message: 'Verification successful',
       };
 
-      service.verifyOtp(code, email).subscribe((response) => {
+      service.verifyEmail({ code, email }).subscribe((response) => {
         expect(response).toEqual(mockResponse);
       });
 
       const req = httpMock.expectOne(
-        `${environment.url}/${APP_CONSTANTS.API_ENDPOINTS.VERIFY_OTP}?code=${code}&email=${email}`,
+        `${environment.url}${APP_CONSTANTS.API_ENDPOINTS.VERIFY_OTP}?code=${code}&email=${email}`,
       );
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toBeNull();
@@ -110,7 +110,7 @@ describe('AuthService', () => {
     it('should send POST request to logout endpoint', () => {
       service.logout().subscribe();
 
-      const req = httpMock.expectOne(`${environment.url}/${APP_CONSTANTS.API_ENDPOINTS.LOGOUT}`);
+      const req = httpMock.expectOne(`${environment.url}${APP_CONSTANTS.API_ENDPOINTS.LOGOUT}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({});
       req.flush(null);

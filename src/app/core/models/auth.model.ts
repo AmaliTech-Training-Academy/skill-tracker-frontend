@@ -74,7 +74,4 @@ export interface CompleteOnboardingRequest {
   skills: UserSkill[];
 }
 
-export type RegistrationSuccessResponse = ApiResponse<User>;
-export type VerificationSuccessResponse = ApiResponse<User>;
-export type LoginSuccessResponse = ApiResponse<User>;
-export type CompleteOnboardingSuccessResponse = ApiResponse<User>;
+export type UserResponse = ApiResponse<User>;
