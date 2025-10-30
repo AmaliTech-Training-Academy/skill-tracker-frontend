@@ -38,6 +38,11 @@ export enum UserState {
   ACTIVE = 'ACTIVE',
 }
 
+export enum TourGuide {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+}
+
 export enum PremiumTier {
   FREE = 'FREE',
   PREMIUM = 'PREMIUM',
@@ -49,7 +54,8 @@ export interface User {
   username: string | null;
   role: UserRole;
   state: UserState;
-  isVerified: boolean;
+  tourStatus?: TourGuide;
+  is_verified: boolean;
   premiumTier: PremiumTier;
   language: string;
   timezone: string;
@@ -70,6 +76,5 @@ export interface CompleteOnboardingRequest {
 
 export type RegistrationSuccessResponse = ApiResponse<User>;
 export type VerificationSuccessResponse = ApiResponse<User>;
-export type LoginSuccessResponse = ApiResponse<LoginSuccessData>;
-export type ProfileSuccessResponse = ApiResponse<User>;
+export type LoginSuccessResponse = ApiResponse<User>;
 export type CompleteOnboardingSuccessResponse = ApiResponse<User>;

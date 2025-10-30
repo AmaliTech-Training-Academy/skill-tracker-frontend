@@ -65,6 +65,38 @@ export class AuthEffects {
     ),
   );
 
+  public login$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.login),
+      switchMap(
+        ({ request }) =>
+          this.authService.login(request).pipe(
+            map((response) => AuthActions.loginSuccess({ user: response.data })),
+            catchError((httpError: HttpErrorResponse) => {
+              const appError = this.errorHandlerService.getError(httpError);
+              return of(AuthActions.loginFailure({ error: appError }));
+            }),
+          ) as Observable<Action>,
+      ),
+    ),
+  );
+
+  public logout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.logout),
+      switchMap(
+        () =>
+          this.authService.logout().pipe(
+            map(() => AuthActions.logoutSuccess()),
+            catchError((httpError: HttpErrorResponse) => {
+              const appError = this.errorHandlerService.getError(httpError);
+              return of(AuthActions.logoutFailure({ error: appError }));
+            }),
+          ) as Observable<Action>,
+      ),
+    ),
+  );
+
   public loginOrVerifySuccess$ = createEffect(
     () =>
       this.actions$.pipe(
