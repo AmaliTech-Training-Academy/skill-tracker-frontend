@@ -71,8 +71,8 @@ describe('authGuard', () => {
     expect(result).toBe(false);
   });
 
-  it('should allow access for an ACTIVE user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.ACTIVE }));
+  it('should allow access for a verified user', () => {
+    store.overrideSelector(selectCurrentUser, createMockUser({ is_verified: true }));
 
     const result = executeGuard(dummyRoute, dummyState);
 
@@ -80,17 +80,8 @@ describe('authGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should allow access for a VERIFIED user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.VERIFIED }));
-
-    const result = executeGuard(dummyRoute, dummyState);
-
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
-    expect(result).toBe(true);
-  });
-
-  it('should redirect to email verification for a REGISTERED user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.REGISTERED }));
+  it('should redirect to email verification for an unverified user', () => {
+    store.overrideSelector(selectCurrentUser, createMockUser({ is_verified: false }));
 
     const result = executeGuard(dummyRoute, dummyState);
 

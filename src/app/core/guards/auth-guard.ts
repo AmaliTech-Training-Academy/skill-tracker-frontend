@@ -3,7 +3,6 @@ import { CanActivateFn, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 import { AppState } from '@app/store/app.state';
-import { UserState } from '../models/auth.model';
 import { APP_CONSTANTS } from '../constants/app.constants';
 
 export const authGuard: CanActivateFn = (route, state) => {
@@ -18,15 +17,10 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  switch (currentUser()?.state) {
-    case UserState.ACTIVE:
-    case UserState.VERIFIED:
-      return true;
-    case UserState.REGISTERED:
-      router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
-      return false;
-    default:
-      router.navigateByUrl(APP_ROUTES.LOGIN);
-      return false;
+  if (currentUser()?.is_verified) {
+    return true;
   }
+
+  router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
+  return false;
 };

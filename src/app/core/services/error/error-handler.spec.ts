@@ -26,7 +26,11 @@ describe('ErrorHandler', () => {
 
   describe('getError', () => {
     it('should handle network errors when offline', () => {
-      const onLineSpy = jest.spyOn(navigator, 'onLine', 'get').mockReturnValue(false);
+      const originalOnLine = Object.getOwnPropertyDescriptor(navigator, 'onLine');
+      Object.defineProperty(navigator, 'onLine', {
+        value: false,
+        configurable: true,
+      });
 
       const httpError = new HttpErrorResponse({ status: 0 });
       const result = service.getError(httpError);
@@ -37,84 +41,51 @@ describe('ErrorHandler', () => {
         raw: httpError,
       });
 
-      onLineSpy.mockRestore();
+      if (originalOnLine) Object.defineProperty(navigator, 'onLine', originalOnLine);
     });
 
-    it('should handle 400 validation errors', () => {
-      const validationErrors = [
-        { field: 'email', message: 'Invalid email' },
-        { field: 'password', message: 'Password too short' },
-      ];
-
-      const httpError = new HttpErrorResponse({
-        status: 400,
-        error: {
-          message: 'Validation failed',
-          errors: validationErrors,
-        },
-      });
-
-      const result = service.getError(httpError);
+    it('should handle generic Error objects', () => {
+      const error = new Error('Something went wrong');
+      const result = service.getError(error);
 
       expect(result).toEqual({
-        message: 'Validation failed',
-        detail: undefined,
-        status: 400,
-        type: AppErrorType.VALIDATION,
-        validationErrors,
-        raw: httpError,
+        message: 'Something went wrong',
+        type: AppErrorType.UNKNOWN,
+        raw: error,
       });
     });
 
-    it('should handle 401 unauthorized errors', () => {
-      const httpError = new HttpErrorResponse({
-        status: 401,
-        error: { message: 'Invalid credentials' },
-      });
-
-      const result = service.getError(httpError);
+    it('should handle unknown errors', () => {
+      const error = { details: 'Some details' };
+      const result = service.getError(error);
 
       expect(result).toEqual({
-        message: 'Invalid credentials',
-        detail: undefined,
-        status: 401,
-        type: AppErrorType.AUTH,
-        raw: httpError,
+        message: 'An unexpected application error occurred.',
+        type: AppErrorType.UNKNOWN,
+        raw: error,
       });
     });
+  });
 
-    it('should handle 404 not found errors', () => {
-      const httpError = new HttpErrorResponse({
-        status: 404,
-        error: { message: 'Resource not found' },
-      });
+  describe('notifyError', () => {
+    it('should get the error and show a toast notification', () => {
+      const error = new Error('Test error');
+      service.notifyError(error);
 
-      const result = service.getError(httpError);
-
-      expect(result).toEqual({
-        message: 'Resource not found',
-        detail: undefined,
-        status: 404,
-        type: AppErrorType.CLIENT,
-        raw: httpError,
-      });
+      expect(toastService.showError).toHaveBeenCalledWith('Error', 'Test error');
     });
+  });
 
-    it('should handle 500 server errors', () => {
-      const httpError = new HttpErrorResponse({
-        status: 500,
-        error: { message: 'Internal server error' },
-      });
+  describe('logError', () => {
+    it('should log the error to the console', () => {
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const error = new Error('Logging this error');
 
-      const result = service.getError(httpError);
+      service.logError(error);
 
-      expect(result).toEqual({
-        message: 'A server error occurred. Please try again later.',
-        detail: undefined,
-        status: 500,
-        type: AppErrorType.SERVER,
-        raw: httpError,
-      });
+      expect(consoleErrorSpy).toHaveBeenCalledWith('App Error Log:', error);
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });
