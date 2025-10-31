@@ -6,7 +6,13 @@ import { of, Observable } from 'rxjs';
 import { Action } from '@ngrx/store';
 
 import * as AuthActions from './auth.actions';
-import { AuthService, ErrorHandlerService, APP_CONSTANTS, UserState } from '@app/core';
+import {
+  AuthService,
+  ErrorHandlerService,
+  APP_CONSTANTS,
+  UserState,
+  ToastService,
+} from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
@@ -16,6 +22,7 @@ export class AuthEffects {
   private authService = inject(AuthService);
   private errorHandlerService = inject(ErrorHandlerService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   public registerUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -23,7 +30,9 @@ export class AuthEffects {
       switchMap(
         ({ request }) =>
           this.authService.register(request).pipe(
-            map((response) => AuthActions.registerUserSuccess({ user: response.data })),
+            map((response) => {
+              return AuthActions.registerUserSuccess({ user: response.data });
+            }),
             catchError((httpError: HttpErrorResponse) => {
               const appError = this.errorHandlerService.getError(httpError);
               return of(AuthActions.registerUserFailure({ error: appError }));
@@ -39,7 +48,10 @@ export class AuthEffects {
       switchMap(
         ({ request }) =>
           this.authService.verifyEmail(request).pipe(
-            map((response) => AuthActions.verifyEmailOtpSuccess({ user: response.data })),
+            map((response) => AuthActions.verifyEmailOtpSuccess({ 
+              user: response.data, 
+              message: response.message 
+            })),
             catchError((httpError: HttpErrorResponse) => {
               const appError = this.errorHandlerService.getError(httpError);
               return of(AuthActions.verifyEmailOtpFailure({ error: appError }));
@@ -55,7 +67,13 @@ export class AuthEffects {
       switchMap(
         ({ request }) =>
           this.authService.completeOnboarding(request).pipe(
-            map((response) => AuthActions.completeOnboardingSuccess({ user: response.data })),
+            map((response) => {
+              this.toastService.showSuccess(
+                'Onboarding Complete',
+                response?.message || 'Welcome! Your profile has been set up successfully.',
+              );
+              return AuthActions.completeOnboardingSuccess({ user: response.data });
+            }),
             catchError((httpError: HttpErrorResponse) => {
               const appError = this.errorHandlerService.getError(httpError);
               return of(AuthActions.completeOnboardingFailure({ error: appError }));
@@ -97,16 +115,50 @@ export class AuthEffects {
     ),
   );
 
-  public loginOrVerifySuccess$ = createEffect(
+  public loginSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(AuthActions.loginSuccess, AuthActions.verifyEmailOtpSuccess),
+        ofType(AuthActions.loginSuccess),
         tap(({ user }) => {
           if (user.state === UserState.ACTIVE) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
           } else {
             this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
           }
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public verifyEmailSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.verifyEmailOtpSuccess),
+        tap(({ user, message }) => {
+          this.toastService.showSuccess(
+            'Email Verified',
+            message || 'Your email has been successfully verified!',
+          );
+          if (user.state === UserState.ACTIVE) {
+            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+          } else {
+            this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+          }
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public registerSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.registerUserSuccess),
+        tap(() => {
+          this.toastService.showSuccess(
+            'Account Created',
+            "Hurray, Your account is created! We've sent a 6 digit code to your email",
+          );
+          this.router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
         }),
       ),
     { dispatch: false },
@@ -123,12 +175,73 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public registerSuccess$ = createEffect(
+  public registerFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(AuthActions.registerUserSuccess),
-        tap(() => {
-          this.router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
+        ofType(AuthActions.registerUserFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Signup Failed',
+            error?.message || 'Unable to create your account. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public verifyEmailFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.verifyEmailOtpFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Verification Failed',
+            error?.message || 'Invalid verification code. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public socialLogin$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.socialLogin),
+        tap(({ provider }) => {
+          this.authService.initiateSocialLogin(provider);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public socialLoginSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.socialLoginSuccess),
+        tap(({ user, message }) => {
+          this.toastService.showSuccess(
+            'Login Successful',
+            message || 'Successfully logged in with social provider!',
+          );
+          if (user.state === UserState.ACTIVE) {
+            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+          } else {
+            this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+          }
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public socialLoginFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.socialLoginFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Social Login Failed',
+            error?.message || 'Unable to login with social provider. Please try again.',
+          );
         }),
       ),
     { dispatch: false },

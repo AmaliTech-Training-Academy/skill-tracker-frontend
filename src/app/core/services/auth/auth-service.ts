@@ -13,6 +13,7 @@ import {
   CompleteOnboardingSuccessResponse,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '@app/core';
+import { environment } from '../../../../environments/environment';
 
 const { API_ENDPOINTS } = APP_CONSTANTS;
 
@@ -46,5 +47,10 @@ export class AuthService {
   }
   public logout(): Observable<void> {
     return this.api.post<void>(API_ENDPOINTS.LOGOUT, {});
+  }
+
+  public initiateSocialLogin(provider: string): void {
+    const baseUrl = environment.url;
+    window.location.href = `${baseUrl}${API_ENDPOINTS.SOCIAL_LOGIN}/${provider}`;
   }
 }
