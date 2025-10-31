@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
 import { LoginService } from './login.service';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { ToastService } from '@app/core';
 import { getFormControl } from '@app/shared';
+import * as AuthActions from '@app/store/auth/auth.actions';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +27,7 @@ export class Login implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly loginService = inject(LoginService);
   private readonly toastService = inject(ToastService);
+  private readonly store = inject(Store);
 
   getFormControl = getFormControl;
 
@@ -60,6 +63,14 @@ export class Login implements OnDestroy {
           this.loading = false;
         },
       });
+  }
+
+  signInWithGoogle(): void {
+    this.store.dispatch(AuthActions.socialLogin({ provider: 'google' }));
+  }
+
+  signInWithGithub(): void {
+    this.store.dispatch(AuthActions.socialLogin({ provider: 'github' }));
   }
 
   ngOnDestroy(): void {

@@ -12,7 +12,7 @@
       <div class="input-group">
         @for (field of otpFields; track field.index) {
         <input #otpInput maxlength="1" [formControlName]="field.name" (input)="onInput($event, field.index)"
-          (keydown)="onKeyDown($event, field.index)" />
+          (keydown)="onKeyDown($event, field.index)" (paste)="onPaste($event, field.index)" />
         }
       </div>
 
