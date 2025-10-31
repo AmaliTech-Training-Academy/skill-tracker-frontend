@@ -247,6 +247,49 @@ export class AuthEffects {
     { dispatch: false },
   );
 
+  public resendVerification$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.resendVerification),
+      switchMap(({ email }) =>
+        this.authService.resendVerification(email).pipe(
+          map((response) => AuthActions.resendVerificationSuccess({ message: response.message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(AuthActions.resendVerificationFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public resendVerificationSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.resendVerificationSuccess),
+        tap(({ message }) => {
+          this.toastService.showSuccess(
+            'Code Resent',
+            message || 'Verification code has been resent to your email.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public resendVerificationFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.resendVerificationFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Resend Failed',
+            error?.message || 'Unable to resend verification code. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
   public logoutOrAuthFailure$ = createEffect(
     () =>
       this.actions$.pipe(

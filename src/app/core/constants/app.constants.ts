@@ -19,6 +19,7 @@ export const APP_CONSTANTS = {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
     VERIFY_OTP: '/auth/verify-email-otp',
+    RESEND_VERIFICATION: '/auth/resend-verification',
     LOGOUT: '/auth/logout',
     COMPLETE_ONBOARDING: '/users/complete-onboarding',
     SOCIAL_LOGIN: '/oauth2/authorization'

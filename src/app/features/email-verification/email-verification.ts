@@ -21,7 +21,7 @@ import { takeUntil, Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { APP_CONSTANTS } from '@app/core';
-import { verifyEmailOtp } from '@app/store/auth/auth.actions';
+import * as AuthActions from '@app/store/auth/auth.actions';
 import { selectIsVerifying, selectUserEmail } from '@app/store/auth/auth.selectors';
 
 @Component({
@@ -90,8 +90,11 @@ export class EmailVerification implements OnInit, OnDestroy {
   }
 
   public resendCode() {
-    // TODO: Implement resend code API call
-    this.startTimer();
+    const email = this.userEmail();
+    if (email) {
+      this.store.dispatch(AuthActions.resendVerification({ email }));
+      this.startTimer();
+    }
   }
 
   public onInput(event: Event, index: number) {
@@ -154,7 +157,7 @@ export class EmailVerification implements OnInit, OnDestroy {
     const email = this.userEmail();
     if (!email) return;
     
-    this.store.dispatch(verifyEmailOtp({ request: { code: otpCode, email } }));
+    this.store.dispatch(AuthActions.verifyEmailOtp({ request: { code: otpCode, email } }));
   }
 
   public goToSignUp() {
