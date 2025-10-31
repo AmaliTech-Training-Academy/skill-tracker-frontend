@@ -70,3 +70,21 @@ export const completeOnboardingFailure = createAction(
   '[Onboarding] Complete Onboarding Failure',
   props<{ error: AppError }>(),
 );
+
+export const forgotPassword = createAction(
+  '[Auth/Forgot Password] Send Reset Link',
+  props<{ email: string }>(),
+);
+
+export const forgotPasswordSuccess = createAction(
+  '[Auth/Forgot Password] Send Reset Link Success',
+);
+
+export const forgotPasswordFailure = createAction(
+  '[Auth/Forgot Password] Send Reset Link Failure',
+  props<{ error: AppError }>(),
+);
+
+export const resetForgotPasswordState = createAction(
+  '[Auth/Forgot Password] Reset State',
+);

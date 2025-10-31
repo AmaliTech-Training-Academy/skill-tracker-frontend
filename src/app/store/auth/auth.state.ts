@@ -18,7 +18,9 @@ export interface AuthState {
   isLoggingOut: boolean;
   logoutError: AppError | null;
   tourStatus: string;
-  is_verified: boolean
+  is_verified: boolean,
+  isSendingResetLink: boolean,
+  forgotPasswordError: AppError | null;
 }
 
 export const initialAuthState: AuthState = {
@@ -38,5 +40,7 @@ export const initialAuthState: AuthState = {
   isLoggingOut: false,
   logoutError: null,
   tourStatus: 'null',
-  is_verified: false
+  is_verified: false,
+  isSendingResetLink: false,
+  forgotPasswordError: null
 };

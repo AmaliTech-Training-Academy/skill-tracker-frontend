@@ -30,6 +30,11 @@ export class AuthService {
     return this.api.post<LoginSuccessResponse>(API_ENDPOINTS.LOGIN, payload);
   }
 
+  public forgotPassword(email: string): Observable<void> {
+  return this.api.post<void>(API_ENDPOINTS.FORGOT_PASSWORD, { email });
+}
+
+
   public verifyEmail(payload: VerifyEmailRequest): Observable<VerificationSuccessResponse> {
     const params = new HttpParams().set('code', payload.code).set('email', payload.email);
 

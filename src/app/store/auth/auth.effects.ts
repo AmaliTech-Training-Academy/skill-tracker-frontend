@@ -135,6 +135,22 @@ public loginOrVerifySuccess$ = createEffect(
     { dispatch: false },
   );
 
+  public forgotPassword$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(AuthActions.forgotPassword),
+    switchMap(({ email }) =>
+      this.authService.forgotPassword(email).pipe(
+        map(() => AuthActions.forgotPasswordSuccess()),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(AuthActions.forgotPasswordFailure({ error: appError }));
+        }),
+      ),
+    ),
+  ),
+);
+
+
   public logoutOrAuthFailure$ = createEffect(
     () =>
       this.actions$.pipe(

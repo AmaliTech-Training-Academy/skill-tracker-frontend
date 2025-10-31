@@ -65,3 +65,13 @@ export const selectLoginError = createSelector(
   selectAuthState,
   (state: AuthState | undefined) => state?.loginError ?? initialAuthState.loginError,
 );
+
+export const selectIsSendingResetLink = createSelector(
+  selectAuthState,
+  (state: AuthState | undefined) => state?.isSendingResetLink ?? false,
+);
+
+export const selectForgotPasswordError = createSelector(
+  selectAuthState,
+  (state: AuthState | undefined) => state?.forgotPasswordError ?? null,
+);

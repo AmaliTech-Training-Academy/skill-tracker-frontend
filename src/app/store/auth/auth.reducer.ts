@@ -85,4 +85,26 @@ export const authReducer = createReducer(
     isLoggingOut: false,
     logoutError: error,
   })),
+    on(AuthActions.forgotPassword, (state) => ({
+    ...state,
+    isSendingResetLink: true,
+    forgotPasswordError: null,
+  })),
+  on(AuthActions.forgotPasswordSuccess, (state) => ({
+    ...state,
+    isSendingResetLink: false,
+    forgotPasswordError: null,
+  })),
+  on(AuthActions.forgotPasswordFailure, (state, { error }) => ({
+    ...state,
+    isSendingResetLink: false,
+    forgotPasswordError: error,
+  })),
+
+  on(AuthActions.resetForgotPasswordState, (state) => ({
+  ...state,
+  isSendingResetLink: false,
+  forgotPasswordError: null,
+})),
+
 );
