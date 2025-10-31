@@ -47,15 +47,15 @@ export interface User {
   id: string;
   email: string;
   username: string | null;
-  role: UserRole;
-  state: UserState;
-  isVerified: boolean;
-  premiumTier: PremiumTier;
+  role: string;
+  state: string;
+  tourStatus: string;
+  is_verified: boolean;
+  premiumTier: string;
   language: string;
   timezone: string;
-  updatedAt: string;
-  lastLoginAt: string | null;
 }
+
 
 export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 

@@ -8,7 +8,7 @@ import { Action } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
 import { AuthService, ErrorHandlerService, APP_CONSTANTS, UserState } from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { User } from '@app/core';
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 @Injectable()
 export class AuthEffects {
@@ -64,21 +64,54 @@ export class AuthEffects {
       ),
     ),
   );
-
-  public loginOrVerifySuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActions.loginSuccess, AuthActions.verifyEmailOtpSuccess),
-        tap(({ user }) => {
-          if (user.state === UserState.ACTIVE) {
-            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-          } else {
-            this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
-          }
+  
+public login$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(AuthActions.login),
+    switchMap(({ request }) =>
+      this.authService.login(request).pipe(
+        map((response) =>
+        AuthActions.loginSuccess({
+        user: response.data as unknown as User,
+         token: null,
         }),
-      ),
-    { dispatch: false },
-  );
+     ),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(AuthActions.loginFailure({ error: appError }));
+        }),
+      ) as Observable<Action>,
+    ),
+  ),
+);
+
+
+
+
+public loginOrVerifySuccess$ = createEffect(
+  () =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginSuccess, AuthActions.verifyEmailOtpSuccess),
+      tap(({ user }) => {
+        console.log('Login success effect triggered with user:', user); // ✅ Add this
+        if (!user) return;
+
+        if (user.state === UserState.ACTIVE) {
+          this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+        } else if (user.state === UserState.REGISTERED) {
+          this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+        } else {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }
+      }),
+    ),
+  { dispatch: false },
+);
+
+
+
+
+
 
   public onboardingSuccess$ = createEffect(
     () =>

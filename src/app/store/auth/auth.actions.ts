@@ -25,7 +25,7 @@ export const registerUserFailure = createAction(
 
 export const login = createAction('[Auth/Login] Login', props<{ request: LoginRequest }>());
 
-export const loginSuccess = createAction('[Auth/Login] Login Success', props<{ user: User }>());
+export const loginSuccess = createAction('[Auth/Login] Login Success', props<{ user: User | null; token: string | null}>());
 
 export const loginFailure = createAction(
   '[Auth/Login] Login Failure',
@@ -48,7 +48,7 @@ export const verifyEmailOtp = createAction(
 
 export const verifyEmailOtpSuccess = createAction(
   '[Auth/Verification] Verify Email OTP Success',
-  props<{ user: User }>(),
+  props<{ user: User  }>(),
 );
 
 export const verifyEmailOtpFailure = createAction(

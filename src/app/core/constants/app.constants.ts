@@ -13,7 +13,7 @@ export const APP_CONSTANTS = {
     FORGOT_PASSWORD: '/forgot-password',
     RESET_PASSWORD: '/reset-password',
     EMAIL_VERIFICATION: '/email-verification',
-    DASHBOARD: '/dashboard',
+    DASHBOARD: '/dashboard'
   },
   API_ENDPOINTS: {
     REGISTER: '/auth/register',

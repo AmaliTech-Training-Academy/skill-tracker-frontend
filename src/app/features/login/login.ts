@@ -1,12 +1,22 @@
-import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  OnDestroy,
+  OnInit,
+  Signal,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { LoginService } from './login.service';
+import { Subject, takeUntil, filter, tap } from 'rxjs';
+import { Store } from '@ngrx/store';
+
 import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { ToastService } from '@app/core';
+import { ToastService, LoginRequest, AppError } from '@app/core';
 import { getFormControl } from '@app/shared';
+import * as AuthActions from '@app/store/auth/auth.actions';
+import * as AuthSelectors from '@app/store/auth/auth.selectors';
 
 @Component({
   selector: 'app-login',
@@ -16,50 +26,70 @@ import { getFormControl } from '@app/shared';
   styleUrls: ['./login.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login implements OnDestroy {
-  successMessage = '';
-  errorMessage = '';
-  loading = false;
-
+export class Login implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private readonly fb = inject(FormBuilder);
-  private readonly loginService = inject(LoginService);
+  private readonly store = inject(Store);
   private readonly toastService = inject(ToastService);
 
   getFormControl = getFormControl;
+
+  // NgRx Signals
+  public isLoggingIn: Signal<boolean>;
+  public loginError: Signal<AppError | null>;
+  public loginSuccess$: any;
+
+  constructor() {
+    this.isLoggingIn = this.store.selectSignal(AuthSelectors.selectIsLoggingIn as any);
+    this.loginError = this.store.selectSignal(AuthSelectors.selectLoginError as any);
+    this.loginSuccess$ = this.store.select(AuthSelectors.selectIsAuthenticated);
+  }
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  login(): void {
-    if (this.loginForm.invalid) {
-      return;
-    }
-
-    this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
-
-    const { email, password } = this.loginForm.value;
-
-    this.loginService
-      .login(email!, password!)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
+  ngOnInit(): void {
+    // Show toast on success
+    this.loginSuccess$
+      .pipe(
+        filter((success) => success === true),
+        takeUntil(this.destroy$),
+        tap(() => {
           this.toastService.showSuccess(
             'Login Successful',
             'Logged in successfully! Redirecting you to your dashboard...',
           );
-          this.loading = false;
-        },
-        error: () => {
-          this.toastService.showError('Login Failed', 'Incorrect email or password.');
-          this.loading = false;
-        },
-      });
+        }),
+      )
+      .subscribe();
+
+    // Subscribe to loginError signal for showing toast
+    this.store.select(AuthSelectors.selectLoginError)
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((error) => !!error),
+        tap((error: AppError) => {
+          this.toastService.showError(
+            'Login Failed',
+            error?.message ?? 'Incorrect email or password.'
+          );
+        })
+      )
+      .subscribe();
+  }
+
+  login(): void {
+    if (this.loginForm.invalid) return;
+
+    const { email, password } = this.loginForm.value;
+    const request: LoginRequest = {
+      email: email!,
+      password: password!,
+    };
+
+    this.store.dispatch(AuthActions.login({ request }));
   }
 
   ngOnDestroy(): void {
