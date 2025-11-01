@@ -5,27 +5,27 @@ import { CompleteOnboardingRequest, UserSkill, SkillLevel } from '@app/core/mode
   providedIn: 'root',
 })
 export class OnboardingDataService {
-  private _skills: WritableSignal<UserSkill[]> = signal([]);
+  private skills$: WritableSignal<UserSkill[]> = signal([]);
 
-  public skills = this._skills.asReadonly();
+  public skills = this.skills$.asReadonly();
 
   public setInterests(skillIds: string[]): void {
     const newSkills: UserSkill[] = skillIds.map((id) => ({
       skillId: id,
       level: null,
     }));
-    this._skills.set(newSkills);
+    this.skills$.set(newSkills);
   }
 
   public updateSkillLevel(skillId: string, level: SkillLevel): void {
-    this._skills.update((currentSkills) => {
+    this.skills$.update((currentSkills) => {
       return currentSkills.map((skill) =>
         skill.skillId === skillId ? { ...skill, level } : skill,
       );
     });
   }
 
-  public getPayload(skipped: boolean = false): CompleteOnboardingRequest {
+  public getPayload(skipped = false): CompleteOnboardingRequest {
     if (skipped) {
       return { skills: [] };
     }
@@ -37,6 +37,6 @@ export class OnboardingDataService {
   }
 
   public reset(): void {
-    this._skills.set([]);
+    this.skills$.set([]);
   }
 }

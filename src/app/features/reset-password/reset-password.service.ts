@@ -9,16 +9,16 @@ import {
   ResetPasswordSuccess,
 } from './reset-password.model';
 
+const BASE_URL = 'https://app.com/auth/password';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ResetPasswordService {
-  private readonly BASE_URL = 'https://app.com/auth/password';
-
   constructor(private http: HttpClient) {}
 
-  resetPassword(payload: ResetPasswordPayload): Observable<string> {
-    return this.http.post<ResetPasswordSuccess>(`${this.BASE_URL}/reset`, payload).pipe(
+  public resetPassword(payload: ResetPasswordPayload): Observable<string> {
+    return this.http.post<ResetPasswordSuccess>(`${BASE_URL}/reset`, payload).pipe(
       map((response) => response.message),
       catchError((error) => {
         const err: ResetPasswordError = error.error;
