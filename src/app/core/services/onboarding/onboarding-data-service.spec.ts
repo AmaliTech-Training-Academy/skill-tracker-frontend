@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
 import { OnboardingDataService } from './onboarding-data-service';
-import { SkillLevel } from '@app/core/models/auth.model';
 
 describe('OnboardingDataService', () => {
   let service: OnboardingDataService;

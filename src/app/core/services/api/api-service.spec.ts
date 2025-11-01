@@ -28,7 +28,7 @@ describe('ApiService', () => {
     it('should make a GET request with correct URL', () => {
       const testData = { id: 1, name: 'Test' };
 
-      service.get<any>('/test').subscribe((data) => {
+      service.get<{id: number, name: string}>('/test').subscribe((data) => {
         expect(data).toEqual(testData);
       });
 
