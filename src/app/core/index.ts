@@ -3,6 +3,7 @@ export * from './services/api/api-service';
 export * from './services/auth/auth-service';
 export * from './services/error/error-handler';
 export * from './services/toast/toast-service';
+export * from './services/onboarding/onboarding-data-service';
 
 // interceptors
 export * from './interceptors/global-http-error-interceptor';

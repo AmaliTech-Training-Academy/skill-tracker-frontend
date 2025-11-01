@@ -1,17 +1,26 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth/auth-service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { AppState } from '@app/store/app.state';
+import { APP_CONSTANTS } from '../constants/app.constants';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
+  const store = inject(Store<AppState>);
   const router = inject(Router);
+  const { APP_ROUTES } = APP_CONSTANTS;
 
-  const isAuthenticated = authService.isAuthenticated();
+  const currentUser = store.selectSignal(selectCurrentUser);
 
-  if (isAuthenticated) {
+  if (!currentUser()) {
+    router.navigateByUrl(APP_ROUTES.LOGIN);
+    return false;
+  }
+
+  if (currentUser()?.is_verified) {
     return true;
   }
 
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
   return false;
 };
