@@ -12,18 +12,19 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideRouterStore } from '@ngrx/router-store';
-import { uiReducer } from './store/ui/ui.reducer';
-import { UIEffects } from './store/ui/ui.effects';
 import { LucideAngularModule } from 'lucide-angular';
 import { appIcons } from '@app/core';
+
+import { appState } from './store';
+import { appEffects } from './store/app.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([globalHttpErrorInterceptor])),
-    provideStore({ ui: uiReducer }),
-    provideEffects([UIEffects]),
+    provideStore(appState),
+    provideEffects(appEffects),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouterStore(),
     importProvidersFrom(LucideAngularModule.pick(appIcons)),

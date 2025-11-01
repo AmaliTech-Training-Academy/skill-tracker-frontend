@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ApiService } from './api-service';
 import { environment } from '../../../../environments/environment';
@@ -10,7 +10,7 @@ describe('ApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ApiService, provideHttpClient(withFetch()), provideHttpClientTesting()],
+      providers: [ApiService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(ApiService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -28,7 +28,7 @@ describe('ApiService', () => {
     it('should make a GET request with correct URL', () => {
       const testData = { id: 1, name: 'Test' };
 
-      service.get<{id: number; name: string;}>('/test').subscribe((data) => {
+      service.get<{id: number, name: string}>('/test').subscribe((data) => {
         expect(data).toEqual(testData);
       });
 

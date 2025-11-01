@@ -13,11 +13,13 @@ export const APP_CONSTANTS = {
     FORGOT_PASSWORD: '/forgot-password',
     RESET_PASSWORD: '/reset-password',
     EMAIL_VERIFICATION: '/email-verification',
+    DASHBOARD: '/dashboard',
   },
   API_ENDPOINTS: {
-    REGISTER: 'auth/register',
-    LOGIN: 'auth/login',
-    VERIFY_OTP: 'auth/verify',
-    LOGOUT: 'auth/logout',
+    REGISTER: '/auth/register',
+    LOGIN: '/auth/login',
+    VERIFY_OTP: '/auth/verify-email-otp',
+    LOGOUT: '/auth/logout',
+    COMPLETE_ONBOARDING: '/users/complete-onboarding',
   },
 } as const;
