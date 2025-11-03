@@ -195,7 +195,7 @@ export class PlanConfirmation implements OnDestroy, OnInit {
   }
 
  
-  get value(): string {
+  get planName(): string {
     return this.selectedPlan?.name ?? '';
   }
 
