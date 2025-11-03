@@ -17,10 +17,12 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from '@app/core';
-import { takeUntil, Subject, of, delay } from 'rxjs';
+import { takeUntil, Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { Store } from '@ngrx/store';
 import { APP_CONSTANTS } from '@app/core';
+import * as AuthActions from '@app/store/auth/auth.actions';
+import { selectIsVerifying, selectUserEmail } from '@app/store/auth/auth.selectors';
 
 @Component({
   selector: 'app-email-verification',
@@ -32,13 +34,13 @@ import { APP_CONSTANTS } from '@app/core';
 export class EmailVerification implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private toastService: ToastService = inject(ToastService);
+  private store = inject(Store);
 
-  private readonly DELAY_MS = 2000;
   private readonly VERIFICATION_TIME_SEC = 30;
   private readonly INTERVAL_MS = 1000;
 
-  public isSubmitting = signal(false);
+  public isSubmitting = this.store.selectSignal(selectIsVerifying);
+  private userEmail = this.store.selectSignal(selectUserEmail);
   public formValid = signal(false);
   public timeLeft = signal(this.VERIFICATION_TIME_SEC);
   public canResend = signal(false);
@@ -88,8 +90,11 @@ export class EmailVerification implements OnInit, OnDestroy {
   }
 
   public resendCode() {
-    this.toastService.showInfo('Code Sent', 'A new verification code has been sent to your email.');
-    this.startTimer();
+    const email = this.userEmail();
+    if (email) {
+      this.store.dispatch(AuthActions.resendVerification({ email }));
+      this.startTimer();
+    }
   }
 
   public onInput(event: Event, index: number) {
@@ -121,29 +126,12 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     if (this.otpForm.invalid) return;
 
-    this.isSubmitting.set(true);
-
-    // Simulate an API call
-    of(true)
-      .pipe(delay(this.DELAY_MS), takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(
-            'Email Verified',
-            'Your email is verified. We’ll redirect you to your dashboard',
-          );
-          this.router.navigateByUrl('/login');
-        },
-        error: () => {
-          this.toastService.showError(
-            'Verification Failed',
-            'Unable to verify email. Please try again.',
-          );
-        },
-        complete: () => {
-          this.isSubmitting.set(false);
-        },
-      });
+    const otpCode = this.otpFields.map(field => this.otpForm.get(field.name)?.value).join('');
+    
+    const email = this.userEmail();
+    if (!email) return;
+    
+    this.store.dispatch(AuthActions.verifyEmailOtp({ request: { code: otpCode, email } }));
   }
 
   public goToSignUp() {
