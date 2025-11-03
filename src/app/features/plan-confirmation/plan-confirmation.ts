@@ -104,7 +104,31 @@ export class PlanConfirmation implements OnDestroy, OnInit {
         'Early access to new Skill Arena game modes',
       ],
     },
-  ];
+  ] as const;
+
+  get planName(): string {
+    return this.selectedPlan?.name ?? '';
+  }
+
+  get features(): string[] {
+    return this.selectedPlan?.features ?? [];
+  }
+
+  get planPrice(): number {
+    return this.selectedPlan?.price ?? 0;
+  }
+
+  get chosenPlanSection(): Section {
+    return Section.ChosenPlan;
+  }
+
+  get payPageSection(): Section {
+    return Section.PayPage;
+  }
+
+  get donePageSection(): Section {
+    return Section.donePage;
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -167,7 +191,6 @@ export class PlanConfirmation implements OnDestroy, OnInit {
         break;
       default:
         this.router.navigateByUrl('/');
-        break;
     }
   }
 
@@ -192,16 +215,6 @@ export class PlanConfirmation implements OnDestroy, OnInit {
     if (!this.selectedPlan) return '$0.00';
     const { price } = this.selectedPlan;
     return price === 0 ? 'Free' : `$${price.toFixed(2)}`;
-  }
-
- 
-  get planName(): string {
-    return this.selectedPlan?.name ?? '';
-  }
-
- 
-  get features(): string[] {
-    return this.selectedPlan?.features ?? [];
   }
 
   ngOnDestroy(): void {

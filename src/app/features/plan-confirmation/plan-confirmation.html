@@ -5,7 +5,7 @@
 
   <div class="plan-confirmation-container">
 
-    @if (currentSection === Section.ChosenPlan && selectedPlan) {
+    @if (currentSection === chosenPlanSection && selectedPlan) {
       <div class="chosen-plan">
         <button class="back-btn" (click)="goBack()">
           <img src="assets/left-arrow.png" alt="Navigate back" />
@@ -16,7 +16,7 @@
           <h1>You're Almost There!</h1>
           <p>
             You've chosen the <strong>{{ planName }} Plan</strong> — great choice!
-            @if (selectedPlan.price) {
+            @if (planPrice) {
               Unlock the full SkillDev experience.
             } @else {
               Start your learning journey with SkillDev.
@@ -40,8 +40,8 @@
         </div>
 
         <div class="plan-confirmation-btns">
-          @if (selectedPlan.price) {
-            <button class="plan-confirmation-btns--next" (click)="goToSection(Section.PayPage)">
+          @if (planPrice) {
+            <button class="plan-confirmation-btns--next" (click)="goToSection(payPageSection)">
               Register to Pay
             </button>
           } @else {
@@ -53,9 +53,9 @@
       </div>
     }
 
-    @if (currentSection === Section.PayPage && selectedPlan) {
+    @if (currentSection === payPageSection && selectedPlan) {
       <div class="pay-page">
-        <button class="back-btn" (click)="goToSection(Section.ChosenPlan)">
+        <button class="back-btn" (click)="goToSection(chosenPlanSection)">
           <img src="assets/left-arrow.png" alt="Navigate back" /> Back
         </button>
 
@@ -148,9 +148,9 @@
       </div>
     }
 
-   @if (currentSection === Section.donePage && selectedPlan) {
+    @if (currentSection === donePageSection && selectedPlan) {
       <div class="done-page">
-        <button class="back-btn" (click)="goToSection(Section.PayPage)">
+        <button class="back-btn" (click)="goToSection(payPageSection)">
           <img src="assets/left-arrow.png" alt="Navigate back" />
           Back
         </button>
@@ -176,7 +176,7 @@
     }
   </div>
 
-  @if (currentSection === Section.PayPage && selectedPlan) {
+  @if (currentSection === payPageSection && selectedPlan) {
     <div class="cancellation-policy">
       <div class="policy">
         <h1>Cancellation Policy</h1>
