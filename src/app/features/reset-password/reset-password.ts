@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -7,10 +7,12 @@ import {
   FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subject, takeUntil } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { ResetPasswordService } from './reset-password.service';
+import * as AuthActions from '../../store/auth/auth.actions';
+import * as AuthSelectors from '../../store/auth/auth.selectors';
 
 // Font Awesome imports
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -23,18 +25,20 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
     CommonModule,
     ReactiveFormsModule,
     InputFieldComponent,
-    HttpClientModule,
     FontAwesomeModule,
   ],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
 })
-export class ResetPassword implements OnDestroy {
-  public successMessage = '';
-  public errorMessage = '';
-  public loading = false;
+export class ResetPassword implements OnInit, OnDestroy {
   public loginForm!: FormGroup;
-  private subscription?: Subscription;
+  private destroy$ = new Subject<void>();
+  private resetToken = '';
+
+  // Observables from store
+  public loading$ = this.store.select(AuthSelectors.selectIsResettingPassword);
+  public error$ = this.store.select(AuthSelectors.selectResetPasswordError);
+  public success$ = this.store.select(AuthSelectors.selectResetPasswordSuccess);
 
   // Password strength indicators
   public hasUppercase = false;
@@ -43,43 +47,60 @@ export class ResetPassword implements OnDestroy {
   public hasSpecialChar = false;
 
   // Expose icons for template
-  public faCheck = faCheck;
-  public faTimes = faTimes;
+  public readonly faCheck = faCheck;
+  public readonly faTimes = faTimes;
 
   constructor(
-    private fb: FormBuilder,
-    private resetPasswordService: ResetPasswordService,
-    private library: FaIconLibrary,
-  ) {
-    // register icons
-    this.library.addIcons(faCheck, faTimes);
+    private  fb: FormBuilder,
+    private  store: Store,
+    private  route: ActivatedRoute,
+    private  library: FaIconLibrary,
+  ) {}
 
+  public ngOnInit(): void {
+    this.initializeForm();
+    this.setupPasswordValidation();
+    this.getResetTokenFromRoute();
+  }
+
+ 
+
+  private initializeForm(): void {
     this.loginForm = this.fb.group({
       password1: [
         '',
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.pattern(/(?=.*[A-Z])/), // Uppercase
-          Validators.pattern(/(?=.*[a-z])/), // Lowercase
-          Validators.pattern(/(?=.*[0-9])/), // Number
-          Validators.pattern(/(?=.*[!@#$%^&*])/), // Special char
+          Validators.pattern(/(?=.*[A-Z])/),
+          Validators.pattern(/(?=.*[a-z])/), 
+          Validators.pattern(/(?=.*[0-9])/), 
+          Validators.pattern(/(?=.*[!@#$%^&*])/),
         ],
       ],
       password2: ['', [Validators.required]],
     });
+  }
 
-    // Watch password input for indicators
-    this.password1Control.valueChanges.subscribe((value: string) => {
-      this.updatePasswordIndicators(value);
+  private setupPasswordValidation(): void {
+    this.password1Control.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: string) => {
+        this.updatePasswordIndicators(value);
+      });
+  }
+
+  private getResetTokenFromRoute(): void {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      this.resetToken = params['token'] || '';
     });
   }
 
-  get password1Control(): FormControl {
+  public get password1Control(): FormControl {
     return this.loginForm.get('password1') as FormControl;
   }
 
-  get password2Control(): FormControl {
+  public get password2Control(): FormControl {
     return this.loginForm.get('password2') as FormControl;
   }
 
@@ -90,39 +111,26 @@ export class ResetPassword implements OnDestroy {
     this.hasSpecialChar = /[!@#$%^&*]/.test(value);
   }
 
-  resetpassword(): void {
+  public resetPassword(): void {
     if (this.loginForm.invalid) return;
 
     const { password1, password2 } = this.loginForm.value;
 
     if (password1 !== password2) {
-      this.errorMessage = 'Passwords do not match.';
       return;
     }
 
-    this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
-
-    const payload = {
-      resetToken: 'unique-secure-token-from-email',
-      newPassword: password1,
-    };
-
-    this.subscription = this.resetPasswordService.resetPassword(payload).subscribe({
-      next: (message) => {
-        this.successMessage = message;
-        this.loading = false;
-        this.loginForm.reset();
-      },
-      error: (err) => {
-        this.errorMessage = err.message || 'Password reset failed.';
-        this.loading = false;
-      },
-    });
+    this.store.dispatch(
+      AuthActions.resetPassword({
+        resetToken: this.resetToken,
+        newPassword: password1,
+      })
+    );
   }
 
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+  public ngOnDestroy(): void {
+    this.store.dispatch(AuthActions.resetPasswordState());
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

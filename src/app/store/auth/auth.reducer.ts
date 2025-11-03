@@ -102,9 +102,33 @@ export const authReducer = createReducer(
   })),
 
   on(AuthActions.resetForgotPasswordState, (state) => ({
-  ...state,
-  isSendingResetLink: false,
-  forgotPasswordError: null,
-})),
+    ...state,
+    isSendingResetLink: false,
+    forgotPasswordError: null,
+  })),
+  on(AuthActions.resetPassword, (state) => ({
+    ...state,
+    isResettingPassword: true,
+    resetPasswordError: null,
+    resetPasswordSuccess: false,
+  })),
+  on(AuthActions.resetPasswordSuccess, (state) => ({
+    ...state,
+    isResettingPassword: false,
+    resetPasswordSuccess: true,
+    resetPasswordError: null,
+  })),
+  on(AuthActions.resetPasswordFailure, (state, { error }) => ({
+    ...state,
+    isResettingPassword: false,
+    resetPasswordSuccess: false,
+    resetPasswordError: error,
+  })),
+  on(AuthActions.resetPasswordState, (state) => ({
+    ...state,
+    isResettingPassword: false,
+    resetPasswordError: null,
+    resetPasswordSuccess: false,
+  })),
 
 );

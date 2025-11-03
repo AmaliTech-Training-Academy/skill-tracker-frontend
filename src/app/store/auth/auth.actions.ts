@@ -88,3 +88,20 @@ export const forgotPasswordFailure = createAction(
 export const resetForgotPasswordState = createAction(
   '[Auth/Forgot Password] Reset State',
 );
+export const resetPassword = createAction(
+  '[Auth/Reset Password] Reset Password',
+  props<{ resetToken: string; newPassword: string }>(),
+);
+
+export const resetPasswordSuccess = createAction(
+  '[Auth/Reset Password] Reset Password Success',
+);
+
+export const resetPasswordFailure = createAction(
+  '[Auth/Reset Password] Reset Password Failure',
+  props<{ error: AppError }>(),
+);
+
+export const resetPasswordState = createAction(
+  '[Auth/Reset Password] Reset State',
+);

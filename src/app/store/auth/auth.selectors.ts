@@ -75,3 +75,18 @@ export const selectForgotPasswordError = createSelector(
   selectAuthState,
   (state: AuthState | undefined) => state?.forgotPasswordError ?? null,
 );
+
+export const selectIsResettingPassword = createSelector(
+  selectAuthState,
+  (state: AuthState | undefined) => state?.isResettingPassword ?? initialAuthState.isResettingPassword,
+);
+
+export const selectResetPasswordError = createSelector(
+  selectAuthState,
+  (state: AuthState | undefined) => state?.resetPasswordError ?? initialAuthState.resetPasswordError,
+);
+
+export const selectResetPasswordSuccess = createSelector(
+  selectAuthState,
+  (state: AuthState | undefined) => state?.resetPasswordSuccess ?? initialAuthState.resetPasswordSuccess,
+);

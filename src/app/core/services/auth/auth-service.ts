@@ -31,9 +31,12 @@ export class AuthService {
   }
 
   public forgotPassword(email: string): Observable<void> {
-  return this.api.post<void>(API_ENDPOINTS.FORGOT_PASSWORD, { email });
-}
+    return this.api.post<void>(API_ENDPOINTS.FORGOT_PASSWORD, { email });
+  }
 
+  public resetPassword(payload: { resetToken: string; newPassword: string }): Observable<void> {
+    return this.api.post<void>(API_ENDPOINTS.RESET_PASSWORD, payload);
+  }
 
   public verifyEmail(payload: VerifyEmailRequest): Observable<VerificationSuccessResponse> {
     const params = new HttpParams().set('code', payload.code).set('email', payload.email);
@@ -49,6 +52,7 @@ export class AuthService {
       payload,
     );
   }
+
   public logout(): Observable<void> {
     return this.api.post<void>(API_ENDPOINTS.LOGOUT, {});
   }

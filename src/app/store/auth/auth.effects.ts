@@ -109,10 +109,6 @@ public loginOrVerifySuccess$ = createEffect(
 );
 
 
-
-
-
-
   public onboardingSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -149,6 +145,32 @@ public loginOrVerifySuccess$ = createEffect(
     ),
   ),
 );
+
+ public resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.resetPassword),
+      switchMap(({ resetToken, newPassword }) =>
+        this.authService.resetPassword({ resetToken, newPassword }).pipe(
+          map(() => AuthActions.resetPasswordSuccess()),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(AuthActions.resetPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public resetPasswordSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActions.resetPasswordSuccess),
+        tap(() => {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }),
+      ),
+    { dispatch: false },
+  );
 
 
   public logoutOrAuthFailure$ = createEffect(
