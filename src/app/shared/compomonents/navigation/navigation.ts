@@ -38,11 +38,11 @@ export class Navigation implements OnInit, OnDestroy {
 
     this.router.events
       .pipe(
-        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntil(this.destroy$),
       )
-      .subscribe((ne) => {
-        this.updateShowOnlyLogo(ne.urlAfterRedirects ?? ne.url);
+      .subscribe((navigationEnd) => {
+        this.updateShowOnlyLogo(navigationEnd.urlAfterRedirects ?? navigationEnd.url);
 
         if (this.showOnlyLogo) {
           this.isMobileMenuOpen = false;

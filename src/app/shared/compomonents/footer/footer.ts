@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-footer',
@@ -10,8 +11,9 @@ import { filter } from 'rxjs/operators';
   styleUrl: './footer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Footer implements OnInit {
+export class Footer implements OnInit, OnDestroy {
   public showFooter = false;
+  private destroy$ = new Subject<void>();
 
   constructor(private router: Router) {}
 
@@ -19,10 +21,18 @@ export class Footer implements OnInit {
     this.checkRoute(this.router.url);
 
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((event) => event instanceof NavigationEnd),
+      )
       .subscribe((event: NavigationEnd) => {
         this.checkRoute(event.urlAfterRedirects);
       });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private checkRoute(url: string) {

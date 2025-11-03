@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   OnInit,
   OnDestroy,
   signal,
@@ -40,9 +39,11 @@ export class EmailVerification implements OnInit, OnDestroy {
   public canResend = signal(false);
 
   private destroy$ = new Subject<void>();
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private toastService: ToastService = inject(ToastService);
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private toastService: ToastService,
+  ) {}
 
   @ViewChildren('otpInput') private otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
 

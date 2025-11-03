@@ -52,7 +52,7 @@ export class ResetPassword implements OnDestroy {
     this.library.addIcons(faCheck, faTimes);
 
     this.loginForm = this.fb.group({
-      password1: [
+      currentPassword: [
         '',
         [
           Validators.required,
@@ -63,20 +63,20 @@ export class ResetPassword implements OnDestroy {
           Validators.pattern(/(?=.*[!@#$%^&*])/),
         ],
       ],
-      password2: ['', [Validators.required]],
+      newPassword: ['', [Validators.required]],
     });
 
-    this.password1Control.valueChanges.subscribe((value: string) => {
+    this.currentPasswordControl.valueChanges.subscribe((value: string) => {
       this.updatePasswordIndicators(value);
     });
   }
 
-  public get password1Control(): FormControl {
-    return this.loginForm.get('password1') as FormControl;
+  public get currentPasswordControl(): FormControl {
+    return this.loginForm.get('currentPassword') as FormControl;
   }
 
-  public get password2Control(): FormControl {
-    return this.loginForm.get('password2') as FormControl;
+  public get newPasswordControl(): FormControl {
+    return this.loginForm.get('newPassword') as FormControl;
   }
 
   private updatePasswordIndicators(value: string): void {
@@ -89,9 +89,9 @@ export class ResetPassword implements OnDestroy {
   public resetpassword(): void {
     if (this.loginForm.invalid) return;
 
-    const { password1, password2 } = this.loginForm.value;
+    const { currentPassword, newPassword } = this.loginForm.value;
 
-    if (password1 !== password2) {
+    if (currentPassword !== newPassword) {
       this.errorMessage = 'Passwords do not match.';
       return;
     }
@@ -102,7 +102,7 @@ export class ResetPassword implements OnDestroy {
 
     const payload = {
       resetToken: 'unique-secure-token-from-email',
-      newPassword: password1,
+      newPassword: currentPassword,
     };
 
     this.subscription = this.resetPasswordService.resetPassword(payload).subscribe({
