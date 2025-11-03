@@ -3,12 +3,16 @@
 @use 'mixins' as *;
 @use 'components' as *;
 
+$total-padding: 4rem;
+
 .signup-page {
-  @include flex(column, flex-start, center);
-  margin: 2rem 1.25rem;
+  @include flex(column, center, center);
+  min-height: calc(100vh - $total-padding);
+  padding: 2rem 1.25rem;
 
   @include mobile-large {
-    margin: 2rem 2rem;
+    min-height: calc(100vh - $total-padding);
+    padding: 2rem 2rem;
   }
 }
 
