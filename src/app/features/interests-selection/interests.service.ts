@@ -7,7 +7,7 @@ export interface Skill {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SkillsService {
   private skills: Skill[] = [
@@ -20,18 +20,50 @@ export class SkillsService {
     { id: 'api', label: 'API', icon: 'assets/api-icon.png' },
     { id: 'debugging', label: 'Debugging', icon: 'assets/debugging-icon.png' },
     { id: 'databases', label: 'Databases', icon: 'assets/htmlcss-icon.png' },
-    { id: 'android-development', label: 'Android Development', icon: 'assets/android-development-icon.png' },
-    { id: 'frontend-development', label: 'Frontend Development', icon: 'assets/frontend-development-icon.png' },
-    { id: 'backend-development', label: 'Backend Development', icon: 'assets/android-development-icon.png' },
-    { id: 'algorithms-datastructures', label: 'Algorithms & Datastructures', icon: 'assets/algorithms-datastructures-icon.png' },
-    { id: 'technical-communication', label: 'Technical Communication', icon: 'assets/technical-communication-icon.png' },
-    { id: 'game-development-basics', label: 'Game Development Basics', icon: 'assets/game-development-basics-icon.png' },
-    { id: 'fullstack-development', label: 'Full Stack Development', icon: 'assets/fullstack-development-icon.png' },
-    { id: 'uiux-basics', label: 'UI/UX Basics for Developers', icon: 'assets/uiux-basics-icon.png' },
+    {
+      id: 'android-development',
+      label: 'Android Development',
+      icon: 'assets/android-development-icon.png',
+    },
+    {
+      id: 'frontend-development',
+      label: 'Frontend Development',
+      icon: 'assets/frontend-development-icon.png',
+    },
+    {
+      id: 'backend-development',
+      label: 'Backend Development',
+      icon: 'assets/android-development-icon.png',
+    },
+    {
+      id: 'algorithms-datastructures',
+      label: 'Algorithms & Datastructures',
+      icon: 'assets/algorithms-datastructures-icon.png',
+    },
+    {
+      id: 'technical-communication',
+      label: 'Technical Communication',
+      icon: 'assets/technical-communication-icon.png',
+    },
+    {
+      id: 'game-development-basics',
+      label: 'Game Development Basics',
+      icon: 'assets/game-development-basics-icon.png',
+    },
+    {
+      id: 'fullstack-development',
+      label: 'Full Stack Development',
+      icon: 'assets/fullstack-development-icon.png',
+    },
+    {
+      id: 'uiux-basics',
+      label: 'UI/UX Basics for Developers',
+      icon: 'assets/uiux-basics-icon.png',
+    },
     { id: 'htmlcss', label: 'HTML & CSS (Web Basics)', icon: 'assets/htmlcss-icon.png' },
   ];
 
-  getSkills(): Skill[] {
+  public getSkills(): Skill[] {
     return this.skills;
   }
 }

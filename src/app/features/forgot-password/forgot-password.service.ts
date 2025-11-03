@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError, delay } from 'rxjs';
 
@@ -6,8 +5,7 @@ import { Observable, of, throwError, delay } from 'rxjs';
   providedIn: 'root',
 })
 export class ForgotPasswordService {
-  sendResetLink(email: string): Observable<{ message: string }> {
-    // Simulate valid/invalid email
+  public sendResetLink(email: string): Observable<{ message: string }> {
     const isValid = email.endsWith('@example.com');
 
     if (isValid) {

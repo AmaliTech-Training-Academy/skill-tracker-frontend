@@ -21,7 +21,7 @@ export interface LoginErrorResponse {
   detail: string;
   type: string;
   instance: string;
-  errors: any | null;
+  errors: unknown | null;
   metadata: {
     traceId: string;
     timestamp: string;

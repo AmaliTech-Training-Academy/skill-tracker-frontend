@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -10,30 +10,32 @@ import { getFormControl } from '@app/shared';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink, InputFieldComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login implements OnDestroy {
-  successMessage = '';
-  errorMessage = '';
-  loading = false;
+  public successMessage = '';
+  public errorMessage = '';
+  public loading = false;
 
   private readonly destroy$ = new Subject<void>();
-  private readonly fb = inject(FormBuilder);
-  private readonly loginService = inject(LoginService);
-  private readonly toastService = inject(ToastService);
 
-  getFormControl = getFormControl;
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly loginService: LoginService,
+    private readonly toastService: ToastService,
+  ) {}
 
-  loginForm = this.fb.group({
+  public getFormControl = getFormControl;
+
+  public loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  login(): void {
+  public login(): void {
     if (this.loginForm.invalid) {
       return;
     }

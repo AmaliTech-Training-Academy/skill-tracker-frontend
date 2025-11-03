@@ -6,10 +6,11 @@ import { AppState } from '@app/store/app.state';
 import { APP_CONSTANTS } from '../constants/app.constants';
 import { UserState } from '../models/auth.model';
 
+const { APP_ROUTES } = APP_CONSTANTS;
+
 export const guestGuard: CanActivateFn = () => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
-  const { APP_ROUTES } = APP_CONSTANTS;
 
   const isAuthenticated = store.selectSignal(AuthSelectors.selectIsAuthenticated);
   const user = store.selectSignal(AuthSelectors.selectCurrentUser);

@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   OnInit,
   OnDestroy,
   signal,
@@ -22,6 +21,10 @@ import { takeUntil, Subject, of, delay } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { APP_CONSTANTS } from '@app/core';
 
+const DELAY_MS = 2000;
+const VERIFICATION_TIME_SEC = 30;
+const INTERVAL_MS = 1000;
+
 @Component({
   selector: 'app-email-verification',
   imports: [ReactiveFormsModule, DatePipe],
@@ -30,20 +33,17 @@ import { APP_CONSTANTS } from '@app/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmailVerification implements OnInit, OnDestroy {
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private toastService: ToastService = inject(ToastService);
-
-  private readonly DELAY_MS = 2000;
-  private readonly VERIFICATION_TIME_SEC = 30;
-  private readonly INTERVAL_MS = 1000;
-
   public isSubmitting = signal(false);
   public formValid = signal(false);
-  public timeLeft = signal(this.VERIFICATION_TIME_SEC);
+  public timeLeft = signal(VERIFICATION_TIME_SEC);
   public canResend = signal(false);
 
   private destroy$ = new Subject<void>();
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private toastService: ToastService,
+  ) {}
 
   @ViewChildren('otpInput') private otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
@@ -73,7 +73,7 @@ export class EmailVerification implements OnInit, OnDestroy {
   }
 
   public startTimer() {
-    this.timeLeft.set(30);
+    this.timeLeft.set(VERIFICATION_TIME_SEC);
     this.canResend.set(false);
 
     const countdown = setInterval(() => {
@@ -84,7 +84,7 @@ export class EmailVerification implements OnInit, OnDestroy {
         this.canResend.set(true);
         clearInterval(countdown);
       }
-    }, this.INTERVAL_MS);
+    }, INTERVAL_MS);
   }
 
   public resendCode() {
@@ -123,9 +123,8 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     this.isSubmitting.set(true);
 
-    // Simulate an API call
     of(true)
-      .pipe(delay(this.DELAY_MS), takeUntil(this.destroy$))
+      .pipe(delay(DELAY_MS), takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.toastService.showSuccess(

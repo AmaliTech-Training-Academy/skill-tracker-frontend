@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { ResetPasswordService } from './reset-password.service';
 
-// Font Awesome imports
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -28,6 +27,7 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
   ],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResetPassword implements OnDestroy {
   public successMessage = '';
@@ -36,13 +36,11 @@ export class ResetPassword implements OnDestroy {
   public loginForm!: FormGroup;
   private subscription?: Subscription;
 
-  // Password strength indicators
   public hasUppercase = false;
   public hasLowercase = false;
   public hasNumber = false;
   public hasSpecialChar = false;
 
-  // Expose icons for template
   public faCheck = faCheck;
   public faTimes = faTimes;
 
@@ -51,36 +49,34 @@ export class ResetPassword implements OnDestroy {
     private resetPasswordService: ResetPasswordService,
     private library: FaIconLibrary,
   ) {
-    // register icons
     this.library.addIcons(faCheck, faTimes);
 
     this.loginForm = this.fb.group({
-      password1: [
+      currentPassword: [
         '',
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.pattern(/(?=.*[A-Z])/), // Uppercase
-          Validators.pattern(/(?=.*[a-z])/), // Lowercase
-          Validators.pattern(/(?=.*[0-9])/), // Number
-          Validators.pattern(/(?=.*[!@#$%^&*])/), // Special char
+          Validators.pattern(/(?=.*[A-Z])/),
+          Validators.pattern(/(?=.*[a-z])/),
+          Validators.pattern(/(?=.*[0-9])/),
+          Validators.pattern(/(?=.*[!@#$%^&*])/),
         ],
       ],
-      password2: ['', [Validators.required]],
+      newPassword: ['', [Validators.required]],
     });
 
-    // Watch password input for indicators
-    this.password1Control.valueChanges.subscribe((value: string) => {
+    this.currentPasswordControl.valueChanges.subscribe((value: string) => {
       this.updatePasswordIndicators(value);
     });
   }
 
-  get password1Control(): FormControl {
-    return this.loginForm.get('password1') as FormControl;
+  public get currentPasswordControl(): FormControl {
+    return this.loginForm.get('currentPassword') as FormControl;
   }
 
-  get password2Control(): FormControl {
-    return this.loginForm.get('password2') as FormControl;
+  public get newPasswordControl(): FormControl {
+    return this.loginForm.get('newPassword') as FormControl;
   }
 
   private updatePasswordIndicators(value: string): void {
@@ -90,12 +86,12 @@ export class ResetPassword implements OnDestroy {
     this.hasSpecialChar = /[!@#$%^&*]/.test(value);
   }
 
-  resetpassword(): void {
+  public resetpassword(): void {
     if (this.loginForm.invalid) return;
 
-    const { password1, password2 } = this.loginForm.value;
+    const { currentPassword, newPassword } = this.loginForm.value;
 
-    if (password1 !== password2) {
+    if (currentPassword !== newPassword) {
       this.errorMessage = 'Passwords do not match.';
       return;
     }
@@ -106,7 +102,7 @@ export class ResetPassword implements OnDestroy {
 
     const payload = {
       resetToken: 'unique-secure-token-from-email',
-      newPassword: password1,
+      newPassword: currentPassword,
     };
 
     this.subscription = this.resetPasswordService.resetPassword(payload).subscribe({

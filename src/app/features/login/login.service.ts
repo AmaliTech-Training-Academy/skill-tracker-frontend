@@ -7,20 +7,20 @@ import { Login, LoginSuccessResponse, LoginErrorResponse } from './models/login.
   providedIn: 'root',
 })
 export class LoginService {
-  // Dummy user data (for simulation)
-  private readonly dummyUser: Login = {
+  private readonly mockUser: Login = {
     email: 'user@example.com',
     password: 'password',
   };
 
-  login(email: string, password: string): Observable<LoginSuccessResponse | LoginErrorResponse> {
+  public login(
+    email: string,
+    password: string,
+  ): Observable<LoginSuccessResponse | LoginErrorResponse> {
     const apiDelay = 1000;
 
-    // Destructure for cleaner access
-    const { email: dummyEmail, password: dummyPassword } = this.dummyUser;
+    const { email: dummyEmail, password: dummyPassword } = this.mockUser;
 
     if (email === dummyEmail && password === dummyPassword) {
-      // Simulated successful response
       const successResponse: LoginSuccessResponse = {
         message: 'Login successful!',
         data: {
@@ -36,7 +36,6 @@ export class LoginService {
       return of(successResponse).pipe(delay(apiDelay));
     }
 
-    // Simulated error response
     const errorResponse: LoginErrorResponse = {
       status: 401,
       message: 'Invalid email or password.',
