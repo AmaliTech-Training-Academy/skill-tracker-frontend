@@ -1,32 +1,33 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from '@app/core';
+import { Store } from '@ngrx/store';
 import { APP_CONSTANTS } from '@app/core';
 import { EmailVerification } from './email-verification';
+import * as AuthActions from '@app/store/auth/auth.actions';
+import { signal } from '@angular/core';
 
 describe('EmailVerification', () => {
   let component: EmailVerification;
   let fixture: ComponentFixture<EmailVerification>;
   let mockRouter: jest.Mocked<Pick<Router, 'navigateByUrl'>>;
-  let mockToastService: jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError' | 'showInfo'>>;
+  let mockStore: jest.Mocked<Pick<Store, 'dispatch' | 'selectSignal'>>;
 
   beforeEach(async () => {
     mockRouter = {
       navigateByUrl: jest.fn()
     } as jest.Mocked<Pick<Router, 'navigateByUrl'>>;
 
-    mockToastService = {
-      showSuccess: jest.fn(),
-      showError: jest.fn(),
-      showInfo: jest.fn()
-    } as jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError' | 'showInfo'>>;
+    mockStore = {
+      dispatch: jest.fn(),
+      selectSignal: jest.fn().mockReturnValue(signal(false))
+    } as jest.Mocked<Pick<Store, 'dispatch' | 'selectSignal'>>;
 
     await TestBed.configureTestingModule({
       imports: [EmailVerification, ReactiveFormsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: ToastService, useValue: mockToastService }
+        { provide: Store, useValue: mockStore }
       ]
     }).compileComponents();
 
@@ -83,19 +84,19 @@ describe('EmailVerification', () => {
     expect(component.canResend()).toBe(true);
   }));
 
-  it('should resend code and restart timer', fakeAsync(() => {
+  it('should dispatch resend verification action', () => {
+    mockStore.selectSignal.mockReturnValue(signal('test@example.com'));
     component.timeLeft.set(0);
     component.canResend.set(true);
     
     component.resendCode();
     
-    expect(mockToastService.showInfo).toHaveBeenCalledWith(
-      'Code Sent',
-      'A new verification code has been sent to your email.'
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      AuthActions.resendVerification({ email: 'test@example.com' })
     );
     expect(component.timeLeft()).toBe(30);
     expect(component.canResend()).toBe(false);
-  }));
+  });
 
   it('should handle OTP input correctly', () => {
     const mockInput = { value: '5' } as HTMLInputElement;
@@ -129,28 +130,28 @@ describe('EmailVerification', () => {
     expect(mockPrevInput.nativeElement.focus).toHaveBeenCalled();
   });
 
-  it('should not submit invalid form', async () => {
-    await component.onSubmit();
-    expect(component.isSubmitting()).toBe(false);
+  it('should not submit invalid form', () => {
+    component.onSubmit();
+    expect(mockStore.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should submit valid form and navigate to login', fakeAsync(() => {
+  it('should dispatch verify email action with valid form', () => {
+    mockStore.selectSignal.mockReturnValue(signal('test@example.com'));
     component.otpFields.forEach((field, index) => {
       component.otpForm.get(field.name)?.setValue(index.toString());
     });
     
     component.onSubmit();
-    expect(component.isSubmitting()).toBe(true);
     
-    tick(2000);
-    
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith(
-      'Email Verified',
-      'Your email is verified. We’ll redirect you to your dashboard'
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      AuthActions.verifyEmailOtp({ 
+        request: { 
+          code: '012345', 
+          email: 'test@example.com' 
+        } 
+      })
     );
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/login');
-    expect(component.isSubmitting()).toBe(false);
-  }));
+  });
 
   it('should navigate to signup page', () => {
     component.goToSignUp();
