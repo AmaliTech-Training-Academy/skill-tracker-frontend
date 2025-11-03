@@ -238,7 +238,6 @@
     }
 
     &-btns {
-      @include flex-row;
       @include flex($direction: row, $justify: space-between);
     }
   }
