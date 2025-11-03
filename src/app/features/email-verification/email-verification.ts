@@ -116,7 +116,7 @@ export class EmailVerification implements OnInit, OnDestroy {
     event.preventDefault();
 
     const pastedData = event.clipboardData?.getData('text') || '';
-    const digits = pastedData.replace(/\D/g, '').slice(0, 6);
+    const digits = pastedData.replace(/\D/g, '').slice(0, this.otpFields.length);
 
     if (digits.length === 0) return;
 
