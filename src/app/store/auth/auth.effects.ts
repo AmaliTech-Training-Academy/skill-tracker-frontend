@@ -149,8 +149,8 @@ public loginOrVerifySuccess$ = createEffect(
  public resetPassword$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.resetPassword),
-      switchMap(({ resetToken, newPassword }) =>
-        this.authService.resetPassword({ resetToken, newPassword }).pipe(
+      switchMap(({ token, password }) =>
+        this.authService.resetPassword({ token, password }).pipe(
           map(() => AuthActions.resetPasswordSuccess()),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -9,10 +9,11 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, filter, tap } from 'rxjs';
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import * as AuthActions from '../../store/auth/auth.actions';
 import * as AuthSelectors from '../../store/auth/auth.selectors';
+import { ToastService } from '@app/core';
 
 // Font Awesome imports
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -34,6 +35,8 @@ export class ResetPassword implements OnInit, OnDestroy {
   public loginForm!: FormGroup;
   private destroy$ = new Subject<void>();
   private resetToken = '';
+  private readonly toastService = inject(ToastService);
+
 
   // Observables from store
   public loading$ = this.store.select(AuthSelectors.selectIsResettingPassword);
@@ -61,6 +64,19 @@ export class ResetPassword implements OnInit, OnDestroy {
     this.initializeForm();
     this.setupPasswordValidation();
     this.getResetTokenFromRoute();
+
+    this.success$
+          .pipe(
+            filter((success) => success === true),
+            takeUntil(this.destroy$),
+            tap(() => {
+              this.toastService.showSuccess(
+                'Reset Successfull',
+                'You have successfully reset your passowrd',
+              );
+            }),
+          )
+          .subscribe();
   }
 
  
@@ -122,9 +138,10 @@ export class ResetPassword implements OnInit, OnDestroy {
 
     this.store.dispatch(
       AuthActions.resetPassword({
-        resetToken: this.resetToken,
-        newPassword: password1,
+        token: this.resetToken,
+        password: password1,
       })
+      
     );
   }
 

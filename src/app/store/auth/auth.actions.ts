@@ -90,7 +90,7 @@ export const resetForgotPasswordState = createAction(
 );
 export const resetPassword = createAction(
   '[Auth/Reset Password] Reset Password',
-  props<{ resetToken: string; newPassword: string }>(),
+  props<{ token: string; password: string }>(),
 );
 
 export const resetPasswordSuccess = createAction(

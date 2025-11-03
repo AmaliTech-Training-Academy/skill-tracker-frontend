@@ -34,7 +34,7 @@ export class AuthService {
     return this.api.post<void>(API_ENDPOINTS.FORGOT_PASSWORD, { email });
   }
 
-  public resetPassword(payload: { resetToken: string; newPassword: string }): Observable<void> {
+  public resetPassword(payload: { token: string; password: string }): Observable<void> {
     return this.api.post<void>(API_ENDPOINTS.RESET_PASSWORD, payload);
   }
 
