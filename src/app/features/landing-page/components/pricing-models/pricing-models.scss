@@ -1,0 +1,43 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+
+.pricing-section {
+  @include flex($direction: column, $justify: center, $align: center, $gap: 2rem);
+  padding: 4rem 0 0;
+  text-align: center;
+  width: 100%;
+  max-width: 1186px;
+  margin: 0 auto;
+}
+
+.section-header {
+  @include flex($direction: column, $gap: 1rem);
+
+  .section-title {
+    @include h5;
+    color: $gray-text-strong;
+  }
+
+  .section-subtitle {
+    @include h13;
+    color: $gray-stroke-strong;
+
+    @include tablet {
+      @include h12;
+    }
+  }
+}
+
+.pricing-grid {
+  @include flex($direction: column, $gap: 1.5rem);
+  width: 100%;
+
+  @include tablet {
+    @include grid(2, 4.125rem);
+  }
+
+  @include desktop {
+    @include grid(3, 4.125rem);
+  }
+}
