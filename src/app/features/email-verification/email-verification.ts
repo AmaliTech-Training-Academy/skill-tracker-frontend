@@ -112,6 +112,31 @@ export class EmailVerification implements OnInit, OnDestroy {
     }
   }
 
+  public onPaste(event: ClipboardEvent, index: number) {
+    event.preventDefault();
+
+    const pastedData = event.clipboardData?.getData('text') || '';
+    const digits = pastedData.replace(/\D/g, '').slice(0, 6);
+
+    if (digits.length === 0) return;
+
+    const inputs = this.otpInputs.toArray();
+
+    digits.split('').forEach((digit, i) => {
+      const targetIndex = index + i;
+      if (targetIndex < this.otpFields.length) {
+        const fieldName = this.otpFields[targetIndex].name;
+        this.otpForm.get(fieldName)?.setValue(digit);
+        inputs[targetIndex].nativeElement.value = digit;
+      }
+    });
+
+    const nextEmptyIndex = index + digits.length;
+    const focusIndex =
+      nextEmptyIndex < this.otpFields.length ? nextEmptyIndex : this.otpFields.length - 1;
+    inputs[focusIndex]?.nativeElement.focus();
+  }
+
   public onKeyDown(event: KeyboardEvent, index: number) {
     const input = event.target as HTMLInputElement;
 
@@ -126,11 +151,11 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     if (this.otpForm.invalid) return;
 
-    const otpCode = this.otpFields.map(field => this.otpForm.get(field.name)?.value).join('');
-    
+    const otpCode = this.otpFields.map((field) => this.otpForm.get(field.name)?.value).join('');
+
     const email = this.userEmail();
     if (!email) return;
-    
+
     this.store.dispatch(AuthActions.verifyEmailOtp({ request: { code: otpCode, email } }));
   }
 
