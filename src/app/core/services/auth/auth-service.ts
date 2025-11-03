@@ -10,6 +10,7 @@ import {
   CompleteOnboardingRequest,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '@app/core';
+import { environment } from '../../../../environments/environment';
 
 const { API_ENDPOINTS } = APP_CONSTANTS;
 
@@ -17,6 +18,8 @@ const { API_ENDPOINTS } = APP_CONSTANTS;
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly baseUrl = environment.url;
+
   constructor(private readonly api: ApiService) {}
 
   public register(payload: RegisterRequest): Observable<UserResponse> {
@@ -38,5 +41,9 @@ export class AuthService {
   }
   public logout(): Observable<void> {
     return this.api.post<void>(API_ENDPOINTS.LOGOUT, {});
+  }
+
+  public initiateSocialLogin(provider: string): void {
+    window.location.href = `${this.baseUrl}${API_ENDPOINTS.SOCIAL_LOGIN}/${provider}`;
   }
 }

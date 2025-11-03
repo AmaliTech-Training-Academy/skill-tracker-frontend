@@ -18,7 +18,7 @@ type HttpClientOptions = ApiRequestOptions & {
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private readonly baseUrl = environment.url;
+  private readonly baseUrl = `${environment.url}/api/v1`;
 
   public get<T>(url: string, options: ApiRequestOptions = {}): Observable<T> {
     return this.http.get<T>(this.buildApiUrl(url), this.mergeOptions(options));
