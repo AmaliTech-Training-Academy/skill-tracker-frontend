@@ -8,11 +8,11 @@ import { RouterLink } from '@angular/router';
   imports: [InterestsChipComponent, RouterLink],
   templateUrl: './interests-selection.html',
   styleUrl: './interests-selection.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterestsSelection implements OnInit {
-  selectedBadges: string[] = [];
-  badges: Skill[] = [];
+  public selectedBadges: string[] = [];
+  public badges: Skill[] = [];
 
   constructor(private skillsService: SkillsService) {}
 
@@ -24,7 +24,7 @@ export class InterestsSelection implements OnInit {
     this.badges = this.skillsService.getSkills();
   }
 
-  toggleBadge(id: string): void {
+  public toggleBadge(id: string): void {
     if (this.selectedBadges.includes(id)) {
       this.selectedBadges = this.selectedBadges.filter((badge) => badge !== id);
     } else {

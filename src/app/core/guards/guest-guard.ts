@@ -5,10 +5,11 @@ import { selectIsAuthenticated } from '@app/store/auth/auth.selectors';
 import { AppState } from '@app/store/app.state';
 import { APP_CONSTANTS } from '../constants/app.constants';
 
+const { APP_ROUTES } = APP_CONSTANTS;
+
 export const guestGuard: CanActivateFn = () => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
-  const { APP_ROUTES } = APP_CONSTANTS;
 
   const isAuthenticated = store.selectSignal(selectIsAuthenticated);
 

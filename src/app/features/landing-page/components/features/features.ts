@@ -11,7 +11,8 @@ import { FeatureSection } from '@app/shared/compomonents/feature-section/feature
 })
 export class Features {
   public title = 'Ready to advance your technical skills?';
-  public subtitle = "That's where SkillDev comes in. We combine AI-powered practice with personalized feedback to help you master the skills that matter most.";
+  public subtitle =
+    "That's where SkillDev comes in. We combine AI-powered practice with personalized feedback to help you master the skills that matter most.";
   public features: Feature[] = [
     {
       title: 'Personalized Learning',

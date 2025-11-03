@@ -5,10 +5,11 @@ import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 import { AppState } from '@app/store/app.state';
 import { APP_CONSTANTS } from '../constants/app.constants';
 
+const { APP_ROUTES } = APP_CONSTANTS;
+
 export const authGuard: CanActivateFn = (route, state) => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
-  const { APP_ROUTES } = APP_CONSTANTS;
 
   const currentUser = store.selectSignal(selectCurrentUser);
 

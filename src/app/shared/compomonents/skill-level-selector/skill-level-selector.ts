@@ -10,19 +10,19 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkillLevelSelectorComponent {
-  @Input() skillLabel = '';
-  @Input() skillIcon = '';
-  @Output() levelSelected = new EventEmitter<string>();
+  @Input() public skillLabel = '';
+  @Input() public skillIcon = '';
+  @Output() public levelSelected = new EventEmitter<string>();
 
-  selectedLevel: string | null = null;
+  public selectedLevel: string | null = null;
 
-  levels = [
+  public levels = [
     { name: 'Beginner', color: '#358439', BackgroundColor: '#F3FAF3', selectedBg: '#358439' },
     { name: 'Intermediate', color: '#142FE1', BackgroundColor: '#EEF4FF', selectedBg: '#142FE1' },
     { name: 'Advanced', color: '#DD7602', BackgroundColor: '#FFFBEB', selectedBg: '#DD7602' },
   ];
 
-  selectLevel(level: string): void {
+  public selectLevel(level: string): void {
     this.selectedLevel = level;
     this.levelSelected.emit(level);
   }

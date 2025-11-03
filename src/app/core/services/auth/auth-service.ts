@@ -9,7 +9,7 @@ import {
   VerifyEmailRequest,
   CompleteOnboardingRequest,
 } from '../../models/auth.model';
-import { APP_CONSTANTS } from '@app/core';
+import { APP_CONSTANTS } from '../../constants/app.constants';
 
 const { API_ENDPOINTS } = APP_CONSTANTS;
 
