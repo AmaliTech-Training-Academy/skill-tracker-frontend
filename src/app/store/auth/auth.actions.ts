@@ -70,3 +70,19 @@ export const completeOnboardingFailure = createAction(
   '[Onboarding] Complete Onboarding Failure',
   props<{ error: AppError }>(),
 );
+
+export const socialLogin = createAction(
+  '[Auth/Social] Social Login',
+  props<{ provider: string }>(),
+);
+
+export const socialLoginSuccess = createAction(
+  '[Auth/Social] Social Login Success',
+  props<{ user: User; message?: string }>(),
+);
+
+export const socialLoginFailure = createAction(
+  '[Auth/Social] Social Login Failure',
+  props<{ error: AppError }>(),
+);
+
