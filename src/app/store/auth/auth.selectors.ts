@@ -49,3 +49,8 @@ export const selectOnboardingError = createSelector(
   selectAuthState,
   (state: AuthState) => state.onboardingError,
 );
+
+export const selectUserEmail = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.user?.email ?? null,
+);
