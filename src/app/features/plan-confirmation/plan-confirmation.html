@@ -15,7 +15,7 @@
         <header>
           <h1>You're Almost There!</h1>
           <p>
-            You've chosen the <strong>{{ selectedPlan.name }} Plan</strong> — great choice!
+            You've chosen the <strong>{{ value }} Plan</strong> — great choice!
             @if (selectedPlan.price) {
               Unlock the full SkillDev experience.
             } @else {
@@ -25,11 +25,11 @@
         </header>
 
         <div class="plan-confirmation-selection plan">
-          <h1 class="plan-type">Plan: {{ selectedPlan.name }}</h1>
+          <h1 class="plan-type">Plan: {{ value }}</h1>
           <div class="details">
             <p>What you get</p>
             <ul>
-              @for (feature of selectedPlan.features; track feature) {
+              @for (feature of features; track feature) {
                 <li>
                   <img src="assets/checkmark.png" alt="check mark" />
                   {{ feature }}
@@ -148,7 +148,7 @@
       </div>
     }
 
-    @if (currentSection === Section.DonePage && selectedPlan) {
+   @if (currentSection === Section.donePage && selectedPlan) {
       <div class="done-page">
         <button class="back-btn" (click)="goToSection(Section.PayPage)">
           <img src="assets/left-arrow.png" alt="Navigate back" />
@@ -156,7 +156,7 @@
         </button>
 
         <header>
-          <h1>You're In! Welcome to SkillDev {{ selectedPlan.name }} 🎉</h1>
+          <h1>You're In! Welcome to SkillDev {{ value }} 🎉</h1>
           <p>
             You've successfully upgraded. It's time to take your skill development to the next level.
           </p>

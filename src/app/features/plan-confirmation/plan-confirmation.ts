@@ -2,6 +2,7 @@ import {
   Component,
   OnDestroy,
   ChangeDetectionStrategy,
+  OnInit,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import {
@@ -21,11 +22,10 @@ import { InputFieldComponent } from '@app/shared';
 import { PlanLevels } from '@app/shared/compomonents/plan-levels/plan-levels';
 import { getFormControl } from '@app/shared';
 
-
 export enum Section {
   ChosenPlan = 'chosen-plan',
   PayPage = 'pay-page',
-  DonePage = 'done-page',
+  donePage = 'done-page',
 }
 
 interface Plan {
@@ -49,7 +49,7 @@ interface Plan {
   styleUrls: ['./plan-confirmation.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlanConfirmation implements OnDestroy {
+export class PlanConfirmation implements OnDestroy, OnInit {
   Section = Section;
   private destroy$ = new Subject<void>();
   getFormControl = getFormControl;
@@ -57,7 +57,6 @@ export class PlanConfirmation implements OnDestroy {
   currentSection: Section = Section.ChosenPlan;
   selectedPlan: Plan | null = null;
   currentStep = 1;
-
 
   paymentForm: FormGroup = new FormBuilder().group({
     cardNumber: ['', [Validators.required, Validators.minLength(16)]],
@@ -112,8 +111,9 @@ export class PlanConfirmation implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location
-  ) {
-   
+  ) {}
+
+  ngOnInit(): void {
     this.loadPlanFromRoute();
     this.setupStepTracker();
   }
@@ -123,7 +123,7 @@ export class PlanConfirmation implements OnDestroy {
       const planId = params.get('plan-id');
       if (planId) {
         const id = parseInt(planId, 10);
-        this.selectedPlan = this.plans.find((p) => p.id === id) || null;
+        this.selectedPlan = this.plans.find((plan) => plan.id === id) || null;
         if (!this.selectedPlan) this.router.navigateByUrl('/');
       } else {
         this.router.navigateByUrl('/');
@@ -146,12 +146,11 @@ export class PlanConfirmation implements OnDestroy {
       case Section.PayPage:
         this.currentStep = 2;
         break;
-      case Section.DonePage:
+      case Section.donePage:
         this.currentStep = 3;
         break;
       default:
         this.currentStep = 1;
-        break;
     }
   }
 
@@ -163,7 +162,7 @@ export class PlanConfirmation implements OnDestroy {
       case Section.PayPage:
         this.goToSection(Section.ChosenPlan);
         break;
-      case Section.DonePage:
+      case Section.donePage:
         this.router.navigateByUrl('/');
         break;
       default:
@@ -182,18 +181,27 @@ export class PlanConfirmation implements OnDestroy {
       this.paymentForm.markAllAsTouched();
       return;
     }
-    this.goToSection(Section.DonePage);
+    this.goToSection(Section.donePage);
   }
 
   goToDashboard(): void {
     this.router.navigateByUrl('/dashboard');
   }
 
-  
   getFormattedPrice(): string {
     if (!this.selectedPlan) return '$0.00';
     const { price } = this.selectedPlan;
     return price === 0 ? 'Free' : `$${price.toFixed(2)}`;
+  }
+
+ 
+  get value(): string {
+    return this.selectedPlan?.name ?? '';
+  }
+
+ 
+  get features(): string[] {
+    return this.selectedPlan?.features ?? [];
   }
 
   ngOnDestroy(): void {
