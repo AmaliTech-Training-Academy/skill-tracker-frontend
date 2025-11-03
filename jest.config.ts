@@ -9,6 +9,7 @@ const config: Config = {
   },
   testMatch: ['**/+(*.)+(spec).+(ts)'],
   rootDir: process.cwd(),
+  coverageReporters: ['text', 'text-summary', 'lcov'],
 };
 
 module.exports = config;

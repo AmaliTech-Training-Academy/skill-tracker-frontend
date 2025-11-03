@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppError, AppErrorType } from '../../models/app-error.model';
-import { ApiErrorResponse, isApiErrorResponse, ValidationDetail } from '@app/core/models/api.model';
+import { isApiErrorResponse, ValidationDetail } from '@app/core/models/api.model';
 import { ToastService } from '../toast/toast-service';
 
 @Injectable({

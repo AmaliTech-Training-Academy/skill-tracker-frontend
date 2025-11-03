@@ -2,6 +2,7 @@
 const eslint = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
+const prettier = require('eslint-config-prettier');
 
 module.exports = tseslint.config(
   {
@@ -10,8 +11,8 @@ module.exports = tseslint.config(
     extends: [
       eslint.configs.recommended,
       ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
       ...angular.configs.tsRecommended,
+      prettier,
     ],
     languageOptions: {
       parserOptions: {
@@ -40,11 +41,9 @@ module.exports = tseslint.config(
         },
       ],
       complexity: 'off',
+      '@angular-eslint/prefer-on-push-component-change-detection': 'error',
       'max-classes-per-file': ['error', 1],
       eqeqeq: ['error', 'always'],
-      indent: ['error', 'on'],
-      quotes: ['error', 'single'],
-      semi: ['error', 'always'],
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
@@ -77,12 +76,16 @@ module.exports = tseslint.config(
       '@typescript-eslint/naming-convention': [
         'error',
         {
-          selector: ['enumMember', 'typeLike'],
+          selector: 'typeLike',
           format: ['PascalCase'],
           custom: {
             regex: '(My|my)(?=[A-Z]\\w*)',
             match: false,
           },
+        },
+        {
+          selector: 'enumMember',
+          format: ['PascalCase', 'UPPER_CASE'],
         },
         {
           selector: ['parameter'],
@@ -110,6 +113,12 @@ module.exports = tseslint.config(
           selector: ['variable'],
           types: ['function'],
           format: ['camelCase'],
+        },
+        {
+          selector: 'variable',
+          modifiers: ['const'],
+          types: ['boolean', 'string', 'number', 'array'],
+          format: ['UPPER_CASE', 'camelCase'],
         },
         {
           selector: 'interface',

@@ -10,13 +10,13 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterestsChipComponent {
-  @Input() label = '';
-  @Input() icon = '';
-  @Input() selected = false;
+  @Input() public label = '';
+  @Input() public icon = '';
+  @Input() public selected = false;
 
-  @Output() chipSelect = new EventEmitter<void>();
+  @Output() public chipSelect = new EventEmitter<void>();
 
-  onSelect(): void {
+  public onSelect(): void {
     this.chipSelect.emit();
   }
 }

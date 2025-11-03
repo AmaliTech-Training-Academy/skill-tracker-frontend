@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   OnInit,
   OnDestroy,
   signal,
@@ -24,6 +23,9 @@ import { APP_CONSTANTS } from '@app/core';
 import * as AuthActions from '@app/store/auth/auth.actions';
 import { selectIsVerifying, selectUserEmail } from '@app/store/auth/auth.selectors';
 
+const VERIFICATION_TIME_SEC = 30;
+const INTERVAL_MS = 1000;
+
 @Component({
   selector: 'app-email-verification',
   imports: [ReactiveFormsModule, DatePipe],
@@ -32,17 +34,16 @@ import { selectIsVerifying, selectUserEmail } from '@app/store/auth/auth.selecto
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmailVerification implements OnInit, OnDestroy {
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private store = inject(Store);
-
-  private readonly VERIFICATION_TIME_SEC = 30;
-  private readonly INTERVAL_MS = 1000;
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private store: Store,
+  ) {}
 
   public isSubmitting = this.store.selectSignal(selectIsVerifying);
   private userEmail = this.store.selectSignal(selectUserEmail);
   public formValid = signal(false);
-  public timeLeft = signal(this.VERIFICATION_TIME_SEC);
+  public timeLeft = signal(VERIFICATION_TIME_SEC);
   public canResend = signal(false);
 
   private destroy$ = new Subject<void>();
@@ -75,7 +76,7 @@ export class EmailVerification implements OnInit, OnDestroy {
   }
 
   public startTimer() {
-    this.timeLeft.set(30);
+    this.timeLeft.set(VERIFICATION_TIME_SEC);
     this.canResend.set(false);
 
     const countdown = setInterval(() => {
@@ -86,7 +87,7 @@ export class EmailVerification implements OnInit, OnDestroy {
         this.canResend.set(true);
         clearInterval(countdown);
       }
-    }, this.INTERVAL_MS);
+    }, INTERVAL_MS);
   }
 
   public resendCode() {
