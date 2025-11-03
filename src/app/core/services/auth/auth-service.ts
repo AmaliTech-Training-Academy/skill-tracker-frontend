@@ -36,6 +36,11 @@ export class AuthService {
     return this.api.post<UserResponse>(API_ENDPOINTS.VERIFY_OTP, null, { params });
   }
 
+  public resendVerification(email: string): Observable<{ message: string }> {
+    const params = new HttpParams().set('email', email);
+    return this.api.post<{ message: string }>(API_ENDPOINTS.RESEND_VERIFICATION, null, { params });
+  }
+
   public completeOnboarding(payload: CompleteOnboardingRequest): Observable<UserResponse> {
     return this.api.post<UserResponse>(API_ENDPOINTS.COMPLETE_ONBOARDING, payload);
   }

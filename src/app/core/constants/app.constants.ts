@@ -21,6 +21,7 @@ export const APP_CONSTANTS = {
     VERIFY_OTP: '/auth/verify-email-otp',
     LOGOUT: '/auth/logout',
     COMPLETE_ONBOARDING: '/users/complete-onboarding',
-    SOCIAL_LOGIN: '/oauth2/authorization'
+    SOCIAL_LOGIN: '/oauth2/authorization',
+    RESEND_VERIFICATION: '/auth/resend-verification',
   },
 } as const;
