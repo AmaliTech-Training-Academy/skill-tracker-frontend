@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { ApiService } from './api-service';
 import { environment } from '../../../../environments/environment';
 
@@ -8,7 +8,12 @@ describe('ApiService', () => {
   let service: ApiService;
   let httpMock: HttpTestingController;
 
+  const mockApiUrl = 'http://mock-api.com';
+  const endpoint = '/api/v1/test';
+
   beforeEach(() => {
+    environment.url = mockApiUrl;
+
     TestBed.configureTestingModule({
       providers: [ApiService, provideHttpClient(), provideHttpClientTesting()],
     });
@@ -28,11 +33,11 @@ describe('ApiService', () => {
     it('should make a GET request with correct URL', () => {
       const testData = { id: 1, name: 'Test' };
 
-      service.get<{id: number, name: string}>('/test').subscribe((data) => {
+      service.get<{ id: number; name: string }>('/test').subscribe((data) => {
         expect(data).toEqual(testData);
       });
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       expect(req.request.method).toBe('GET');
       expect(req.request.withCredentials).toBe(true);
       req.flush(testData);
@@ -41,7 +46,7 @@ describe('ApiService', () => {
     it('should handle query parameters', () => {
       service.get('/test', { params: { id: '1' } }).subscribe();
 
-      const req = httpMock.expectOne(`${environment.url}/test?id=1`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}?id=1`);
       expect(req.request.params.get('id')).toBe('1');
     });
 
@@ -49,7 +54,7 @@ describe('ApiService', () => {
       const headers = { 'Content-Type': 'application/json' };
       service.get('/test', { headers }).subscribe();
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       expect(req.request.headers.get('Content-Type')).toBe('application/json');
     });
 
@@ -61,7 +66,7 @@ describe('ApiService', () => {
 
       service.get('/test', customOptions).subscribe();
 
-      const req = httpMock.expectOne(`${environment.url}/test?page=1`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}?page=1`);
       expect(req.request.withCredentials).toBe(true);
       expect(req.request.headers.get('Custom-Header')).toBe('test');
       expect(req.request.params.get('page')).toBe('1');
@@ -75,17 +80,19 @@ describe('ApiService', () => {
         },
       });
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       req.flush('Not found', { status: 404, statusText: 'Not Found' });
     });
 
     it('should properly build URL with and without leading slash', () => {
       service.get('test').subscribe();
-      let req = httpMock.expectOne(`${environment.url}/test`);
+
+      let req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       req.flush({});
 
       service.get('/test').subscribe();
-      req = httpMock.expectOne(`${environment.url}/test`);
+
+      req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       req.flush({});
     });
   });
@@ -99,7 +106,7 @@ describe('ApiService', () => {
         expect(response).toEqual(testResponse);
       });
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(testBody);
       req.flush(testResponse);
@@ -115,7 +122,7 @@ describe('ApiService', () => {
         expect(response).toEqual(testResponse);
       });
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(testBody);
       req.flush(testResponse);
@@ -126,7 +133,7 @@ describe('ApiService', () => {
     it('should make a DELETE request', () => {
       service.delete('/test').subscribe();
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       expect(req.request.method).toBe('DELETE');
       req.flush(null);
     });
@@ -140,7 +147,7 @@ describe('ApiService', () => {
         },
       });
 
-      const req = httpMock.expectOne(`${environment.url}/test`);
+      const req = httpMock.expectOne(`${mockApiUrl}${endpoint}`);
       req.flush('Not found', { status: 404, statusText: 'Not Found' });
     });
   });

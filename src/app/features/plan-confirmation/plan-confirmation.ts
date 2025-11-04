@@ -6,18 +6,8 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators,
-  FormGroup,
-} from '@angular/forms';
-import {
-  Router,
-  RouterLink,
-  ActivatedRoute,
-  NavigationEnd,
-} from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Router, RouterLink, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { InputFieldComponent } from '@app/shared';
 import { PlanLevels } from '@app/shared/compomonents/plan-levels/plan-levels';
@@ -26,7 +16,7 @@ import { getFormControl } from '@app/shared';
 export enum Section {
   ChosenPlan = 'chosen-plan',
   PayPage = 'pay-page',
-  donePage = 'done-page',
+  DonePage = 'done-page',
 }
 
 interface Plan {
@@ -39,27 +29,21 @@ interface Plan {
 @Component({
   selector: 'app-plan-confirmation',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    ReactiveFormsModule,
-    InputFieldComponent,
-    PlanLevels,
-  ],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, InputFieldComponent, PlanLevels],
   templateUrl: './plan-confirmation.html',
   styleUrls: ['./plan-confirmation.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanConfirmation implements OnDestroy, OnInit {
-  Section = Section;
+  public section = Section;
   private destroy$ = new Subject<void>();
-  getFormControl = getFormControl;
+  public getFormControl = getFormControl;
 
-  currentSection: Section = Section.ChosenPlan;
-  selectedPlan: Plan | null = null;
-  currentStep = 1;
+  public currentSection: Section = Section.ChosenPlan;
+  public selectedPlan: Plan | null = null;
+  public currentStep = 1;
 
-  paymentForm: FormGroup = new FormBuilder().group({
+  public paymentForm: FormGroup = new FormBuilder().group({
     cardNumber: ['', [Validators.required, Validators.minLength(16)]],
     fullName: ['', [Validators.required]],
     expiry: ['', [Validators.required]],
@@ -107,28 +91,28 @@ export class PlanConfirmation implements OnDestroy, OnInit {
     },
   ] as const;
 
-  get planName(): string {
+  public get planName(): string {
     return this.selectedPlan?.name ?? '';
   }
 
-  get features(): string[] {
+  public get features(): string[] {
     return this.selectedPlan?.features ?? [];
   }
 
-  get planPrice(): number {
+  public get planPrice(): number {
     return this.selectedPlan?.price ?? 0;
   }
 
-  get chosenPlanSection(): Section {
+  public get chosenPlanSection(): Section {
     return Section.ChosenPlan;
   }
 
-  get payPageSection(): Section {
+  public get payPageSection(): Section {
     return Section.PayPage;
   }
 
-  get donePageSection(): Section {
-    return Section.donePage;
+  public get donePageSection(): Section {
+    return Section.DonePage;
   }
 
   constructor(
@@ -136,39 +120,37 @@ export class PlanConfirmation implements OnDestroy, OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    const planId = this.route.snapshot.paramMap.get('plan-id') || 
-                   this.route.snapshot.paramMap.get('id') || 
-                   this.route.snapshot.paramMap.get('planId');
-    console.log('Plan ID from route:', planId);
-    console.log('All params:', this.route.snapshot.paramMap.keys);
-    
+    const planId =
+      this.route.snapshot.paramMap.get('plan-id') ||
+      this.route.snapshot.paramMap.get('id') ||
+      this.route.snapshot.paramMap.get('planId');
+
     if (planId) {
       const id = parseInt(planId, 10);
-      console.log('Parsed ID:', id);
       this.selectedPlan = this.plans.find((plan) => plan.id === id) || null;
-      console.log('Selected plan:', this.selectedPlan);
-      
+
       if (!this.selectedPlan) {
-        console.log('Plan not found, redirecting');
         this.router.navigateByUrl('/');
       } else {
         this.cdr.markForCheck();
       }
     } else {
-      console.log('No plan ID in route, redirecting');
       this.router.navigateByUrl('/');
     }
-    
+
     this.setupStepTracker();
   }
 
   private setupStepTracker(): void {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd), takeUntil(this.destroy$))
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$),
+      )
       .subscribe(() => this.updateCurrentStep());
     this.updateCurrentStep();
   }
@@ -181,7 +163,7 @@ export class PlanConfirmation implements OnDestroy, OnInit {
       case Section.PayPage:
         this.currentStep = 2;
         break;
-      case Section.donePage:
+      case Section.DonePage:
         this.currentStep = 3;
         break;
       default:
@@ -189,7 +171,7 @@ export class PlanConfirmation implements OnDestroy, OnInit {
     }
   }
 
-  goBack(): void {
+  public goBack(): void {
     switch (this.currentSection) {
       case Section.ChosenPlan:
         this.router.navigateByUrl('/');
@@ -197,7 +179,7 @@ export class PlanConfirmation implements OnDestroy, OnInit {
       case Section.PayPage:
         this.goToSection(Section.ChosenPlan);
         break;
-      case Section.donePage:
+      case Section.DonePage:
         this.router.navigateByUrl('/');
         break;
       default:
@@ -205,25 +187,25 @@ export class PlanConfirmation implements OnDestroy, OnInit {
     }
   }
 
-  goToSection(section: Section): void {
+  public goToSection(section: Section): void {
     this.currentSection = section;
     this.updateCurrentStep();
     this.cdr.markForCheck();
   }
 
-  pay(): void {
+  public pay(): void {
     if (this.paymentForm.invalid) {
       this.paymentForm.markAllAsTouched();
       return;
     }
-    this.goToSection(Section.donePage);
+    this.goToSection(Section.DonePage);
   }
 
-  goToDashboard(): void {
+  public goToDashboard(): void {
     this.router.navigateByUrl('/dashboard');
   }
 
-  getFormattedPrice(): string {
+  public getFormattedPrice(): string {
     if (!this.selectedPlan) return '$0.00';
     const { price } = this.selectedPlan;
     return price === 0 ? 'Free' : `$${price.toFixed(2)}`;

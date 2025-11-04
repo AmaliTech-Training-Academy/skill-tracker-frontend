@@ -4,8 +4,7 @@
   </div>
 
   <div class="plan-confirmation-container">
-
-    @if (currentSection === Section.ChosenPlan && selectedPlan) {
+    @if (currentSection === section.ChosenPlan && selectedPlan) {
       <div class="chosen-plan">
         <button class="back-btn" (click)="goBack()">
           <img src="assets/left-arrow.png" alt="Navigate back" />
@@ -41,7 +40,7 @@
 
         <div class="plan-confirmation-btns">
           @if (planPrice) {
-            <button class="plan-confirmation-btns--next" (click)="goToSection(Section.PayPage)">
+            <button class="plan-confirmation-btns--next" (click)="goToSection(section.PayPage)">
               Register to Pay
             </button>
           } @else {
@@ -53,9 +52,9 @@
       </div>
     }
 
-    @if (currentSection === Section.PayPage && selectedPlan) {
+    @if (currentSection === section.PayPage && selectedPlan) {
       <div class="pay-page">
-        <button class="back-btn" (click)="goToSection(Section.ChosenPlan)">
+        <button class="back-btn" (click)="goToSection(section.ChosenPlan)">
           <img src="assets/left-arrow.png" alt="Navigate back" /> Back
         </button>
 
@@ -66,12 +65,11 @@
 
         <div class="payment-type-details">
           <form [formGroup]="paymentForm" (ngSubmit)="pay()">
-
             <div class="paypal">
               <div class="paypal-container">
                 <div class="label">
-                  <input type="radio" name="payment" />
-                  <label>Paypal</label>
+                  <input type="radio" name="payment" id="paypal-radio" />
+                  <label for="paypal-radio">Paypal</label>
                 </div>
                 <img src="assets/paypal.png" alt="paypal logo" />
               </div>
@@ -80,8 +78,8 @@
             <div class="credit-card">
               <div class="credit-card--container">
                 <div class="label">
-                  <input type="radio" name="payment" />
-                  <label>Credit Card</label>
+                  <input type="radio" name="payment" id="credit-card-radio" />
+                  <label for="credit-card-radio">Credit Card</label>
                 </div>
                 <img src="assets/credit-card.png" alt="credit-card logo" />
               </div>
@@ -107,20 +105,20 @@
                   ></app-input-field>
 
                   <div class="expiry-cvv">
-                  <app-input-field
-                    label="Expiry Date"
-                    type="month"
-                    id="expiry"
-                    placeholder="MM/YY"
-                    [control]="getFormControl(paymentForm, 'expiry')"
+                    <app-input-field
+                      label="Expiry Date"
+                      type="month"
+                      id="expiry"
+                      placeholder="MM/YY"
+                      [control]="getFormControl(paymentForm, 'expiry')"
                     ></app-input-field>
 
-                  <app-input-field
-                    label="CVV"
-                    type="cvv"
-                    id="cvv"
-                    placeholder="CVV"
-                    [control]="getFormControl(paymentForm, 'cvv')"
+                    <app-input-field
+                      label="CVV"
+                      type="cvv"
+                      id="cvv"
+                      placeholder="CVV"
+                      [control]="getFormControl(paymentForm, 'cvv')"
                     ></app-input-field>
                   </div>
                 </div>
@@ -130,8 +128,8 @@
             <div class="paypal">
               <div class="paypal-container">
                 <div class="label">
-                  <input type="radio" name="payment" />
-                  <label>Google Pay</label>
+                  <input type="radio" name="payment" id="google-pay-radio" />
+                  <label for="google-pay-radio">Google Pay</label>
                 </div>
                 <img src="assets/GooglePay.png" alt="gpay logo" />
               </div>
@@ -148,9 +146,9 @@
       </div>
     }
 
-    @if (currentSection === Section.donePage && selectedPlan) {
+    @if (currentSection === section.DonePage && selectedPlan) {
       <div class="done-page">
-        <button class="back-btn" (click)="goToSection(Section.PayPage)">
+        <button class="back-btn" (click)="goToSection(section.PayPage)">
           <img src="assets/left-arrow.png" alt="Navigate back" />
           Back
         </button>
@@ -158,32 +156,37 @@
         <header>
           <h1>You're In! Welcome to SkillDev {{ planName }} 🎉</h1>
           <p>
-            You've successfully upgraded. It's time to take your skill development to the next level.
+            You've successfully upgraded. It's time to take your skill development to the next
+            level.
           </p>
         </header>
 
         <div class="plan-confirmation-selection plan">
           <h1 class="plan-type">
-            Enjoy full access to advanced features, deeper insights, and a growing community of learners.
+            Enjoy full access to advanced features, deeper insights, and a growing community of
+            learners.
           </h1>
           <button class="back-btn home" (click)="goBack()">Back to Home</button>
         </div>
 
         <div class="plan-confirmation-btns">
-          <button class="plan-confirmation-btns--next" (click)="goToDashboard()">Go to Dashboard</button>
+          <button class="plan-confirmation-btns--next" (click)="goToDashboard()">
+            Go to Dashboard
+          </button>
         </div>
       </div>
     }
   </div>
 
-  @if (currentSection === Section.PayPage && selectedPlan) {
+  @if (currentSection === section.PayPage && selectedPlan) {
     <div class="cancellation-policy">
       <div class="policy">
         <h1>Cancellation Policy</h1>
         <p>
-          You can cancel your subscription at any time from your account settings.
-          Once canceled, you'll retain access to premium features until the end of your current billing cycle.
-          We do not offer refunds for partial billing periods. If you experience any issues, our support team is here to help.
+          You can cancel your subscription at any time from your account settings. Once canceled,
+          you'll retain access to premium features until the end of your current billing cycle. We
+          do not offer refunds for partial billing periods. If you experience any issues, our
+          support team is here to help.
         </p>
       </div>
       <img src="assets/cancellation-policy.png" alt="policy-image" />
