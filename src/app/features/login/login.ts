@@ -5,11 +5,12 @@ import {
   OnInit,
   Signal,
   inject,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Subject, takeUntil, filter, tap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { InputFieldComponent } from '../../shared/input-field/input-field';
@@ -27,75 +28,62 @@ import * as AuthSelectors from '@app/store/auth/auth.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject<void>();
-  private readonly fb = inject(FormBuilder);
-  private readonly store = inject(Store);
-  private readonly toastService = inject(ToastService);
+  private destroy$ = new Subject<void>();
+  private fb = inject(FormBuilder);
+  private store = inject(Store);
+  private toastService = inject(ToastService);
 
   public getFormControl = getFormControl;
-  public isLoggingIn: Signal<boolean>;
-  public loginError: Signal<AppError | null>;
-  public loginSuccess$: any;
 
-  constructor() {
-    this.isLoggingIn = this.store.selectSignal(AuthSelectors.selectIsLoggingIn as any);
-    this.loginError = this.store.selectSignal(AuthSelectors.selectLoginError as any);
-    this.loginSuccess$ = this.store.select(AuthSelectors.selectIsAuthenticated);
-  }
+  public isLoggingIn: Signal<boolean> = this.store.selectSignal(AuthSelectors.selectIsLoggingIn);
+  public loginError: Signal<AppError | null> = this.store.selectSignal(
+    AuthSelectors.selectLoginError,
+  );
+  public loginSuccess: Signal<boolean> = this.store.selectSignal(
+    AuthSelectors.selectIsAuthenticated,
+  );
 
-  loginForm = this.fb.group({
+  public loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
   ngOnInit(): void {
-   
-    this.loginSuccess$
-      .pipe(
-        filter((success) => success === true),
-        takeUntil(this.destroy$),
-        tap(() => {
-          this.toastService.showSuccess(
-            'Login Successful',
-            'Logged in successfully! Redirecting you to your dashboard...',
-          );
-        }),
-      )
-      .subscribe();
+    effect(() => {
+      if (this.loginSuccess()) {
+        this.toastService.showSuccess(
+          'Login Successful',
+          'Logged in successfully! Redirecting you to your dashboard...',
+        );
+      }
+    });
 
-    this.store.select(AuthSelectors.selectLoginError)
-      .pipe(
-        takeUntil(this.destroy$),
-        filter((error) => !!error),
-        tap((error: AppError) => {
-          this.toastService.showError(
-            'Login Failed',
-            error?.message ?? 'Incorrect email or password.'
-          );
-        })
-      )
-      .subscribe();
+    effect(() => {
+      const error = this.loginError();
+      if (error) {
+        this.toastService.showError(
+          'Login Failed',
+          error.message ?? 'Incorrect email or password.',
+        );
+      }
+    });
   }
 
-  login(): void {
+  public login(): void {
     if (this.loginForm.invalid) return;
 
     const { email, password } = this.loginForm.value;
-    const request: LoginRequest = {
-      email: email!,
-      password: password!,
-    };
-
+    const request: LoginRequest = { email: email!, password: password! };
     this.store.dispatch(AuthActions.login({ request }));
   }
 
-   public signInWithGoogle() {
-      this.store.dispatch(AuthActions.socialLogin({ provider: 'google' }));
-    }
-  
-    public signInWithGithub() {
-      this.store.dispatch(AuthActions.socialLogin({ provider: 'github' }));
-    }
+  public signInWithGoogle(): void {
+    this.store.dispatch(AuthActions.socialLogin({ provider: 'google' }));
+  }
+
+  public signInWithGithub(): void {
+    this.store.dispatch(AuthActions.socialLogin({ provider: 'github' }));
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
