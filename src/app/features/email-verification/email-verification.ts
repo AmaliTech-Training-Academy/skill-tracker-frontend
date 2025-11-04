@@ -152,10 +152,10 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     if (this.otpForm.invalid) return;
 
-    const otpCode = this.otpFields.map((field) => this.otpForm.get(field.name)?.value).join('');
-
     const email = this.userEmail();
     if (!email) return;
+
+    const otpCode = this.otpFields.map((field) => this.otpForm.get(field.name)?.value).join('');
 
     this.store.dispatch(AuthActions.verifyEmailOtp({ request: { code: otpCode, email } }));
   }
