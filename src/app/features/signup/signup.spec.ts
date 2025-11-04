@@ -1,33 +1,42 @@
+jest.mock('@app/core', () => ({
+  APP_CONSTANTS: {
+    APP_ROUTES: {
+      LOGIN: '/login',
+      EMAIL_VERIFICATION: '/email-verification'
+    }
+  }
+}));
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { signal } from '@angular/core';
 import { Signup } from './signup';
-import { ToastService } from '@app/core';
-import { APP_CONSTANTS } from '@app/core/constants/app.constants';
+import { APP_CONSTANTS } from '@app/core';
+import * as AuthActions from '@app/store/auth/auth.actions';
 
 describe('Signup', () => {
   let component: Signup;
   let fixture: ComponentFixture<Signup>;
   let mockRouter: jest.Mocked<Pick<Router, 'navigateByUrl'>>;
-  let mockToastService: jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError'>>;
-  const delayTimer = 2100;
+  let mockStore: jest.Mocked<Pick<Store, 'dispatch' | 'selectSignal'>>;
 
   beforeEach(async () => {
     mockRouter = {
       navigateByUrl: jest.fn(),
     } as jest.Mocked<Pick<Router, 'navigateByUrl'>>;
 
-    mockToastService = {
-      showSuccess: jest.fn(),
-      showError: jest.fn(),
-    } as jest.Mocked<Pick<ToastService, 'showSuccess' | 'showError'>>;
+    mockStore = {
+      dispatch: jest.fn(),
+      selectSignal: jest.fn().mockReturnValue(signal(false))
+    } as jest.Mocked<Pick<Store, 'dispatch' | 'selectSignal'>>;
 
     await TestBed.configureTestingModule({
       imports: [Signup, ReactiveFormsModule],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { provide: ToastService, useValue: mockToastService },
+        { provide: Store, useValue: mockStore },
       ],
     }).compileComponents();
 
@@ -96,14 +105,12 @@ describe('Signup', () => {
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.LOGIN);
   });
 
-  it('should not submit invalid form', async () => {
-    await component.onSubmit();
-    expect(component.isSubmitting()).toBe(false);
+  it('should not submit invalid form', () => {
+    component.onSubmit();
+    expect(mockStore.dispatch).not.toHaveBeenCalled();
   });
 
-  it('should submit valid form and navigate to email verification', async () => {
-    jest.useFakeTimers();
-
+  it('should dispatch register action with valid form', () => {
     component.signupForm.patchValue({
       email: 'test@example.com',
       password: 'StrongPass123!',
@@ -111,22 +118,28 @@ describe('Signup', () => {
       termsAccepted: true,
     });
 
-    const submitPromise = component.onSubmit();
+    component.onSubmit();
 
-    expect(component.isSubmitting()).toBe(true);
-
-    jest.advanceTimersByTime(delayTimer);
-    await submitPromise;
-
-    expect(mockToastService.showSuccess).toHaveBeenCalledWith(
-      'Account Created',
-      "Hurray, Your account is created! We've sent a 6 digit code to your email",
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      AuthActions.registerUser({ 
+        request: { 
+          email: 'test@example.com', 
+          password: 'StrongPass123!' 
+        } 
+      })
     );
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
-      APP_CONSTANTS.APP_ROUTES.EMAIL_VERIFICATION,
+  });
+
+  it('should dispatch social login actions', () => {
+    component.signInWithGoogle();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      AuthActions.socialLogin({ provider: 'google' })
     );
 
-    jest.useRealTimers();
+    component.signInWithGithub();
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      AuthActions.socialLogin({ provider: 'github' })
+    );
   });
 
   it('should clean up subscriptions on destroy', () => {
