@@ -8,8 +8,8 @@ import { ChangeDetectionStrategy } from '@angular/core';
   imports: [CommonModule],
   templateUrl: './plan-levels.html',
   styleUrl: './plan-levels.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanLevels {
-  @Input() currentStep: number = 1; 
+  @Input() public currentStep: number = 1;
 }
