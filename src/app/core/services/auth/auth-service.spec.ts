@@ -102,7 +102,6 @@ describe('AuthService', () => {
         expect(response).toEqual(mockResponse);
       });
 
-      // <-- FIX 6: Add /api/v1 prefix
       const req = httpMock.expectOne(`${mockApiUrl}/api/v1${APP_CONSTANTS.API_ENDPOINTS.LOGIN}`);
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(mockPayload);
