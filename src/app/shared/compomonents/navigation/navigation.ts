@@ -1,10 +1,17 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { Subject, filter, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-navigation',
+  standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navigation.html',
   styleUrls: ['./navigation.scss'],
@@ -14,7 +21,7 @@ export class Navigation implements OnInit, OnDestroy {
   public isMobileMenuOpen = false;
   public showOnlyLogo = false;
 
-  public minimalLogoRoutes = [
+  public readonly minimalLogoRoutes = [
     '/login',
     '/signup',
     '/reset-password',
@@ -22,7 +29,7 @@ export class Navigation implements OnInit, OnDestroy {
     '/email-verification',
   ];
 
-  public navItems = [
+  public readonly navItems = [
     { label: 'Platform', link: '/', exact: false },
     { label: 'How It Works', link: '#how-it-works', exact: false },
     { label: 'Skills', link: '#skills', exact: false },
@@ -31,7 +38,10 @@ export class Navigation implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.updateShowOnlyLogo(this.router.url);
@@ -41,8 +51,8 @@ export class Navigation implements OnInit, OnDestroy {
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntil(this.destroy$),
       )
-      .subscribe((navigationEnd) => {
-        this.updateShowOnlyLogo(navigationEnd.urlAfterRedirects ?? navigationEnd.url);
+      .subscribe((event) => {
+        this.updateShowOnlyLogo(event.urlAfterRedirects || event.url);
 
         if (this.showOnlyLogo) {
           this.isMobileMenuOpen = false;
@@ -56,8 +66,14 @@ export class Navigation implements OnInit, OnDestroy {
   }
 
   private updateShowOnlyLogo(url: string): void {
-    const normalized = url.startsWith('/') ? url : `/${url}`;
-    this.showOnlyLogo = this.minimalLogoRoutes.includes(normalized);
+    let normalized = url.split(/[?#]/)[0].replace(/\/+$/, '');
+    if (!normalized.startsWith('/')) normalized = '/' + normalized;
+
+    this.showOnlyLogo = this.minimalLogoRoutes.some(
+      (route) => normalized === route || normalized.startsWith(route + '/'),
+    );
+
+    this.cdr.markForCheck();
   }
 
   public toggleMenu(): void {

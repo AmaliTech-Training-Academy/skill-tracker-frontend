@@ -6,6 +6,7 @@ export const APP_CONSTANTS = {
   FULL_PAGE_ROUTES: {
     LEVEL_SELECTION: '/onboarding/level-selection',
     INTEREST_SELECTION: '/onboarding/interest-selection',
+    PLAN_CONFIRMATION: '/plan-confirmation',
   },
   APP_ROUTES: {
     LOGIN: '/login',
@@ -21,6 +22,6 @@ export const APP_CONSTANTS = {
     VERIFY_OTP: '/auth/verify-email-otp',
     LOGOUT: '/auth/logout',
     COMPLETE_ONBOARDING: '/users/complete-onboarding',
-    SOCIAL_LOGIN: '/oauth2/authorization'
+    SOCIAL_LOGIN: '/oauth2/authorization',
   },
 } as const;

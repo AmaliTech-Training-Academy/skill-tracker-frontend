@@ -10,11 +10,10 @@ import {
   VerifyEmailRequest,
   CompleteOnboardingRequest,
 } from '../../models/auth.model';
-import { APP_CONSTANTS } from '@app/core';
+import { APP_CONSTANTS } from '../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
 
 const { API_ENDPOINTS } = APP_CONSTANTS;
-
 @Injectable({
   providedIn: 'root',
 })

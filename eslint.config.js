@@ -6,6 +6,9 @@ const prettier = require('eslint-config-prettier');
 
 module.exports = tseslint.config(
   {
+    ignores: ['.angular/cache/**', 'coverage/**', 'dist/**', 'node_modules/**'],
+  },
+  {
     files: ['**/*.ts'],
     ignores: ['**/*.spec.ts', 'jest.config.ts'],
     extends: [
@@ -117,7 +120,6 @@ module.exports = tseslint.config(
         {
           selector: 'variable',
           modifiers: ['const'],
-          types: ['boolean', 'string', 'number', 'array'],
           format: ['UPPER_CASE', 'camelCase'],
         },
         {
