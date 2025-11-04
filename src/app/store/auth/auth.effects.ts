@@ -4,7 +4,13 @@ import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-import { AuthService, ErrorHandlerService, APP_CONSTANTS, UserState, ToastService } from '@app/core';
+import {
+  AuthService,
+  ErrorHandlerService,
+  APP_CONSTANTS,
+  UserState,
+  ToastService,
+} from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   registerUser,
@@ -24,8 +30,12 @@ import {
   logoutSuccess,
   socialLogin,
   socialLoginFailure,
-  socialLoginSuccess
+  socialLoginSuccess,
+  resendVerification,
+  resendVerificationSuccess,
+  resendVerificationFailure,
 } from './auth.actions';
+import * as AuthActions from './auth.actions';
 
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 @Injectable()
@@ -217,6 +227,91 @@ export class AuthEffects {
           this.toastService.showError(
             'Social Login Failed',
             error?.message || 'Unable to login with social provider. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public verifyEmailSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(verifyEmailOtpSuccess),
+        tap(() => {
+          this.toastService.showSuccess(
+            'Email Verified',
+            'Your email has been successfully verified!',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public verifyEmailFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(verifyEmailOtpFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Verification Failed',
+            error?.message || 'Invalid verification code. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public loginFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Login Failed',
+            error?.message || 'Invalid email or password. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public resendVerification$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resendVerification),
+      switchMap(({ email }) =>
+        this.authService.resendVerification(email).pipe(
+          map(({ message }) => AuthActions.resendVerificationSuccess({ message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(AuthActions.resendVerificationFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public resendVerificationSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(resendVerificationSuccess),
+        tap(({ message }) => {
+          this.toastService.showSuccess(
+            'Code Resent',
+            message || 'Verification code has been resent to your email.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public resendVerificationFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(resendVerificationFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Resend Failed',
+            error?.message || 'Unable to resend verification code. Please try again.',
           );
         }),
       ),

@@ -88,12 +88,12 @@ describe('onboardingGuard', () => {
     expect(result).toBe(false);
   });
 
-  it('should redirect to email verification for a REGISTERED user', () => {
+  it('should allow access for a REGISTERED user', () => {
     store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.REGISTERED }));
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.EMAIL_VERIFICATION);
-    expect(result).toBe(false);
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(result).toBe(true);
   });
 });

@@ -16,12 +16,13 @@ import {
   FormControl,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from '@app/core';
-import { takeUntil, Subject, of, delay } from 'rxjs';
+import { takeUntil, Subject } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { Store } from '@ngrx/store';
 import { APP_CONSTANTS } from '@app/core';
+import * as AuthActions from '@app/store/auth/auth.actions';
+import { selectIsVerifying, selectUserEmail } from '@app/store/auth/auth.selectors';
 
-const DELAY_MS = 2000;
 const VERIFICATION_TIME_SEC = 30;
 const INTERVAL_MS = 1000;
 
@@ -33,17 +34,19 @@ const INTERVAL_MS = 1000;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmailVerification implements OnInit, OnDestroy {
-  public isSubmitting = signal(false);
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private store: Store,
+  ) {}
+
+  public isSubmitting = this.store.selectSignal(selectIsVerifying);
+  private userEmail = this.store.selectSignal(selectUserEmail);
   public formValid = signal(false);
   public timeLeft = signal(VERIFICATION_TIME_SEC);
   public canResend = signal(false);
 
   private destroy$ = new Subject<void>();
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private toastService: ToastService,
-  ) {}
 
   @ViewChildren('otpInput') private otpInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
@@ -88,8 +91,11 @@ export class EmailVerification implements OnInit, OnDestroy {
   }
 
   public resendCode() {
-    this.toastService.showInfo('Code Sent', 'A new verification code has been sent to your email.');
-    this.startTimer();
+    const email = this.userEmail();
+    if (email) {
+      this.store.dispatch(AuthActions.resendVerification({ email }));
+      this.startTimer();
+    }
   }
 
   public onInput(event: Event, index: number) {
@@ -107,6 +113,31 @@ export class EmailVerification implements OnInit, OnDestroy {
     }
   }
 
+  public onPaste(event: ClipboardEvent, index: number) {
+    event.preventDefault();
+
+    const pastedData = event.clipboardData?.getData('text') || '';
+    const digits = pastedData.replace(/\D/g, '').slice(0, this.otpFields.length);
+
+    if (digits.length === 0) return;
+
+    const inputs = this.otpInputs.toArray();
+
+    digits.split('').forEach((digit, i) => {
+      const targetIndex = index + i;
+      if (targetIndex < this.otpFields.length) {
+        const fieldName = this.otpFields[targetIndex].name;
+        this.otpForm.get(fieldName)?.setValue(digit);
+        inputs[targetIndex].nativeElement.value = digit;
+      }
+    });
+
+    const nextEmptyIndex = index + digits.length;
+    const focusIndex =
+      nextEmptyIndex < this.otpFields.length ? nextEmptyIndex : this.otpFields.length - 1;
+    inputs[focusIndex]?.nativeElement.focus();
+  }
+
   public onKeyDown(event: KeyboardEvent, index: number) {
     const input = event.target as HTMLInputElement;
 
@@ -121,28 +152,12 @@ export class EmailVerification implements OnInit, OnDestroy {
 
     if (this.otpForm.invalid) return;
 
-    this.isSubmitting.set(true);
+    const email = this.userEmail();
+    if (!email) return;
 
-    of(true)
-      .pipe(delay(DELAY_MS), takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(
-            'Email Verified',
-            'Your email is verified. We’ll redirect you to your dashboard',
-          );
-          this.router.navigateByUrl('/login');
-        },
-        error: () => {
-          this.toastService.showError(
-            'Verification Failed',
-            'Unable to verify email. Please try again.',
-          );
-        },
-        complete: () => {
-          this.isSubmitting.set(false);
-        },
-      });
+    const otpCode = this.otpFields.map((field) => this.otpForm.get(field.name)?.value).join('');
+
+    this.store.dispatch(AuthActions.verifyEmailOtp({ request: { code: otpCode, email } }));
   }
 
   public goToSignUp() {

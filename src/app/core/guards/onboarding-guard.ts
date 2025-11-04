@@ -20,12 +20,10 @@ export const onboardingGuard: CanActivateFn = (route, state) => {
 
   switch (user.state) {
     case UserState.VERIFIED:
+    case UserState.REGISTERED:
       return true;
     case UserState.ACTIVE:
       router.navigateByUrl(APP_ROUTES.DASHBOARD);
-      return false;
-    case UserState.REGISTERED:
-      router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
       return false;
     default:
       router.navigateByUrl(APP_ROUTES.LOGIN);

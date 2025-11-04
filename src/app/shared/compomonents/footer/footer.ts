@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subject, filter, takeUntil } from 'rxjs';
@@ -15,7 +21,10 @@ export class Footer implements OnInit, OnDestroy {
   public showFooter = false;
   private destroy$ = new Subject<void>();
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
     this.updateFooter(this.router.url);
@@ -23,7 +32,7 @@ export class Footer implements OnInit, OnDestroy {
     this.router.events
       .pipe(
         takeUntil(this.destroy$),
-        filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       )
       .subscribe((event) => {
         this.updateFooter(event.urlAfterRedirects || event.url);

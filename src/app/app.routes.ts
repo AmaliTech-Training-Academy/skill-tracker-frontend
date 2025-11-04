@@ -7,7 +7,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./layout/landing-screen/landing-screen').then((c) => c.LandingScreen),
     children: [
-      { path: '', loadComponent: () => import('./features/landing-page/landing-page').then((c) => c.LandingPage) },
+      {
+        path: '',
+        loadComponent: () =>
+          import('./features/landing-page/landing-page').then((c) => c.LandingPage),
+      },
       {
         path: 'signup',
         canActivate: [guestGuard],
@@ -29,7 +33,6 @@ export const routes: Routes = [
         path: 'reset-password',
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
-
       },
       {
         path: 'email-verification',
@@ -55,10 +58,9 @@ export const routes: Routes = [
       },
       {
         path: 'plan-confirmation/:id',
-        // canActivate: [authGuard],
         loadComponent: () =>
           import('./features/plan-confirmation/plan-confirmation').then((c) => c.PlanConfirmation),
-      }
+      },
     ],
   },
   {

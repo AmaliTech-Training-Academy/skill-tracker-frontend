@@ -86,3 +86,17 @@ export const socialLoginFailure = createAction(
   props<{ error: AppError }>(),
 );
 
+export const resendVerification = createAction(
+  '[Auth/Verification] Resend Verification',
+  props<{ email: string }>(),
+);
+
+export const resendVerificationSuccess = createAction(
+  '[Auth/Verification] Resend Verification Success',
+  props<{ message: string }>(),
+);
+
+export const resendVerificationFailure = createAction(
+  '[Auth/Verification] Resend Verification Failure',
+  props<{ error: AppError }>(),
+);

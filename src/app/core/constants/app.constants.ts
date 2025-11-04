@@ -23,5 +23,6 @@ export const APP_CONSTANTS = {
     LOGOUT: '/auth/logout',
     COMPLETE_ONBOARDING: '/users/complete-onboarding',
     SOCIAL_LOGIN: '/oauth2/authorization',
+    RESEND_VERIFICATION: '/auth/resend-verification',
   },
 } as const;
