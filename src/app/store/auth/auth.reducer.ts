@@ -18,6 +18,8 @@ import {
   logoutFailure,
 } from './auth.actions';
 
+
+
 export const authReducer = createReducer(
   initialAuthState,
   on(registerUser, (state) => ({
@@ -72,7 +74,7 @@ export const authReducer = createReducer(
     isCompleteOnboarding: false,
     onboardingError: error,
   })),
-  on(login, (state, { request }) => ({
+   on(login, (state, { request }) => ({
     ...state,
     isLoggingIn: true,
     loginError: null,

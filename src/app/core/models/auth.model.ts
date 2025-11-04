@@ -75,3 +75,5 @@ export interface CompleteOnboardingRequest {
 }
 
 export type UserResponse = ApiResponse<User>;
+
+export type LoginSuccessResponse = ApiResponse<LoginSuccessData>;

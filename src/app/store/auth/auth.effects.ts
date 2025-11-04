@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { User } from '@app/core';
+
 
 import { AuthService, ErrorHandlerService, APP_CONSTANTS, UserState, ToastService } from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -30,13 +32,12 @@ import {
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 @Injectable()
 export class AuthEffects {
-  constructor(
-    private actions$: Actions,
-    private authService: AuthService,
-    private errorHandlerService: ErrorHandlerService,
-    private router: Router,
-    private toastService: ToastService,
-  ) {}
+  private actions$ = inject(Actions);
+  private authService = inject(AuthService);
+  private errorHandlerService = inject(ErrorHandlerService);
+  private router = inject(Router);
+  private toastService = inject(ToastService)
+
 
   public registerUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -83,20 +84,49 @@ export class AuthEffects {
     ),
   );
 
-  public login$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(login),
-      switchMap(({ request }) =>
-        this.authService.login(request).pipe(
-          map(({ data }) => loginSuccess({ user: data })),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
-            return of(loginFailure({ error: appError }));
-          }),
+ 
+public login$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(login),
+    switchMap(({ request }) =>
+      this.authService.login(request).pipe(
+        map((response) =>
+          loginSuccess({
+            user: { ...(response.data as any) } as User,
+            token: null,
+          })
         ),
-      ),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(loginFailure({ error: appError }));
+        })
+      )
+    )
+  )
+);
+
+
+
+public loginOrVerifySuccess$ = createEffect(
+  () =>
+    this.actions$.pipe(
+      ofType(loginSuccess, verifyEmailOtpSuccess),
+      tap(({ user }) => {
+        console.log('Login success effect triggered with user:', user);
+        if (!user) return;
+
+        if (user.state === UserState.ACTIVE) {
+          this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+        } else if (user.state === UserState.REGISTERED) {
+          this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+        } else {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }
+      }),
     ),
-  );
+  { dispatch: false },
+);
+
 
   public logout$ = createEffect(() =>
     this.actions$.pipe(
@@ -113,20 +143,7 @@ export class AuthEffects {
     ),
   );
 
-  public loginOrVerifySuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginSuccess, verifyEmailOtpSuccess),
-        tap(({ user }) => {
-          if (user.state === UserState.ACTIVE) {
-            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-          } else {
-            this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
+  
 
   public onboardingSuccess$ = createEffect(
     () =>

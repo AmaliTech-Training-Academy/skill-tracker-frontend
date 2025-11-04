@@ -3,6 +3,7 @@ import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api/api-service';
 import {
+  LoginSuccessResponse,
   UserResponse,
   LoginRequest,
   RegisterRequest,
@@ -26,8 +27,8 @@ export class AuthService {
     return this.api.post<UserResponse>(API_ENDPOINTS.REGISTER, payload);
   }
 
-  public login(payload: LoginRequest): Observable<UserResponse> {
-    return this.api.post<UserResponse>(API_ENDPOINTS.LOGIN, payload);
+   public login(payload: LoginRequest): Observable<LoginSuccessResponse> {
+    return this.api.post<LoginSuccessResponse>(API_ENDPOINTS.LOGIN, payload);
   }
 
   public verifyEmail({ code, email }: VerifyEmailRequest): Observable<UserResponse> {

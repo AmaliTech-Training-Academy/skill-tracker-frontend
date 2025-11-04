@@ -25,7 +25,7 @@ export const registerUserFailure = createAction(
 
 export const login = createAction('[Auth/Login] Login', props<{ request: LoginRequest }>());
 
-export const loginSuccess = createAction('[Auth/Login] Login Success', props<{ user: User }>());
+export const loginSuccess = createAction('[Auth/Login] Login Success', props<{ user: User | null; token: string | null}>());
 
 export const loginFailure = createAction(
   '[Auth/Login] Login Failure',
