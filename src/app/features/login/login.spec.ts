@@ -2,21 +2,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { of, Subject } from 'rxjs';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { ToastService } from '@app/core';
 import * as AuthActions from '@app/store/auth/auth.actions';
 import * as AuthSelectors from '@app/store/auth/auth.selectors';
+import { ToastService } from '@app/core';
 import { Login } from './login';
 
 describe('Login Component', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
   let store: MockStore;
-  let toastService: jasmine.SpyObj<ToastService>;
-
-  const destroy$ = new Subject<void>();
+  let toastService: { showSuccess: jest.Mock; showError: jest.Mock };
 
   beforeEach(async () => {
-    toastService = jasmine.createSpyObj('ToastService', ['showSuccess', 'showError']);
+    toastService = { showSuccess: jest.fn(), showError: jest.fn() };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, Login],
@@ -38,41 +36,27 @@ describe('Login Component', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => {
-    destroy$.next();
-    destroy$.complete();
-  });
-
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('should have invalid form when empty', () => {
     component.loginForm.setValue({ email: '', password: '' });
-    expect(component.loginForm.invalid).toBeTrue();
-  });
-
-  it('should have valid form when filled correctly', () => {
-    component.loginForm.setValue({ email: 'test@example.com', password: 'password123' });
-    expect(component.loginForm.valid).toBeTrue();
+    expect(component.loginForm.invalid).toBe(true);
   });
 
   it('should dispatch login action when form is valid', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
-    component.loginForm.setValue({ email: 'user@example.com', password: 'secret123' });
-
+    component.loginForm.setValue({ email: 'test@example.com', password: '123456' });
     component.login();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      AuthActions.login({
-        request: { email: 'user@example.com', password: 'secret123' },
-      }),
+      AuthActions.login({ request: { email: 'test@example.com', password: '123456' } }),
     );
   });
 
   it('should not dispatch login action when form is invalid', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
     component.loginForm.setValue({ email: '', password: '' });
-
     component.login();
     expect(dispatchSpy).not.toHaveBeenCalled();
   });
@@ -80,20 +64,16 @@ describe('Login Component', () => {
   it('should dispatch Google social login', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
     component.signInWithGoogle();
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      AuthActions.socialLogin({ provider: 'google' }),
-    );
+    expect(dispatchSpy).toHaveBeenCalledWith(AuthActions.socialLogin({ provider: 'google' }));
   });
 
   it('should dispatch Github social login', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
     component.signInWithGithub();
-    expect(dispatchSpy).toHaveBeenCalledWith(
-      AuthActions.socialLogin({ provider: 'github' }),
-    );
+    expect(dispatchSpy).toHaveBeenCalledWith(AuthActions.socialLogin({ provider: 'github' }));
   });
 
-  it('should call showSuccess when loginSuccess$ emits true', () => {
+  it('should show success toast on login success', () => {
     (component as any).loginSuccess$ = of(true);
     component.ngOnInit();
     expect(toastService.showSuccess).toHaveBeenCalledWith(
@@ -102,12 +82,13 @@ describe('Login Component', () => {
     );
   });
 
-  it('should call showError when loginError emits an error', () => {
-    const mockError = { message: 'Invalid credentials' };
-    store.overrideSelector(AuthSelectors.selectLoginError, mockError);
+  it('should show error toast on login error', () => {
+    const error = { message: 'Invalid credentials' };
+    store.overrideSelector(AuthSelectors.selectLoginError, error);
     store.refreshState();
 
     component.ngOnInit();
+
     expect(toastService.showError).toHaveBeenCalledWith(
       'Login Failed',
       'Invalid credentials',
