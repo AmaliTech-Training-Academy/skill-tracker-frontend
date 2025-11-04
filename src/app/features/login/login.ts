@@ -32,9 +32,7 @@ export class Login implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly toastService = inject(ToastService);
 
-  getFormControl = getFormControl;
-
-  
+  public getFormControl = getFormControl;
   public isLoggingIn: Signal<boolean>;
   public loginError: Signal<AppError | null>;
   public loginSuccess$: any;
