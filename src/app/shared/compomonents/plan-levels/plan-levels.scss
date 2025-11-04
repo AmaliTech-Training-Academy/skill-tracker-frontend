@@ -1,0 +1,193 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+
+.plan-levels {
+  width: 80%;
+  margin-inline: auto;
+  max-width: 825px;
+  padding-inline: 8px;
+
+ 
+  .plan-levels-track {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 8px 12px;
+    width: 100%;
+  }
+
+  .number {
+    width: 32px;
+    height: 32px;
+    border: 2px solid $gray-stroke-strong;
+    border-radius: 50%;
+    @include h13;
+    @include flex($direction: row, $justify: center, $align: center);
+    color: $gray-stroke-strong;
+    background-color: $gray-white;
+    transition: all 0.25s ease;
+    grid-row: 1;
+    justify-self: center;
+
+    &.active {
+      border-color: $brand-text;
+      color: $brand-text;
+    }
+  }
+
+  .line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    min-width: 20px;
+    background-color: $gray-stroke-strong;
+    transition: background-color 0.25s ease;
+    grid-row: 1;
+    align-self: center;
+    justify-self: stretch;
+
+    &.active {
+      background-color: $brand-text;
+    }
+  }
+
+  .label {
+    text-align: center;
+    font-size: 12px;
+    color: $gray-stroke-strong;
+    line-height: 1.3;
+    max-width: 240px;
+    transition: color 0.25s ease, font-weight 0.25s ease;
+    grid-row: 2;
+    justify-self: center;
+
+    &.active {
+      color: $brand-text;
+      font-weight: 600;
+    }
+  }
+
+  .label-1 {
+    grid-column: 1;
+  }
+
+  .label-2 {
+    grid-column: 3;
+  }
+
+  .label-3 {
+    grid-column: 5;
+  }
+
+  .label-placeholder {
+    grid-row: 2;
+    grid-column: auto;
+  }
+
+  .stepper {
+ @include flex(row, space-between, center);
+  flex-direction: row; 
+  gap: 1rem;
+  width: 100%;
+  overflow-x: auto; 
+  padding: 1rem;
+
+  .step {
+    @include flex(column, center, center);
+    align-items: center;
+    text-align: center;
+
+    .circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: $gray-stroke-weak;
+      @include flex($direction: row, $justify: center, $align: center);
+      font-weight: 600;
+    }
+
+    .label {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    &.active .circle {
+      background-color: $brand-text;
+      
+    }
+  }
+}
+
+
+@media (min-width: 768px) {
+  .stepper {
+    gap: 2rem;
+  }
+
+  .step .label {
+    font-size: 1rem;
+  }
+}
+
+
+ 
+  @include tablet {
+    .plan-levels-track {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr auto;
+      grid-template-rows: auto auto;
+      align-items: center;
+      width: 100%;
+      gap: 8px 12px;
+    }
+
+    .number {
+      grid-row: 1;
+      justify-self: center;
+    }
+
+    .line {
+      grid-row: 1;
+      align-self: center;
+      justify-self: stretch;
+      height: 2px;
+      width: 100%;
+    }
+
+    .label,
+    .label-placeholder {
+      grid-row: 2;
+      justify-self: center;
+    }
+
+    .label-1 {
+      grid-column: 1;
+    }
+
+    .label-2 {
+      grid-column: 3;
+    }
+
+    .label-3 {
+      grid-column: 5;
+    }
+
+    .label-placeholder {
+      grid-column: auto;
+    }
+  }
+
+ 
+  @include desktop {
+    .label {
+      font-size: 13px;
+    }
+
+    .number {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}

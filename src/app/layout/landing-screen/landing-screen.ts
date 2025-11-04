@@ -22,7 +22,8 @@ import { APP_CONSTANTS } from '@app/core';
 export class LandingScreen implements OnInit, OnDestroy {
   private readonly fullPageRoutePaths: string[] = [
     APP_CONSTANTS.FULL_PAGE_ROUTES.LEVEL_SELECTION,
-    APP_CONSTANTS.FULL_PAGE_ROUTES.INTEREST_SELECTION
+    APP_CONSTANTS.FULL_PAGE_ROUTES.INTEREST_SELECTION,
+    APP_CONSTANTS.FULL_PAGE_ROUTES.PLAN_CONFIRMATION,
   ];
 
   public isFullPageLayout: WritableSignal<boolean> = signal(false);

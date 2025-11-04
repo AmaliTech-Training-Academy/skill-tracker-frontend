@@ -40,13 +40,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'interests',
-        loadComponent: () =>
-          import('./features/interest-chips-page/interest-chips-page').then(
-            (c) => c.InterestsPageComponent,
-          ),
-      },
-      {
         path: 'onboarding/interest-selection',
         canActivate: [onboardingGuard],
         loadComponent: () =>
@@ -60,6 +53,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/level-selection/level-selection').then((c) => c.LevelSelection),
       },
+      {
+        path: 'plan-confirmation/:id',
+        // canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/plan-confirmation/plan-confirmation').then((c) => c.PlanConfirmation),
+      }
     ],
   },
   {
