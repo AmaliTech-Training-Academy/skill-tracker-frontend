@@ -15,7 +15,6 @@ import { APP_CONSTANTS } from '../constants/app.constants';
 describe('authGuard', () => {
   let store: MockStore;
   let router: Router;
-  const { APP_ROUTES } = APP_CONSTANTS;
 
   const dummyRoute = {} as ActivatedRouteSnapshot;
   const dummyState = {} as RouterStateSnapshot;
@@ -67,7 +66,7 @@ describe('authGuard', () => {
   it('should redirect to login if user is not authenticated', () => {
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.LOGIN);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.LOGIN);
     expect(result).toBe(false);
   });
 
@@ -85,7 +84,7 @@ describe('authGuard', () => {
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.EMAIL_VERIFICATION);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.EMAIL_VERIFICATION);
     expect(result).toBe(false);
   });
 });
