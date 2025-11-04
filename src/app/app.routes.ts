@@ -58,7 +58,6 @@ export const routes: Routes = [
       },
       {
         path: 'plan-confirmation/:id',
-        // canActivate: [authGuard],
         loadComponent: () =>
           import('./features/plan-confirmation/plan-confirmation').then((c) => c.PlanConfirmation),
       },
