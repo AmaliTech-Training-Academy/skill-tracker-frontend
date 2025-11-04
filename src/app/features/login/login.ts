@@ -89,6 +89,14 @@ export class Login implements OnInit, OnDestroy {
     this.store.dispatch(AuthActions.login({ request }));
   }
 
+   public signInWithGoogle() {
+      this.store.dispatch(AuthActions.socialLogin({ provider: 'google' }));
+    }
+  
+    public signInWithGithub() {
+      this.store.dispatch(AuthActions.socialLogin({ provider: 'github' }));
+    }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
