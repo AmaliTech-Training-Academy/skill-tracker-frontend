@@ -4,7 +4,13 @@ import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-import { AuthService, ErrorHandlerService, APP_CONSTANTS, UserState, ToastService } from '@app/core';
+import {
+  AuthService,
+  ErrorHandlerService,
+  APP_CONSTANTS,
+  UserState,
+  ToastService,
+} from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   registerUser,
@@ -27,7 +33,7 @@ import {
   socialLoginSuccess,
   resendVerification,
   resendVerificationSuccess,
-  resendVerificationFailure
+  resendVerificationFailure,
 } from './auth.actions';
 import * as AuthActions from './auth.actions';
 
@@ -274,7 +280,7 @@ export class AuthEffects {
       ofType(resendVerification),
       switchMap(({ email }) =>
         this.authService.resendVerification(email).pipe(
-          map((response) => AuthActions.resendVerificationSuccess({ message: response.message })),
+          map(({ message }) => AuthActions.resendVerificationSuccess({ message })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(AuthActions.resendVerificationFailure({ error: appError }));
