@@ -51,12 +51,10 @@ export const selectOnboardingError = createSelector(
 );
 export const selectIsLoggingIn = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.isLoggingIn ?? initialAuthState.isLoggingIn,
+  (state: AuthState) => state?.isLoggingIn ?? initialAuthState.isLoggingIn,
 );
 
 export const selectLoginError = createSelector(
   selectAuthState,
-  (state: AuthState | undefined) => state?.loginError ?? initialAuthState.loginError,
+  (state: AuthState) => state?.loginError ?? initialAuthState.loginError,
 );
-
-
