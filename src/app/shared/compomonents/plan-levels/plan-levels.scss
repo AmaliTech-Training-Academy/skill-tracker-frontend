@@ -87,7 +87,7 @@
   }
 
   .stepper {
- @include flex-between;
+ @include flex(row, space-between, center);
   flex-direction: row; 
   gap: 1rem;
   width: 100%;
@@ -95,7 +95,7 @@
   padding: 1rem;
 
   .step {
-    @include flex-column;
+    @include flex(column, center, center);
     align-items: center;
     text-align: center;
 

@@ -113,7 +113,7 @@
     }
 
     .paypal-container {
-      border: 1px solid $gray-white-weak;
+      border: 1px solid $gray-stroke-strong;
       height: 52px;
       border-radius: 5px;
       padding-inline: 10px;
@@ -122,7 +122,7 @@
     }
 
     .credit-card {
-      border: 1px solid $gray-white-weak;
+      border: 1px solid $gray-stroke-strong;
       border-radius: 5px;
       padding-inline: 10px;
 
@@ -140,9 +140,11 @@
     }
 
     .label {
-      display: flex;
+      @include flex(row, center, center, 10px);
       gap: 10px;
     }
+
+    
 
     .pay-button {
       @include button-primary;

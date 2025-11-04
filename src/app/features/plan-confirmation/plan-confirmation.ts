@@ -3,6 +3,7 @@ import {
   OnDestroy,
   ChangeDetectionStrategy,
   OnInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import {
@@ -134,25 +135,35 @@ export class PlanConfirmation implements OnDestroy, OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.loadPlanFromRoute();
-    this.setupStepTracker();
-  }
-
-  private loadPlanFromRoute(): void {
-    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      const planId = params.get('plan-id');
-      if (planId) {
-        const id = parseInt(planId, 10);
-        this.selectedPlan = this.plans.find((plan) => plan.id === id) || null;
-        if (!this.selectedPlan) this.router.navigateByUrl('/');
-      } else {
+    const planId = this.route.snapshot.paramMap.get('plan-id') || 
+                   this.route.snapshot.paramMap.get('id') || 
+                   this.route.snapshot.paramMap.get('planId');
+    console.log('Plan ID from route:', planId);
+    console.log('All params:', this.route.snapshot.paramMap.keys);
+    
+    if (planId) {
+      const id = parseInt(planId, 10);
+      console.log('Parsed ID:', id);
+      this.selectedPlan = this.plans.find((plan) => plan.id === id) || null;
+      console.log('Selected plan:', this.selectedPlan);
+      
+      if (!this.selectedPlan) {
+        console.log('Plan not found, redirecting');
         this.router.navigateByUrl('/');
+      } else {
+        this.cdr.markForCheck();
       }
-    });
+    } else {
+      console.log('No plan ID in route, redirecting');
+      this.router.navigateByUrl('/');
+    }
+    
+    this.setupStepTracker();
   }
 
   private setupStepTracker(): void {
@@ -181,7 +192,7 @@ export class PlanConfirmation implements OnDestroy, OnInit {
   goBack(): void {
     switch (this.currentSection) {
       case Section.ChosenPlan:
-        this.location.back();
+        this.router.navigateByUrl('/');
         break;
       case Section.PayPage:
         this.goToSection(Section.ChosenPlan);
@@ -197,6 +208,7 @@ export class PlanConfirmation implements OnDestroy, OnInit {
   goToSection(section: Section): void {
     this.currentSection = section;
     this.updateCurrentStep();
+    this.cdr.markForCheck();
   }
 
   pay(): void {
