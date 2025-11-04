@@ -25,7 +25,10 @@ export const registerUserFailure = createAction(
 
 export const login = createAction('[Auth/Login] Login', props<{ request: LoginRequest }>());
 
-export const loginSuccess = createAction('[Auth/Login] Login Success', props<{ user: User | null; token: string | null}>());
+export const loginSuccess = createAction(
+  '[Auth/Login] Login Success',
+  props<{ message: string }>(),
+);
 
 export const loginFailure = createAction(
   '[Auth/Login] Login Failure',
@@ -85,4 +88,3 @@ export const socialLoginFailure = createAction(
   '[Auth/Social] Social Login Failure',
   props<{ error: AppError }>(),
 );
-

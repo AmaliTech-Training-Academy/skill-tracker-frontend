@@ -3,10 +3,15 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { User } from '@app/core';
 
-
-import { AuthService, ErrorHandlerService, APP_CONSTANTS, UserState, ToastService } from '@app/core';
+import { LoginSuccessResponse } from '@app/core';
+import {
+  AuthService,
+  ErrorHandlerService,
+  APP_CONSTANTS,
+  UserState,
+  ToastService,
+} from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   registerUser,
@@ -26,7 +31,7 @@ import {
   logoutSuccess,
   socialLogin,
   socialLoginFailure,
-  socialLoginSuccess
+  socialLoginSuccess,
 } from './auth.actions';
 
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
@@ -36,8 +41,7 @@ export class AuthEffects {
   private authService = inject(AuthService);
   private errorHandlerService = inject(ErrorHandlerService);
   private router = inject(Router);
-  private toastService = inject(ToastService)
-
+  private toastService = inject(ToastService);
 
   public registerUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -84,49 +88,45 @@ export class AuthEffects {
     ),
   );
 
- 
-public login$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(login),
-    switchMap(({ request }) =>
-      this.authService.login(request).pipe(
-        map((response) =>
-          loginSuccess({
-            user: { ...(response.data as any) } as User,
-            token: null,
-          })
-        ),
-        catchError((httpError: HttpErrorResponse) => {
-          const appError = this.errorHandlerService.getError(httpError);
-          return of(loginFailure({ error: appError }));
-        })
-      )
-    )
-  )
-);
-
-
-
-public loginOrVerifySuccess$ = createEffect(
-  () =>
+  // auth.effects.ts
+  public login$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(loginSuccess, verifyEmailOtpSuccess),
-      tap(({ user }) => {
-        console.log('Login success effect triggered with user:', user);
-        if (!user) return;
-
-        if (user.state === UserState.ACTIVE) {
-          this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-        } else if (user.state === UserState.REGISTERED) {
-          this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
-        } else {
-          this.router.navigateByUrl(APP_ROUTES.LOGIN);
-        }
-      }),
+      ofType(login),
+      switchMap(({ request }) =>
+        this.authService.login(request).pipe(
+          map((response: LoginSuccessResponse) => loginSuccess({ message: response.data.message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(loginFailure({ error: appError }));
+          }),
+        ),
+      ),
     ),
-  { dispatch: false },
-);
+  );
 
+  public loginOrVerifySuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginSuccess, verifyEmailOtpSuccess),
+        tap((action) => {
+          if ('user' in action) {
+            const user = action.user;
+            if (!user) return;
+
+            if (user.state === UserState.ACTIVE) {
+              this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+            } else if (user.state === UserState.REGISTERED) {
+              this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+            } else {
+              this.router.navigateByUrl(APP_ROUTES.LOGIN);
+            }
+          } else if ('message' in action) {
+            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+          }
+        }),
+      ),
+    { dispatch: false },
+  );
 
   public logout$ = createEffect(() =>
     this.actions$.pipe(
@@ -142,8 +142,6 @@ public loginOrVerifySuccess$ = createEffect(
       ),
     ),
   );
-
-  
 
   public onboardingSuccess$ = createEffect(
     () =>

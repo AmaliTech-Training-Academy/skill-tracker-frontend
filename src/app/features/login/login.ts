@@ -2,7 +2,6 @@ import {
   Component,
   ChangeDetectionStrategy,
   OnDestroy,
-  OnInit,
   Signal,
   inject,
   effect,
@@ -27,7 +26,7 @@ import * as AuthSelectors from '@app/store/auth/auth.selectors';
   styleUrls: ['./login.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Login implements OnInit, OnDestroy {
+export class Login implements OnDestroy {
   private destroy$ = new Subject<void>();
   private fb = inject(FormBuilder);
   private store = inject(Store);
@@ -48,26 +47,21 @@ export class Login implements OnInit, OnDestroy {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
-  ngOnInit(): void {
-    effect(() => {
-      if (this.loginSuccess()) {
-        this.toastService.showSuccess(
-          'Login Successful',
-          'Logged in successfully! Redirecting you to your dashboard...',
-        );
-      }
-    });
+  private loginSuccessEffect = effect(() => {
+    if (this.loginSuccess()) {
+      this.toastService.showSuccess(
+        'Login Successful',
+        'Logged in successfully! Redirecting you to your dashboard...',
+      );
+    }
+  });
 
-    effect(() => {
-      const error = this.loginError();
-      if (error) {
-        this.toastService.showError(
-          'Login Failed',
-          error.message ?? 'Incorrect email or password.',
-        );
-      }
-    });
-  }
+  private loginErrorEffect = effect(() => {
+    const error = this.loginError();
+    if (error) {
+      this.toastService.showError('Login Failed', error.message ?? 'Incorrect email or password.');
+    }
+  });
 
   public login(): void {
     if (this.loginForm.invalid) return;
