@@ -11,7 +11,10 @@
     "test:watchAll": "npx jest --watchAll",
     "test:coverage": "npx jest --coverage",
     "prepare": "husky && husky install",
-    "lint": "ng lint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "prettier": {
     "printWidth": 100,

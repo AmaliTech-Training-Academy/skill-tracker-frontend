@@ -15,7 +15,6 @@ import { APP_CONSTANTS } from '../constants/app.constants';
 describe('onboardingGuard', () => {
   let store: MockStore;
   let router: Router;
-  const { APP_ROUTES } = APP_CONSTANTS;
 
   const dummyRoute = {} as ActivatedRouteSnapshot;
   const dummyState = {} as RouterStateSnapshot;
@@ -67,7 +66,7 @@ describe('onboardingGuard', () => {
   it('should redirect to login if user is not authenticated', () => {
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.LOGIN);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.LOGIN);
     expect(result).toBe(false);
   });
 
@@ -85,16 +84,16 @@ describe('onboardingGuard', () => {
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.DASHBOARD);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
     expect(result).toBe(false);
   });
 
-  it('should redirect to email verification for a REGISTERED user', () => {
+  it('should allow access for a REGISTERED user', () => {
     store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.REGISTERED }));
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.EMAIL_VERIFICATION);
-    expect(result).toBe(false);
+    expect(router.navigateByUrl).not.toHaveBeenCalled();
+    expect(result).toBe(true);
   });
 });

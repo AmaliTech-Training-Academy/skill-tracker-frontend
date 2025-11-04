@@ -7,11 +7,10 @@
   background: $background-white;
   @include flex(column);
   justify-content: center;
-  align-items: stretch; 
+  align-items: stretch;
   width: 100%;
   min-height: 100vh;
 
-  
   .plan-levels {
     width: 90%;
     padding: 10px 0;
@@ -19,7 +18,6 @@
     margin-inline: auto;
   }
 
-  
   &-container,
   .cancellation-policy {
     width: 90%;
@@ -91,7 +89,7 @@
 
   &-btns {
     margin-top: 26px;
-    @include flex(column,16px);
+    @include flex(column, 16px);
     gap: 16px;
 
     button {
@@ -113,7 +111,7 @@
     }
 
     .paypal-container {
-      border: 1px solid $gray-white-weak;
+      border: 1px solid $gray-stroke-strong;
       height: 52px;
       border-radius: 5px;
       padding-inline: 10px;
@@ -122,7 +120,7 @@
     }
 
     .credit-card {
-      border: 1px solid $gray-white-weak;
+      border: 1px solid $gray-stroke-strong;
       border-radius: 5px;
       padding-inline: 10px;
 
@@ -140,7 +138,7 @@
     }
 
     .label {
-      display: flex;
+      @include flex(row, center, center, 10px);
       gap: 10px;
     }
 

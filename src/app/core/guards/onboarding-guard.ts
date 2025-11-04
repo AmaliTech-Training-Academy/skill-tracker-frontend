@@ -6,11 +6,10 @@ import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 import { APP_CONSTANTS } from '../constants/app.constants';
 import { UserState } from '../models/auth.model';
 
-const { APP_ROUTES } = APP_CONSTANTS;
-
 export const onboardingGuard: CanActivateFn = (route, state) => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
+  const { APP_ROUTES } = APP_CONSTANTS;
 
   const user = store.selectSignal(selectCurrentUser)();
 
