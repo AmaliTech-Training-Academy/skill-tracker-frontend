@@ -1,13 +1,24 @@
 import { TestBed } from '@angular/core/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { OnboardingDataService } from './onboarding-data-service';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
 describe('OnboardingDataService', () => {
   let service: OnboardingDataService;
+  let store: MockStore;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [
+        OnboardingDataService,
+        provideMockStore({
+          selectors: [{ selector: selectCurrentUser, value: null }],
+        }),
+      ],
+    });
     service = TestBed.inject(OnboardingDataService);
+    store = TestBed.inject(MockStore);
   });
 
   it('should be created', () => {

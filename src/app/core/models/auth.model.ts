@@ -34,8 +34,8 @@ export enum UserRole {
 
 export enum UserState {
   REGISTERED = 'REGISTERED',
-  VERIFIED = 'VERIFIED',
-  ACTIVE = 'ACTIVE',
+  ONBOARDED = 'ONBOARDED',
+  SUSPENDED = 'SUSPENDED',
 }
 
 export enum TourGuide {
@@ -48,7 +48,7 @@ export enum PremiumTier {
   PREMIUM = 'PREMIUM',
 }
 
-export interface User {
+export interface UserApiResponse {
   id: string;
   email: string;
   username: string | null;
@@ -63,7 +63,30 @@ export interface User {
   lastLoginAt: string | null;
 }
 
-export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+export interface User {
+  id: string;
+  email: string;
+  username: string | null;
+  role: UserRole;
+  state: UserState;
+  tourStatus?: TourGuide;
+  isVerified: boolean;
+  premiumTier: PremiumTier;
+  language: string;
+  timezone: string;
+  updatedAt: string;
+  lastLoginAt: string | null;
+}
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function mapUserApiResponseToUser({ is_verified, ...apiUser }: UserApiResponse): User {
+  return {
+    ...apiUser,
+    isVerified: is_verified,
+  };
+}
+
+export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | null;
 
 export interface UserSkill {
   skillId: string;
@@ -74,4 +97,8 @@ export interface CompleteOnboardingRequest {
   skills: UserSkill[];
 }
 
-export type UserResponse = ApiResponse<User>;
+export interface UpdateUserStateRequest {
+  email: string;
+}
+
+export type UserResponse = ApiResponse<UserApiResponse>;

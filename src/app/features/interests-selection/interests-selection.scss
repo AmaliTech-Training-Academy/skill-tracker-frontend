@@ -69,7 +69,7 @@
     }
 
     &-btns {
-      @include flex($direction: row, $justify: space-between, $align: center);
+      @include flex($direction: row, $justify: space-between, $align: center, $gap: 16px);
     }
   }
 }

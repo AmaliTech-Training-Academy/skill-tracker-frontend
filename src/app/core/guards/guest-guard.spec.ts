@@ -10,7 +10,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { guestGuard } from './guest-guard';
 import { selectIsAuthenticated, selectCurrentUser } from '@app/store/auth/auth.selectors';
 import { APP_CONSTANTS } from '../constants/app.constants';
-import { User, UserState, UserRole, PremiumTier } from '../models/auth.model';
+import { User, UserState, UserRole, PremiumTier, TourGuide } from '../models/auth.model';
 
 describe('guestGuard', () => {
   let store: MockStore;
@@ -18,14 +18,33 @@ describe('guestGuard', () => {
 
   const dummyRoute = {} as ActivatedRouteSnapshot;
   const dummyState = {} as RouterStateSnapshot;
+  const { APP_ROUTES } = APP_CONSTANTS;
 
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => guestGuard(...guardParameters));
+
+  const createMockUser = (overrides: Partial<User>): User => {
+    const defaultUser: User = {
+      id: '1',
+      email: 'test@example.com',
+      username: 'Test User',
+      role: UserRole.USER,
+      state: UserState.REGISTERED,
+      isVerified: false,
+      premiumTier: PremiumTier.FREE,
+      language: 'en',
+      timezone: 'UTC',
+      updatedAt: new Date().toISOString(),
+      lastLoginAt: new Date().toISOString(),
+    };
+    return { ...defaultUser, ...overrides };
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({
+          initialState: {},
           selectors: [
             { selector: selectIsAuthenticated, value: false },
             { selector: selectCurrentUser, value: null },
@@ -55,28 +74,19 @@ describe('guestGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should redirect to dashboard for an authenticated user', () => {
+  it('should BLOCK and redirect to dashboard for an ACTIVE user', () => {
     store.overrideSelector(selectIsAuthenticated, true);
-
-    const mockActiveUser: User = {
-      id: 'mock-id-123',
-      email: 'test@example.com',
-      username: 'mock-user',
-      role: 'USER' as UserRole,
-      state: UserState.ACTIVE,
-      is_verified: true,
-      premiumTier: 'FREE' as PremiumTier,
-      language: 'en',
-      timezone: 'UTC',
-      updatedAt: new Date().toISOString(),
-      lastLoginAt: new Date().toISOString(),
-    };
-
-    store.overrideSelector(selectCurrentUser, mockActiveUser);
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.ONBOARDED,
+        isVerified: true,
+      }),
+    );
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.DASHBOARD);
     expect(result).toBe(false);
   });
 });

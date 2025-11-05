@@ -1,89 +1,99 @@
 @use 'mixins' as *;
 @use 'colors' as *;
 @use 'typography' as *;
-@use 'components' as *;
 
-.skill-card {
-  @include flex(column);
-  background: transparent;
-  padding: 12px 16px;
-  width: fit-content;
-  margin-block: 35px;
+$beginner-bg: #f0fdf4;
+$beginner-text: #166534;
+$beginner-border: #bbf7d0;
+$beginner-selected-bg: #22c55e;
+
+$intermediate-bg: #eef2ff;
+$intermediate-text: #3730a3;
+$intermediate-border: #c7d2fe;
+$intermediate-selected-bg: #4f46e5;
+
+$advanced-bg: #fffbeb;
+$advanced-text: #92400e;
+$advanced-border: #fde68a;
+$advanced-selected-bg: #f59e0b;
+
+$default-bg: #f4f4f5;
+$default-text: #52525b;
+$selected-text: #fff;
+$hover-border: #d1d5db;
+
+.skill-item {
+  @include flex($direction: column, $gap: 1rem);
+  padding: 16px 0;
+  width: 100%;
 }
 
-.skill-header {
-  @include flex(row, center, center, 6px);
-
-  margin-bottom: 10px;
-
-  .icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .label {
-    @include h11;
-    color: $gray-text-strong;
-
-    @media (max-width: 600px) {
-      @include h13;
-    }
-  }
+.skill-info {
+  @include flex($direction: row, $align: center, $gap: 12px);
 }
 
-.levels {
-  display: flex;
-  gap: 8px;
+.skill-icon {
+  font-size: 1.25rem;
 }
 
-.level-chip {
-  padding: 6px 35px;
+.skill-name {
+  @include h11;
+  color: var(--color-gray-text-strong);
+  font-weight: 400;
+}
+
+.level-buttons {
+  @include flex($direction: row, $gap: 8px);
+}
+
+.level-btn {
+  padding: 6px 12px;
   border: 1px solid transparent;
   border-radius: 20px;
-  font-size: 13px;
+  @include h11;
+  font-weight: 400;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-in-out;
+  background-color: #f4f4f5;
+  color: #52525b;
 
-  &:hover {
-    opacity: 0.9;
+  &.beginner {
+    background-color: $beginner-bg;
+    color: $beginner-text;
+    border-color: $beginner-border;
   }
 
-  &[data-level='beginner'] {
-    background-color: $green-fill;
-    color: $green-success;
+  &.intermediate {
+    background-color: $intermediate-bg;
+    color: $intermediate-text;
+    border-color: $intermediate-border;
   }
 
-  &[data-level='intermediate'] {
-    background-color: $brand-fill;
-    color: $brand-stroke-strong;
-  }
-
-  &[data-level='advanced'] {
-    background-color: $orange-fill;
-    color: $orange-text;
+  &.advanced {
+    background-color: $advanced-bg;
+    color: $advanced-text;
+    border-color: $advanced-border;
   }
 
   &.selected {
-    color: $background-white;
+    color: var(--color-white);
 
-    &[data-level='beginner'] {
-      background-color: $green-success;
-      border-color: $green-success;
+    &.beginner {
+      background-color: $beginner-selected-bg;
+      border-color: $beginner-selected-bg;
     }
-
-    &[data-level='intermediate'] {
-      background-color: $brand-text;
-      border-color: $brand-text;
+    &.intermediate {
+      background-color: $intermediate-selected-bg;
+      border-color: $intermediate-selected-bg;
     }
-
-    &[data-level='advanced'] {
-      background-color: $orange-text;
-      border-color: $orange-text;
+    &.advanced {
+      background-color: $advanced-selected-bg;
+      border-color: $advanced-selected-bg;
     }
   }
 
-  @media (max-width: 600px) {
-    padding: 6px 20px;
-    height: 40px;
+  &:not(.selected):hover {
+    filter: brightness(0.95);
+    border-color: $hover-border;
   }
 }

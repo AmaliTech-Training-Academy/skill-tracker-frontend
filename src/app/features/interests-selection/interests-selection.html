@@ -1,31 +1,26 @@
-
-  <section class="interests">
-    <div class="interests-container">
-      
-
-      <header>
-        <h1>Choose up to 5 interests to personalize your experience</h1>
-        <p>
-         Please select up to 5 skills to showcase in your profile. You can add more later if interested
-        </p>
-      </header>
-      <div class="interests-selection">
-     @for (badge of badges; track badge.id) {
-     
-    <app-interests-chip
-      [label]="badge.label"
-      [icon]="badge.icon"
-      [selected]="selectedBadges.includes(badge.id)"
-      (chipSelect)="toggleBadge(badge.id)"
-    />
-  }
-      </div>
-
-      <div class="interests-btns">
-        <button class="interests-btns--skip"  routerLink="/dashboard">Skip</button>
-        <button class="interests-btns--next" routerLink="/onboarding/level-selection">Next</button>
-      </div>
+<section class="interests">
+  <div class="interests-container">
+    <header>
+      <h1>Choose up to 5 interests to personalize your experience</h1>
+      <p>
+        Please select up to 5 skills to showcase in your profile. You can add more later if
+        interested
+      </p>
+    </header>
+    <div class="interests-selection">
+      @for (badge of badges; track badge.id) {
+        <app-interests-chip
+          [label]="badge.label"
+          [icon]="badge.icon"
+          [selected]="selectedBadges.includes(badge.id)"
+          (chipSelect)="toggleBadge(badge.id)"
+        />
+      }
     </div>
-  </section>
 
- 
+    <div class="interests-btns">
+      <button class="interests-btns--skip" (click)="onSkip()">Skip</button>
+      <button class="interests-btns--next" (click)="onNext()">Next</button>
+    </div>
+  </div>
+</section>

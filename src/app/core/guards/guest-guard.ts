@@ -9,15 +9,25 @@ import { UserState } from '../models/auth.model';
 export const guestGuard: CanActivateFn = () => {
   const store = inject(Store<AppState>);
   const router = inject(Router);
-  const { APP_ROUTES } = APP_CONSTANTS;
+  const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 
-  const isAuthenticated = store.selectSignal(AuthSelectors.selectIsAuthenticated);
-  const user = store.selectSignal(AuthSelectors.selectCurrentUser);
+  const user = store.selectSignal(AuthSelectors.selectCurrentUser)();
+  const isAuthenticated = store.selectSignal(AuthSelectors.selectIsAuthenticated)();
 
-  if (isAuthenticated() && user()?.state === UserState.ACTIVE) {
+  if (!isAuthenticated || !user) {
+    return true;
+  }
+
+  if (user.state === UserState.ONBOARDED) {
     router.navigateByUrl(APP_ROUTES.DASHBOARD);
     return false;
   }
 
-  return true;
+  if (user.isVerified) {
+    router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+    return false;
+  }
+
+  router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
+  return false;
 };
