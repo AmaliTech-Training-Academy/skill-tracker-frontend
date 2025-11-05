@@ -18,27 +18,33 @@ $amber-stroke-strong: #eab946;
 $amber-stroke-weak: rgba(230, 168, 23, 0.2);
 $amber-fill: rgba(230, 168, 23, 0.05);
 
+/* Yellow */
+$yellow-stroke-weak: #fff4c6;
+$yellow-stroke-strong: #dd7602;
+
 /* Green */
 $green-success: #358439;
+$green-success-text: #66bb6a;
 $green-text: #43b75d;
 $green-stroke-strong: #63c579;
 $green-stroke-weak: #c5edcd;
 $green-fill: #f2fbf4;
+$green-success-fill: #f3faf3;
 
 /* Gray */
 $gray-text-strong: #4f4f4f;
 $gray-text-weak: #6d6d6d;
 $gray-stroke-strong: #888888;
-$gray-stroke-weak: #E7E7E7;
-$gray-fill: #F6F6F6;
-$gray-white: #FFFFFF;
-
+$gray-stroke-weak: #e7e7e7;
+$gray-light: #d9d9d9;
+$gray-fill: #f6f6f6;
+$gray-white: #ffffff;
 
 /* Orange */
-$orange-text: #F2994A;
-$orange-stroke-strong: #EB7C2A;
-$orange-stroke-weak: #FCD9C1;
-$orange-fill: #FFF4E9;
+$orange-text: #f2994a;
+$orange-stroke-strong: #eb7c2a;
+$orange-stroke-weak: #fcd9c1;
+$orange-fill: #fff4e9;
 
 /* Background */
 $background-dark: #353b45;
@@ -48,3 +54,4 @@ $background-white: #f6fbff;
 
 /* Neutral */
 $white: #ffffff;
+$text-gray: #d1d1d1;
