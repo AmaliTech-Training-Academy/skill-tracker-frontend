@@ -91,7 +91,7 @@ export class LevelSelection implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (this.skills().length === 0) {
+    if (!this.skills().length) {
       this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
     }
 

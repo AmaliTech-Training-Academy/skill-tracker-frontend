@@ -58,7 +58,7 @@
           />
         }
 
-        @if (skills().length === 0) {
+        @if (!skills().length) {
           <p class="empty-state">Please go back and select your interests first.</p>
         }
       </div>
