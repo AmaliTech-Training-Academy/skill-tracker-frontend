@@ -76,4 +76,26 @@ export interface CompleteOnboardingRequest {
 
 export type UserResponse = ApiResponse<User>;
 
-export type LoginSuccessResponse = ApiResponse<LoginSuccessData>;
+export interface LoginUser {
+  id: string;
+  email: string;
+  role: string;
+  state: string;
+  touStatus: string;
+  is_verified: boolean;
+  premiumTier: string;
+  language: string;
+  timezone: string;
+}
+
+export interface Metadata {
+  traceId: string;
+  timestamp: string;
+}
+
+export interface LoginSuccessResponse {
+  success: boolean;
+  message: string;
+  data: LoginUser;
+  metadata: Metadata;
+}

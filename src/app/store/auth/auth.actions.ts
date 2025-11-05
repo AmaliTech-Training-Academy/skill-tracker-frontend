@@ -6,6 +6,8 @@ import {
   VerifyEmailRequest,
   CompleteOnboardingRequest,
   LoginRequest,
+  LoginUser,
+  Metadata,
 } from '@app/core';
 
 export const registerUser = createAction(
@@ -26,8 +28,13 @@ export const registerUserFailure = createAction(
 export const login = createAction('[Auth/Login] Login', props<{ request: LoginRequest }>());
 
 export const loginSuccess = createAction(
-  '[Auth/Login] Login Success',
-  props<{ message: string }>(),
+  '[Auth] Login Success',
+  props<{
+    user: LoginUser;
+    message: string;
+    metadata: Metadata;
+    success: boolean;
+  }>(),
 );
 
 export const loginFailure = createAction(

@@ -1,18 +1,18 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import { LoginSuccessResponse } from '@app/core';
 import {
   AuthService,
   ErrorHandlerService,
   APP_CONSTANTS,
   UserState,
   ToastService,
+  LoginSuccessResponse,
 } from '@app/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   registerUser,
   registerUserSuccess,
@@ -35,13 +35,16 @@ import {
 } from './auth.actions';
 
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
+
 @Injectable()
 export class AuthEffects {
-  private actions$ = inject(Actions);
-  private authService = inject(AuthService);
-  private errorHandlerService = inject(ErrorHandlerService);
-  private router = inject(Router);
-  private toastService = inject(ToastService);
+  constructor(
+    private readonly actions$: Actions,
+    private readonly authService: AuthService,
+    private readonly errorHandlerService: ErrorHandlerService,
+    private readonly router: Router,
+    private readonly toastService: ToastService,
+  ) {}
 
   public registerUser$ = createEffect(() =>
     this.actions$.pipe(
@@ -93,7 +96,9 @@ export class AuthEffects {
       ofType(login),
       switchMap(({ request }) =>
         this.authService.login(request).pipe(
-          map((response: LoginSuccessResponse) => loginSuccess({ message: response.data.message })),
+          map(({ success, message, data, metadata }: LoginSuccessResponse) =>
+            loginSuccess({ user: data, message, metadata, success }),
+          ),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(loginFailure({ error: appError }));
@@ -101,6 +106,34 @@ export class AuthEffects {
         ),
       ),
     ),
+  );
+
+  public loginSuccessToast$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginSuccess),
+        tap(() => {
+          this.toastService.showSuccess(
+            'Login Successful',
+            'Logged in successfully! Redirecting you to your dashboard...',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public loginFailureToast$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            'Login Failed',
+            error?.message ?? 'Incorrect email or password.',
+          );
+        }),
+      ),
+    { dispatch: false },
   );
 
   public loginOrVerifySuccess$ = createEffect(
@@ -146,9 +179,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(completeOnboardingSuccess),
-        tap(() => {
-          this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-        }),
+        tap(() => this.router.navigateByUrl(APP_ROUTES.DASHBOARD)),
       ),
     { dispatch: false },
   );
@@ -175,7 +206,7 @@ export class AuthEffects {
         tap(({ error }) => {
           this.toastService.showError(
             'Signup Failed',
-            error?.message || 'Unable to create your account. Please try again.',
+            error.message || 'Unable to create your account. Please try again.',
           );
         }),
       ),
@@ -186,9 +217,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(logoutSuccess, loginFailure),
-        tap(() => {
-          this.router.navigateByUrl(APP_ROUTES.LOGIN);
-        }),
+        tap(() => this.router.navigateByUrl(APP_ROUTES.LOGIN)),
       ),
     { dispatch: false },
   );
@@ -197,9 +226,7 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(socialLogin),
-        tap(({ provider }) => {
-          this.authService.initiateSocialLogin(provider);
-        }),
+        tap(({ provider }) => this.authService.initiateSocialLogin(provider)),
       ),
     { dispatch: false },
   );
@@ -230,7 +257,7 @@ export class AuthEffects {
         tap(({ error }) => {
           this.toastService.showError(
             'Social Login Failed',
-            error?.message || 'Unable to login with social provider. Please try again.',
+            error.message || 'Unable to login with social provider. Please try again.',
           );
         }),
       ),
