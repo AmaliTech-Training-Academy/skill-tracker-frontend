@@ -1,18 +1,19 @@
-<div class="skill-card">
-  <div class="skill-header">
-    <img [src]="skillIcon" [alt]="skillLabel" class="icon" />
-    <span class="label">{{ skillLabel }}</span>
+<div class="skill-item">
+  <div class="skill-info">
+    <img [src]="skillIcon" class="skill-icon" [alt]="skillName" />
+    <span class="skill-name">{{ skillName }}</span>
   </div>
 
-  <div class="levels">
-    @for (level of levels; track level.name) {
+  <div class="level-buttons">
+    @for (level of levels; track level) {
       <button
-        class="level-chip"
-        [class.selected]="selectedLevel === level.name"
-        [attr.data-level]="level.name.toLowerCase()"
-        (click)="selectLevel(level.name)"
+        type="button"
+        class="level-btn"
+        [class.selected]="selectedLevel === level"
+        [class]="level ? level.toLowerCase() : ''"
+        (click)="onLevelSelect(level)"
       >
-        {{ level.name }}
+        {{ level }}
       </button>
     }
   </div>

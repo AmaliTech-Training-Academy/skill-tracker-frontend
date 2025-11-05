@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { SkillLevel } from '@app/core';
 @Component({
   selector: 'app-skill-level-selector',
   standalone: true,
@@ -10,20 +10,13 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkillLevelSelectorComponent {
-  @Input() public skillLabel = '';
+  @Input({ required: true }) public skillName = '';
   @Input() public skillIcon = '';
-  @Output() public levelSelected = new EventEmitter<string>();
+  @Input() public selectedLevel: SkillLevel = null;
+  @Input() public levels: SkillLevel[] = ['Beginner', 'Intermediate', 'Advanced'];
+  @Output() public levelSelected = new EventEmitter<SkillLevel>();
 
-  public selectedLevel: string | null = null;
-
-  public levels = [
-    { name: 'Beginner', color: '#358439', BackgroundColor: '#F3FAF3', selectedBg: '#358439' },
-    { name: 'Intermediate', color: '#142FE1', BackgroundColor: '#EEF4FF', selectedBg: '#142FE1' },
-    { name: 'Advanced', color: '#DD7602', BackgroundColor: '#FFFBEB', selectedBg: '#DD7602' },
-  ];
-
-  public selectLevel(level: string): void {
-    this.selectedLevel = level;
+  public onLevelSelect(level: SkillLevel): void {
     this.levelSelected.emit(level);
   }
 }

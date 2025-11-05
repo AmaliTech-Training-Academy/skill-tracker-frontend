@@ -8,8 +8,8 @@ import {
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { authGuard } from './auth-guard';
-import { User, UserState, UserRole, PremiumTier, TourGuide } from '../models/auth.model';
-import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { User, UserState, UserRole, PremiumTier } from '../models/auth.model';
+import { selectCurrentUser, selectIsAuthenticated } from '@app/store/auth/auth.selectors';
 import { APP_CONSTANTS } from '../constants/app.constants';
 
 describe('authGuard', () => {
@@ -28,9 +28,8 @@ describe('authGuard', () => {
       email: 'test@example.com',
       username: 'Test User',
       role: UserRole.USER,
-      state: UserState.ACTIVE,
-      tourStatus: TourGuide.COMPLETED,
-      is_verified: true,
+      state: UserState.REGISTERED,
+      isVerified: false,
       premiumTier: PremiumTier.FREE,
       language: 'en',
       timezone: 'UTC',
@@ -44,7 +43,11 @@ describe('authGuard', () => {
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({
-          selectors: [{ selector: selectCurrentUser, value: null }],
+          initialState: {},
+          selectors: [
+            { selector: selectCurrentUser, value: null },
+            { selector: selectIsAuthenticated, value: false },
+          ],
         }),
         {
           provide: Router,
@@ -70,8 +73,15 @@ describe('authGuard', () => {
     expect(result).toBe(false);
   });
 
-  it('should allow access for a verified user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ is_verified: true }));
+  it('should ALLOW access for an ONBOARDED user', () => {
+    store.overrideSelector(selectIsAuthenticated, true);
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.ONBOARDED,
+        isVerified: true,
+      }),
+    );
 
     const result = executeGuard(dummyRoute, dummyState);
 
@@ -79,8 +89,33 @@ describe('authGuard', () => {
     expect(result).toBe(true);
   });
 
+  it('should ALLOW access for a VERIFIED (but not onboarded) user', () => {
+    store.overrideSelector(selectIsAuthenticated, true);
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.REGISTERED,
+        isVerified: true,
+      }),
+    );
+
+    const result = executeGuard(dummyRoute, dummyState);
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith(
+      APP_CONSTANTS.FULL_PAGE_ROUTES.INTEREST_SELECTION,
+    );
+    expect(result).toBe(false);
+  });
+
   it('should redirect to email verification for an unverified user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ is_verified: false }));
+    store.overrideSelector(selectIsAuthenticated, true);
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.REGISTERED,
+        isVerified: false,
+      }),
+    );
 
     const result = executeGuard(dummyRoute, dummyState);
 
