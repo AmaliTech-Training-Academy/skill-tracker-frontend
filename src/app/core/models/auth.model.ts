@@ -34,8 +34,8 @@ export enum UserRole {
 
 export enum UserState {
   REGISTERED = 'REGISTERED',
-  VERIFIED = 'VERIFIED',
-  ACTIVE = 'ACTIVE',
+  ONBOARDED = 'ONBOARDED',
+  SUSPENDED = 'SUSPENDED',
 }
 
 export enum TourGuide {
@@ -63,7 +63,7 @@ export interface User {
   lastLoginAt: string | null;
 }
 
-export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | null;
 
 export interface UserSkill {
   skillId: string;
@@ -72,6 +72,10 @@ export interface UserSkill {
 
 export interface CompleteOnboardingRequest {
   skills: UserSkill[];
+}
+
+export interface UpdateUserStateRequest {
+  email: string;
 }
 
 export type UserResponse = ApiResponse<User>;

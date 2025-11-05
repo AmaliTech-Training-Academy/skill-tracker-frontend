@@ -18,15 +18,15 @@ export const onboardingGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  switch (user.state) {
-    case UserState.VERIFIED:
-    case UserState.REGISTERED:
-      return true;
-    case UserState.ACTIVE:
-      router.navigateByUrl(APP_ROUTES.DASHBOARD);
-      return false;
-    default:
-      router.navigateByUrl(APP_ROUTES.LOGIN);
-      return false;
+  if (user.state === UserState.ONBOARDED) {
+    router.navigateByUrl(APP_ROUTES.DASHBOARD);
+    return false;
   }
+
+  if (user.is_verified) {
+    return true;
+  }
+
+  router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
+  return false;
 };

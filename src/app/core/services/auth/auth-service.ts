@@ -8,6 +8,7 @@ import {
   RegisterRequest,
   VerifyEmailRequest,
   CompleteOnboardingRequest,
+  UpdateUserStateRequest,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
@@ -43,6 +44,12 @@ export class AuthService {
   public completeOnboarding(payload: CompleteOnboardingRequest): Observable<UserResponse> {
     return this.api.post<UserResponse>(API_ENDPOINTS.COMPLETE_ONBOARDING, payload);
   }
+
+  public updateUserOnboardedState({ email }: UpdateUserStateRequest): Observable<UserResponse> {
+    const params = new HttpParams().set('email', email);
+    return this.api.post<UserResponse>(API_ENDPOINTS.UPDATE_USER_STATE, null, { params });
+  }
+
   public logout(): Observable<void> {
     return this.api.post<void>(API_ENDPOINTS.LOGOUT, {});
   }

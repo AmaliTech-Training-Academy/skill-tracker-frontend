@@ -8,7 +8,7 @@ import {
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { onboardingGuard } from './onboarding-guard';
-import { User, UserState, UserRole, PremiumTier, TourGuide } from '../models/auth.model';
+import { User, UserState, UserRole, PremiumTier } from '../models/auth.model';
 import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 import { APP_CONSTANTS } from '../constants/app.constants';
 
@@ -19,6 +19,8 @@ describe('onboardingGuard', () => {
   const dummyRoute = {} as ActivatedRouteSnapshot;
   const dummyState = {} as RouterStateSnapshot;
 
+  const { APP_ROUTES } = APP_CONSTANTS;
+
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => onboardingGuard(...guardParameters));
 
@@ -28,9 +30,8 @@ describe('onboardingGuard', () => {
       email: 'test@example.com',
       username: 'Test User',
       role: UserRole.USER,
-      state: UserState.ACTIVE,
-      tourStatus: TourGuide.COMPLETED,
-      is_verified: true,
+      state: UserState.REGISTERED,
+      is_verified: false,
       premiumTier: PremiumTier.FREE,
       language: 'en',
       timezone: 'UTC',
@@ -71,7 +72,10 @@ describe('onboardingGuard', () => {
   });
 
   it('should allow access for a VERIFIED user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.VERIFIED }));
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({ state: UserState.REGISTERED, is_verified: true }),
+    );
 
     const result = executeGuard(dummyRoute, dummyState);
 
@@ -79,21 +83,33 @@ describe('onboardingGuard', () => {
     expect(result).toBe(true);
   });
 
-  it('should redirect to dashboard for an ACTIVE user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.ACTIVE }));
+  it('should BLOCK and redirect to dashboard for an ONBOARDED user', () => {
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.ONBOARDED,
+        is_verified: true,
+      }),
+    );
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.DASHBOARD);
     expect(result).toBe(false);
   });
 
-  it('should allow access for a REGISTERED user', () => {
-    store.overrideSelector(selectCurrentUser, createMockUser({ state: UserState.REGISTERED }));
+  it('should BLOCK and redirect to email verification for a REGISTERED (and unverified) user', () => {
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.REGISTERED,
+        is_verified: false,
+      }),
+    );
 
     const result = executeGuard(dummyRoute, dummyState);
 
-    expect(router.navigateByUrl).not.toHaveBeenCalled();
-    expect(result).toBe(true);
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.EMAIL_VERIFICATION);
+    expect(result).toBe(false);
   });
 });
