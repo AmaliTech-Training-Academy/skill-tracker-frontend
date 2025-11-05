@@ -39,11 +39,11 @@ const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 @Injectable()
 export class AuthEffects {
   constructor(
-    private readonly actions$: Actions,
-    private readonly authService: AuthService,
-    private readonly errorHandlerService: ErrorHandlerService,
-    private readonly router: Router,
-    private readonly toastService: ToastService,
+    private actions$: Actions,
+    private authService: AuthService,
+    private errorHandlerService: ErrorHandlerService,
+    private router: Router,
+    private toastService: ToastService,
   ) {}
 
   public registerUser$ = createEffect(() =>
