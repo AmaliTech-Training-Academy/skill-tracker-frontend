@@ -68,7 +68,7 @@ export class AuthEffects {
       ofType(verifyEmailOtp),
       switchMap(({ request }) =>
         this.authService.verifyEmail(request).pipe(
-          map(({ data }) => verifyEmailOtpSuccess({ user: data })),
+          map(({ data, message }) => verifyEmailOtpSuccess({ user: data, message })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(verifyEmailOtpFailure({ error: appError }));
@@ -82,7 +82,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(completeOnboarding),
       switchMap(({ request }) =>
-        this.authService.completeOnboarding(request).pipe(
+        this.authService.updateUserOnboardedState(request).pipe(
           map(({ data }) => completeOnboardingSuccess({ user: data })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
@@ -123,32 +123,6 @@ export class AuthEffects {
     ),
   );
 
-  public loginOrVerifySuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginSuccess, verifyEmailOtpSuccess),
-        tap(({ user }) => {
-          if (user.state === UserState.ACTIVE) {
-            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-          } else {
-            this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
-          }
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  public onboardingSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(completeOnboardingSuccess),
-        tap(() => {
-          this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-        }),
-      ),
-    { dispatch: false },
-  );
-
   public registerSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -164,26 +138,45 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public registerFailure$ = createEffect(
+  public loginSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(registerUserFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Signup Failed',
-            error?.message || 'Unable to create your account. Please try again.',
-          );
+        ofType(loginSuccess),
+        tap(({ user }) => {
+          if (user.state === UserState.ONBOARDED) {
+            this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
+            return;
+          }
+
+          if (user.is_verified) {
+            this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+            return;
+          }
+
+          this.router.navigateByUrl(APP_ROUTES.EMAIL_VERIFICATION);
         }),
       ),
     { dispatch: false },
   );
 
-  public logoutOrAuthFailure$ = createEffect(
+  public verifyEmailOtpSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(logoutSuccess, loginFailure),
+        ofType(verifyEmailOtpSuccess),
+        tap(({ message }) => {
+          this.toastService.showSuccess('Email Verified', message);
+          this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public onboardingSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(completeOnboardingSuccess),
         tap(() => {
-          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+          this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
         }),
       ),
     { dispatch: false },
@@ -209,7 +202,7 @@ export class AuthEffects {
             'Login Successful',
             message || 'Successfully logged in with social provider!',
           );
-          if (user.state === UserState.ACTIVE) {
+          if (user.is_verified) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
           } else {
             this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
@@ -312,6 +305,27 @@ export class AuthEffects {
           this.toastService.showError(
             'Resend Failed',
             error?.message || 'Unable to resend verification code. Please try again.',
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public authFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          registerUserFailure,
+          loginFailure,
+          verifyEmailOtpFailure,
+          completeOnboardingFailure,
+          logoutFailure,
+          socialLoginFailure,
+        ),
+        tap(({ error }) => {
+          this.toastService.showError(
+            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
+            error.message,
           );
         }),
       ),

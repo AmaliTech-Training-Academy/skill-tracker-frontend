@@ -1,9 +1,9 @@
-@defer (when isComplete()) {
+@defer (when isSubmitting() || isComplete()) {
   <section class="level">
     <div class="level-container">
       <div class="level--spinner">
-        <img src="assets/checked-circle.png" alt="checked" />
-        @if (isLoading()) {
+        @if (isSubmitting()) {
+          <img src="assets/checked-circle.png" alt="checked" />
           <div class="content">
             <h1>Building Your Personalised Skill Journey</h1>
             <p>
@@ -14,7 +14,8 @@
           <button class="loading-btn" [disabled]="true">
             <div class="custom-spinner"></div>
           </button>
-        } @else {
+        } @else if (isComplete()) {
+          <img src="assets/checked-circle.png" alt="checked" />
           <div class="content">
             <h1>You&apos;re all set</h1>
             <p>
@@ -24,7 +25,7 @@
           </div>
           <button (click)="navigateToDashboard()">
             Go to Dashboard
-            <img class="right-arrow" src="assets/right-arrow.png" alt="right arrow" />
+            <img class{="right-arrow" } src="assets/right-arrow.png" alt="right arrow" />
           </button>
         }
       </div>
@@ -46,9 +47,33 @@
         </p>
       </header>
       <div class="level-selection"></div>
+      <div class="skill-list">
+        @for (skill of skills(); track skill.skillId) {
+          <app-skill-level-selector
+            [skillName]="getSkillInfo(skill.skillId).name"
+            [skillIcon]="getSkillInfo(skill.skillId).icon"
+            [selectedLevel]="skill.level"
+            [levels]="levels"
+            (levelSelected)="onLevelSelect(skill, $event)"
+          />
+        }
+
+        @if (skills().length === 0) {
+          <p class="empty-state">Please go back and select your interests first.</p>
+        }
+      </div>
       <div class="level-btns">
-        <button class="level-btns--skip" (click)="onSkip()">Skip</button>
-        <button class="level-btns--next" (click)="onNext()">Next</button>
+        <button class="level-btns--skip" (click)="onSkip()" [disabled]="isSubmitting()">
+          Skip
+        </button>
+        <button class="level-btns--next" (click)="onNext()" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <span class_comment="You'll need CSS for .spinner"></span>
+            Finishing...
+          } @else {
+            Next
+          }
+        </button>
       </div>
     </div>
   </section>

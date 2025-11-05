@@ -4,7 +4,7 @@ import {
   User,
   AppError,
   VerifyEmailRequest,
-  CompleteOnboardingRequest,
+  UpdateUserStateRequest,
   LoginRequest,
 } from '@app/core';
 
@@ -48,7 +48,7 @@ export const verifyEmailOtp = createAction(
 
 export const verifyEmailOtpSuccess = createAction(
   '[Auth/Verification] Verify Email OTP Success',
-  props<{ user: User }>(),
+  props<{ user: User; message: string }>(),
 );
 
 export const verifyEmailOtpFailure = createAction(
@@ -58,7 +58,7 @@ export const verifyEmailOtpFailure = createAction(
 
 export const completeOnboarding = createAction(
   '[Onboarding] Complete Onboarding',
-  props<{ request: CompleteOnboardingRequest }>(),
+  props<{ request: UpdateUserStateRequest }>(),
 );
 
 export const completeOnboardingSuccess = createAction(
