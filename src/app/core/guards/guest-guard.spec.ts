@@ -30,7 +30,7 @@ describe('guestGuard', () => {
       username: 'Test User',
       role: UserRole.USER,
       state: UserState.REGISTERED,
-      is_verified: false,
+      isVerified: false,
       premiumTier: PremiumTier.FREE,
       language: 'en',
       timezone: 'UTC',
@@ -80,7 +80,7 @@ describe('guestGuard', () => {
       selectCurrentUser,
       createMockUser({
         state: UserState.ONBOARDED,
-        is_verified: true,
+        isVerified: true,
       }),
     );
 

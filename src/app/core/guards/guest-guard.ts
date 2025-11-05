@@ -23,7 +23,7 @@ export const guestGuard: CanActivateFn = () => {
     return false;
   }
 
-  if (user.is_verified) {
+  if (user.isVerified) {
     router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
     return false;
   }

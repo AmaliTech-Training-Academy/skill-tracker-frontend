@@ -31,7 +31,7 @@ describe('onboardingGuard', () => {
       username: 'Test User',
       role: UserRole.USER,
       state: UserState.REGISTERED,
-      is_verified: false,
+      isVerified: false,
       premiumTier: PremiumTier.FREE,
       language: 'en',
       timezone: 'UTC',
@@ -74,7 +74,7 @@ describe('onboardingGuard', () => {
   it('should allow access for a VERIFIED user', () => {
     store.overrideSelector(
       selectCurrentUser,
-      createMockUser({ state: UserState.REGISTERED, is_verified: true }),
+      createMockUser({ state: UserState.REGISTERED, isVerified: true }),
     );
 
     const result = executeGuard(dummyRoute, dummyState);
@@ -88,7 +88,7 @@ describe('onboardingGuard', () => {
       selectCurrentUser,
       createMockUser({
         state: UserState.ONBOARDED,
-        is_verified: true,
+        isVerified: true,
       }),
     );
 
@@ -103,7 +103,7 @@ describe('onboardingGuard', () => {
       selectCurrentUser,
       createMockUser({
         state: UserState.REGISTERED,
-        is_verified: false,
+        isVerified: false,
       }),
     );
 

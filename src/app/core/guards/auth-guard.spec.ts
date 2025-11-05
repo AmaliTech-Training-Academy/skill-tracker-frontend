@@ -29,7 +29,7 @@ describe('authGuard', () => {
       username: 'Test User',
       role: UserRole.USER,
       state: UserState.REGISTERED,
-      is_verified: false,
+      isVerified: false,
       premiumTier: PremiumTier.FREE,
       language: 'en',
       timezone: 'UTC',
@@ -79,7 +79,7 @@ describe('authGuard', () => {
       selectCurrentUser,
       createMockUser({
         state: UserState.ONBOARDED,
-        is_verified: true,
+        isVerified: true,
       }),
     );
 
@@ -95,7 +95,7 @@ describe('authGuard', () => {
       selectCurrentUser,
       createMockUser({
         state: UserState.REGISTERED,
-        is_verified: true,
+        isVerified: true,
       }),
     );
 
@@ -113,7 +113,7 @@ describe('authGuard', () => {
       selectCurrentUser,
       createMockUser({
         state: UserState.REGISTERED,
-        is_verified: false,
+        isVerified: false,
       }),
     );
 

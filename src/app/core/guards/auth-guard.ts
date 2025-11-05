@@ -23,7 +23,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  if (user.is_verified) {
+  if (user.isVerified) {
     router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
     return false;
   }

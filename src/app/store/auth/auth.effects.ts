@@ -10,6 +10,7 @@ import {
   APP_CONSTANTS,
   UserState,
   ToastService,
+  mapUserApiResponseToUser,
 } from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -53,7 +54,7 @@ export class AuthEffects {
       ofType(registerUser),
       switchMap(({ request }) =>
         this.authService.register(request).pipe(
-          map(({ data }) => registerUserSuccess({ user: data })),
+          map(({ data }) => registerUserSuccess({ user: mapUserApiResponseToUser(data) })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(registerUserFailure({ error: appError }));
@@ -68,7 +69,9 @@ export class AuthEffects {
       ofType(verifyEmailOtp),
       switchMap(({ request }) =>
         this.authService.verifyEmail(request).pipe(
-          map(({ data, message }) => verifyEmailOtpSuccess({ user: data, message })),
+          map(({ data, message }) =>
+            verifyEmailOtpSuccess({ user: mapUserApiResponseToUser(data), message }),
+          ),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(verifyEmailOtpFailure({ error: appError }));
@@ -83,7 +86,7 @@ export class AuthEffects {
       ofType(completeOnboarding),
       switchMap(({ request }) =>
         this.authService.updateUserOnboardedState(request).pipe(
-          map(({ data }) => completeOnboardingSuccess({ user: data })),
+          map(({ data }) => completeOnboardingSuccess({ user: mapUserApiResponseToUser(data) })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(completeOnboardingFailure({ error: appError }));
@@ -98,7 +101,7 @@ export class AuthEffects {
       ofType(login),
       switchMap(({ request }) =>
         this.authService.login(request).pipe(
-          map(({ data }) => loginSuccess({ user: data })),
+          map(({ data }) => loginSuccess({ user: mapUserApiResponseToUser(data) })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(loginFailure({ error: appError }));
@@ -148,7 +151,7 @@ export class AuthEffects {
             return;
           }
 
-          if (user.is_verified) {
+          if (user.isVerified) {
             this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
             return;
           }
@@ -202,7 +205,7 @@ export class AuthEffects {
             'Login Successful',
             message || 'Successfully logged in with social provider!',
           );
-          if (user.is_verified) {
+          if (user.isVerified) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
           } else {
             this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);

@@ -23,7 +23,7 @@ export const onboardingGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  if (user.is_verified) {
+  if (user.isVerified) {
     return true;
   }
 

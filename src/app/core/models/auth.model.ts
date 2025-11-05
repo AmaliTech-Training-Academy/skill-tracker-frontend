@@ -48,7 +48,7 @@ export enum PremiumTier {
   PREMIUM = 'PREMIUM',
 }
 
-export interface User {
+export interface UserApiResponse {
   id: string;
   email: string;
   username: string | null;
@@ -61,6 +61,38 @@ export interface User {
   timezone: string;
   updatedAt: string;
   lastLoginAt: string | null;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  username: string | null;
+  role: UserRole;
+  state: UserState;
+  tourStatus?: TourGuide;
+  isVerified: boolean;
+  premiumTier: PremiumTier;
+  language: string;
+  timezone: string;
+  updatedAt: string;
+  lastLoginAt: string | null;
+}
+
+export function mapUserApiResponseToUser(apiUser: UserApiResponse): User {
+  return {
+    id: apiUser.id,
+    email: apiUser.email,
+    username: apiUser.username,
+    role: apiUser.role,
+    state: apiUser.state,
+    tourStatus: apiUser.tourStatus,
+    isVerified: apiUser.is_verified,
+    premiumTier: apiUser.premiumTier,
+    language: apiUser.language,
+    timezone: apiUser.timezone,
+    updatedAt: apiUser.updatedAt,
+    lastLoginAt: apiUser.lastLoginAt,
+  };
 }
 
 export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | null;
@@ -78,4 +110,4 @@ export interface UpdateUserStateRequest {
   email: string;
 }
 
-export type UserResponse = ApiResponse<User>;
+export type UserResponse = ApiResponse<UserApiResponse>;
