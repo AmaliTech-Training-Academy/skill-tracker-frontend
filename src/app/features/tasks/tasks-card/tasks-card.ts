@@ -1,4 +1,5 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { Task } from '@app/core/models/tasks-model';
 
 @Component({
@@ -6,6 +7,8 @@ import { Task } from '@app/core/models/tasks-model';
   templateUrl: './tasks-card.html',
   styleUrl: './tasks-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [NgClass],
+  standalone: true,
 })
 export class TasksCard {
   public task = input.required<Task>();
@@ -13,6 +16,19 @@ export class TasksCard {
 
   public onStartTask(): void {
     this.startTask.emit(this.task().id);
+  }
+
+  public getIconClass(icon: string): Record<string, boolean> {
+    const classMap: Record<string, string> = {
+      abc: 'icon-abc',
+      pencil: 'icon-pencil',
+    };
+
+    const className = classMap[icon] || 'icon-abc';
+
+    return {
+      [className]: true,
+    };
   }
 
   public getIconPath(icon: string): string {
