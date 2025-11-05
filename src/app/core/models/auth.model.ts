@@ -78,20 +78,11 @@ export interface User {
   lastLoginAt: string | null;
 }
 
-export function mapUserApiResponseToUser(apiUser: UserApiResponse): User {
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function mapUserApiResponseToUser({ is_verified, ...apiUser }: UserApiResponse): User {
   return {
-    id: apiUser.id,
-    email: apiUser.email,
-    username: apiUser.username,
-    role: apiUser.role,
-    state: apiUser.state,
-    tourStatus: apiUser.tourStatus,
-    isVerified: apiUser.is_verified,
-    premiumTier: apiUser.premiumTier,
-    language: apiUser.language,
-    timezone: apiUser.timezone,
-    updatedAt: apiUser.updatedAt,
-    lastLoginAt: apiUser.lastLoginAt,
+    ...apiUser,
+    isVerified: is_verified,
   };
 }
 
