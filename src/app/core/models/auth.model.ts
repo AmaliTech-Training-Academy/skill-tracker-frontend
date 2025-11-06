@@ -97,11 +97,7 @@ export interface CompleteOnboardingRequest {
   skills: UserSkill[];
 }
 
-export interface TourStatusRequest {
-  email: string;
-}
-
-export interface UpdateUserStateRequest {
+export interface UserEmailRequest {
   email: string;
 }
 

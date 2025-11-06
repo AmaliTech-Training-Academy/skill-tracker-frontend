@@ -75,7 +75,6 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
         on: 'right',
       },
       buttons: [STEPS_BUTTONS.cancel, STEPS_BUTTONS.next],
-      classes: 'custom-class-name-1 custom-class-name-2',
       id: 'task-link',
       title: 'Tasks',
       text: 'Track and complete coding challenges and learning activities. Progress through tasks to build your skills step by step.',
@@ -86,7 +85,6 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
         on: 'right',
       },
       buttons: [STEPS_BUTTONS.cancel, STEPS_BUTTONS.next],
-      classes: 'custom-class-name-1 custom-class-name-2',
       id: 'leaderboard-link',
       title: 'Leaderboard',
       text: 'See how you rank against other learners. Climb the leaderboard by completing tasks and earning points.',
@@ -97,7 +95,6 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
         on: 'right',
       },
       buttons: [STEPS_BUTTONS.cancel, STEPS_BUTTONS.next],
-      classes: 'custom-class-name-1 custom-class-name-2',
       id: 'skill-arena-link',
       title: 'Skill Arena',
       text: 'Test your abilities in real-time challenges. Compete, practice, and sharpen your skills in a fun environment.',
@@ -111,7 +108,6 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
       action: () => {
         store.dispatch(updateTourStatus());
       },
-      classes: 'custom-class-name-1 custom-class-name-2',
       id: 'skill-arena-link',
       title: 'Community',
       text: 'Join or create groups to learn together. Collaborate, share progress, and support each other on your skill journey.',

@@ -13,7 +13,7 @@ import {
   ToastService,
   mapUserApiResponseToUser,
   AppErrorType,
-  TourStatusRequest,
+  UserEmailRequest,
   User,
 } from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -151,13 +151,13 @@ export class AuthEffects {
           );
         }
 
-        const request: TourStatusRequest = { email: user.email };
+        const request: UserEmailRequest = { email: user.email };
 
         return this.authService.updateTourStatus(request).pipe(
-          map((response) => {
+          map(({ data }) => {
             const updatedUser: User = {
               ...user,
-              tourStatus: response.data.tourStatus,
+              tourStatus: data.tourStatus,
             };
             return updateTourStatusSuccess({ user: updatedUser });
           }),

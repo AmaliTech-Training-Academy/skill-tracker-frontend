@@ -4,7 +4,7 @@ import {
   CompleteOnboardingRequest,
   UserSkill,
   SkillLevel,
-  UpdateUserStateRequest,
+  UserEmailRequest,
 } from '@app/core/models/auth.model';
 import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
@@ -46,7 +46,7 @@ export class OnboardingDataService {
     return { skills: completedSkills };
   }
 
-  public getUserStatePayLoad(skipped = false): UpdateUserStateRequest {
+  public getUserStatePayLoad(skipped = false): UserEmailRequest {
     const email = this.currentUser()?.email ?? '';
     return { email };
   }
