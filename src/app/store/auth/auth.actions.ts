@@ -100,3 +100,15 @@ export const resendVerificationFailure = createAction(
   '[Auth/Verification] Resend Verification Failure',
   props<{ error: AppError }>(),
 );
+
+export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
+
+export const updateTourStatusSuccess = createAction(
+  '[Auth/Tour] Update Tour Status Success',
+  props<{ user: User }>(),
+);
+
+export const updateTourStatusFailure = createAction(
+  '[Auth/Tour] Update Tour Status Failure',
+  props<{ error: AppError }>(),
+);

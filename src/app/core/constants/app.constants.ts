@@ -25,5 +25,6 @@ export const APP_CONSTANTS = {
     UPDATE_USER_STATE: '/auth/update_user_state',
     SOCIAL_LOGIN: '/oauth2/authorization',
     RESEND_VERIFICATION: '/auth/resend-verification',
+    UPDATE_TOUR_STATUS: '/auth/update_tour_status',
   },
 } as const;

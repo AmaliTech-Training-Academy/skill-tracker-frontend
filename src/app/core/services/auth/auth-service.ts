@@ -8,6 +8,7 @@ import {
   RegisterRequest,
   VerifyEmailRequest,
   CompleteOnboardingRequest,
+  TourStatusRequest,
   UpdateUserStateRequest,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '../../constants/app.constants';
@@ -56,5 +57,10 @@ export class AuthService {
 
   public initiateSocialLogin(provider: string): void {
     window.location.href = `${this.baseUrl}${API_ENDPOINTS.SOCIAL_LOGIN}/${provider}`;
+  }
+
+  public updateTourStatus({ email }: TourStatusRequest): Observable<UserResponse> {
+    const params = new HttpParams().set('email', email);
+    return this.api.post<UserResponse>(API_ENDPOINTS.UPDATE_TOUR_STATUS, null, { params });
   }
 }

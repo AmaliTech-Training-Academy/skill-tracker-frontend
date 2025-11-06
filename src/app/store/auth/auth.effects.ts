@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import {
@@ -11,6 +12,9 @@ import {
   UserState,
   ToastService,
   mapUserApiResponseToUser,
+  AppErrorType,
+  TourStatusRequest,
+  User,
 } from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
@@ -35,8 +39,12 @@ import {
   resendVerification,
   resendVerificationSuccess,
   resendVerificationFailure,
+  updateTourStatus,
+  updateTourStatusFailure,
+  updateTourStatusSuccess,
 } from './auth.actions';
-import * as AuthActions from './auth.actions';
+import { selectCurrentUser } from './auth.selectors';
+import { AppState } from '../app.state';
 
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 @Injectable()
@@ -47,6 +55,7 @@ export class AuthEffects {
     private errorHandlerService: ErrorHandlerService,
     private router: Router,
     private toastService: ToastService,
+    private store: Store<AppState>,
   ) {}
 
   public registerUser$ = createEffect(() =>
@@ -123,6 +132,41 @@ export class AuthEffects {
           }),
         ),
       ),
+    ),
+  );
+
+  public updateTourStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateTourStatus),
+      withLatestFrom(this.store.select(selectCurrentUser)),
+      switchMap(([_, user]) => {
+        if (!user) {
+          return of(
+            updateTourStatusFailure({
+              error: {
+                message: 'User not found.',
+                type: AppErrorType.AUTH,
+              },
+            }),
+          );
+        }
+
+        const request: TourStatusRequest = { email: user.email };
+
+        return this.authService.updateTourStatus(request).pipe(
+          map((response) => {
+            const updatedUser: User = {
+              ...user,
+              tourStatus: response.data.tourStatus,
+            };
+            return updateTourStatusSuccess({ user: updatedUser });
+          }),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(updateTourStatusFailure({ error: appError }));
+          }),
+        );
+      }),
     ),
   );
 
@@ -276,10 +320,10 @@ export class AuthEffects {
       ofType(resendVerification),
       switchMap(({ email }) =>
         this.authService.resendVerification(email).pipe(
-          map(({ message }) => AuthActions.resendVerificationSuccess({ message })),
+          map(({ message }) => resendVerificationSuccess({ message })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
-            return of(AuthActions.resendVerificationFailure({ error: appError }));
+            return of(resendVerificationFailure({ error: appError }));
           }),
         ),
       ),
@@ -324,6 +368,7 @@ export class AuthEffects {
           completeOnboardingFailure,
           logoutFailure,
           socialLoginFailure,
+          updateTourStatusFailure,
         ),
         tap(({ error }) => {
           this.toastService.showError(
