@@ -7,109 +7,102 @@
         </div>
 
         <div class="progress-bar">
-            <progress value="10" max="100"></progress>
+            <progress [value]="progressValue" max="100"></progress>
         </div>
     </div>
 
-    <div class="group1">
-        <div class="timer1">
-            <label class="timer-text"><i>15:00</i></label>
-            <img src="assets/timer-clock.png" alt="timer icon">
-        </div>
-
-        <div class="questions-content">
-            <div class="task-title-level-data">
-                <h1 class="task-title">Web Development Knowledge Check</h1>
-
-                <div class="task-level">
-                    <label class="level" for="">Beginer</label>
-                    <div class="point">+50 XP</div>
-
-                    <div class="timer">
-                        <label class="timer-text"><i>15:00</i></label>
-                        <img src="assets/timer-clock.png" alt="timer icon">
-                    </div>
-                </div>
+    @if (!isQuizComplete) {
+        <div class="group1">
+            <div class="timer1">
+                <label class="timer-text"><i>{{ formattedTime }}</i></label>
+                <img src="assets/timer-clock.png" alt="timer icon">
             </div>
 
-            <div class="question-track-level">
-                <p>Question 1 out of 10</p>
-                <label class="level" for="">Beginer</label>
-            </div>
+            <div class="questions-content">
+                <div class="task-title-level-data">
+                    <h1 class="task-title">Web Development Knowledge Check</h1>
 
-            <div class="question-answers">
-                <h1 class="question">
-                    What will the following Python code print?
-                    x=5
-                    if x > 3:
-                        print("A")
-                    else:
-                        print("B")
-                </h1>
+                    <div class="task-level">
+                        <label class="level" for="">Beginner</label>
+                        <div class="point">+50 XP</div>
 
-                <div class="question-options">
-                    <div class="option">
-                        <label for="">A</label>
-                        <p class="answer">I am a boy okay?</p>
+                        <div class="timer">
+                            <label class="timer-text"><i>{{ formattedTime }}</i></label>
+                            <img src="assets/timer-clock.png" alt="timer icon">
+                        </div>
                     </div>
                 </div>
 
-                <div class="question-options">
-                    <div class="option">
-                        <label for="">B</label>
-                        <p class="answer">I am a boy okay?</p>
+                <div class="question-track-level">
+                    <p>{{ questionTrack }}</p>
+                    <label class="level" for="">Beginner</label>
+                </div>
+
+                <div class="question-answers">
+                    <h1 class="question">{{ currentQuestion.question }}</h1>
+
+                    @for (option of currentQuestion.options; track $index) {
+                        <div class="question-options">
+                            <div 
+                                class="option" 
+                                [class.selected]="isOptionSelected($index)"
+                                (click)="selectOption($index)">
+                                <label>{{ getOptionLabel($index) }}</label>
+                                <p class="answer">{{ option }}</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="hint">
+                    <img src="assets/hint-bulb.png" alt="">
+                    <div class="hint-text">
+                        <p>Hint: <br> {{ currentQuestion.hint }}</p>
                     </div>
                 </div>
 
-                <div class="question-options">
-                    <div class="option">
-                        <label for="">C</label>
-                        <p class="answer">I am a boy okay?</p>
-                    </div>
+                <div class="buttons">
+                    <button 
+                        class="previous" 
+                        (click)="previousQuestion()"
+                        [disabled]="!canGoPrevious">
+                        < <label for="">Previous</label>
+                    </button>
+                    <button 
+                        class="next"
+                        (click)="nextQuestion()"
+                        [disabled]="!canGoNext">
+                        <label for="">Next</label> >
+                    </button>
                 </div>
-
-                <div class="question-options">
-                    <div class="option">
-                        <label for="">D</label>
-                        <p class="answer">I am a boy okay?</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hint">
-                <img src="assets/hint-bulb.png" alt="">
-                <div class="hint-text">
-                    <p>Hint: <br> Check if the condition x > 3 is True or False.</p>
-                </div>
-            </div>
-
-            <div class="buttons">
-                <button class="previous">
-                    < <label for="">Previous</label>
-                </button>
-                <button class="next">
-                    <label for="">Next</label> >
-                </button>
             </div>
         </div>
-    </div>
+    }
 
-    <div class="group2">
-        <div class="quiz-complete">
-            <img src="assets/checked-circle.png" alt="checked circle">
-            <p>Quiz Completed</p>
-            <p class="mark">7/10</p>
-            <p class="outof">You got 7 out of 10 questions correct</p>
-            <p>Use the arrows to review your questions</p>
+    @if (isQuizComplete) {
+        <div class="group2">
+            <div class="quiz-complete">
+                <img src="assets/checked-circle.png" alt="checked circle">
+                <p>Quiz Completed</p>
+                <p class="mark">{{ score }}/{{ questions.length }}</p>
+                <p class="outof">You got {{ score }} out of {{ questions.length }} questions correct</p>
+                <p>Use the arrows to review your questions</p>
 
-            <div class="buttons">
-                <button class="previous">
-                    < <label for="">Previous</label>
-                </button>
-                <button class="next">
-                    <label for="">Next</label> >
-                </button>
+                <div class="buttons">
+                    <button 
+                        class="previous"
+                        (click)="previousQuestion()"
+                        [disabled]="!canGoPrevious">
+                        < <label for="">Previous</label>
+                    </button>
+                    <button 
+                        class="next"
+                        (click)="nextQuestion()"
+                        [disabled]="currentQuestionIndex >= questions.length - 1">
+                        <label for="">Next</label> >
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>
