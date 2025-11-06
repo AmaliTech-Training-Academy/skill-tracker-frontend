@@ -178,12 +178,12 @@
 
         /* NEW STYLE: Correct Answer Highlight */
         &.correct-answer {
-            border: 2px solid $green-success; /* Green border */
+            border: 1px solid $green-success; /* Green border */
             background-color: $green-fill; /* Light green background */
             
             label {
-                background-color: $green-success; /* Green circle */
-                color: $gray-white;
+                background-color: transparent; /* Green circle */
+                color: $gray-text-strong;
             }
             .answer {
                 color: $gray-text-strong; /* Ensure text is visible */
@@ -208,19 +208,20 @@
   
   /* NEW STYLE: Explanation Styling (visible on review) */
   .explanation {
-    @include flex(row, flex-start, flex-start, 10px);
+    @include flex(row, flex-start, center, 10px);
     width: 100%;
+    height: 61px;
     margin-inline: auto;
     margin-block: 40px;
     @include h13;
     color: $green-success;
-    background-color: $green-fill;
+    background-color: $brand-fill;
     padding: 10px;
     border-radius: 2px;
     
     .explanation-text {
         p {
-            color: $gray-text-strong;
+            color: $brand-text;
         }
     }
   }

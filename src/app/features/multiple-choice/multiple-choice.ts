@@ -96,6 +96,8 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   get currentQuestion(): Question {
+    // This getter will throw an error if index === length, so use with caution
+    // The HTML should guard against this check
     return this.questions[this.currentQuestionIndex];
   }
 
@@ -118,28 +120,37 @@ export class MultipleChoice implements OnInit, OnDestroy {
     return this.selectedAnswers[this.currentQuestionIndex] === optionIndex;
   }
   
-  // New method: Check if an option is the correct answer
+  // Method to check if an option is the correct answer
   isCorrectAnswer(optionIndex: number): boolean {
     return this.currentQuestion.correctAnswer === optionIndex;
   }
 
   nextQuestion() {
-    // In quiz mode: advance if not the last question. If it is the last, complete the quiz.
     if (!this.isQuizComplete) {
+      // Quiz Mode: Advance or Complete
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
       } else {
         this.completeQuiz();
       }
-    // In review mode: advance if not past the last question (index < length)
-    } else if (this.currentQuestionIndex < this.questions.length) {
-      this.currentQuestionIndex++;
+    } else {
+      // Review Mode: Advance, or start review from the first question if currently on the summary screen
+      if (this.currentQuestionIndex === this.questions.length) {
+        // We are on the summary screen, clicking next starts the review from Q1
+        this.currentQuestionIndex = 0;
+      } else if (this.currentQuestionIndex < this.questions.length - 1) {
+        // We are reviewing, advance to the next question
+        this.currentQuestionIndex++;
+      } else if (this.currentQuestionIndex === this.questions.length - 1) {
+        // We are reviewing the last question, clicking next goes back to the summary screen
+        this.currentQuestionIndex++;
+      }
     }
   }
 
   previousQuestion() {
-    // In quiz mode: advance if not the first question.
-    // In review mode: advance if index > 0 (to get from summary screen back to the last question)
+    // In any mode, go back one question, provided we are not past the first question.
+    // If on the summary screen (index == length), this takes us to the last question (index == length - 1).
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     }
@@ -151,11 +162,12 @@ export class MultipleChoice implements OnInit, OnDestroy {
 
   get canGoNext(): boolean {
     // In quiz mode, can go next only if an answer is selected.
-    // In review mode, can go next until the last question's index (length - 1). The summary screen handles the final 'next'.
-    if (this.isQuizComplete) {
-        return this.currentQuestionIndex < this.questions.length;
+    if (!this.isQuizComplete) {
+        return this.selectedAnswers[this.currentQuestionIndex] !== null;
     }
-    return this.selectedAnswers[this.currentQuestionIndex] !== null;
+    // In review mode, we can always click next unless we are past the last question index (i.e., on the summary screen).
+    // However, for the summary screen (index === length), we explicitly enable 'Next' to start review.
+    return this.currentQuestionIndex <= this.questions.length;
   }
 
   completeQuiz() {
