@@ -11,6 +11,8 @@ export const selectAllPreviousTasks = createSelector(
   (state) => state.previousTasks,
 );
 
+export const selectSkills = createSelector(selectTasksState, (state) => state.skills);
+
 export const selectSkillFilter = createSelector(selectTasksState, (state) => state.selectedSkill);
 
 export const selectTimeRangeFilter = createSelector(

@@ -3,6 +3,7 @@ import { Task } from '@app/core/models/tasks-model';
 export interface TasksState {
   todayTasks: Task[];
   previousTasks: Task[];
+  skills: string[];
   selectedSkill: string;
   selectedTimeRange: string;
   loading: boolean;
@@ -18,7 +19,7 @@ export const initialTasksState: TasksState = {
       description: 'Assess your knowledge in this skill area.',
       skill: 'HTML',
       difficulty: 'Beginner',
-      xp: 0,
+      xp: 50,
       time: '15 min',
       status: 'Pending',
     },
@@ -29,7 +30,7 @@ export const initialTasksState: TasksState = {
       description: 'Explain a key concept in your own words.',
       skill: 'Data Structures',
       difficulty: 'Beginner',
-      xp: 0,
+      xp: 150,
       time: '15 min',
       status: 'Pending',
     },
@@ -58,6 +59,7 @@ export const initialTasksState: TasksState = {
       status: 'Completed',
     },
   ],
+  skills: ['All', 'HTML', 'CSS', 'UI/UX Design', 'Data Structures'],
   selectedSkill: 'All',
   selectedTimeRange: 'Yesterday',
   loading: false,

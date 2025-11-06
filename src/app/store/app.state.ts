@@ -6,6 +6,7 @@ import { DashboardState } from './dashboard/dashboard.state';
 
 import { uiReducer } from './ui';
 import { authReducer } from './auth/auth.reducer';
+import { tasksReducer } from './tasks/tasks.reducer';
 
 export interface AppState {
   auth: AuthState;
@@ -18,4 +19,5 @@ export interface AppState {
 export const appState = {
   ui: uiReducer,
   auth: authReducer,
+  tasks: tasksReducer,
 };
