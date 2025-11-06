@@ -1,20 +1,4 @@
 <div class="onboarding-login">
-
-  <!-- implementation of the toaster component later -->
-  <div class="alert-container">
-    @if (successMessage) {
-      <div class="alert alert-success" role="alert">
-        {{ successMessage }}
-      </div>
-    }
-
-    @if (errorMessage) {
-      <div class="alert alert-danger" role="alert">
-        {{ errorMessage }}
-      </div>
-    }
-  </div>
-
   <h1>Welcome Back 👋</h1>
   <p>Sign in to continue your personalized learning journey</p>
 
@@ -37,25 +21,23 @@
 
     <a routerLink="/forgot-password">Forgot Password?</a>
 
-    <button class="login-button" type="submit" [disabled]="loginForm.invalid || loading">
-      {{ loading ? 'Logging in...' : 'Login' }}
+    <button class="login-button" type="submit" [disabled]="loginForm.invalid || loading()">
+      {{ loading() ? 'Logging in...' : 'Login' }}
     </button>
   </form>
 
-  <p class="login-donthave-account">
-    Don't have an account? <a routerLink="/signup">Sign Up</a>
-  </p>
+  <p class="login-donthave-account">Don't have an account? <a routerLink="/signup">Sign Up</a></p>
 
   <p class="login-or">or</p>
 
   <div class="login-other--login">
-    <button type="button" class="google-login">
+    <button type="button" class="google-login" (click)="signInWithGoogle()">
       <img src="assets/google-icon.png" alt="google logo" />
       <p class="login-alternative--text">Sign in with Google</p>
     </button>
 
-    <button type="button" class="facebook-login">
-      <img src="assets/github-icon.png" alt="apple logo" />
+    <button type="button" class="facebook-login" (click)="signInWithGithub()">
+      <img src="assets/github-icon.png" alt="github logo" />
       <p class="login-alternative--text">Sign in with Github</p>
     </button>
   </div>
