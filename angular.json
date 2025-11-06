@@ -28,7 +28,7 @@
               },
               "src/assets"
             ],
-            "styles": ["src/styles.scss"],
+            "styles": ["node_modules/shepherd.js/dist/css/shepherd.css", "src/styles.scss"],
             "stylePreprocessorOptions": {
               "includePaths": ["src/styles"]
             }

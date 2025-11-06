@@ -97,7 +97,7 @@ export interface CompleteOnboardingRequest {
   skills: UserSkill[];
 }
 
-export interface UpdateUserStateRequest {
+export interface UserEmailRequest {
   email: string;
 }
 

@@ -1,0 +1,207 @@
+@use 'mixins' as *;
+
+$drop-shadow: rgba(0, 0, 0, 0.1);
+
+.shepherd-element {
+  background: var(--color-white);
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 20px $drop-shadow;
+  filter: drop-shadow(0 4px 20px $drop-shadow);
+  max-width: 450px;
+}
+
+.shepherd-has-title .shepherd-content .shepherd-header {
+  background: transparent;
+  padding: 1.5rem;
+}
+
+.shepherd-title {
+  font-size: 1.25rem;
+  font-weight: 400 !important;
+  color: var(--color-gray-stroke-text);
+}
+
+.shepherd-element .shepherd-title {
+  color: var(--color-gray-stroke-text);
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.shepherd-element .shepherd-text {
+  color: var(--color-gray-stroke-strong);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+}
+
+.shepherd-element .shepherd-footer {
+  background: transparent;
+  border: none;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  margin-top: 64px;
+  @include flex($direction: row, $justify: space-between);
+}
+
+.shepherd-element .shepherd-button {
+  background: var(--color-gray-fill);
+  color: var(--color-gray-stroke-strong);
+  border: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-right: 0.75rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:focus {
+    outline: 2px solid var(--color-gray-text-weak);
+    outline-offset: 2px;
+  }
+
+  &:not(:disabled):hover {
+    background: var(--color-gray-stroke-weak);
+    color: var(--color-background-dark);
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.shepherd-element {
+  &.tour-card {
+    filter: drop-shadow(0 4px 20px $drop-shadow);
+    border-radius: 12px;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+.shepherd-modal-overlay-container {
+  .shepherd-element.tour-card {
+    max-width: 500px;
+    width: 100%;
+
+    .shepherd-content {
+      padding: 2.5rem;
+      border-radius: 12px;
+    }
+
+    .shepherd-header {
+      padding: 0;
+      background: none;
+    }
+
+    .shepherd-title {
+      font-size: 2.25rem;
+      font-weight: 400;
+      color: var(--color-gray-text-strong);
+      padding: 0;
+      margin: 0;
+    }
+
+    .shepherd-text {
+      font-size: 1.25rem;
+      color: var(--color-gray-stroke-strong);
+      padding: 0.5rem 0 2rem 0;
+    }
+  }
+}
+
+.shepherd-header {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border: none;
+
+  .shepherd-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-gray-text-strong);
+  }
+
+  .shepherd-cancel-icon {
+    font-size: 1.2rem;
+    color: var(--color-gray-stroke-strong);
+    &:hover {
+      color: var(--color-background-dark);
+    }
+  }
+}
+
+.shepherd-text {
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  color: var(--color-gray-stroke-strong);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.shepherd-footer {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border: none;
+
+  .shepherd-buttons {
+    @include flex($direction: row, $justify: flex-end, $gap: 0.75rem);
+    width: 100%;
+  }
+}
+
+.shepherd-modal-overlay-container .shepherd-buttons {
+  @include flex($direction: row, $justify: space-between);
+}
+
+.shepherd-button {
+  border: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: 2px solid var(--color-brand-stroke-strong);
+    outline-offset: 2px;
+  }
+}
+
+.shepherd-button.shepherd-button-primary {
+  background-color: var(--color-brand-text);
+  color: var(--color-gray-fill);
+  font-weight: 400;
+
+  &:hover {
+    background-color: var(--color-brand-stroke-strong);
+  }
+}
+
+.shepherd-button.shepherd-button-secondary {
+  background-color: var(--color-brand-fill);
+  color: var(--color-gray-stroke-strong);
+  font-weight: 400;
+
+  &:hover {
+    background-color: var(--color-gray-fill);
+  }
+}
+
+.shepherd-button.back-button,
+.shepherd-button.cancel-button {
+  background: var(--color-gray-fill);
+  color: var(--color-gray-stroke-strong);
+
+  &:hover {
+    background-color: var(--color-gray-fill);
+  }
+}
+
+.shepherd-button.next-button {
+  background: var(--color-brand-text);
+  color: var(--color-gray-fill);
+
+  &:hover {
+    background-color: var(--color-brand-stroke-strong);
+  }
+}

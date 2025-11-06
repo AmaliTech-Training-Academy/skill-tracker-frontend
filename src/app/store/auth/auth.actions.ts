@@ -4,7 +4,7 @@ import {
   User,
   AppError,
   VerifyEmailRequest,
-  UpdateUserStateRequest,
+  UserEmailRequest,
   LoginRequest,
 } from '@app/core';
 
@@ -58,7 +58,7 @@ export const verifyEmailOtpFailure = createAction(
 
 export const completeOnboarding = createAction(
   '[Onboarding] Complete Onboarding',
-  props<{ request: UpdateUserStateRequest }>(),
+  props<{ request: UserEmailRequest }>(),
 );
 
 export const completeOnboardingSuccess = createAction(
@@ -98,5 +98,17 @@ export const resendVerificationSuccess = createAction(
 
 export const resendVerificationFailure = createAction(
   '[Auth/Verification] Resend Verification Failure',
+  props<{ error: AppError }>(),
+);
+
+export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
+
+export const updateTourStatusSuccess = createAction(
+  '[Auth/Tour] Update Tour Status Success',
+  props<{ user: User }>(),
+);
+
+export const updateTourStatusFailure = createAction(
+  '[Auth/Tour] Update Tour Status Failure',
   props<{ error: AppError }>(),
 );

@@ -16,6 +16,9 @@ import {
   logout,
   logoutSuccess,
   logoutFailure,
+  updateTourStatus,
+  updateTourStatusSuccess,
+  updateTourStatusFailure,
 } from './auth.actions';
 
 export const authReducer = createReducer(
@@ -100,5 +103,23 @@ export const authReducer = createReducer(
     ...state,
     isLoggingOut: false,
     logoutError: error,
+  })),
+  on(updateTourStatus, (state) => ({
+    ...state,
+    isUpdatingTourStatus: true,
+    updateTourStatusError: null,
+  })),
+
+  on(updateTourStatusSuccess, (state, { user }) => ({
+    ...state,
+    isUpdatingTourStatus: false,
+    user: user,
+    updateTourStatusError: null,
+  })),
+
+  on(updateTourStatusFailure, (state, { error }) => ({
+    ...state,
+    isUpdatingTourStatus: false,
+    updateTourStatusError: error,
   })),
 );
