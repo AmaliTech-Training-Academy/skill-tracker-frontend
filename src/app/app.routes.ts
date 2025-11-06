@@ -72,7 +72,11 @@ export const routes: Routes = [
         path: '',
         loadComponent: () => import('./features/dashboard/dashboard').then((c) => c.Dashboard),
       },
-      { path: 'tasks', loadComponent: () => import('./features/tasks/tasks').then((c) => c.Tasks) },
+      {
+        path: 'tasks',
+        loadComponent: () =>
+          import('./features/tasks-dashboard/tasks-dashboard').then((c) => c.Tasks),
+      },
     ],
   },
 ];
