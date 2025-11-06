@@ -100,7 +100,8 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   get progressValue(): number {
-    return ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
+    // Progress calculation remains based on question submission
+    return ((this.selectedAnswers.filter(a => a !== null).length) / this.questions.length) * 100;
   }
 
   get questionTrack(): string {
@@ -116,16 +117,29 @@ export class MultipleChoice implements OnInit, OnDestroy {
   isOptionSelected(optionIndex: number): boolean {
     return this.selectedAnswers[this.currentQuestionIndex] === optionIndex;
   }
+  
+  // New method: Check if an option is the correct answer
+  isCorrectAnswer(optionIndex: number): boolean {
+    return this.currentQuestion.correctAnswer === optionIndex;
+  }
 
   nextQuestion() {
-    if (this.currentQuestionIndex < this.questions.length - 1) {
+    // In quiz mode: advance if not the last question. If it is the last, complete the quiz.
+    if (!this.isQuizComplete) {
+      if (this.currentQuestionIndex < this.questions.length - 1) {
+        this.currentQuestionIndex++;
+      } else {
+        this.completeQuiz();
+      }
+    // In review mode: advance if not past the last question (index < length)
+    } else if (this.currentQuestionIndex < this.questions.length) {
       this.currentQuestionIndex++;
-    } else {
-      this.completeQuiz();
     }
   }
 
   previousQuestion() {
+    // In quiz mode: advance if not the first question.
+    // In review mode: advance if index > 0 (to get from summary screen back to the last question)
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     }
@@ -136,6 +150,11 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   get canGoNext(): boolean {
+    // In quiz mode, can go next only if an answer is selected.
+    // In review mode, can go next until the last question's index (length - 1). The summary screen handles the final 'next'.
+    if (this.isQuizComplete) {
+        return this.currentQuestionIndex < this.questions.length;
+    }
     return this.selectedAnswers[this.currentQuestionIndex] !== null;
   }
 
@@ -144,6 +163,8 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
+    // Set index to the length of the array to display the 'Quiz Complete' summary screen
+    this.currentQuestionIndex = this.questions.length; 
   }
 
   get score(): number {

@@ -17,69 +17,87 @@
                 <label class="timer-text"><i>{{ formattedTime }}</i></label>
                 <img src="assets/timer-clock.png" alt="timer icon">
             </div>
+        </div>
+    }
 
-            <div class="questions-content">
-                <div class="task-title-level-data">
-                    <h1 class="task-title">Web Development Knowledge Check</h1>
 
-                    <div class="task-level">
-                        <label class="level" for="">Beginner</label>
-                        <div class="point">+50 XP</div>
+    @if (currentQuestionIndex < questions.length) {
+        <div class="questions-content">
+            <div class="task-title-level-data">
+                <h1 class="task-title">Web Development Knowledge Check</h1>
 
+                <div class="task-level">
+                    <label class="level" for="">Beginner</label>
+                    <div class="point">+50 XP</div>
+
+                    @if (!isQuizComplete) {
                         <div class="timer">
                             <label class="timer-text"><i>{{ formattedTime }}</i></label>
                             <img src="assets/timer-clock.png" alt="timer icon">
                         </div>
-                    </div>
-                </div>
-
-                <div class="question-track-level">
-                    <p>{{ questionTrack }}</p>
-                    <label class="level" for="">Beginner</label>
-                </div>
-
-                <div class="question-answers">
-                    <h1 class="question">{{ currentQuestion.question }}</h1>
-
-                    @for (option of currentQuestion.options; track $index) {
-                        <div class="question-options">
-                            <div 
-                                class="option" 
-                                [class.selected]="isOptionSelected($index)"
-                                (click)="selectOption($index)">
-                                <label>{{ getOptionLabel($index) }}</label>
-                                <p class="answer">{{ option }}</p>
-                            </div>
-                        </div>
                     }
                 </div>
+            </div>
 
+            <div class="question-track-level">
+                <p>{{ questionTrack }}</p>
+                <label class="level" for="">Beginner</label>
+            </div>
+
+            <div class="question-answers">
+                <h1 class="question">{{ currentQuestion.question }}</h1>
+
+                @for (option of currentQuestion.options; track $index) {
+                    <div class="question-options">
+                        <div 
+                            class="option" 
+                            [class.selected]="isOptionSelected($index)"
+                            [class.correct-answer]="isQuizComplete && isCorrectAnswer($index)"
+                            [class.disabled]="isQuizComplete"
+                            (click)="selectOption($index)">
+                            <label>{{ getOptionLabel($index) }}</label>
+                            <p class="answer">{{ option }}</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (isQuizComplete) {
+                <div class="explanation">
+                    <img src="assets/info-circle.png" alt="info icon">
+                    <div class="explanation-text">
+                        <p>Explanation: <br> {{ currentQuestion.explanation }}</p>
+                    </div>
+                </div>
+            }
+
+            @if (!isQuizComplete) {
                 <div class="hint">
                     <img src="assets/hint-bulb.png" alt="">
                     <div class="hint-text">
                         <p>Hint: <br> {{ currentQuestion.hint }}</p>
                     </div>
                 </div>
+            }
 
-                <div class="buttons">
-                    <button 
-                        class="previous" 
-                        (click)="previousQuestion()"
-                        [disabled]="!canGoPrevious">
-                        < <label for="">Previous</label>
-                    </button>
-                    <button 
-                        class="next"
-                        (click)="nextQuestion()"
-                        [disabled]="!canGoNext">
-                        <label for="">Next</label> >
-                    </button>
-                </div>
+            <div class="buttons">
+                <button 
+                    class="previous" 
+                    (click)="previousQuestion()"
+                    [disabled]="!canGoPrevious">
+                    < <label for="">Previous</label>
+                </button>
+                <button 
+                    class="next"
+                    (click)="nextQuestion()"
+                    [disabled]="!canGoNext">
+                    <label for="">Next</label> >
+                </button>
             </div>
         </div>
     }
 
-    @if (isQuizComplete) {
+    @if (isQuizComplete && currentQuestionIndex === questions.length) {
         <div class="group2">
             <div class="quiz-complete">
                 <img src="assets/checked-circle.png" alt="checked circle">
@@ -97,8 +115,7 @@
                     </button>
                     <button 
                         class="next"
-                        (click)="nextQuestion()"
-                        [disabled]="currentQuestionIndex >= questions.length - 1">
+                        [disabled]="true">
                         <label for="">Next</label> >
                     </button>
                 </div>

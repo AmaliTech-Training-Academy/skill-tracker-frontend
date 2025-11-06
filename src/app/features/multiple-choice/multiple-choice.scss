@@ -155,7 +155,7 @@
           @include flex(row, center, center);
           background-color: $brand-fill;
           border-radius: 4px;
-          cursor: pointer;
+          color: $gray-text-strong; /* Ensure letter is visible */
         }
 
         .answer {
@@ -163,17 +163,37 @@
           transition: color 0.2s ease;
         }
 
-        &:hover,
-        &.selected {
+        &:hover:not(.disabled),
+        &.selected:not(.correct-answer) {
           background-color: $brand-text;
 
           .answer {
             color: $gray-white;
           }
         }
+        
+        &.disabled {
+            cursor: default; /* Stop pointer cursor after quiz completion */
+        }
+
+        /* NEW STYLE: Correct Answer Highlight */
+        &.correct-answer {
+            border: 2px solid $green-success; /* Green border */
+            background-color: $green-fill; /* Light green background */
+            
+            label {
+                background-color: $green-success; /* Green circle */
+                color: $gray-white;
+            }
+            .answer {
+                color: $gray-text-strong; /* Ensure text is visible */
+            }
+        }
       }
     }
   }
+  
+  /* Existing Hint Styling */
   .hint {
     @include flex(row, flex-start, center, 10px);
     width: 100%;
@@ -184,6 +204,25 @@
     background-color: $amber-stroke-weak;
     padding: 10px;
     border-radius: 2px;
+  }
+  
+  /* NEW STYLE: Explanation Styling (visible on review) */
+  .explanation {
+    @include flex(row, flex-start, flex-start, 10px);
+    width: 100%;
+    margin-inline: auto;
+    margin-block: 40px;
+    @include h13;
+    color: $green-success;
+    background-color: $green-fill;
+    padding: 10px;
+    border-radius: 2px;
+    
+    .explanation-text {
+        p {
+            color: $gray-text-strong;
+        }
+    }
   }
 
   .buttons {
@@ -200,7 +239,7 @@
       border: 2px solid transparent !important;
       color: $gray-fill;
 
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: $brand-stroke-strong;
       }
 
@@ -216,7 +255,7 @@
       border: 2px solid $brand-text !important;
       color: $brand-text;
 
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: $brand-stroke-weak;
       }
 
@@ -247,6 +286,10 @@
 
     .mark {
       @include h7;
+    }
+
+    .outof {
+      @include h13;
     }
 
     .buttons {
@@ -374,7 +417,7 @@
       }
     }
 
-    .hint {
+    .hint, .explanation { /* Apply width to both hint and new explanation block */
       width: 90%;
     }
 
