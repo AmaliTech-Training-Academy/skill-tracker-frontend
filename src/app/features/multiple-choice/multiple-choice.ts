@@ -73,34 +73,11 @@ export class MultipleChoice implements OnInit, OnDestroy {
       hint: 'It\'s about how applications communicate with each other.',
       explanation: 'API stands for Application Programming Interface.'
     },
-    {
-      id: 8,
-      question: 'Which symbol is used for comments in Python?',
-      options: ['//', '/* */', '#', '<!-- -->'],
-      correctAnswer: 2,
-      hint: 'Think of the hash symbol.',
-      explanation: 'Python uses # for single-line comments.'
-    },
-    {
-      id: 9,
-      question: 'What is the default port for HTTP?',
-      options: ['443', '8080', '80', '3000'],
-      correctAnswer: 2,
-      hint: 'It\'s a two-digit number.',
-      explanation: 'Port 80 is the default port for HTTP connections.'
-    },
-    {
-      id: 10,
-      question: 'Which data structure uses LIFO (Last In First Out)?',
-      options: ['Queue', 'Stack', 'Array', 'Tree'],
-      correctAnswer: 1,
-      hint: 'Think of stacking plates.',
-      explanation: 'A Stack data structure follows the LIFO principle - the last element added is the first one removed.'
-    }
+    
   ];
 
   currentQuestionIndex = 0;
-  selectedAnswers: (number | null)[] = new Array(10).fill(null);
+  selectedAnswers: (number | null)[] = new Array(this.questions.length).fill(null);
   isQuizComplete = false;
   
   // Timer properties
@@ -192,6 +169,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   getOptionLabel(index: number): string {
-    return String.fromCharCode(65 + index); // A, B, C, D
+    return String.fromCharCode(65 + index);
   }
 }
