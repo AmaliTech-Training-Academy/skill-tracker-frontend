@@ -65,14 +65,19 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     loadComponent: () => import('./layout/dashboard/dashboard').then((c) => c.Dashboard),
     children: [
       {
         path: '',
         loadComponent: () => import('./features/dashboard/dashboard').then((c) => c.Dashboard),
       },
-      { path: 'tasks', loadComponent: () => import('./features/tasks/tasks').then((c) => c.Tasks) },
+      { path: 'tasks', loadComponent: () => import('./features/tasks/tasks').then((c) => c.Tasks),
+
+        children:[
+          { path: 'multiple-choice/:id', loadComponent: () => import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice)}
+        ]
+       },
     ],
   },
 ];
