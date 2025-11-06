@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 interface Question {
   id: number;
@@ -14,20 +20,20 @@ interface Question {
   imports: [],
   templateUrl: './multiple-choice.html',
   styleUrl: './multiple-choice.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultipleChoice implements OnInit, OnDestroy {
-    
-  // Inject ChangeDetectorRef to manually trigger view updates for the timer
-  constructor(private cdr: ChangeDetectorRef) {} 
+  constructor(private cdr: ChangeDetectorRef) {}
 
-  questions: Question[] = [
+  public questions: Question[] = [
     {
       id: 1,
-      question: 'What will the following Python code print?\nx=5\nif x > 3:\n    print("A")\nelse:\n    print("B")',
+      question:
+        'What will the following Python code print?\nx=5\nif x > 3:\n    print("A")\nelse:\n    print("B")',
       options: ['A', 'B', 'Both A and B', 'Error'],
       correctAnswer: 0,
       hint: 'Check if the condition x > 3 is True or False.',
-      explanation: 'Since x = 5 and 5 > 3 is True, the code will print "A".'
+      explanation: 'Since x = 5 and 5 > 3 is True, the code will print "A".',
     },
     {
       id: 2,
@@ -35,27 +41,102 @@ export class MultipleChoice implements OnInit, OnDestroy {
       options: ['<link>', '<a>', '<href>', '<url>'],
       correctAnswer: 1,
       hint: 'Think about the anchor element in HTML.',
-      explanation: 'The <a> tag is used to create hyperlinks in HTML.'
+      explanation: 'The <a> tag is used to create hyperlinks in HTML.',
     },
     {
       id: 3,
       question: 'What does CSS stand for?',
-      options: ['Computer Style Sheets', 'Cascading Style Sheets', 'Creative Style Sheets', 'Colorful Style Sheets'],
+      options: [
+        'Computer Style Sheets',
+        'Cascading Style Sheets',
+        'Creative Style Sheets',
+        'Colorful Style Sheets',
+      ],
       correctAnswer: 1,
       hint: 'The "C" stands for a term that describes how styles flow down.',
-      explanation: 'CSS stands for Cascading Style Sheets, which describes how styles cascade through HTML elements.'
-    }
-    
+      explanation:
+        'CSS stands for Cascading Style Sheets, which describes how styles cascade through HTML elements.',
+    },
+    {
+      id: 4,
+      question: 'In JavaScript, what is the result of typeof [] ?',
+      options: ['array', 'object', 'undefined', 'number'],
+      correctAnswer: 1,
+      hint: 'Arrays are a specialized object in JS.',
+      explanation: 'In JavaScript, arrays are objects, so typeof [] returns "object".',
+    },
+    {
+      id: 5,
+      question: 'In TypeScript, what is the primary purpose of an "interface"?',
+      options: [
+        'Define a type contract for objects/classes',
+        'Execute code at runtime',
+        'Create a standalone module',
+        'Automatically compile to JS',
+      ],
+      correctAnswer: 0,
+      hint: 'Think design-time type checking and structural typing.',
+      explanation:
+        'An interface defines a compile-time contract describing object shapes and expected members.',
+    },
+    {
+      id: 6,
+      question: 'Which Angular decorator is used to define a component?',
+      options: ['@Component', '@NgModule', '@Injectable', '@Directive'],
+      correctAnswer: 0,
+      hint: 'This decorator provides template and metadata for a view.',
+      explanation:
+        '@Component is the decorator used to declare Angular components and their metadata (template, styles, selector).',
+    },
+    {
+      id: 7,
+      question: 'Which git command creates a new branch and switches to it in one step?',
+      options: ['git branch <name>', 'git checkout -b <name>', 'git clone <repo>', 'git init'],
+      correctAnswer: 1,
+      hint: 'One command both creates and checks out the branch.',
+      explanation:
+        'git checkout -b <name> creates the branch <name> and immediately checks it out.',
+    },
+    {
+      id: 8,
+      question: 'Which SQL query returns all users older than 30 from the users table?',
+      options: [
+        'SELECT * FROM users WHERE age > 30;',
+        'SELECT age FROM users;',
+        'SELECT * FROM users LIMIT 30;',
+        'SELECT users FROM age > 30;',
+      ],
+      correctAnswer: 0,
+      hint: 'Use WHERE to filter rows by a condition.',
+      explanation:
+        'Use SELECT * FROM users WHERE age > 30; to retrieve all columns for users with age greater than 30.',
+    },
+    {
+      id: 9,
+      question: 'What is the time complexity of binary search on a sorted array of n elements?',
+      options: ['O(n)', 'O(n log n)', 'O(log n)', 'O(1)'],
+      correctAnswer: 2,
+      hint: 'Binary search halves the search space each step.',
+      explanation:
+        'Binary search reduces the search interval by half each step, yielding O(log n) time complexity.',
+    },
+    {
+      id: 10,
+      question: 'Which Linux command lists files including hidden files?',
+      options: ['ls', 'ls -l', 'ls -a', 'list'],
+      correctAnswer: 2,
+      hint: 'Hidden files start with a dot; include them with a flag.',
+      explanation: 'ls -a lists all files including hidden ones (those starting with a dot).',
+    },
   ];
 
-  currentQuestionIndex = 0;
-  selectedAnswers: (number | null)[] = new Array(this.questions.length).fill(null);
-  isQuizComplete = false;
-  
-  // Timer properties
-  totalTimeInSeconds = 900; // 15 minutes = 900 seconds
-  remainingTime = 900;
-  timerInterval: any;
+  public currentQuestionIndex = 0;
+  public selectedAnswers: (number | null)[] = new Array(this.questions.length).fill(null);
+  public isQuizComplete = false;
+
+  public totalTimeInSeconds = 900;
+  public remainingTime = 900;
+  public timerInterval: ReturnType<typeof setInterval> | null = null;
 
   ngOnInit() {
     this.startTimer();
@@ -67,115 +148,103 @@ export class MultipleChoice implements OnInit, OnDestroy {
     }
   }
 
-  startTimer() {
+  public startTimer() {
     this.timerInterval = setInterval(() => {
       if (this.remainingTime > 0 && !this.isQuizComplete) {
         this.remainingTime--;
-        // Force view update for the timer
-        this.cdr.detectChanges(); 
+        this.cdr.detectChanges();
       } else if (this.remainingTime === 0) {
         this.completeQuiz();
-        // Force view update for completion screen
         this.cdr.detectChanges();
       }
     }, 1000);
   }
 
-  get formattedTime(): string {
+  public get formattedTime(): string {
     const minutes = Math.floor(this.remainingTime / 60);
     const seconds = this.remainingTime % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
-  get currentQuestion(): Question {
+  public get currentQuestion(): Question {
     return this.questions[this.currentQuestionIndex];
   }
 
-  get progressValue(): number {
-    // Progress calculation remains based on question submission
-    return ((this.selectedAnswers.filter(a => a !== null).length) / this.questions.length) * 100;
+  public get progressValue(): number {
+    return (this.selectedAnswers.filter((a) => a !== null).length / this.questions.length) * 100;
   }
 
-  get questionTrack(): string {
+  public get questionTrack(): string {
     return `Question ${this.currentQuestionIndex + 1} out of ${this.questions.length}`;
   }
 
-  selectOption(optionIndex: number) {
+  public selectOption(optionIndex: number) {
     if (!this.isQuizComplete) {
       this.selectedAnswers[this.currentQuestionIndex] = optionIndex;
     }
   }
 
-  isOptionSelected(optionIndex: number): boolean {
+  public isOptionSelected(optionIndex: number): boolean {
     return this.selectedAnswers[this.currentQuestionIndex] === optionIndex;
   }
-  
-  // Method to check if an option is the correct answer
-  isCorrectAnswer(optionIndex: number): boolean {
+
+  public isCorrectAnswer(optionIndex: number): boolean {
     return this.currentQuestion.correctAnswer === optionIndex;
   }
 
-  nextQuestion() {
+  public nextQuestion() {
     if (!this.isQuizComplete) {
-      // Quiz Mode: Advance or Complete
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
       } else {
         this.completeQuiz();
       }
     } else {
-      // Review Mode: Advance, or start review from the first question if currently on the summary screen
       if (this.currentQuestionIndex === this.questions.length) {
-        // We are on the summary screen, clicking next starts the review from Q1
         this.currentQuestionIndex = 0;
       } else if (this.currentQuestionIndex < this.questions.length - 1) {
-        // We are reviewing, advance to the next question
         this.currentQuestionIndex++;
       } else if (this.currentQuestionIndex === this.questions.length - 1) {
-        // We are reviewing the last question, clicking next goes back to the summary screen
         this.currentQuestionIndex++;
       }
     }
   }
 
-  previousQuestion() {
-    // In any mode, go back one question, provided we are not past the first question.
-    // If on the summary screen (index == length), this takes us to the last question (index == length - 1).
+  public previousQuestion() {
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
     }
   }
 
-  get canGoPrevious(): boolean {
+  public get canGoPrevious(): boolean {
     return this.currentQuestionIndex > 0;
   }
 
-  get canGoNext(): boolean {
-    // In quiz mode, can go next only if an answer is selected.
+  public get canGoNext(): boolean {
     if (!this.isQuizComplete) {
-        return this.selectedAnswers[this.currentQuestionIndex] !== null;
+      return this.selectedAnswers[this.currentQuestionIndex] !== null;
     }
-    // In review mode, we can always click next unless we are past the last question index (i.e., on the summary screen).
-    // However, for the summary screen (index === length), we explicitly enable 'Next' to start review.
     return this.currentQuestionIndex <= this.questions.length;
   }
 
-  completeQuiz() {
+  public completeQuiz() {
     this.isQuizComplete = true;
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
-    // Set index to the length of the array to display the 'Quiz Complete' summary screen
-    this.currentQuestionIndex = this.questions.length; 
+    this.currentQuestionIndex = this.questions.length;
   }
 
-  get score(): number {
-    return this.selectedAnswers.reduce<number>((score: number, answer: number | null, index: number) => {
-      return answer === this.questions[index].correctAnswer ? score + 1 : score;
-    }, 0);
+  public get score(): number {
+    return this.selectedAnswers.reduce<number>(
+      (score: number, answer: number | null, index: number) => {
+        return answer === this.questions[index].correctAnswer ? score + 1 : score;
+      },
+      0,
+    );
   }
 
-  getOptionLabel(index: number): string {
+  public getOptionLabel(index: number): string {
     return String.fromCharCode(65 + index);
   }
 }

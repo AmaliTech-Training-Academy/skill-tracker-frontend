@@ -5,7 +5,6 @@
 @use 'components' as *;
 
 .multiple-choice {
-  
   width: 90%;
   margin-inline: auto;
   margin-top: 2rem;
@@ -50,8 +49,6 @@
       }
     }
   }
-
-  
 
   .timer1 {
     @include flex(row, space-between, center, 10px);
@@ -155,7 +152,7 @@
           @include flex(row, center, center);
           background-color: $brand-fill;
           border-radius: 4px;
-          color: $gray-text-strong; /* Ensure letter is visible */
+          color: $gray-text-strong;
         }
 
         .answer {
@@ -171,29 +168,27 @@
             color: $gray-white;
           }
         }
-        
+
         &.disabled {
-            cursor: default; /* Stop pointer cursor after quiz completion */
+          cursor: default;
         }
 
-        /* NEW STYLE: Correct Answer Highlight */
         &.correct-answer {
-            border: 1px solid $green-success; /* Green border */
-            background-color: $green-fill; /* Light green background */
-            
-            label {
-                background-color: transparent; /* Green circle */
-                color: $gray-text-strong;
-            }
-            .answer {
-                color: $gray-text-strong; /* Ensure text is visible */
-            }
+          border: 1px solid $green-success;
+          background-color: $green-fill;
+
+          label {
+            background-color: transparent;
+            color: $gray-text-strong;
+          }
+          .answer {
+            color: $gray-text-strong;
+          }
         }
       }
     }
   }
-  
-  /* Existing Hint Styling */
+
   .hint {
     @include flex(row, flex-start, center, 10px);
     width: 100%;
@@ -205,12 +200,10 @@
     padding: 10px;
     border-radius: 2px;
   }
-  
-  /* NEW STYLE: Explanation Styling (visible on review) */
+
   .explanation {
     @include flex(row, flex-start, center, 10px);
     width: 100%;
-    height: 61px;
     margin-inline: auto;
     margin-block: 40px;
     @include h13;
@@ -218,11 +211,11 @@
     background-color: $brand-fill;
     padding: 10px;
     border-radius: 2px;
-    
+
     .explanation-text {
-        p {
-            color: $brand-text;
-        }
+      p {
+        color: $brand-text;
+      }
     }
   }
 
@@ -418,7 +411,8 @@
       }
     }
 
-    .hint, .explanation { /* Apply width to both hint and new explanation block */
+    .hint,
+    .explanation {
       width: 90%;
     }
 
