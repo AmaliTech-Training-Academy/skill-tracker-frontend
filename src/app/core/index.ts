@@ -12,6 +12,7 @@ export * from './interceptors/global-http-error-interceptor';
 export * from './guards/auth-guard';
 export * from './guards/onboarding-guard';
 export * from './guards/guest-guard';
+export * from './guards/email-verification-guard';
 
 // constants
 export * from './constants/app.constants';

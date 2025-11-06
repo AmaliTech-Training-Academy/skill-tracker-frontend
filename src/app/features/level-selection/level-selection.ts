@@ -16,7 +16,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OnboardingDataService, SkillLevel, UserSkill } from '@app/core';
 import { selectIsCompletingOnboarding } from '@app/store/auth/auth.selectors';
-import { completeOnboarding, completeOnboardingSuccess } from '@app/store/auth/auth.actions';
+import {
+  completeOnboarding,
+  completeOnboardingFailure,
+  completeOnboardingSuccess,
+} from '@app/store/auth/auth.actions';
 import { SkillLevelSelectorComponent } from '@app/shared/compomonents/skill-level-selector/skill-level-selector';
 import { APP_CONSTANTS } from '@app/core';
 
@@ -142,6 +146,11 @@ export class LevelSelection implements OnInit, OnDestroy {
       .subscribe(() => {
         this.isComplete.set(true);
         this.celebrate();
+      });
+    this.actions$
+      .pipe(ofType(completeOnboardingFailure), takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ error }) => {
+        this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
       });
   }
 

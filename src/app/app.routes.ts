@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, onboardingGuard } from '@app/core';
+import { authGuard, guestGuard, onboardingGuard, emailVerificationGuard } from '@app/core';
 
 export const routes: Routes = [
   {
@@ -36,7 +36,7 @@ export const routes: Routes = [
       },
       {
         path: 'email-verification',
-        canActivate: [guestGuard],
+        canActivate: [emailVerificationGuard],
         loadComponent: () =>
           import('./features/email-verification/email-verification').then(
             (c) => c.EmailVerification,
