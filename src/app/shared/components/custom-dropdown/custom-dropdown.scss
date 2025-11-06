@@ -1,0 +1,84 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  @include flex($direction: row, $justify: space-between, $align: center);
+  @include h14;
+  color: $gray-text-strong;
+  border: 1px solid $text-gray;
+  border-radius: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  background-color: $white;
+  cursor: pointer;
+  min-width: 5rem;
+
+  @include mobile-large {
+    @include h13;
+    min-width: 6.938rem;
+  }
+
+  .selected-value {
+    flex: 1;
+  }
+
+  .dropdown-arrow {
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+    width: 1.25rem;
+    height: 1.25rem;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: $white;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 161px;
+}
+
+.dropdown-option {
+  @include h14;
+  padding: 0.5rem 0.625rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: $white;
+  color: $gray-stroke-strong;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: $gray-fill;
+  }
+
+  &.selected {
+    color: $gray-text-strong;
+  }
+
+  &:first-child {
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+  }
+
+  @include mobile-large {
+    @include h13;
+  }
+}
