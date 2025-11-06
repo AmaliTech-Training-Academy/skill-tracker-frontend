@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 
 interface Question {
   id: number;
@@ -16,6 +16,10 @@ interface Question {
   styleUrl: './multiple-choice.scss',
 })
 export class MultipleChoice implements OnInit, OnDestroy {
+    
+  // Inject ChangeDetectorRef to manually trigger view updates for the timer
+  constructor(private cdr: ChangeDetectorRef) {} 
+
   questions: Question[] = [
     {
       id: 1,
@@ -40,23 +44,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
       correctAnswer: 1,
       hint: 'The "C" stands for a term that describes how styles flow down.',
       explanation: 'CSS stands for Cascading Style Sheets, which describes how styles cascade through HTML elements.'
-    },
-    {
-      id: 4,
-      question: 'Which JavaScript method is used to add an element to the end of an array?',
-      options: ['push()', 'pop()', 'shift()', 'unshift()'],
-      correctAnswer: 0,
-      hint: 'Think about pushing something onto a stack.',
-      explanation: 'The push() method adds elements to the end of an array.'
-    },
-    {
-      id: 5,
-      question: 'What is the correct way to declare a variable in JavaScript?',
-      options: ['variable x = 5', 'let x = 5', 'v x = 5', 'var: x = 5'],
-      correctAnswer: 1,
-      hint: 'Modern JavaScript uses keywords like let, const, or var.',
-      explanation: 'let x = 5 is the correct modern syntax for declaring variables in JavaScript.'
-    },
+    }
     
   ];
 
@@ -83,8 +71,12 @@ export class MultipleChoice implements OnInit, OnDestroy {
     this.timerInterval = setInterval(() => {
       if (this.remainingTime > 0 && !this.isQuizComplete) {
         this.remainingTime--;
+        // Force view update for the timer
+        this.cdr.detectChanges(); 
       } else if (this.remainingTime === 0) {
         this.completeQuiz();
+        // Force view update for completion screen
+        this.cdr.detectChanges();
       }
     }, 1000);
   }
@@ -96,8 +88,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   get currentQuestion(): Question {
-    // This getter will throw an error if index === length, so use with caution
-    // The HTML should guard against this check
     return this.questions[this.currentQuestionIndex];
   }
 
