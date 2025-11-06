@@ -54,3 +54,12 @@ export const selectUserEmail = createSelector(
   selectAuthState,
   (state: AuthState) => state.user?.email ?? null,
 );
+export const selectIsLoggingIn = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.isLoggingIn,
+);
+
+export const selectLoginError = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.loginError,
+);
