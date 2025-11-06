@@ -1,70 +1,64 @@
-import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, OnDestroy, signal } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { LoginService } from './login.service';
-import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { ToastService } from '@app/core';
+import { Store } from '@ngrx/store';
+import { InputFieldComponent } from '@app/shared';
 import { getFormControl } from '@app/shared';
+import * as AuthActions from '@app/store/auth/auth.actions';
+import { selectIsLoggingIn } from '@app/store/auth/auth.selectors';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, InputFieldComponent],
+  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent, RouterLink],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login implements OnDestroy {
-  public successMessage = '';
-  public errorMessage = '';
-  public loading = false;
+  public loginForm: FormGroup = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+  });
 
-  private readonly destroy$ = new Subject<void>();
+  public loading = signal(false);
+
+  private destroy$ = new Subject<void>();
 
   constructor(
-    private readonly fb: FormBuilder,
-    private readonly loginService: LoginService,
-    private readonly toastService: ToastService,
+    private fb: FormBuilder,
+    private router: Router,
+    private store: Store,
   ) {}
+
+  private loginSubscription = this.store
+    .select(selectIsLoggingIn)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe((isLogging) => {
+      this.loading.set(isLogging);
+    });
 
   public getFormControl = getFormControl;
 
-  public loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-  });
+  public login() {
+    this.loginForm.markAllAsTouched();
+    if (this.loginForm.invalid) return;
 
-  public login(): void {
-    if (this.loginForm.invalid) {
-      return;
-    }
-
-    this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
-
-    const { email, password } = this.loginForm.value;
-
-    this.loginService
-      .login(email!, password!)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess(
-            'Login Successful',
-            'Logged in successfully! Redirecting you to your dashboard...',
-          );
-          this.loading = false;
-        },
-        error: () => {
-          this.toastService.showError('Login Failed', 'Incorrect email or password.');
-          this.loading = false;
-        },
-      });
+    const request = this.loginForm.value;
+    this.store.dispatch(AuthActions.login({ request }));
   }
 
-  ngOnDestroy(): void {
+  public signInWithGoogle() {
+    this.store.dispatch(AuthActions.socialLogin({ provider: 'google' }));
+  }
+
+  public signInWithGithub() {
+    this.store.dispatch(AuthActions.socialLogin({ provider: 'github' }));
+  }
+
+  ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
   }
