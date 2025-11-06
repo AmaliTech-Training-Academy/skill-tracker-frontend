@@ -57,22 +57,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
       hint: 'Modern JavaScript uses keywords like let, const, or var.',
       explanation: 'let x = 5 is the correct modern syntax for declaring variables in JavaScript.'
     },
-    {
-      id: 6,
-      question: 'Which HTTP status code indicates a successful request?',
-      options: ['404', '500', '200', '301'],
-      correctAnswer: 2,
-      hint: 'Think of the most common success response.',
-      explanation: '200 OK is the standard HTTP status code for a successful request.'
-    },
-    {
-      id: 7,
-      question: 'What does API stand for?',
-      options: ['Application Programming Interface', 'Advanced Programming Interface', 'Application Process Integration', 'Automated Programming Interface'],
-      correctAnswer: 0,
-      hint: 'It\'s about how applications communicate with each other.',
-      explanation: 'API stands for Application Programming Interface.'
-    },
     
   ];
 
