@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { DashboardState } from './dashboard.state';
+import { SkillProgress } from '@app/core/models/dashboard.model';
 
 export const selectDashboardState = createFeatureSelector<DashboardState>('dashboard');
 
@@ -33,5 +34,5 @@ export const selectSkillsInProgressCount = createSelector(selectDashboardData, (
     return 0;
   }
 
-  return data.skillProgress.filter((s) => s.currentXp > 0).length;
+  return data.skillProgress.filter((skill: SkillProgress) => skill.currentXp > 0).length;
 });
