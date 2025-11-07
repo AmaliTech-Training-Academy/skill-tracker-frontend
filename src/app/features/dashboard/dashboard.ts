@@ -9,10 +9,11 @@ import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
 import { getSteps as defaultSteps, defaultStepOptions } from './dashboard.config';
 import { TourGuide } from '@app/core';
+import { StatCard } from '@app/shared';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, StatCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
