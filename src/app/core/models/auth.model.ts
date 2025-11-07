@@ -27,6 +27,11 @@ export interface LoginSuccessData {
   message: string;
 }
 
+export interface ResetPasswordRequest {
+  resetToken: string;
+  newPassword: string;
+}
+
 export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN',

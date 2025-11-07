@@ -6,6 +6,7 @@ import {
   VerifyEmailRequest,
   UserEmailRequest,
   LoginRequest,
+  ResetPasswordRequest,
 } from '@app/core';
 
 export const registerUser = createAction(
@@ -100,7 +101,20 @@ export const resendVerificationFailure = createAction(
   '[Auth/Verification] Resend Verification Failure',
   props<{ error: AppError }>(),
 );
+export const resetPassword = createAction(
+  '[Auth/Password] Reset Password',
+  props<{ request: ResetPasswordRequest }>(),
+);
 
+export const resetPasswordSuccess = createAction(
+  '[Auth/Password] Reset Password Success',
+  props<{ message: string }>(),
+);
+
+export const resetPasswordFailure = createAction(
+  '[Auth/Password] Reset Password Failure',
+  props<{ error: AppError }>(),
+);
 export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
 
 export const updateTourStatusSuccess = createAction(
