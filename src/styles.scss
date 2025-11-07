@@ -1,5 +1,6 @@
 @use 'styles/colors' as *;
 @use 'styles/mixins' as *;
+@use 'styles/variables' as *;
 @use 'styles/shepherd-theme';
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -15,40 +16,50 @@
   --color-brand-stroke-weak: #{$brand-stroke-weak};
   --color-brand-fill: #{$brand-fill};
   --color-brand-fill-weak: #{$brand-fill-weak};
-
   --color-red-text: #{$red-text};
   --color-red-stroke-strong: #{$red-stroke-strong};
   --color-red-stroke-weak: #{$red-stroke-weak};
   --color-red-fill: #{$red-fill};
-
   --color-amber-text: #{$amber-text};
   --color-amber-text-strong: #{$amber-text-strong};
   --color-amber-stroke-strong: #{$amber-stroke-strong};
   --color-amber-stroke-weak: #{$amber-stroke-weak};
   --color-amber-fill: #{$amber-fill};
-
   --color-green-text: #{$green-text};
   --color-green-success: #{$green-success};
   --color-green-stroke-strong: #{$green-stroke-strong};
   --color-green-stroke-weak: #{$green-stroke-weak};
   --color-green-fill: #{$green-fill};
-
   --color-gray-text-strong: #{$gray-text-strong};
   --color-gray-text-weak: #{$gray-text-weak};
   --color-gray-stroke-strong: #{$gray-stroke-strong};
   --color-gray-stroke-weak: #{$gray-stroke-weak};
   --color-gray-fill: #{$gray-fill};
-
   --color-background-white: #{$background-white};
   --color-background-dark: #{$background-dark};
   --color-background-raised: #{$background-raised};
   --color-background-overlay: #{$background-overlay};
-
   --color-white: #{$white};
+
+  --space-xs: #{$space-xs};
+  --space-sm: #{$space-sm};
+  --space-md: #{$space-md};
+  --space-lg: #{$space-lg};
+  --space-xl: #{$space-xl};
+
+  --rounded-xs: #{$rounded-xs};
+  --rounded-sm: #{$rounded-sm};
+  --rounded-md: #{$rounded-md};
+  --rounded-lg: #{$rounded-lg};
+}
+
+html {
+  font-size: 16px;
 }
 
 body {
   font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
 }
 
 a {
