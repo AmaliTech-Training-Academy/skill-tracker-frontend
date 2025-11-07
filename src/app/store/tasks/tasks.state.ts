@@ -3,7 +3,9 @@ import { Task } from '@app/core/models/tasks-model';
 export interface TasksState {
   todayTasks: Task[];
   previousTasks: Task[];
+  skills: string[];
   selectedSkill: string;
+  timeRanges: string[];
   selectedTimeRange: string;
   loading: boolean;
   error: string | null;
@@ -58,8 +60,10 @@ export const initialTasksState: TasksState = {
       status: 'Completed',
     },
   ],
-  selectedSkill: 'All',
-  selectedTimeRange: 'Yesterday',
+  skills: ['All Skills', 'HTML', 'CSS', 'UI/UX Design', 'Data Structures'],
+  timeRanges: ['All Periods', 'Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'Older'],
+  selectedSkill: 'All Skills',
+  selectedTimeRange: 'All Periods',
   loading: false,
   error: null,
 };
