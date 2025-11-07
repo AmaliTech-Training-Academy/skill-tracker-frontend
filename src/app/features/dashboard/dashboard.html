@@ -1,1 +1,16 @@
-<p>dashboard works!</p>
+<main class="dashboard-content">
+  <section class="progress-overview">
+    <div class="section-header">
+      <h2>Your Progress</h2>
+      <span>Level 1</span>
+    </div>
+
+    @if (primarySkillProgress; as firstSkill) {
+      <app-progress-bar
+        [currentXp]="firstSkill.currentXp"
+        [totalXp]="firstSkill.currentLevelTotalXp"
+        [levelName]="firstSkill.nextLevel"
+      ></app-progress-bar>
+    }
+  </section>
+</main>

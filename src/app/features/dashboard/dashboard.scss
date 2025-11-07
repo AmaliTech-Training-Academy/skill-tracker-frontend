@@ -1,0 +1,52 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  background-color: var(--color-background-white);
+  padding: var(--spacing-md);
+
+  --spacing-xs: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+}
+
+.dashboard-content {
+  padding: 32px 48px;
+}
+
+.progress-overview {
+  padding: 24px 16px;
+  background-color: var(--color-white);
+}
+
+.section-header {
+  margin-bottom: var(--spacing-lg);
+
+  h2 {
+    @include h13;
+    font-weight: 400;
+    color: var(--gray-stroke-strong);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  & > span {
+    background-color: var(--color-brand-fill);
+    color: var(--color-brand-text);
+    font-size: 12px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+@include tablet {
+  .progress-overview {
+    padding: 48px 64px;
+  }
+
+  .section-header {
+    h2 {
+      @include h10;
+    }
+  }
+}
