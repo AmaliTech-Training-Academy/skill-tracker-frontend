@@ -4,18 +4,25 @@ import { Task } from '@app/core/models/tasks-model';
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
-export const selectTodayTasks = createSelector(selectTasksState, (state) => state.todayTasks);
+export const selectTodayTasks = createSelector(selectTasksState, ({ todayTasks }) => todayTasks);
 
 export const selectAllPreviousTasks = createSelector(
   selectTasksState,
-  (state) => state.previousTasks,
+  ({ previousTasks }) => previousTasks,
 );
 
-export const selectSkillFilter = createSelector(selectTasksState, (state) => state.selectedSkill);
+export const selectSkills = createSelector(selectTasksState, ({ skills }) => skills);
+
+export const selectSkillFilter = createSelector(
+  selectTasksState,
+  ({ selectedSkill }) => selectedSkill,
+);
+
+export const selectTimeRanges = createSelector(selectTasksState, ({ timeRanges }) => timeRanges);
 
 export const selectTimeRangeFilter = createSelector(
   selectTasksState,
-  (state) => state.selectedTimeRange,
+  ({ selectedTimeRange }) => selectedTimeRange,
 );
 
 export const selectFilteredTodayTasks = createSelector(
