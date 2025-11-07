@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  margin-top: 2rem;
+}
+
+.chart-container {
+  height: 450px;
+  width: 100%;
+}
+
+:host ::ng-deep {
+  .ngx-charts .tick-label {
+    fill: var(--color-white);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-gray-stroke-strong);
+  }
+
+  .ngx-charts .grid-line {
+    stroke: var(--color-brand-fill-weak);
+  }
+
+  .ngx-charts .tooltip-anchor {
+    fill: var(--color-brand-text);
+  }
+}

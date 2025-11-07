@@ -4,6 +4,7 @@
 :host {
   display: block;
   background-color: var(--color-background-white);
+  padding: var(--space-md);
 }
 
 .dashboard-header {
@@ -51,5 +52,94 @@
     @include grid($columns: 3, $gap: var(--space-md));
     margin-bottom: 2.5rem;
     padding: 0 3rem;
+  }
+}
+
+.dashboard-header {
+  padding: var(--space-md);
+
+  h1 {
+    @include h10;
+    color: var(--color-gray-text-strong);
+    margin-bottom: var(--space-sm);
+  }
+  p {
+    @include h13;
+    color: var(--color-gray-stroke-strong);
+  }
+}
+
+.stats-grid {
+  @include flex($direction: row, $gap: var(--space-md));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--space-md);
+  margin-bottom: var(--space-lg);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  app-stat-card {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+  }
+}
+
+@include tablet {
+  .dashboard-header {
+    padding: 2.5rem 3rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+  }
+  .stats-grid {
+    @include grid($columns: 3, $gap: var(--space-md));
+    margin-bottom: 2.5rem;
+    padding: 0 3rem;
+  }
+}
+
+.progress-overview {
+  padding: 24px 16px;
+  background-color: var(--color-white);
+}
+
+.section-header {
+  margin-bottom: var(--space-lg);
+
+  h2 {
+    @include h13;
+    font-weight: 400;
+    color: var(--gray-stroke-strong);
+    margin-bottom: var(--space-xs);
+  }
+
+  & > span {
+    background-color: var(--color-brand-fill);
+    color: var(--color-brand-text);
+    font-size: 12px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+  }
+}
+
+@include tablet {
+  .progress-overview {
+    padding: 48px 64px;
+  }
+
+  .dashboard-content {
+    padding: 2rem 3rem;
+  }
+
+  .section-header {
+    h2 {
+      @include h10;
+    }
   }
 }

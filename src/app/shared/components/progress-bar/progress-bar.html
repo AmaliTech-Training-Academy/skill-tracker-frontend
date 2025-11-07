@@ -1,0 +1,18 @@
+<div class="progress-container">
+  <div class="progress-header">
+    <div class="progress-title-group">
+      <span class="progress-title">Progress to {{ levelName }}</span>
+    </div>
+  </div>
+
+  <div class="progress-stats">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+    <span class="progress-ratio"> {{ currentXp | number }}XP / {{ totalXp | number }}XP </span>
+  </div>
+
+  <div class="progress-footer">
+    <span>{{ xpNeeded() | number }}XP needed to proceed to the next level</span>
+  </div>
+</div>

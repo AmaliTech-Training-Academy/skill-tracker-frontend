@@ -9,3 +9,21 @@
 
   <app-stat-card title="Skills In Progress" [value]="1" iconName="brain-circuit"></app-stat-card>
 </section>
+<main class="dashboard-content">
+  <section class="progress-overview">
+    <div class="section-header">
+      <h2>Your Progress</h2>
+      <span>Level 1</span>
+    </div>
+
+    @if (primarySkillProgress; as firstSkill) {
+      <app-progress-bar
+        [currentXp]="firstSkill.currentXp"
+        [totalXp]="firstSkill.currentLevelTotalXp"
+        [levelName]="firstSkill.nextLevel"
+      ></app-progress-bar>
+    }
+
+    <app-progress-chart [data]="data.progressChartData.weekly" />
+  </section>
+</main>
