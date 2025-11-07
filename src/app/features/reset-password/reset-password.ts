@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -7,118 +14,201 @@ import {
   FormControl,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { Subscription } from 'rxjs';
-import { InputFieldComponent } from '../../shared/input-field/input-field';
-import { ResetPasswordService } from './reset-password.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
 
+import { InputFieldComponent } from '../../shared/input-field/input-field';
+import { getFormControl } from '@app/shared';
+
+import * as AuthActions from '@app/store/auth/auth.actions';
+import {
+  selectIsResettingPassword,
+  selectResetPasswordError,
+  selectResetPasswordSuccess,
+} from '@app/store/auth/auth.selectors';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputFieldComponent,
-    HttpClientModule,
-    FontAwesomeModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent, FontAwesomeModule],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResetPassword implements OnDestroy {
-  public successMessage = '';
-  public errorMessage = '';
-  public loading = false;
-  public loginForm!: FormGroup;
-  private subscription?: Subscription;
+export class ResetPassword implements OnInit, OnDestroy {
+  public isSubmitting = this.store.selectSignal(selectIsResettingPassword);
+  public resetError = this.store.selectSignal(selectResetPasswordError);
+  public resetSuccess = this.store.selectSignal(selectResetPasswordSuccess);
 
-  public hasUppercase = false;
-  public hasLowercase = false;
-  public hasNumber = false;
-  public hasSpecialChar = false;
+  public passwordValue = signal('');
+  private resetToken: string | null = null;
+  private destroy$ = new Subject<void>();
+
+  public loginForm!: FormGroup;
 
   public faCheck = faCheck;
   public faTimes = faTimes;
 
   constructor(
     private fb: FormBuilder,
-    private resetPasswordService: ResetPasswordService,
     private library: FaIconLibrary,
-  ) {
+    private route: ActivatedRoute,
+    private router: Router,
+    private store: Store,
+  ) {}
+
+  public ngOnInit(): void {
     this.library.addIcons(faCheck, faTimes);
 
+    this.resetToken = this.route.snapshot.queryParamMap.get('token');
+
+    if (!this.resetToken) {
+      console.error('Reset token is missing from URL.');
+    }
+
     this.loginForm = this.fb.group({
-      currentPassword: [
+      password: [
         '',
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.pattern(/(?=.*[A-Z])/),
-          Validators.pattern(/(?=.*[a-z])/),
-          Validators.pattern(/(?=.*[0-9])/),
-          Validators.pattern(/(?=.*[!@#$%^&*])/),
+          Validators.pattern(/[A-Z]/),
+          Validators.pattern(/[a-z]/),
+          Validators.pattern(/[0-9]/),
+          Validators.pattern(/[!@#$%&*]/),
         ],
       ],
-      newPassword: ['', [Validators.required]],
+      confirmPassword: ['', Validators.required],
     });
 
-    this.currentPasswordControl.valueChanges.subscribe((value: string) => {
-      this.updatePasswordIndicators(value);
+    const passwordControl = this.loginForm.get('password') as FormControl;
+    const confirmPasswordControl = this.loginForm.get('confirmPassword') as FormControl;
+
+    const checkMismatch = () => {
+      if (passwordControl.value !== confirmPasswordControl.value) {
+        if (confirmPasswordControl.dirty || confirmPasswordControl.touched) {
+          confirmPasswordControl.setErrors({
+            ...(confirmPasswordControl.errors || {}),
+            passwordMismatch: true,
+          });
+        }
+      } else if (confirmPasswordControl.hasError('passwordMismatch')) {
+        const errors = confirmPasswordControl.errors;
+        if (errors) {
+          delete errors['passwordMismatch'];
+          confirmPasswordControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
+        }
+      }
+      this.loginForm.updateValueAndValidity({ emitEvent: false });
+    };
+
+    passwordControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      this.passwordValue.set(value || '');
+      checkMismatch();
+    });
+
+    confirmPasswordControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      checkMismatch();
     });
   }
 
-  public get currentPasswordControl(): FormControl {
-    return this.loginForm.get('currentPassword') as FormControl;
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  public get newPasswordControl(): FormControl {
-    return this.loginForm.get('newPassword') as FormControl;
+  public passwordRequirements = computed(() => {
+    const value = this.passwordValue();
+    return [
+      {
+        key: 'hasUppercase',
+        message: '1 uppercase letter',
+        error: !value || !/[A-Z]/.test(value),
+      },
+      {
+        key: 'hasLowercase',
+        message: '1 lowercase letter',
+        error: !value || !/[a-z]/.test(value),
+      },
+      {
+        key: 'hasNumber',
+        message: '1 number',
+        error: !value || !/[0-9]/.test(value),
+      },
+      {
+        key: 'hasSpecialChar',
+        message: '1 special character (e.g. ! , @, #, $, %, &, *)',
+        error: !value || !/[!@#$%&*]/.test(value),
+      },
+    ];
+  });
+
+  public get hasUppercase(): boolean {
+    return !this.passwordRequirements().find((req) => req.key === 'hasUppercase')?.error;
+  }
+  public get hasLowercase(): boolean {
+    return !this.passwordRequirements().find((req) => req.key === 'hasLowercase')?.error;
+  }
+  public get hasNumber(): boolean {
+    return !this.passwordRequirements().find((req) => req.key === 'hasNumber')?.error;
+  }
+  public get hasSpecialChar(): boolean {
+    return !this.passwordRequirements().find((req) => req.key === 'hasSpecialChar')?.error;
   }
 
-  private updatePasswordIndicators(value: string): void {
-    this.hasUppercase = /[A-Z]/.test(value);
-    this.hasLowercase = /[a-z]/.test(value);
-    this.hasNumber = /[0-9]/.test(value);
-    this.hasSpecialChar = /[!@#$%^&*]/.test(value);
-  }
+  public onSubmit(): void {
+    this.loginForm.markAllAsTouched();
 
-  public resetpassword(): void {
-    if (this.loginForm.invalid) return;
-
-    const { currentPassword, newPassword } = this.loginForm.value;
-
-    if (currentPassword !== newPassword) {
-      this.errorMessage = 'Passwords do not match.';
+    if (this.loginForm.invalid || !this.resetToken || this.isSubmitting()) {
       return;
     }
 
-    this.loading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
+    const { password } = this.loginForm.value;
 
-    const payload = {
-      resetToken: 'unique-secure-token-from-email',
-      newPassword: currentPassword,
+    const request = {
+      token: this.resetToken,
+      password: password,
     };
 
-    this.subscription = this.resetPasswordService.resetPassword(payload).subscribe({
-      next: (message) => {
-        this.successMessage = message;
-        this.loading = false;
-        this.loginForm.reset();
-      },
-      error: (err) => {
-        this.errorMessage = err.message || 'Password reset failed.';
-        this.loading = false;
-      },
-    });
+    this.store.dispatch(AuthActions.resetPassword({ request }));
   }
 
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+  public resetpassword = this.onSubmit.bind(this);
+
+  public get currentPasswordControl(): FormControl {
+    return this.loginForm.get('password') as FormControl;
   }
+
+  public get newPasswordControl(): FormControl {
+    return this.loginForm.get('confirmPassword') as FormControl;
+  }
+
+  public get errorMessage(): string | null {
+    const error = this.resetError();
+    if (error) {
+      return error.message;
+    }
+
+    if (
+      this.newPasswordControl?.hasError('passwordMismatch') &&
+      (this.newPasswordControl.touched || this.newPasswordControl.dirty)
+    ) {
+      return 'Passwords do not match.';
+    }
+
+    if (!this.resetToken) {
+      return 'A required reset token is missing. Please use the link sent to your email.';
+    }
+
+    return null;
+  }
+
+  public get successMessage(): string | null {
+    return this.resetSuccess() ? 'Password reset successfully! Redirecting to login...' : null;
+  }
+
+  public getFormControl = getFormControl;
 }

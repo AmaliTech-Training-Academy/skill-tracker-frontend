@@ -1,22 +1,14 @@
-export interface DashboardStats {
-  totalTasks: number;
-  completedTasks: number;
-  pendingTasks: number;
-}
-
-export interface Activity {
-  id: string;
-  type: string;
-  description: string;
-  timestamp: Date;
-}
+import { DashboardData } from '@app/core';
+import { EMPTY_STATE_DATA } from '@app/core';
 
 export interface DashboardState {
-  stats: DashboardStats | null;
-  recentActivity: Activity[];
+  data: DashboardData | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 export const initialDashboardState: DashboardState = {
-  stats: null,
-  recentActivity: [],
+  data: EMPTY_STATE_DATA,
+  isLoading: false,
+  error: null,
 };
