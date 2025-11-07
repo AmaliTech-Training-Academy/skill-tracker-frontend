@@ -34,6 +34,11 @@ export class AuthService {
     return this.api.post<{ message: string }>(API_ENDPOINTS.RESET_PASSWORD, payload);
   }
 
+  public forgotPassword(email: string): Observable<{ message: string }> {
+    const params = new HttpParams().set('email', email);
+    return this.api.post<{ message: string }>(API_ENDPOINTS.FORGOT_PASSWORD, null, { params });
+  }
+
   public verifyEmail({ code, email }: VerifyEmailRequest): Observable<UserResponse> {
     const params = new HttpParams().set('code', code).set('email', email);
 

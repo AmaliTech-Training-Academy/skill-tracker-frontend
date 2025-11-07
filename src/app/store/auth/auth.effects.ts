@@ -39,6 +39,9 @@ import {
   resendVerification,
   resendVerificationSuccess,
   resendVerificationFailure,
+  forgotPassword,
+  forgotPasswordSuccess,
+  forgotPasswordFailure,
   updateTourStatus,
   updateTourStatusFailure,
   updateTourStatusSuccess,
@@ -390,6 +393,29 @@ export class AuthEffects {
     { dispatch: false },
   );
 
+  public forgotPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(forgotPassword),
+      switchMap(({ request }) =>
+        this.authService.forgotPassword(request.email).pipe(
+          map((response) =>
+            forgotPasswordSuccess({ message: 'Password reset link sent successfully.' }),
+          ),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(forgotPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public forgotPasswordSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(forgotPasswordSuccess),
+        tap(({ message }) => {
+          this.toastService.showSuccess('Success', message);
   public resetPasswordFailure$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -403,6 +429,7 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
+
   public authFailure$ = createEffect(
     () =>
       this.actions$.pipe(
