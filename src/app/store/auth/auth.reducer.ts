@@ -19,6 +19,10 @@ import {
   updateTourStatus,
   updateTourStatusSuccess,
   updateTourStatusFailure,
+  forgotPassword,
+  forgotPasswordSuccess,
+  forgotPasswordFailure,
+  resetPasswordResetState,
 } from './auth.actions';
 
 export const authReducer = createReducer(
@@ -103,6 +107,30 @@ export const authReducer = createReducer(
     ...state,
     isLoggingOut: false,
     logoutError: error,
+  })),
+  on(forgotPassword, (state) => ({
+    ...state,
+    isRequestingPasswordReset: true,
+    passwordResetError: null,
+    passwordResetSuccess: false,
+  })),
+  on(forgotPasswordSuccess, (state) => ({
+    ...state,
+    isRequestingPasswordReset: false,
+    passwordResetSuccess: true,
+    passwordResetError: null,
+  })),
+  on(forgotPasswordFailure, (state, { error }) => ({
+    ...state,
+    isRequestingPasswordReset: false,
+    passwordResetSuccess: false,
+    passwordResetError: error,
+  })),
+  on(resetPasswordResetState, (state) => ({
+    ...state,
+    isRequestingPasswordReset: false,
+    passwordResetError: null,
+    passwordResetSuccess: false,
   })),
   on(updateTourStatus, (state) => ({
     ...state,

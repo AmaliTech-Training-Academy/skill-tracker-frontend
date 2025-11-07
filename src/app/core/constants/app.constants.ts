@@ -26,5 +26,6 @@ export const APP_CONSTANTS = {
     SOCIAL_LOGIN: '/oauth2/authorization',
     RESEND_VERIFICATION: '/auth/resend-verification',
     UPDATE_TOUR_STATUS: '/users/tour-status',
+    FORGOT_PASSWORD: '/auth/password/forgot',
   },
 } as const;

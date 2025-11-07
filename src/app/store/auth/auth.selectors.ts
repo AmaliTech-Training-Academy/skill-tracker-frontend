@@ -63,3 +63,12 @@ export const selectLoginError = createSelector(
   selectAuthState,
   (state: AuthState) => state.loginError,
 );
+export const selectIsRequestingPasswordReset = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.isRequestingPasswordReset,
+);
+
+export const selectPasswordResetError = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.passwordResetError,
+);

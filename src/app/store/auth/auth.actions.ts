@@ -100,6 +100,24 @@ export const resendVerificationFailure = createAction(
   '[Auth/Verification] Resend Verification Failure',
   props<{ error: AppError }>(),
 );
+export const forgotPassword = createAction(
+  '[Auth/Password Reset] Forgot Password',
+  props<{ request: UserEmailRequest }>(),
+);
+
+export const forgotPasswordSuccess = createAction(
+  '[Auth/Password Reset] Forgot Password Success',
+  props<{ message: string }>(),
+);
+
+export const forgotPasswordFailure = createAction(
+  '[Auth/Password Reset] Forgot Password Failure',
+  props<{ error: AppError }>(),
+);
+
+export const resetPasswordResetState = createAction(
+  '[Auth/Password Reset] Reset Password Reset State',
+);
 
 export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
 
