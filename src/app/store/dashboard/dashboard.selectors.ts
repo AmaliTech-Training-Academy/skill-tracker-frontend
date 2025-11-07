@@ -34,5 +34,5 @@ export const selectSkillsInProgressCount = createSelector(selectDashboardData, (
     return 0;
   }
 
-  return data.skillProgress.filter((skill: SkillProgress) => skill.currentXp > 0).length;
+  return data.skillProgress.filter((skill: SkillProgress) => skill.currentXp).length;
 });
