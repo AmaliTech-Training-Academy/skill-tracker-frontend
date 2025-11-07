@@ -175,8 +175,8 @@ export class ResetPassword implements OnInit, OnDestroy {
     const { password } = this.loginForm.value;
 
     const request = {
-      resetToken: this.resetToken,
-      newPassword: password,
+      token: this.resetToken,
+      password: password,
     };
 
     this.store.dispatch(AuthActions.resetPassword({ request }));

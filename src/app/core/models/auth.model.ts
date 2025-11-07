@@ -28,8 +28,8 @@ export interface LoginSuccessData {
 }
 
 export interface ResetPasswordRequest {
-  resetToken: string;
-  newPassword: string;
+  token: string;
+  password: string;
 }
 
 export enum UserRole {
