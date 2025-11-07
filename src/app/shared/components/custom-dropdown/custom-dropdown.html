@@ -7,7 +7,7 @@
     (keydown.enter)="toggleDropdown()"
     (keydown.space)="toggleDropdown()"
   >
-    <div class="selected-value">{{ selectedValue() || 'All' }}</div>
+    <div class="selected-value">{{ selectedValue() || placeholder() }}</div>
     <img
       src="assets/caret-down.png"
       alt="Dropdown arrow"

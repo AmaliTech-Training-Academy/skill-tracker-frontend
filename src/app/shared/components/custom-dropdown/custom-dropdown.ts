@@ -9,7 +9,8 @@ import { Component, input, output, signal, ChangeDetectionStrategy } from '@angu
 })
 export class CustomDropdown {
   public options = input.required<string[]>();
-  public selectedValue = input<string | undefined>('All');
+  public selectedValue = input<string | undefined>();
+  public placeholder = input<string>('Select an option');
   public selectionChange = output<string>();
 
   public isOpen = signal(false);

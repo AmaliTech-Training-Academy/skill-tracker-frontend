@@ -97,6 +97,6 @@ describe('CustomDropdown', () => {
 
     const selectedValue = fixture.nativeElement.querySelector('.selected-value');
 
-    expect(selectedValue.textContent).toBe('All');
+    expect(selectedValue.textContent).toBe('Select an option');
   });
 });
