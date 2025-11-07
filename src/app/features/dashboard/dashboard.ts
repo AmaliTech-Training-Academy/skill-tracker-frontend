@@ -8,12 +8,13 @@ import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
 import { getSteps as defaultSteps, defaultStepOptions } from './dashboard.config';
 import { TourGuide } from '@app/core';
+import { StatCard } from '@app/shared';
 import { ProgressBar } from '@app/shared/components/progress-bar/progress-bar';
 import { ProgressChart } from '@app/shared/components/progress-chart/progress-chart';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ProgressBar, ProgressChart],
+  imports: [ProgressBar, ProgressChart, StatCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
