@@ -4,6 +4,7 @@ import {
   isDevMode,
   importProvidersFrom,
 } from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
@@ -28,5 +29,6 @@ export const appConfig: ApplicationConfig = {
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouterStore(),
     importProvidersFrom(LucideAngularModule.pick(appIcons)),
+    provideAnimations(),
   ],
 };
