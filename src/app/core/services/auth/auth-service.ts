@@ -9,7 +9,7 @@ import {
   VerifyEmailRequest,
   CompleteOnboardingRequest,
   UserEmailRequest,
-  ResetPasswordRequest
+  ResetPasswordRequest,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
@@ -30,7 +30,7 @@ export class AuthService {
   public login(payload: LoginRequest): Observable<UserResponse> {
     return this.api.post<UserResponse>(API_ENDPOINTS.LOGIN, payload);
   }
-   public resetPassword(payload: ResetPasswordRequest): Observable<{ message: string }> {
+  public resetPassword(payload: ResetPasswordRequest): Observable<{ message: string }> {
     return this.api.post<{ message: string }>(API_ENDPOINTS.RESET_PASSWORD, payload);
   }
 

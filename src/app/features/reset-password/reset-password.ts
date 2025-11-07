@@ -33,12 +33,7 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputFieldComponent,
-    FontAwesomeModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent, FontAwesomeModule],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,11 +58,10 @@ export class ResetPassword implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private store: Store,
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
-    this.library.addIcons(faCheck, faTimes); 
+    this.library.addIcons(faCheck, faTimes);
 
     this.resetToken = this.route.snapshot.queryParamMap.get('token');
 
@@ -92,13 +86,13 @@ export class ResetPassword implements OnInit, OnDestroy {
 
     const passwordControl = this.loginForm.get('password') as FormControl;
     const confirmPasswordControl = this.loginForm.get('confirmPassword') as FormControl;
-    
+
     const checkMismatch = () => {
       if (passwordControl.value !== confirmPasswordControl.value) {
         if (confirmPasswordControl.dirty || confirmPasswordControl.touched) {
           confirmPasswordControl.setErrors({
-              ...(confirmPasswordControl.errors || {}),
-              passwordMismatch: true,
+            ...(confirmPasswordControl.errors || {}),
+            passwordMismatch: true,
           });
         }
       } else if (confirmPasswordControl.hasError('passwordMismatch')) {
@@ -151,23 +145,23 @@ export class ResetPassword implements OnInit, OnDestroy {
       },
     ];
   });
-  
+
   public get hasUppercase(): boolean {
-    return !this.passwordRequirements().find(req => req.key === 'hasUppercase')?.error;
+    return !this.passwordRequirements().find((req) => req.key === 'hasUppercase')?.error;
   }
   public get hasLowercase(): boolean {
-    return !this.passwordRequirements().find(req => req.key === 'hasLowercase')?.error;
+    return !this.passwordRequirements().find((req) => req.key === 'hasLowercase')?.error;
   }
   public get hasNumber(): boolean {
-    return !this.passwordRequirements().find(req => req.key === 'hasNumber')?.error;
+    return !this.passwordRequirements().find((req) => req.key === 'hasNumber')?.error;
   }
   public get hasSpecialChar(): boolean {
-    return !this.passwordRequirements().find(req => req.key === 'hasSpecialChar')?.error;
+    return !this.passwordRequirements().find((req) => req.key === 'hasSpecialChar')?.error;
   }
 
   public onSubmit(): void {
     this.loginForm.markAllAsTouched();
-    
+
     if (this.loginForm.invalid || !this.resetToken || this.isSubmitting()) {
       return;
     }
@@ -181,8 +175,8 @@ export class ResetPassword implements OnInit, OnDestroy {
 
     this.store.dispatch(AuthActions.resetPassword({ request }));
   }
-  
-  public resetpassword = this.onSubmit.bind(this); 
+
+  public resetpassword = this.onSubmit.bind(this);
 
   public get currentPasswordControl(): FormControl {
     return this.loginForm.get('password') as FormControl;
@@ -197,8 +191,11 @@ export class ResetPassword implements OnInit, OnDestroy {
     if (error) {
       return error.message;
     }
-    
-    if (this.newPasswordControl?.hasError('passwordMismatch') && (this.newPasswordControl.touched || this.newPasswordControl.dirty)) {
+
+    if (
+      this.newPasswordControl?.hasError('passwordMismatch') &&
+      (this.newPasswordControl.touched || this.newPasswordControl.dirty)
+    ) {
       return 'Passwords do not match.';
     }
 
@@ -208,10 +205,10 @@ export class ResetPassword implements OnInit, OnDestroy {
 
     return null;
   }
-  
+
   public get successMessage(): string | null {
     return this.resetSuccess() ? 'Password reset successfully! Redirecting to login...' : null;
   }
-  
+
   public getFormControl = getFormControl;
 }
