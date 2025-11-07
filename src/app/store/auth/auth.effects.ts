@@ -410,12 +410,17 @@ export class AuthEffects {
     ),
   );
 
-  public forgotPasswordSuccess$ = createEffect(
+   public forgotPasswordSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(forgotPasswordSuccess),
         tap(({ message }) => {
           this.toastService.showSuccess('Success', message);
+        }),
+      ),
+    { dispatch: false },
+  );
+  
   public resetPasswordFailure$ = createEffect(
     () =>
       this.actions$.pipe(
