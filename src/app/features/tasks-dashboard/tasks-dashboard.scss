@@ -2,9 +2,10 @@
 @use 'mixins' as *;
 @use 'typography' as *;
 
-section {
+.tasks-dashboard-container {
+  @include flex($direction: column, $gap: 1.5rem);
+  width: 100%;
   padding: 1.25rem 1rem;
-  @include flex($direction: column, $gap: 1rem);
 
   @include mobile-large {
     padding: 1.656rem 3rem 3rem;

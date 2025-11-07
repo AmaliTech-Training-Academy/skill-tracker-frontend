@@ -1,6 +1,10 @@
-<section>
+<section class="tasks-dashboard-container">
   <app-task-header [selectedSkill]="selectedSkill()" (skillChanged)="onSkillChange($event)" />
-  @for (task of todayTasks(); track task.id) {
-    <app-tasks-card [task]="task" />
-  }
+  <app-task-list
+    [todayTasks]="todayTasks()"
+    [previousTasks]="previousTasks()"
+    [selectedTimeRange]="selectedTimeRange()"
+    (timeRangeChanged)="onTimeRangeChanged($event)"
+    (startTask)="onStartTask($event)"
+  />
 </section>
