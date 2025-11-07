@@ -1,12 +1,10 @@
 import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-custom-dropdown',
   templateUrl: './custom-dropdown.html',
   styleUrl: './custom-dropdown.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
   standalone: true,
 })
 export class CustomDropdown {

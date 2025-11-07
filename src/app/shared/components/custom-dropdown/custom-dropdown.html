@@ -12,7 +12,7 @@
       src="assets/caret-down.png"
       alt="Dropdown arrow"
       class="dropdown-arrow"
-      [ngClass]="{ open: isOpen() }"
+      [class.open]="isOpen()"
     />
   </div>
 
@@ -22,7 +22,7 @@
         <div
           class="dropdown-option"
           tabindex="0"
-          [ngClass]="{ selected: option === selectedValue() }"
+          [class.selected]="option === selectedValue()"
           (click)="selectOption(option)"
           (keydown.enter)="selectOption(option)"
           (keydown.space)="selectOption(option)"
