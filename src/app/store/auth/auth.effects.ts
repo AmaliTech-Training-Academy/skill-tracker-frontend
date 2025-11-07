@@ -360,7 +360,7 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
-    public resetPassword$ = createEffect(() =>
+  public resetPassword$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resetPassword),
       switchMap(({ request }) =>
@@ -380,9 +380,12 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(resetPasswordSuccess),
         tap(({ message }) => {
-          this.toastService.showSuccess('Password Reset', message || 'Your password has been successfully reset.');
+          this.toastService.showSuccess(
+            'Password Reset',
+            message || 'Your password has been successfully reset.',
+          );
         }),
-        tap(() => this.router.navigateByUrl(APP_ROUTES.LOGIN)), // Redirect to login on success
+        tap(() => this.router.navigateByUrl(APP_ROUTES.LOGIN)),
       ),
     { dispatch: false },
   );
@@ -392,12 +395,14 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(resetPasswordFailure),
         tap(({ error }) => {
-          
+          this.toastService.showError(
+            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
+            error.message,
+          );
         }),
       ),
     { dispatch: false },
   );
-
   public authFailure$ = createEffect(
     () =>
       this.actions$.pipe(
