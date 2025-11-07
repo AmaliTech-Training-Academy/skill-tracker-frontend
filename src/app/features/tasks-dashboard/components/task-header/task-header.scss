@@ -1,0 +1,31 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.tasks-header {
+  @include flex($direction: row, $justify: space-between);
+  width: 100%;
+}
+
+.title-group {
+  @include flex($direction: column, $gap: 0.25rem);
+
+  .tasks-title {
+    @include h12;
+    color: $gray-text-strong;
+
+    @include mobile-large {
+      @include typography(2rem, 2.5rem, 600);
+    }
+  }
+
+  .tasks-subtitle {
+    @include h14;
+    color: $gray-stroke-strong;
+
+    @include mobile-large {
+      @include h13;
+    }
+  }
+}

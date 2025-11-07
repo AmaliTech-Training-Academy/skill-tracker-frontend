@@ -1,0 +1,15 @@
+<header class="tasks-header">
+  <div class="title-group">
+    <h1 class="tasks-title">{{ title }}</h1>
+    <p class="tasks-subtitle">{{ subtitle }}</p>
+  </div>
+
+  <div class="filter-wrapper">
+    <app-custom-dropdown
+      [options]="skills()"
+      [selectedValue]="selectedSkill()"
+      [placeholder]="'All Skills'"
+      (selectionChange)="onSkillChange($event)"
+    />
+  </div>
+</header>
