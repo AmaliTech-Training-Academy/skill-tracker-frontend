@@ -19,6 +19,9 @@ export interface AuthState {
   logoutError: AppError | null;
   isUpdatingTourStatus: boolean;
   updateTourStatusError: AppError | null;
+  isResettingPassword: boolean;
+  resetPasswordError: AppError | null;
+  resetPasswordSuccess: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -39,4 +42,7 @@ export const initialAuthState: AuthState = {
   logoutError: null,
   isUpdatingTourStatus: false,
   updateTourStatusError: null,
+  isResettingPassword: false,
+  resetPasswordError: null,
+  resetPasswordSuccess: false,
 };

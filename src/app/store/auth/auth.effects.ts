@@ -42,6 +42,9 @@ import {
   updateTourStatus,
   updateTourStatusFailure,
   updateTourStatusSuccess,
+  resetPassword,
+  resetPasswordSuccess,
+  resetPasswordFailure,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -357,7 +360,49 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
+  public resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPassword),
+      switchMap(({ request }) =>
+        this.authService.resetPassword(request).pipe(
+          map((response) => resetPasswordSuccess({ message: response.message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(resetPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
 
+  public resetPasswordSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(resetPasswordSuccess),
+        tap(({ message }) => {
+          this.toastService.showSuccess(
+            'Password Reset',
+            message || 'Your password has been successfully reset.',
+          );
+        }),
+        tap(() => this.router.navigateByUrl(APP_ROUTES.LOGIN)),
+      ),
+    { dispatch: false },
+  );
+
+  public resetPasswordFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(resetPasswordFailure),
+        tap(({ error }) => {
+          this.toastService.showError(
+            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
+            error.message,
+          );
+        }),
+      ),
+    { dispatch: false },
+  );
   public authFailure$ = createEffect(
     () =>
       this.actions$.pipe(
