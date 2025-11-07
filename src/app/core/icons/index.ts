@@ -10,6 +10,9 @@ import {
   BellDot,
   Menu,
   X,
+  Flame,
+  ClipboardCheck,
+  BrainCircuit,
 } from 'lucide-angular';
 
 export const appIcons = {
@@ -24,4 +27,7 @@ export const appIcons = {
   BellDot,
   Menu,
   X,
+  Flame,
+  ClipboardCheck,
+  BrainCircuit,
 };

@@ -1,0 +1,55 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  background-color: var(--color-background-white);
+}
+
+.dashboard-header {
+  padding: var(--space-md);
+
+  h1 {
+    @include h10;
+    color: var(--color-gray-text-strong);
+    margin-bottom: var(--space-sm);
+  }
+  p {
+    @include h13;
+    color: var(--color-gray-stroke-strong);
+  }
+}
+
+.stats-grid {
+  @include flex($direction: row, $gap: var(--space-md));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--space-md);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  app-stat-card {
+    flex: 0 0 80%;
+    scroll-snap-align: end;
+  }
+}
+
+@include tablet {
+  .dashboard-header {
+    padding: 2.5rem 3rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+  }
+  .stats-grid {
+    @include grid($columns: 3, $gap: var(--space-md));
+    margin-bottom: 2.5rem;
+    padding: 0 3rem;
+  }
+}

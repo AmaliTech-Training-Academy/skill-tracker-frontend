@@ -3,11 +3,14 @@ import { Router } from '@angular/router';
 import { ShepherdService } from 'angular-shepherd';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { importProvidersFrom } from '@angular/core';
+import { LucideAngularModule } from 'lucide-angular';
 
 import { Dashboard } from './dashboard';
 import { AppState } from '@app/store/app.state';
 import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 import { User, UserRole, UserState, TourGuide, PremiumTier } from '@app/core';
+import { appIcons } from '@app/core';
 
 jest.mock('./dashboard.config', () => ({
   defaultStepOptions: {},
@@ -62,6 +65,7 @@ describe('Dashboard', () => {
             },
           ],
         }),
+        importProvidersFrom(LucideAngularModule.pick(appIcons)),
       ],
     })
       .overrideComponent(Dashboard, {

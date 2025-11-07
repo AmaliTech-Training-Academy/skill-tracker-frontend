@@ -1,0 +1,11 @@
+<div class="stat-card-container">
+  <div class="stat-card-icon">
+    @if (iconName) {
+      <app-icon [name]="iconName" [size]="iconSize" />
+    }
+  </div>
+  <div class="stat-card-content">
+    <span class="stat-card-title">{{ title }}</span>
+    <span class="stat-card-value">{{ value }}</span>
+  </div>
+</div>
