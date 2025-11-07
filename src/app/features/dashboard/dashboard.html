@@ -1,1 +1,11 @@
-<p>dashboard works!</p>
+<header class="dashboard-header">
+  <h1>Welcome, Aba 👋</h1>
+  <p>Track your progress and continue developing your skill</p>
+</header>
+<section class="stats-grid">
+  <app-stat-card title="Current Streak" [value]="4 + ' days'" [iconName]="'flame'"></app-stat-card>
+
+  <app-stat-card title="Task Completed" [value]="2" iconName="clipboard-check"></app-stat-card>
+
+  <app-stat-card title="Skills In Progress" [value]="1" iconName="brain-circuit"></app-stat-card>
+</section>

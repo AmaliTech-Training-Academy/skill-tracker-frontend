@@ -1,0 +1,59 @@
+@use 'mixins' as *;
+@use 'typography' as *;
+
+$card-value: #3d3d3d;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.stat-card-container {
+  @include flex($direction: row, $align: center, $gap: var(--space-xs));
+  padding: var(--space-lg, --space-md);
+  background-color: var(--color-white);
+  border: none;
+  border-radius: var(--rounded-xs);
+  height: 100%;
+}
+
+.stat-card-icon {
+  @include flex($direction: row, $justify: center, $align: center);
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+
+  background-color: var(--color-brand-fill);
+  color: var(--color-brand-text);
+}
+
+.stat-card-content {
+  @include flex($direction: column, $gap: 4px);
+}
+
+.stat-card-title {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--color-gray-stroke-strong);
+  line-height: 20px;
+}
+
+.stat-card-value {
+  @include h13;
+  color: $card-value;
+}
+
+@include tablet {
+  .stat-card-container {
+    @include flex($direction: row, $align: center, $gap: 20px);
+  }
+  .stat-card-title {
+    @include h13;
+    font-weight: 400;
+  }
+
+  .stat-card-value {
+    @include h10;
+  }
+}
