@@ -4,6 +4,7 @@ export * from './services/auth/auth-service';
 export * from './services/error/error-handler';
 export * from './services/toast/toast-service';
 export * from './services/onboarding/onboarding-data-service';
+export * from './services/dashboard/dashboard-mock.service';
 
 // interceptors
 export * from './interceptors/global-http-error-interceptor';
@@ -21,6 +22,7 @@ export * from './constants/app.constants';
 export * from './models/app-error.model';
 export * from './models/auth.model';
 export * from './models/toast-model';
+export * from './models/dashboard.model';
 
 // icons
 export * from './icons/index';
