@@ -3,17 +3,51 @@
   <p>Track your progress and continue developing your skill</p>
 </header>
 <section class="stats-grid">
-  <app-stat-card title="Current Streak" [value]="4 + ' days'" [iconName]="'flame'"></app-stat-card>
-
-  <app-stat-card title="Task Completed" [value]="2" iconName="clipboard-check"></app-stat-card>
-
-  <app-stat-card title="Skills In Progress" [value]="1" iconName="brain-circuit"></app-stat-card>
+  <app-stat-card title="Current Streak" [value]="4 + ' days'" [iconName]="'flame'" />
+  <app-stat-card title="Task Completed" [value]="2" iconName="clipboard-check" />
+  <app-stat-card title="Skills In Progress" [value]="1" iconName="brain-circuit" />
 </section>
 <main class="dashboard-content">
+  <section class="recommended-tasks">
+    <div class="section-header">
+      <h2>Recommended Tasks</h2>
+      <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
+    </div>
+    <div class="tasks-list">
+      <app-tasks-card
+        [task]="{
+          id: 't1',
+          title: 'Fix The Print Statement',
+          icon: 'abc',
+          description: 'Assess your knowledge in this skill area.',
+          skill: 'HTML',
+          difficulty: 'Beginner',
+          xp: 0,
+          time: '15 min',
+          status: 'Pending',
+        }"
+      />
+      <app-tasks-card
+        [task]="{
+          id: 't2',
+          title: 'Concept Explanation',
+          icon: 'pencil',
+          description: 'Explain a key concept in your own words.',
+          skill: 'Data Structures',
+          difficulty: 'Beginner',
+          xp: 0,
+          time: '15 min',
+          status: 'Pending',
+        }"
+      />
+    </div>
+  </section>
   <section class="progress-overview">
     <div class="section-header">
-      <h2>Your Progress</h2>
-      <span>Level 1</span>
+      <div>
+        <h2>Your Progress</h2>
+        <span>Level 1</span>
+      </div>
     </div>
 
     @if (primarySkillProgress; as firstSkill) {

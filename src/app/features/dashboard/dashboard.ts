@@ -11,10 +11,12 @@ import { TourGuide } from '@app/core';
 import { StatCard } from '@app/shared';
 import { ProgressBar } from '@app/shared/components/progress-bar/progress-bar';
 import { ProgressChart } from '@app/shared/components/progress-chart/progress-chart';
+import { TasksCard } from '../tasks-dashboard/components/tasks-card/tasks-card';
+import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ProgressBar, ProgressChart, StatCard],
+  imports: [ProgressBar, ProgressChart, StatCard, TasksCard, CustomDropdown],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
