@@ -48,6 +48,24 @@
         <h2>Your Progress</h2>
         <span>Level 1</span>
       </div>
+
+      <div class="filters">
+        <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
+
+        <div class="period-filter">
+          <button [class.active]="selectedPeriod() === 'weekly'" (click)="selectPeriod('weekly')">
+            Weekly
+          </button>
+          <button [class.active]="selectedPeriod() === 'monthly'" (click)="selectPeriod('monthly')">
+            Monthly
+          </button>
+          <button [class.active]="selectedPeriod() === 'yearly'" (click)="selectPeriod('yearly')">
+            Yearly
+          </button>
+
+          <app-custom-dropdown [options]="['Weekly', 'Monthly', 'Yearly']" selectedValue="Weekly" />
+        </div>
+      </div>
     </div>
 
     @if (primarySkillProgress; as firstSkill) {

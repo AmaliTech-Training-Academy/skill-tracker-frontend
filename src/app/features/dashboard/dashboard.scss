@@ -95,6 +95,26 @@
         padding: 0.25rem var(--space-xs);
         border-radius: 8px;
       }
+
+      app-custom-dropdown {
+        display: none;
+      }
+
+      .filters {
+        @include flex($direction: row, $align: center, $gap: var(--space-md));
+
+        .period-filter {
+          @include flex($direction: row, $align: center, $gap: var(--space-md));
+
+          button {
+            display: none;
+          }
+
+          & app-custom-dropdown {
+            display: block;
+          }
+        }
+      }
     }
   }
 }
@@ -154,6 +174,33 @@
 
         app-custom-dropdown {
           display: block;
+        }
+
+        .filters {
+          .period-filter {
+            @include flex($direction: row, $align: center, $gap: var(--space-md));
+
+            button {
+              display: inline-block;
+              font-size: 1rem;
+              padding: 6px 10px;
+              color: var(--color-gray-stroke-strong);
+              border: 1px solid var(--color-gray-fill);
+              border-radius: 6px;
+              background-color: var(--color-gray-fill);
+              cursor: pointer;
+
+              &.active {
+                background-color: var(--color-white);
+                color: var(--color-gray-text-strong);
+                border: 1px solid var(--color-gray-fill);
+              }
+            }
+
+            & app-custom-dropdown {
+              display: none;
+            }
+          }
         }
       }
     }
