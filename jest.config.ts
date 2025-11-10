@@ -6,6 +6,8 @@ const config: Config = {
   moduleDirectories: ['node_modules', '<rootDir>'],
   moduleNameMapper: {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
+    '^d3-.*$': '<rootDir>/src/mocks/empty-module.mock.ts',
+    '^@swimlane/ngx-charts$': '<rootDir>/src/mocks/empty-module.mock.ts',
   },
   testMatch: ['**/+(*.)+(spec).+(ts)'],
   rootDir: process.cwd(),

@@ -8,15 +8,15 @@ import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
 import { getSteps as defaultSteps, defaultStepOptions } from './dashboard.config';
 import { TourGuide } from '@app/core';
-import { StatCard } from '@app/shared';
-import { ProgressBar } from '@app/shared/components/progress-bar/progress-bar';
-import { ProgressChart } from '@app/shared/components/progress-chart/progress-chart';
+import { StatCard, ProgressBar, ProgressChart } from '@app/shared';
 import { TasksCard } from '../tasks-dashboard/components/tasks-card/tasks-card';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
+import { TaskDifficulty, TaskIcon, TaskStatus } from '@app/core/models/tasks-model';
 
 @Component({
+  standalone: true,
   selector: 'app-dashboard',
-  imports: [ProgressBar, ProgressChart, StatCard, TasksCard, CustomDropdown],
+  imports: [StatCard, ProgressBar, ProgressChart, TasksCard, CustomDropdown],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,6 +48,32 @@ export class Dashboard implements AfterViewInit {
       ],
     },
   };
+  public tasks = [
+    {
+      id: 't1',
+      title: 'Fix The Print Statement',
+      icon: TaskIcon.ABC,
+      description: 'Assess your knowledge in this skill area.',
+      skill: 'HTML',
+      difficulty: TaskDifficulty.BEGINNER,
+      xp: 0,
+      time: '15 min',
+      status: TaskStatus.PENDING,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: 't2',
+      title: 'Concept Explanation',
+      icon: TaskIcon.PENCIL,
+      description: 'Explain a key concept in your own words.',
+      skill: 'Data Structures',
+      difficulty: TaskDifficulty.BEGINNER,
+      xp: 0,
+      time: '15 min',
+      status: TaskStatus.PENDING,
+      createdAt: new Date().toISOString(),
+    },
+  ];
 
   public selectedPeriod = signal('weekly');
 

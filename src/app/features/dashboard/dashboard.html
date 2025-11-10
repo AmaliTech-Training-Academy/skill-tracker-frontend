@@ -14,32 +14,9 @@
       <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
     </div>
     <div class="tasks-list">
-      <app-tasks-card
-        [task]="{
-          id: 't1',
-          title: 'Fix The Print Statement',
-          icon: 'abc',
-          description: 'Assess your knowledge in this skill area.',
-          skill: 'HTML',
-          difficulty: 'Beginner',
-          xp: 0,
-          time: '15 min',
-          status: 'Pending',
-        }"
-      />
-      <app-tasks-card
-        [task]="{
-          id: 't2',
-          title: 'Concept Explanation',
-          icon: 'pencil',
-          description: 'Explain a key concept in your own words.',
-          skill: 'Data Structures',
-          difficulty: 'Beginner',
-          xp: 0,
-          time: '15 min',
-          status: 'Pending',
-        }"
-      />
+      @for (task of tasks; track task.id) {
+        <app-tasks-card [task]="task" />
+      }
     </div>
   </section>
   <section class="progress-overview">

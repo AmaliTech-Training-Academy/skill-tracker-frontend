@@ -1,11 +1,28 @@
+export enum TaskIcon {
+  ABC = 'abc',
+  PENCIL = 'pencil',
+}
+
+export enum TaskDifficulty {
+  BEGINNER = 'Beginner',
+  INTERMEDIATE = 'Intermediate',
+  ADVANCED = 'Advanced',
+}
+
+export enum TaskStatus {
+  PENDING = 'Pending',
+  COMPLETED = 'Completed',
+}
+
 export interface Task {
   id: string;
   title: string;
-  icon: 'abc' | 'pencil';
+  icon: TaskIcon;
   description: string;
   skill: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  difficulty: TaskDifficulty;
   xp: number;
   time: string;
-  status: 'Pending' | 'Completed';
+  status: TaskStatus;
+  createdAt: string;
 }
