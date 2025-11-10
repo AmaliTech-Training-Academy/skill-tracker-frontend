@@ -87,3 +87,8 @@ export const selectResetPasswordSuccess = createSelector(
   selectAuthState,
   (state: AuthState) => state.resetPasswordSuccess,
 );
+
+export const selectIsLoggingOut = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.isLoggingOut,
+);
