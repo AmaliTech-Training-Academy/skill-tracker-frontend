@@ -13,7 +13,7 @@ export const selectMcqLoading = createSelector(selectMcqGenerationState, (state)
 export const selectMcqError = createSelector(selectMcqGenerationState, (state) => state.error);
 
 export const selectMcqTotalTime = createSelector(selectMcqQuestions, (questions) => {
-  if (!questions || questions.length === 0) {
+  if (!questions || !questions.length ) {
     return 0;
   }
   return questions.reduce((total, q) => total + q.question_duration, 0);
