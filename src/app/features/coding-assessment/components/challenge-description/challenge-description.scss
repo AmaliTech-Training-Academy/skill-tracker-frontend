@@ -54,12 +54,16 @@
   flex: 1;
 }
 
-.title {
-  @include typography(1.5rem, 1.75rem, 600);
-}
+.description {
+  @include flex($direction: column, $gap: 1.125rem);
 
-.description-text {
-  @include typography(1.25rem, 1.5rem, 400);
+  .title {
+    @include typography(1.5rem, 1.75rem, 600);
+  }
+
+  .description-text {
+    @include typography(1.25rem, 1.5rem, 400);
+  }
 }
 
 .example-block {
