@@ -53,7 +53,6 @@ export class Dashboard implements OnInit {
   ];
   public footerItems = [
     { icon: 'settings', label: 'Settings', route: '/settings', tourId: 'sidebar-settings' },
-    { icon: 'log-out', label: 'Logout', route: '/logout', tourId: 'sidebar-logout' },
   ];
 
   public ngOnInit(): void {
