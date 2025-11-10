@@ -9,3 +9,22 @@ export interface Task {
   time: string;
   status: 'Pending' | 'Completed';
 }
+
+export interface TaskExample {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+export interface CodingTask {
+  id: string;
+  title: string;
+  description: string;
+  examples: TaskExample[];
+  skill: string;
+  difficulty: string;
+  estimatedDuration: number;
+  starterCode: string;
+  language: string;
+  xp: number;
+}
