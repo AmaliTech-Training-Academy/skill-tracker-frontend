@@ -184,7 +184,7 @@ describe('Dashboard', () => {
 
     fixture = TestBed.createComponent(Dashboard);
     component = fixture.componentInstance;
-    store = TestBed.inject(MockStore); // No change needed here
+    store = TestBed.inject(MockStore);
     shepherdService = TestBed.inject(ShepherdService);
     router = TestBed.inject(Router);
   });
