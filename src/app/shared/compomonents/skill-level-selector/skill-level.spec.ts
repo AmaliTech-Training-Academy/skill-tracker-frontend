@@ -56,7 +56,7 @@ describe('SkillLevelSelectorComponent', () => {
   });
 
   it('should apply the correct "selected" class based on selectedLevel input', () => {
-    component.selectedLevel = 'Intermediate';
+    component.selectedLevel = 'INTERMEDIATE';
     fixture.detectChanges();
 
     const buttons = fixture.debugElement.queryAll(By.css('.level-btn'));
@@ -73,6 +73,6 @@ describe('SkillLevelSelectorComponent', () => {
 
     buttons[2].nativeElement.click();
 
-    expect(component.levelSelected.emit).toHaveBeenCalledWith('Advanced');
+    expect(component.levelSelected.emit).toHaveBeenCalledWith('ADVANCED');
   });
 });
