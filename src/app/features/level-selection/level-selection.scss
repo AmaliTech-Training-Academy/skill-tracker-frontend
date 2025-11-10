@@ -7,11 +7,12 @@
   background: $background-white;
   @include flex(column, center, center);
   height: 100vh;
+  padding: var(--space-lg);
 
   &-container {
-    padding: 48px 16px;
-    margin: 0px 24px;
-    background-color: white;
+    padding: var(--space-lg);
+    background-color: var(--color-white);
+    // max-width: 640px;
 
     & > span {
       @include flex(row, center, center, 2px);
@@ -46,9 +47,8 @@
   }
 
   &-btns {
-    margin-top: 16px;
-    @include flex(column, center, center, 16px);
-    gap: 16px;
+    margin-top: var(--space-md);
+    @include flex(column, center, center, var(--space-md));
 
     & button {
       @include button-base;
