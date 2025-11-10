@@ -24,7 +24,7 @@
 
   .header-title {
     @include h13;
-    color: $gray-light;
+    color: $background-white;
 
     @include mobile-large {
       @include typography(1.25rem, 1.5rem, 500);
