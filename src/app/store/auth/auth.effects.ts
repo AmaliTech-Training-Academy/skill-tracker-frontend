@@ -196,6 +196,10 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ user }) => {
+           this.toastService.showSuccess(
+            'Login Successful!',
+            "Login successful! Redirecting you to your dashboard...",
+          );
           if (user.state === UserState.ONBOARDED) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
             return;
