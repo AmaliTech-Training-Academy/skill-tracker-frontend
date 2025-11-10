@@ -15,7 +15,7 @@ export const selectSkills = createSelector(selectTasksState, ({ skills }) => ski
 
 export const selectSkillFilter = createSelector(
   selectTasksState,
-  ({ selectedSkill }) => selectedSkill,
+  ({ selectedSkill }) => selectedSkill || 'All Skills',
 );
 
 export const selectTimeRanges = createSelector(selectTasksState, ({ timeRanges }) => timeRanges);
@@ -29,7 +29,7 @@ export const selectFilteredTodayTasks = createSelector(
   selectTodayTasks,
   selectSkillFilter,
   (tasks: Task[], skill: string) => {
-    if (skill === 'All') {
+    if (skill === 'All Skills' || !skill) {
       return tasks;
     }
     return tasks.filter((task) => task.skill === skill);
@@ -41,9 +41,41 @@ export const selectFilteredPreviousTasks = createSelector(
   selectSkillFilter,
   selectTimeRangeFilter,
   (tasks: Task[], skill: string, timeRange: string) => {
-    if (skill === 'All') {
-      return tasks;
+    let filteredTasks = tasks;
+
+    if (skill !== 'All Skills' && skill) {
+      filteredTasks = filteredTasks.filter((task) => task.skill === skill);
     }
-    return tasks.filter((task) => task.skill === skill);
+
+    if (timeRange && timeRange !== 'All Periods') {
+      const now = new Date();
+      const filterDate = new Date();
+
+      switch (timeRange) {
+        case 'Today':
+          filterDate.setHours(0, 0, 0, 0);
+          break;
+        case 'Yesterday':
+          filterDate.setDate(now.getDate() - 1);
+          filterDate.setHours(0, 0, 0, 0);
+          break;
+        case 'Last 7 days':
+          filterDate.setDate(now.getDate() - 7);
+          break;
+        case 'Last 30 days':
+          filterDate.setDate(now.getDate() - 30);
+          break;
+        case 'Older':
+          filterDate.setDate(now.getDate() - 90);
+          filteredTasks = filteredTasks.filter((task) => new Date(task.createdAt) < filterDate);
+          return filteredTasks;
+        default:
+          return filteredTasks;
+      }
+
+      filteredTasks = filteredTasks.filter((task) => new Date(task.createdAt) >= filterDate);
+    }
+
+    return filteredTasks;
   },
 );
