@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { TaskHeader } from './task-header';
+import { TaskHeader } from '../task-header/task-header';
 import { selectSkills } from '@app/store/tasks/tasks.selectors';
 
 describe('TaskHeader', () => {
@@ -8,7 +8,7 @@ describe('TaskHeader', () => {
   let fixture: ComponentFixture<TaskHeader>;
   let store: MockStore;
 
-  const mockSkills = ['All Skills', 'HTML', 'CSS', 'JavaScript'];
+  const mockSkills = ['All', 'HTML', 'CSS', 'JavaScript'];
   const initialState = {
     tasks: {
       skills: mockSkills,
@@ -26,7 +26,7 @@ describe('TaskHeader', () => {
     store = TestBed.inject(MockStore);
 
     store.overrideSelector(selectSkills, mockSkills);
-    fixture.componentRef.setInput('selectedSkill', 'All Skills');
+    fixture.componentRef.setInput('selectedSkill', 'All');
     fixture.detectChanges();
   });
 
