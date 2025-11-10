@@ -1,1 +1,10 @@
-<p>tasks-dashboard works!</p>
+<section class="tasks-dashboard-container">
+  <app-task-header [selectedSkill]="selectedSkill()" (skillChanged)="onSkillChange($event)" />
+  <app-task-list
+    [todayTasks]="todayTasks()"
+    [previousTasks]="previousTasks()"
+    [selectedTimeRange]="selectedTimeRange()"
+    (timeRangeChanged)="onTimeRangeChanged($event)"
+    (startTask)="onStartTask($event)"
+  />
+</section>
