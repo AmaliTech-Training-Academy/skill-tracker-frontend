@@ -30,6 +30,7 @@
   .progress-bar {
     progress {
       width: 100%;
+      margin-inline: auto;
       height: 6px;
       border-radius: 10px;
       overflow: hidden;
@@ -70,8 +71,9 @@
     border-radius: 5px;
 
     .task-title-level-data {
+      width: 100%;
       display: none;
-      @include flex(row, space-between);
+      @include flex(row, center, space-between);
 
       h1 {
         display: none;
@@ -315,9 +317,7 @@
 
     .questions-content {
       .task-title-level-data {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        @include flex(row, center , space-between);
 
         h1 {
           display: block;
@@ -358,11 +358,16 @@
     .questions-content {
       background-color: $gray-white;
       width: 100%;
+      max-width: 1038px;
+      margin-inline: auto;
       margin-block: 25px;
       padding: 10px 20px;
       border-radius: 5px;
 
       .task-title-level-data {
+        width: 95%;
+        margin-inline: auto;
+        margin-block: 10px 50px;
         @include flex(row, space-between);
 
         h1 {
@@ -392,7 +397,7 @@
     }
 
     .question-track-level {
-      width: 90%;
+      width: 80%;
       margin-block: 25px;
       margin-inline: auto;
       label {
@@ -401,7 +406,7 @@
     }
 
     .question-answers {
-      width: 90%;
+      width: 80%;
       margin-inline: auto;
 
       margin-block: 20px;
@@ -413,11 +418,11 @@
 
     .hint,
     .explanation {
-      width: 90%;
+      width: 80%;
     }
 
     .buttons {
-      width: 90%;
+      width: 80%;
       margin-inline: auto;
       button {
         width: 156px !important;

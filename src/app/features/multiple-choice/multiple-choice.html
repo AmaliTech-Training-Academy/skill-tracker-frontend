@@ -65,9 +65,11 @@
                 <label class="level" for="">Beginner</label>
             </div>
 
-            <h1 class="question">{{ currentQuestion.question_text }}</h1>
 
             <div class="question-answers">
+
+            <h1 class="question">{{ currentQuestion.question_text }}</h1>
+               
                 @for (option of currentQuestion.options; track $index) {
                     <div class="question-options">
                         <div 

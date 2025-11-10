@@ -9,7 +9,6 @@ import {
 import { Store } from '@ngrx/store';
 import { Subject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-// Restoring external import path for McqQuestion and McqGenerationRequest
 import { McqQuestion, McqGenerationRequest } from '@app/core/models/mcq-model'; 
 import { generateMcqQuiz } from '@app/store/mcqs/mcq.actions';
 import {
@@ -75,6 +74,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
           }
           // CRITICAL: Explicitly call detectChanges to trigger a view update 
           // now that local state (this.questions) has changed.
+          // Note: The previous redundant call was removed here.
           this.cdr.detectChanges(); 
         });
   }
@@ -108,10 +108,11 @@ export class MultipleChoice implements OnInit, OnDestroy {
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0 && !this.isQuizComplete) {
         this.timeLeft--;
-        this.cdr.detectChanges();
+        // FIX: Explicitly tell Angular to check the view after updating timeLeft
+        this.cdr.detectChanges(); 
       } else if (this.timeLeft === 0 && !this.isQuizComplete) {
         this.completeQuiz();
-        this.cdr.detectChanges();
+        // Since completeQuiz() calls cdr.markForCheck(), no need for another detectChanges here
       }
     }, 1000);
   }
@@ -146,6 +147,10 @@ export class MultipleChoice implements OnInit, OnDestroy {
 
   public get progressValue(): number {
     if (this.questions.length === 0) return 0;
+    
+    // Lock progress bar to 100% when the quiz is complete
+    if (this.isQuizComplete) return 100;
+    
     const completedQuestions = Math.min(this.currentQuestionIndex, this.questions.length);
     return (completedQuestions / this.questions.length) * 100;
   }
@@ -167,6 +172,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
 
   public nextQuestion(): void {
     if (!this.isQuizComplete) {
+      // Logic for moving to the next question during active quiz mode
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
       } else if (
@@ -176,11 +182,12 @@ export class MultipleChoice implements OnInit, OnDestroy {
         this.completeQuiz();
       }
     } else {
+      // Logic for moving to the next question during review mode
       if (this.currentQuestionIndex < this.questions.length) {
         this.currentQuestionIndex++;
-      }
-      if (this.currentQuestionIndex > this.questions.length) {
-         this.currentQuestionIndex = this.questions.length; 
+      } else {
+        // Cycle back to the first question for review
+        this.currentQuestionIndex = 0;
       }
     }
     this.cdr.markForCheck(); 
@@ -200,9 +207,11 @@ export class MultipleChoice implements OnInit, OnDestroy {
   public get canGoNext(): boolean {
     if (!this.isQuizComplete) {
       if (this.questions.length === 0) return false;
+      // During the quiz, must have an answer selected to proceed
       return this.selectedAnswers[this.currentQuestionIndex] !== null;
     }
-    return this.currentQuestionIndex < this.questions.length;
+    // During review, always allow the 'Next' button to be active
+    return true; 
   }
 
   public completeQuiz() {
@@ -210,6 +219,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
+    // Set index to length to display the summary page
     this.currentQuestionIndex = this.questions.length; 
     this.cdr.markForCheck(); 
   }
