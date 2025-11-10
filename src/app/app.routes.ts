@@ -65,7 +65,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     loadComponent: () => import('./layout/dashboard/dashboard').then((c) => c.Dashboard),
     children: [
       {
@@ -76,6 +76,10 @@ export const routes: Routes = [
         path: 'tasks',
         loadComponent: () =>
           import('./features/tasks-dashboard/tasks-dashboard').then((c) => c.TasksDashboard),
+         
+           children:[
+          { path: 'multiple-choice/:id', loadComponent: () => import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice)}
+        ]
       },
     ],
   },
