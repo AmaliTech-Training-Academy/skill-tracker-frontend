@@ -1,0 +1,51 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+
+.tasks-list-section {
+  @include flex($direction: column, $gap: 2rem);
+}
+
+.list-container {
+  @include flex($direction: column, $gap: 1rem);
+  background-color: $white;
+  border-radius: 0.25rem;
+  padding: 1rem;
+
+  @include mobile-large {
+    padding: 2rem 1.688rem;
+  }
+}
+
+.list-header {
+  @include flex($direction: row, $justify: space-between, $align: center);
+  width: 100%;
+}
+
+.list-title {
+  @include h13;
+  color: $background-overlay;
+
+  @include mobile-large {
+    @include typography(1.25rem, 1.5rem, 500);
+  }
+}
+
+.cards-wrapper {
+  @include flex($direction: column, $gap: 1rem);
+
+  @include desktop-medium {
+    @include grid($columns: 2, $gap: 1.5rem);
+  }
+}
+
+.empty-state {
+  @include flex($justify: center, $align: center);
+  padding: 2rem;
+
+  .empty-message {
+    @include h13;
+    color: $gray-stroke-strong;
+    text-align: center;
+  }
+}

@@ -4,11 +4,13 @@
 :host {
   display: block;
   background-color: var(--color-background-white);
-  padding: var(--space-md);
+
+  --header-margin-top: 1.25rem;
+  --recommended-task-x: 1.75rem;
 }
 
 .dashboard-header {
-  padding: var(--space-md);
+  padding: var(--space-md) var(--space-xl);
 
   h1 {
     @include h10;
@@ -26,7 +28,8 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-xl);
+  margin-bottom: var(--space-2xl);
 
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -39,107 +42,167 @@
   }
 }
 
-@include tablet {
-  .dashboard-header {
-    padding: 2.5rem 3rem;
+.dashboard-content {
+  padding: var(--space-2xl) var(--space-xl);
 
-    h1 {
-      font-size: 2rem;
-      font-weight: 600;
+  .recommended-tasks {
+    background-color: var(--color-white);
+    padding: var(--space-lg) var(--space-lg);
+    margin-bottom: var(--space-2xl);
+
+    .section-header {
+      margin-bottom: var(--space-lg);
+
+      h2 {
+        @include h13;
+        color: var(--color-background-overlay);
+      }
+
+      app-custom-dropdown {
+        display: none;
+      }
+    }
+
+    .tasks-list {
+      @include flex($direction: column, $gap: var(--space-md));
     }
   }
-  .stats-grid {
-    @include grid($columns: 3, $gap: var(--space-md));
-    margin-bottom: 2.5rem;
-    padding: 0 3rem;
-  }
-}
 
-.dashboard-header {
-  padding: var(--space-md);
-
-  h1 {
-    @include h10;
-    color: var(--color-gray-text-strong);
-    margin-bottom: var(--space-sm);
-  }
-  p {
-    @include h13;
-    color: var(--color-gray-stroke-strong);
-  }
-}
-
-.stats-grid {
-  @include flex($direction: row, $gap: var(--space-md));
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  padding: 0 var(--space-md);
-  margin-bottom: var(--space-lg);
-
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  app-stat-card {
-    flex: 0 0 80%;
-    scroll-snap-align: start;
-  }
-}
-
-@include tablet {
-  .dashboard-header {
-    padding: 2.5rem 3rem;
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 600;
-    }
-  }
-  .stats-grid {
-    @include grid($columns: 3, $gap: var(--space-md));
-    margin-bottom: 2.5rem;
-    padding: 0 3rem;
-  }
-}
-
-.progress-overview {
-  padding: 24px 16px;
-  background-color: var(--color-white);
-}
-
-.section-header {
-  margin-bottom: var(--space-lg);
-
-  h2 {
-    @include h13;
-    font-weight: 400;
-    color: var(--gray-stroke-strong);
-    margin-bottom: var(--space-xs);
-  }
-
-  & > span {
-    background-color: var(--color-brand-fill);
-    color: var(--color-brand-text);
-    font-size: 12px;
-    padding: 0.25rem 0.5rem;
-    border-radius: 8px;
-  }
-}
-
-@include tablet {
   .progress-overview {
-    padding: 48px 64px;
+    padding: var(--space-lg) 20px;
+    background-color: var(--color-white);
+
+    .section-header {
+      @include flex(
+        $direction: row,
+        $justify: space-between,
+        $align: center,
+        $gap: var(--space-md)
+      );
+      margin-bottom: var(--space-lg);
+
+      h2 {
+        @include h13;
+        font-weight: 400;
+        color: var(--gray-stroke-strong);
+        margin-bottom: var(--space-xs);
+      }
+
+      & div > span {
+        background-color: var(--color-brand-fill);
+        color: var(--color-brand-text);
+        font-size: 12px;
+        padding: 0.25rem var(--space-xs);
+        border-radius: 8px;
+      }
+
+      app-custom-dropdown {
+        display: none;
+      }
+
+      .filters {
+        @include flex($direction: row, $align: center, $gap: var(--space-md));
+
+        .period-filter {
+          @include flex($direction: row, $align: center, $gap: var(--space-md));
+
+          button {
+            display: none;
+          }
+
+          & app-custom-dropdown {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include tablet {
+  :host {
+    padding: 0;
+  }
+
+  .dashboard-header {
+    padding: var(--space-sm) var(--space-2xl);
+    margin-top: var(--header-margin-top);
+    margin-bottom: var(--space-xs);
+
+    h1 {
+      @include typography(2rem, 40px, 600);
+    }
+  }
+
+  .stats-grid {
+    @include grid($columns: 3, $gap: var(--space-lg));
+    margin-top: 4px;
+    margin-bottom: var(--space-xl);
+    padding: 0 var(--space-2xl);
   }
 
   .dashboard-content {
-    padding: 2rem 3rem;
-  }
+    padding: var(--space-xl) var(--space-2xl);
 
-  .section-header {
-    h2 {
-      @include h10;
+    .recommended-tasks {
+      margin-bottom: var(--space-xl);
+      background-color: var(--color-white);
+      padding: var(--space-xl) var(--recommended-task-x);
+
+      .section-header {
+        @include flex($direction: row, $justify: space-between, $align: center);
+        margin-bottom: var(--space-xl);
+
+        h2 {
+          @include h11;
+          font-weight: 500;
+        }
+
+        app-custom-dropdown {
+          display: block;
+        }
+      }
+    }
+
+    .progress-overview {
+      padding: var(--space-2xl) var(--space-3xl);
+
+      .section-header {
+        h2 {
+          @include h10;
+        }
+
+        app-custom-dropdown {
+          display: block;
+        }
+
+        .filters {
+          .period-filter {
+            @include flex($direction: row, $align: center, $gap: var(--space-md));
+
+            button {
+              display: inline-block;
+              font-size: 1rem;
+              padding: 6px 10px;
+              color: var(--color-gray-stroke-strong);
+              border: 1px solid var(--color-gray-fill);
+              border-radius: 6px;
+              background-color: var(--color-gray-fill);
+              cursor: pointer;
+
+              &.active {
+                background-color: var(--color-white);
+                color: var(--color-gray-text-strong);
+                border: 1px solid var(--color-gray-fill);
+              }
+            }
+
+            & app-custom-dropdown {
+              display: none;
+            }
+          }
+        }
+      }
     }
   }
 }

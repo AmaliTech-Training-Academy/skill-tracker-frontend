@@ -136,6 +136,14 @@
     &-item {
       @extend %sidebar-list-item;
     }
+
+    .logout-btn {
+      @extend %sidebar-list-item;
+      background-color: transparent;
+      border: none;
+      width: 100%;
+      margin-top: var(--space-sm);
+    }
   }
 }
 
