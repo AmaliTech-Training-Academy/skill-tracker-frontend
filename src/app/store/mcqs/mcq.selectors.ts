@@ -23,10 +23,10 @@ export const selectMcqTotalTime = createSelector(
   selectMcqQuestions,
   (questions) => {
     // CRITICAL FIX: Ensure questions is an array before calling reduce.
-    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+    if (!questions || !Array.isArray(questions) || !questions.length) {
       return 0;
     }
     // FIX: Add a null/undefined check for question_duration to ensure it is always treated as a number.
-    return questions.reduce((total, q) => total + (q.question_duration || 0), 0);
+    return questions.reduce((total, question) => total + (question.question_duration || 0), 0);
   },
 );

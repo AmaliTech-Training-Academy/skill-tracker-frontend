@@ -14,24 +14,32 @@
 </div>
 
 @if (loading$ | async) {
-    <!-- State 1: Loading -->
-    <div class="quiz-status-message loading-state text-center p-8 text-xl font-semibold text-gray-700">
-        <p>Generating your quiz questions...</p>
+    
+    <div class="loading-modal">
+        <div class="lading-container">
+        <h1>Generating your quiz questions...</h1>
         <p>Please wait a moment.</p>
+        </div>
     </div>
 } 
 @else if (error$ | async; as errorMessage) {
-    <!-- State 2: Error -->
-    <div class="quiz-status-message error-state text-center p-8 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-        <p class="font-bold">Quiz Generation Failed</p>
+    
+    <div class="error-modal">
+        <div class="error-message-container">
+            <img src="assets/alert-error.png" alt="error png">
+        <h1 >Quiz Generation Failed</h1>
         <p>{{ errorMessage }}</p>
-        <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700" (click)="dispatchQuizRequest()">Try Generating Quiz Again</button>
+        
+        <button class="retry-button"  (click)="dispatchQuizRequest()">Generate Quiz Again</button>
+
+        <button class="back-button"  routerLink="/dashboard/tasks">Back to tasks</button>
+        </div>
     </div>
 }
 @else if (questions.length > 0) {
-    <!-- State 3: Content Loaded -->
     
-    <!-- Timer Group (Visible only if NOT complete) -->
+    
+    
     @if (!isQuizComplete && currentQuestionIndex < questions.length) {
         <div class="group1">
             <div class="timer1">
@@ -41,7 +49,7 @@
         </div>
     }
 
-    <!-- Question View (Visible if currentQuestionIndex is within question bounds) -->
+    
     @if (currentQuestionIndex < questions.length) {
         <div class="questions-content">
             <div class="task-title-level-data">
@@ -86,7 +94,7 @@
                 }
             </div>
 
-            <!-- This block correctly renders the explanation and hint -->
+            
             @if (isQuizComplete) {
                 <div class="explanation">
                     <div class="explanation-text">
@@ -119,7 +127,7 @@
         </div>
     }
 
-    <!-- Quiz Completion Summary (Visible if quiz is complete and index is at the end) -->
+    
     @if (isQuizComplete && currentQuestionIndex === questions.length) {
         <div class="group2">
             <div class="quiz-complete">

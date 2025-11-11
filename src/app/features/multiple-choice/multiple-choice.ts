@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   inject,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -21,7 +22,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 @Component({
   selector: 'app-multiple-choice',
   standalone: true, 
-  imports: [CommonModule, AsyncPipe],
+  imports: [CommonModule, AsyncPipe, RouterLink],
   templateUrl: './multiple-choice.html',
   styleUrls: ['./multiple-choice.scss'], 
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,7 +54,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
         this.error$
       ])
         .pipe(
-          // Filter ensures we only proceed if we have valid questions or an error
           filter(([questions, totalTime, error]) => 
             (!!questions && questions.length > 0) || !!error
           ),
@@ -62,19 +62,14 @@ export class MultipleChoice implements OnInit, OnDestroy {
         )
         .subscribe(({ questions, totalTime, error }) => {
           if (questions && questions.length > 0) {
-            // CRITICAL: Update local state properties
             this.questions = questions as McqQuestion[];
             this.totalTimeInSeconds = totalTime || 0; 
             this.timeLeft = this.totalTimeInSeconds;
-            // Initialize selectedAnswers array based on the number of questions
             this.selectedAnswers = new Array(this.questions.length).fill(null);
             this.startTimer();
           } else if (error) {
              console.error('Quiz failed to load:', error);
           }
-          // CRITICAL: Explicitly call detectChanges to trigger a view update 
-          // now that local state (this.questions) has changed.
-          // Note: The previous redundant call was removed here.
           this.cdr.detectChanges(); 
         });
   }
@@ -87,7 +82,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
       no_of_questions: 10,
     };
     this.store.dispatch(generateMcqQuiz({ request: requestPayload }));
-    // Mark for check immediately after dispatching to ensure 'loading' is visible
     this.cdr.markForCheck();
   }
 
@@ -108,11 +102,9 @@ export class MultipleChoice implements OnInit, OnDestroy {
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0 && !this.isQuizComplete) {
         this.timeLeft--;
-        // FIX: Explicitly tell Angular to check the view after updating timeLeft
         this.cdr.detectChanges(); 
       } else if (this.timeLeft === 0 && !this.isQuizComplete) {
         this.completeQuiz();
-        // Since completeQuiz() calls cdr.markForCheck(), no need for another detectChanges here
       }
     }, 1000);
   }
@@ -126,7 +118,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   public get currentQuestion(): McqQuestion {
-    // Safely return a placeholder if questions array is not yet populated
     return this.questions[this.currentQuestionIndex] || {
         question_number: '',
         question_duration: 0,
@@ -147,10 +138,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
 
   public get progressValue(): number {
     if (this.questions.length === 0) return 0;
-    
-    // Lock progress bar to 100% when the quiz is complete
     if (this.isQuizComplete) return 100;
-    
     const completedQuestions = Math.min(this.currentQuestionIndex, this.questions.length);
     return (completedQuestions / this.questions.length) * 100;
   }
@@ -172,7 +160,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
 
   public nextQuestion(): void {
     if (!this.isQuizComplete) {
-      // Logic for moving to the next question during active quiz mode
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
       } else if (
@@ -182,11 +169,9 @@ export class MultipleChoice implements OnInit, OnDestroy {
         this.completeQuiz();
       }
     } else {
-      // Logic for moving to the next question during review mode
       if (this.currentQuestionIndex < this.questions.length) {
         this.currentQuestionIndex++;
       } else {
-        // Cycle back to the first question for review
         this.currentQuestionIndex = 0;
       }
     }
@@ -207,10 +192,8 @@ export class MultipleChoice implements OnInit, OnDestroy {
   public get canGoNext(): boolean {
     if (!this.isQuizComplete) {
       if (this.questions.length === 0) return false;
-      // During the quiz, must have an answer selected to proceed
       return this.selectedAnswers[this.currentQuestionIndex] !== null;
     }
-    // During review, always allow the 'Next' button to be active
     return true; 
   }
 
@@ -219,7 +202,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
-    // Set index to length to display the summary page
     this.currentQuestionIndex = this.questions.length; 
     this.cdr.markForCheck(); 
   }
