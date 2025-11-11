@@ -1,0 +1,41 @@
+@if (task(); as taskData) {
+  @let title = taskData.title;
+  @let description = taskData.description;
+  @let examples = taskData.examples;
+
+  <div class="description-container">
+    <div class="description-header">
+      <span class="header-title">Challenge Description</span>
+      <div class="timer">
+        {{ estimatedTime() }}
+        <img src="assets/clock.png" alt="Timer icon" class="timer-icon" />
+      </div>
+    </div>
+
+    <div class="content-body">
+      <section class="description">
+        <h2 class="title">{{ title }}</h2>
+        <p class="description-text">{{ description }}</p>
+      </section>
+
+      @for (example of examples; track $index) {
+        @let input = example.input;
+        @let output = example.output;
+        @let explanation = example.explanation;
+
+        <section class="example-block">
+          <h3 class="example-title">Example {{ $index + 1 }}</h3>
+          <div class="examdivle-code">
+            <p>Input: {{ input }}</p>
+            <p>Output: {{ output }}</p>
+            <span class="explanation" [hidden]="!explanation">{{ explanation }}</span>
+          </div>
+        </section>
+      }
+    </div>
+
+    <div class="footer-actions">
+      <button class="start-button" (click)="onStartClick()">Start Task</button>
+    </div>
+  </div>
+}
