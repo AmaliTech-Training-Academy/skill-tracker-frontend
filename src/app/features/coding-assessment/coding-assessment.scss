@@ -1,0 +1,24 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+
+.assessment-container {
+  @include flex($direction: column);
+  padding: 1.5rem 1rem;
+  width: 100%;
+  min-height: 100vh;
+
+  @include tablet {
+    padding: 2.688rem 4.188rem;
+  }
+
+  .coding-workspace-placeholder {
+    @include flex($direction: column, $justify: center, $align: center, $gap: 1rem);
+    flex: 1;
+    color: $gray-fill;
+    padding: 2rem;
+  }
+
+  @include tablet {
+    padding: 2rem;
+  }
+}

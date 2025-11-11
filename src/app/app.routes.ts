@@ -77,6 +77,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/tasks-dashboard/tasks-dashboard').then((c) => c.TasksDashboard),
       },
+      {
+        path: 'tasks/coding-assessment',
+        loadComponent: () =>
+          import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
+      },
     ],
   },
 ];
