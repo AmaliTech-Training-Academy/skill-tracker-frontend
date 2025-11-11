@@ -2,6 +2,12 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 
+import { Store } from '@ngrx/store';
+import { AppState } from '@app/store';
+import { logout } from '@app/store/auth/auth.actions';
+import { selectIsLoggingOut } from '@app/store/auth/auth.selectors';
+import { AppIcon } from '../app-icon/app-icon';
+
 interface MenuItem {
   icon: string;
   label: string;
@@ -11,7 +17,7 @@ interface MenuItem {
 
 @Component({
   selector: 'app-dashboard-sidebar',
-  imports: [RouterLink, RouterLinkActive, LucideAngularModule],
+  imports: [RouterLink, RouterLinkActive, LucideAngularModule, AppIcon],
   templateUrl: './dashboard-sidebar.html',
   styleUrl: './dashboard-sidebar.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,7 +29,16 @@ export class DashboardSidebar {
 
   @Output() public navigated = new EventEmitter<void>();
 
+  public isSubmitting = this.store.selectSignal(selectIsLoggingOut);
+
+  constructor(private store: Store<AppState>) {}
+
   public onNavigate(): void {
     this.navigated.emit();
+  }
+
+  public logout(): void {
+    if (this.isSubmitting()) return;
+    this.store.dispatch(logout());
   }
 }
