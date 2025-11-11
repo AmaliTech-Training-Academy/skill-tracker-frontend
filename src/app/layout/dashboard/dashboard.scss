@@ -28,10 +28,20 @@
     overflow-y: auto;
     @include flex(column);
     background-color: var(--color-background-white);
+    position: relative;
+    padding-top: $navbar-height;
+
+    app-dashboard-navigation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+    }
   }
 }
 
-@include tablet {
+@include desktop {
   .dashboard-layout {
     @include flex(row);
     height: 100vh;
@@ -42,7 +52,7 @@
     }
 
     .main-content {
-      padding: 0;
+      padding-top: $navbar-height;
     }
   }
 }
