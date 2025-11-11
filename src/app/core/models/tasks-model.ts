@@ -26,3 +26,22 @@ export interface Task {
   status: TaskStatus;
   createdAt: string;
 }
+
+export interface TaskExample {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+export interface CodingTask {
+  id: string;
+  title: string;
+  description: string;
+  examples: TaskExample[];
+  skill: string;
+  difficulty: string;
+  estimatedDuration: number;
+  starterCode: string;
+  language: string;
+  xp: number;
+}
