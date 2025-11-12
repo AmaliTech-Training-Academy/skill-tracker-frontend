@@ -131,28 +131,6 @@
       @include h13;
       white-space: pre-line;
     }
-
-    .question-answer {
-      margin-top: 15px;
-
-      textarea {
-        width: 100%;
-        min-height: 150px;
-        border: 1px solid $gray-stroke-strong;
-        border-radius: 5px;
-        padding: 10px;
-        font-family: 'Inter', sans-serif;
-        font-size: 14px;
-        resize: vertical;
-
-        &:focus {
-          outline: none;
-          border-color: $brand-text;
-        }
-      }
-    }
-
-    
   }
 
   .hint {

@@ -1,0 +1,48 @@
+  <div class="input-container">
+      <div class="input-wrapper">
+        <textarea
+          #textarea
+          [(ngModel)]="text"
+          (input)="onTextChange()"
+          placeholder="This is a message box"
+          class="text-input"
+        ></textarea>
+        
+        @if (text.length > 0) {
+          <div class="toolbar">
+            <button (click)="applyFormat('italic')" class="format-btn" title="Italic">
+              <i class="italic-text">I</i>
+            </button>
+            <button (click)="applyFormat('bold')" class="format-btn bold-text" title="Bold">
+              B
+            </button>
+            <button (click)="applyFormat('underline')" class="format-btn underline-text" title="Underline">
+              U
+            </button>
+            <div class="divider"></div>
+            <button (click)="applyFormat('code')" class="format-btn code-text" title="Code">
+              <img src="assets/doublequotes.png" alt="''">
+            </button>
+            <button class="format-btn" title="Insert Link"><img src="assets/pin.png" alt=""></button>
+            <button class="format-btn" title="Attach File"><img src="assets/attachment.png" alt=""></button>
+            <button class="format-btn" title="Attach File"><img src="assets/attachment.png" alt=""></button>
+          </div>
+        }
+        
+        <div class="voice-button-container">
+          <button
+            (click)="toggleRecording()"
+            [class.recording]="isRecording"
+            class="voice-btn"
+            [title]="isRecording ? 'Stop Recording' : 'Start Voice Input'"
+          >
+            @if (isRecording) {
+              <img src="assets/sound-wave.svg" alt="Recording" class="voice-icon wave">
+            } @else {
+              <img src="assets/microphone.svg" alt="Microphone" class="voice-icon ">
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  
