@@ -22,7 +22,7 @@ export const registerUserSuccess = createAction(
 
 export const registerUserFailure = createAction(
   '[Auth/Registration] Register User Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const login = createAction('[Auth/Login] Login', props<{ request: LoginRequest }>());
@@ -31,7 +31,7 @@ export const loginSuccess = createAction('[Auth/Login] Login Success', props<{ u
 
 export const loginFailure = createAction(
   '[Auth/Login] Login Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const logout = createAction('[Auth/Logout] Logout');
@@ -40,7 +40,7 @@ export const logoutSuccess = createAction('[Auth/Logout] Logout Success');
 
 export const logoutFailure = createAction(
   '[Auth/Logout] Logout Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const verifyEmailOtp = createAction(
@@ -55,7 +55,7 @@ export const verifyEmailOtpSuccess = createAction(
 
 export const verifyEmailOtpFailure = createAction(
   '[Auth/Verification] Verify Email OTP Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const completeOnboarding = createAction(
@@ -70,7 +70,7 @@ export const completeOnboardingSuccess = createAction(
 
 export const completeOnboardingFailure = createAction(
   '[Onboarding] Complete Onboarding Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const socialLogin = createAction(
@@ -85,7 +85,7 @@ export const socialLoginSuccess = createAction(
 
 export const socialLoginFailure = createAction(
   '[Auth/Social] Social Login Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const resendVerification = createAction(
@@ -100,7 +100,7 @@ export const resendVerificationSuccess = createAction(
 
 export const resendVerificationFailure = createAction(
   '[Auth/Verification] Resend Verification Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 
 export const forgotPassword = createAction(
@@ -124,7 +124,7 @@ export const resetPasswordResetState = createAction(
 
 export const resetPassword = createAction(
   '[Auth/Password] Reset Password',
-  props<{ request: ResetPasswordRequest; silent?: boolean }>(),
+  props<{ request: ResetPasswordRequest }>(),
 );
 
 export const resetPasswordSuccess = createAction(
@@ -134,7 +134,7 @@ export const resetPasswordSuccess = createAction(
 
 export const resetPasswordFailure = createAction(
   '[Auth/Password] Reset Password Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
 );
 export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
 
@@ -145,5 +145,17 @@ export const updateTourStatusSuccess = createAction(
 
 export const updateTourStatusFailure = createAction(
   '[Auth/Tour] Update Tour Status Failure',
-  props<{ error: AppError; silent?: boolean }>(),
+  props<{ error: AppError }>(),
+);
+
+export const checkAuthSession = createAction('[Auth] Check Auth Session');
+
+export const checkAuthSessionSuccess = createAction(
+  '[Auth API] Check Auth Session Success',
+  props<{ user: User }>(),
+);
+
+export const checkAuthSessionFailure = createAction(
+  '[Auth API] Check Auth Session Failure',
+  props<{ error: AppError }>(),
 );

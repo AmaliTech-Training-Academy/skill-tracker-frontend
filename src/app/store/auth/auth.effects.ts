@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import {
@@ -48,6 +48,9 @@ import {
   resetPassword,
   resetPasswordSuccess,
   resetPasswordFailure,
+  checkAuthSession,
+  checkAuthSessionSuccess,
+  checkAuthSessionFailure,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -113,15 +116,21 @@ export class AuthEffects {
 
   public checkAuth$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(ROOT_EFFECTS_INIT),
+      ofType(checkAuthSession),
       switchMap(() =>
         this.authService.getUserProfile().pipe(
-          map(({ data }) => loginSuccess({ user: mapUserApiResponseToUser(data) })),
+          map(({ data }) =>
+            checkAuthSessionSuccess({
+              user: mapUserApiResponseToUser(data),
+            }),
+          ),
           catchError((httpError: HttpErrorResponse) => {
             return of(
-              loginFailure({
-                error: { message: 'No active session', type: AppErrorType.AUTH },
-                silent: true,
+              checkAuthSessionFailure({
+                error: {
+                  message: 'No active session',
+                  type: AppErrorType.AUTH,
+                },
               }),
             );
           }),
@@ -448,12 +457,6 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(logoutSuccess, loginFailure),
-        filter((action) => {
-          if (action.type === loginFailure.type) {
-            return !action.silent;
-          }
-          return true;
-        }),
         tap(() => {
           this.router.navigateByUrl(APP_ROUTES.LOGIN);
         }),
@@ -479,13 +482,11 @@ export class AuthEffects {
           resetPasswordFailure,
           resendVerificationFailure,
         ),
-        tap(({ error, silent }) => {
-          if (!silent) {
-            this.toastService.showError(
-              error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
-              error.message,
-            );
-          }
+        tap(({ error }) => {
+          this.toastService.showError(
+            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
+            error.message,
+          );
         }),
       ),
     { dispatch: false },
