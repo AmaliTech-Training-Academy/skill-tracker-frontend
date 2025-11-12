@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
@@ -111,6 +111,25 @@ export class AuthEffects {
     ),
   );
 
+  public checkAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      switchMap(() =>
+        this.authService.getUserProfile().pipe(
+          map(({ data }) => loginSuccess({ user: mapUserApiResponseToUser(data) })),
+          catchError((httpError: HttpErrorResponse) => {
+            return of(
+              loginFailure({
+                error: { message: 'No active session', type: AppErrorType.AUTH },
+                silent: true,
+              }),
+            );
+          }),
+        ),
+      ),
+    ),
+  );
+
   public login$ = createEffect(() =>
     this.actions$.pipe(
       ofType(login),
@@ -196,9 +215,9 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ user }) => {
-           this.toastService.showSuccess(
+          this.toastService.showSuccess(
             'Login Successful!',
-            "Login successful! Redirecting you to your dashboard...",
+            'Login successful! Redirecting you to your dashboard...',
           );
           if (user.state === UserState.ONBOARDED) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
@@ -450,12 +469,16 @@ export class AuthEffects {
           logoutFailure,
           socialLoginFailure,
           updateTourStatusFailure,
+          resetPasswordFailure,
+          resendVerificationFailure,
         ),
-        tap(({ error }) => {
-          this.toastService.showError(
-            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
-            error.message,
-          );
+        tap(({ error, silent }) => {
+          if (!silent) {
+            this.toastService.showError(
+              error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
+              error.message,
+            );
+          }
         }),
       ),
     { dispatch: false },
