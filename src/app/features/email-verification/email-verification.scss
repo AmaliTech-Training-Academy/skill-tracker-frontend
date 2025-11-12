@@ -3,8 +3,11 @@
 @use 'colors' as *;
 @use 'components' as *;
 
+$total-padding: 4rem;
+
 .verification-container {
   @include flex(row, center, center);
+  min-height: calc(100vh - $total-padding);
 }
 
 .card {
