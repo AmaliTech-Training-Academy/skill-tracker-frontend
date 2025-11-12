@@ -92,6 +92,11 @@
     color: $brand-text;
     cursor: pointer;
 
+    &:disabled {
+      cursor: not-allowed;
+      color: $brand-stroke-weak;
+    }
+
     @include tablet {
       @include h11;
     }
