@@ -25,7 +25,7 @@
 
   &.selected {
     background-color: $brand-text;
-    color: #fff;
+    color: var(--color-white);
     border-color: $brand-text;
   }
 

@@ -48,6 +48,6 @@ export class InterestsSelection implements OnInit {
   }
 
   public onSkip(): void {
-    this.store.dispatch(completeOnboarding({ request: { email: '' } }));
+    this.store.dispatch(completeOnboarding({ request: { skills: [] } }));
   }
 }

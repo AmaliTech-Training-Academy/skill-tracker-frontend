@@ -13,7 +13,7 @@
         [class]="level ? level.toLowerCase() : ''"
         (click)="onLevelSelect(level)"
       >
-        {{ level }}
+        {{ level | capitalize }}
       </button>
     }
   </div>

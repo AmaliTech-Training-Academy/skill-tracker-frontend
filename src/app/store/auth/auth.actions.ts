@@ -7,6 +7,7 @@ import {
   UserEmailRequest,
   LoginRequest,
   ResetPasswordRequest,
+  CompleteOnboardingRequest,
 } from '@app/core';
 
 export const registerUser = createAction(
@@ -59,7 +60,7 @@ export const verifyEmailOtpFailure = createAction(
 
 export const completeOnboarding = createAction(
   '[Onboarding] Complete Onboarding',
-  props<{ request: UserEmailRequest }>(),
+  props<{ request: CompleteOnboardingRequest }>(),
 );
 
 export const completeOnboardingSuccess = createAction(
