@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import {
@@ -141,6 +141,49 @@ export class AuthEffects {
     ),
   );
 
+  public resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPassword),
+      switchMap(({ request }) =>
+        this.authService.resetPassword(request).pipe(
+          map((response) => resetPasswordSuccess({ message: response.message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(resetPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public forgotPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(forgotPassword),
+      switchMap(({ request }) =>
+        this.authService.forgotPassword(request.email).pipe(
+          map((response) =>
+            forgotPasswordSuccess({ message: 'Password reset link sent successfully.' }),
+          ),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(forgotPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public socialLogin$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(socialLogin),
+        tap(({ provider }) => {
+          this.authService.initiateSocialLogin(provider);
+        }),
+      ),
+    { dispatch: false },
+  );
+
   public updateTourStatus$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateTourStatus),
@@ -176,6 +219,25 @@ export class AuthEffects {
     ),
   );
 
+  public checkAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ROOT_EFFECTS_INIT),
+      switchMap(() =>
+        this.authService.getUserProfile().pipe(
+          map(({ data }) => loginSuccess({ user: mapUserApiResponseToUser(data) })),
+          catchError((httpError: HttpErrorResponse) => {
+            return of(
+              loginFailure({
+                error: { message: 'No active session', type: AppErrorType.AUTH },
+                silent: true,
+              }),
+            );
+          }),
+        ),
+      ),
+    ),
+  );
+
   public registerSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -196,9 +258,9 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ user }) => {
-           this.toastService.showSuccess(
+          this.toastService.showSuccess(
             'Login Successful!',
-            "Login successful! Redirecting you to your dashboard...",
+            'Login successful! Redirecting you to your dashboard...',
           );
           if (user.state === UserState.ONBOARDED) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
@@ -234,17 +296,6 @@ export class AuthEffects {
         ofType(completeOnboardingSuccess),
         tap(() => {
           this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  public socialLogin$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(socialLogin),
-        tap(({ provider }) => {
-          this.authService.initiateSocialLogin(provider);
         }),
       ),
     { dispatch: false },
@@ -297,34 +348,6 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public verifyEmailFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(verifyEmailOtpFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Verification Failed',
-            error?.message || 'Invalid verification code. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  public loginFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Login Failed',
-            error?.message || 'Invalid email or password. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
   public resendVerification$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resendVerification),
@@ -354,34 +377,6 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public resendVerificationFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(resendVerificationFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Resend Failed',
-            error?.message || 'Unable to resend verification code. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-  public resetPassword$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(resetPassword),
-      switchMap(({ request }) =>
-        this.authService.resetPassword(request).pipe(
-          map((response) => resetPasswordSuccess({ message: response.message })),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
-            return of(resetPasswordFailure({ error: appError }));
-          }),
-        ),
-      ),
-    ),
-  );
-
   public resetPasswordSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -397,23 +392,6 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public forgotPassword$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(forgotPassword),
-      switchMap(({ request }) =>
-        this.authService.forgotPassword(request.email).pipe(
-          map((response) =>
-            forgotPasswordSuccess({ message: 'Password reset link sent successfully.' }),
-          ),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
-            return of(forgotPasswordFailure({ error: appError }));
-          }),
-        ),
-      ),
-    ),
-  );
-
   public forgotPasswordSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -425,15 +403,22 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public resetPasswordFailure$ = createEffect(
+  public logoutOrAuthFailure$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(resetPasswordFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
-            error.message,
-          );
+        ofType(logoutSuccess, loginFailure),
+        filter((action) => {
+          if (action.type === loginFailure.type) {
+            return !action.silent;
+          }
+          return true;
+        }),
+        tap(() => {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(loginFailure({ error: appError }));
         }),
       ),
     { dispatch: false },
@@ -450,12 +435,16 @@ export class AuthEffects {
           logoutFailure,
           socialLoginFailure,
           updateTourStatusFailure,
+          resetPasswordFailure,
+          resendVerificationFailure,
         ),
-        tap(({ error }) => {
-          this.toastService.showError(
-            error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
-            error.message,
-          );
+        tap(({ error, silent }) => {
+          if (!silent) {
+            this.toastService.showError(
+              error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
+              error.message,
+            );
+          }
         }),
       ),
     { dispatch: false },
