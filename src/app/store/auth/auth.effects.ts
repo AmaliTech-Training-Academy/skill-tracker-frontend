@@ -330,20 +330,6 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public loginFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Login Failed',
-            error?.message || 'Invalid email or password. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
   public resendVerification$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resendVerification),
