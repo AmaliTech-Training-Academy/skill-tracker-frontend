@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { catchError, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import {
@@ -453,6 +453,27 @@ export class AuthEffects {
             error.type?.charAt(0).toUpperCase() + error.type!.slice(1) + ' Failed',
             error.message,
           );
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public logoutOrAuthFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(logoutSuccess, loginFailure),
+        filter((action) => {
+          if (action.type === loginFailure.type) {
+            return !action.silent;
+          }
+          return true;
+        }),
+        tap(() => {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(loginFailure({ error: appError }));
         }),
       ),
     { dispatch: false },
