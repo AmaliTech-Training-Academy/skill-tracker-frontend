@@ -5,12 +5,16 @@
 
 %sidebar-list-item {
   @include flex(row, flex-start, center, 12px);
-  padding: 10px 14px;
-  font-size: 16px;
+  padding: 10px;
+  @include h11;
   border-radius: 4px;
   color: var(--color-gray-text-strong);
   cursor: pointer;
   transition: all 0.2s ease;
+
+  & lucide-icon {
+    line-height: 0.5;
+  }
 
   &.active {
     background-color: var(--color-brand-text);
@@ -28,12 +32,12 @@
   top: 0;
   right: 0;
   z-index: map.get($z-layers, 'sidebar');
-  width: 280px;
-  height: 100%;
+  width: 261px;
+  height: 100vh;
   background-color: var(--color-white);
   border-left: 1px solid var(--color-gray-stroke-weak);
   @include flex(column);
-  padding: 24px;
+  padding: 36px 24px;
 
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
@@ -45,6 +49,7 @@
   &-header {
     flex-shrink: 0;
     @include flex(row, space-between, center);
+    margin-bottom: var(--space-xl);
 
     & button.close-button {
       background-color: transparent;
@@ -54,7 +59,7 @@
   }
 
   &-logo {
-    @include h11;
+    @include h12;
     cursor: pointer;
     color: var(--color-brand-text);
   }
@@ -62,7 +67,6 @@
   &-menu {
     flex: 1;
     overflow-y: auto;
-    margin-top: 24px;
     max-width: none;
     height: auto;
     scrollbar-width: none;
@@ -73,7 +77,7 @@
     }
 
     &-list {
-      @include flex(column, flex-start, stretch, 12px);
+      @include flex(column, flex-start, stretch, 24px);
     }
 
     &-item {
@@ -83,7 +87,7 @@
     &-banner {
       position: relative;
       box-sizing: border-box;
-      margin-top: 24px;
+      margin: 55px 0;
       width: 100%;
       height: 200px;
       padding: 24px 16px;
@@ -123,14 +127,12 @@
   }
 
   &-footer {
-    margin-bottom: 32px;
     flex-shrink: 0;
+    padding-top: var(--space-xl);
 
     &-list {
       list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      @include flex($direction: column, $gap: 24px);
     }
 
     &-item {
@@ -147,17 +149,16 @@
   }
 }
 
-@include tablet {
+@include desktop {
   .sidebar {
     position: relative;
-    width: 300px;
     flex-shrink: 0;
     transform: translateX(0);
     box-shadow: none;
     border-right: 1px solid var(--color-gray-stroke-weak);
 
     .sidebar-menu {
-      max-width: 223px;
+      max-width: 261px;
     }
 
     &-header {

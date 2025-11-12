@@ -5,7 +5,8 @@
 @use 'sass:map';
 
 .navbar {
-  padding: 1rem;
+  padding: var(--space-md);
+  height: $navbar-height;
   background-color: var(--color-white);
 
   .logo {
@@ -50,7 +51,7 @@
   display: none;
 }
 
-@include tablet {
+@include desktop {
   .mobile-header {
     display: none;
   }
@@ -71,7 +72,7 @@
     }
 
     &-profile {
-      @include flex(row, centerfe, center, 8px);
+      @include flex(row, center, center, 8px);
 
       & img {
         width: 42px;
