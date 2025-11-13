@@ -1,6 +1,7 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { Task } from '@app/core/models/tasks-model';
+import { TaskUI } from '@app/core/models/tasks-model';
+import { formatText } from '@app/shared/utils/text-formatter.util';
 
 @Component({
   selector: 'app-tasks-card',
@@ -11,7 +12,7 @@ import { Task } from '@app/core/models/tasks-model';
   standalone: true,
 })
 export class TasksCard {
-  public task = input.required<Task>();
+  public task = input.required<TaskUI>();
   public startTask = output<string>();
 
   public onStartTask(): void {
@@ -37,5 +38,13 @@ export class TasksCard {
       pencil: 'assets/pencil.png',
     };
     return iconMap[icon] || 'assets/abc.png';
+  }
+
+  public getFormattedSkill(): string {
+    return formatText(this.task().skillName);
+  }
+
+  public getFormattedDifficulty(): string {
+    return formatText(this.task().difficulty);
   }
 }
