@@ -1,10 +1,8 @@
 @let icon = task().icon;
 @let title = task().title;
 @let description = task().description;
-@let xp = task().xp;
-@let time = task().time;
-@let skill = task().skill;
-@let difficulty = task().difficulty;
+@let xp = task().xpReward;
+@let time = task().estimatedDuration + ' min';
 @let status = task().status;
 
 <div class="task-card">
@@ -28,17 +26,17 @@
 
     <div class="card-footer">
       <div class="details">
-        <span class="detail-item">{{ skill }}</span>
+        <span class="detail-item">{{ getFormattedSkill() }}</span>
         <span class="divider"></span>
-        <span class="detail-item">{{ difficulty }}</span>
+        <span class="detail-item">{{ getFormattedDifficulty() }}</span>
       </div>
-      @if (status === 'Completed') {
+      @if (status === 'COMPLETED') {
         <span class="status-completed">Completed</span>
       }
     </div>
 
     <div class="action-section">
-      @if (status !== 'Completed') {
+      @if (status !== 'COMPLETED') {
         <button class="start-button" (click)="onStartTask()" role="button" aria-label="Start Task">
           Start
         </button>
