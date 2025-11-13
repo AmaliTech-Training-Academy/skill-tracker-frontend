@@ -30,6 +30,7 @@ export const APP_CONSTANTS = {
     FORGOT_PASSWORD: '/auth/password/forgot',
     RESET_PASSWORD: '/auth/password/reset',
     GENERATE_MCQ: '/api/v1/mcq/generate',
+    PROFILE: '/users/profile/me',
     TASKS: '/tasks',
     MY_TASKS: '/tasks/my-tasks',
   },
