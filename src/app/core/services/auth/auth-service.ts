@@ -71,4 +71,8 @@ export class AuthService {
     const params = new HttpParams().set('email', email);
     return this.api.post<UserResponse>(API_ENDPOINTS.UPDATE_TOUR_STATUS, null, { params });
   }
+
+  public getUserProfile(): Observable<UserResponse> {
+    return this.api.get<UserResponse>(API_ENDPOINTS.PROFILE);
+  }
 }

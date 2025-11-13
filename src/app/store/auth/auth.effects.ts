@@ -48,6 +48,8 @@ import {
   resetPassword,
   resetPasswordSuccess,
   resetPasswordFailure,
+  checkAuthSession,
+  checkAuthSessionSuccess,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -105,6 +107,24 @@ export class AuthEffects {
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(completeOnboardingFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public checkAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(checkAuthSession),
+      switchMap(() =>
+        this.authService.getUserProfile().pipe(
+          map(({ data }) =>
+            checkAuthSessionSuccess({
+              user: mapUserApiResponseToUser(data),
+            }),
+          ),
+          catchError((httpError: HttpErrorResponse) => {
+            return of(logout());
           }),
         ),
       ),
@@ -358,20 +378,6 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public loginFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Login Failed',
-            error?.message || 'Invalid email or password. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
   public resendVerificationSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -440,6 +446,21 @@ export class AuthEffects {
     { dispatch: false },
   );
 
+  public logoutOrAuthFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(logoutSuccess, loginFailure),
+        tap(() => {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(loginFailure({ error: appError }));
+        }),
+      ),
+    { dispatch: false },
+  );
+
   public authFailure$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -451,6 +472,8 @@ export class AuthEffects {
           logoutFailure,
           socialLoginFailure,
           updateTourStatusFailure,
+          resetPasswordFailure,
+          resendVerificationFailure,
         ),
         tap(({ error }) => {
           this.toastService.showError(
