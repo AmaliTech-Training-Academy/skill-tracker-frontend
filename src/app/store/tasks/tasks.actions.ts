@@ -1,11 +1,11 @@
 import { createAction, props } from '@ngrx/store';
-import { Task } from '@app/core/models/tasks-model';
+import { TaskUI } from '@app/core/models/tasks-model';
 
 export const loadTasks = createAction('[Tasks Dashboard] Load Tasks');
 
 export const loadTasksSuccess = createAction(
   '[Tasks API] Load Tasks Success',
-  props<{ todayTasks: Task[]; previousTasks: Task[] }>(),
+  props<{ todayTasks: TaskUI[]; previousTasks: TaskUI[] }>(),
 );
 
 export const loadTasksFailure = createAction(

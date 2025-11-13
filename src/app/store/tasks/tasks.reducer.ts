@@ -21,6 +21,7 @@ export const tasksReducer = createReducer(
       todayTasks,
       previousTasks,
       loading: false,
+      error: null,
     }),
   ),
 
@@ -28,6 +29,8 @@ export const tasksReducer = createReducer(
     TasksActions.loadTasksFailure,
     (state, { error }): TasksState => ({
       ...state,
+      todayTasks: [],
+      previousTasks: [],
       loading: false,
       error,
     }),
@@ -46,6 +49,13 @@ export const tasksReducer = createReducer(
     (state, { timeRange }): TasksState => ({
       ...state,
       selectedTimeRange: timeRange,
+    }),
+  ),
+
+  on(
+    TasksActions.startTask,
+    (state): TasksState => ({
+      ...state,
     }),
   ),
 );

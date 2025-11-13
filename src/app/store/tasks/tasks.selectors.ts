@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TasksState } from './tasks.state';
-import { Task } from '@app/core/models/tasks-model';
+import { TaskUI } from '@app/core/models/tasks-model';
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
@@ -28,11 +28,11 @@ export const selectTimeRangeFilter = createSelector(
 export const selectFilteredTodayTasks = createSelector(
   selectTodayTasks,
   selectSkillFilter,
-  (tasks: Task[], skill: string) => {
+  (tasks: TaskUI[], skill: string) => {
     if (skill === 'All Skills' || !skill) {
       return tasks;
     }
-    return tasks.filter((task) => task.skill === skill);
+    return tasks.filter((task) => task.skillName === skill);
   },
 );
 
@@ -40,11 +40,11 @@ export const selectFilteredPreviousTasks = createSelector(
   selectAllPreviousTasks,
   selectSkillFilter,
   selectTimeRangeFilter,
-  (tasks: Task[], skill: string, timeRange: string) => {
+  (tasks: TaskUI[], skill: string, timeRange: string) => {
     let filteredTasks = tasks;
 
     if (skill !== 'All Skills' && skill) {
-      filteredTasks = filteredTasks.filter((task) => task.skill === skill);
+      filteredTasks = filteredTasks.filter((task) => task.skillName === skill);
     }
 
     if (timeRange && timeRange !== 'All Periods') {
