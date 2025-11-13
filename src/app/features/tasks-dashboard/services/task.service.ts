@@ -10,6 +10,7 @@ import {
 import { ApiResponse } from '../../../core/models/api.model';
 import { ApiService } from '../../../core/services/api/api-service';
 import { ErrorHandlerService } from '../../../core/services/error/error-handler';
+import { APP_CONSTANTS } from '../../../core/constants/app.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -30,7 +31,9 @@ export class TaskService {
       .set('completedSize', (params.completedSize ?? 10).toString());
 
     return this.apiService
-      .get<ApiResponse<GroupedTasksResponse>>('/tasks/my-tasks', { params: httpParams })
+      .get<
+        ApiResponse<GroupedTasksResponse>
+      >(APP_CONSTANTS.API_ENDPOINTS.MY_TASKS, { params: httpParams })
       .pipe(catchError(this.handleError));
   }
 
@@ -41,13 +44,13 @@ export class TaskService {
       .set('limit', (params.limit ?? 5).toString());
 
     return this.apiService
-      .get<ApiResponse<Task[]>>('/tasks', { params: httpParams })
+      .get<ApiResponse<Task[]>>(APP_CONSTANTS.API_ENDPOINTS.TASKS, { params: httpParams })
       .pipe(catchError(this.handleError));
   }
 
   public getTaskById(id: string): Observable<ApiResponse<Task>> {
     return this.apiService
-      .get<ApiResponse<Task>>(`/tasks/${id}`)
+      .get<ApiResponse<Task>>(`${APP_CONSTANTS.API_ENDPOINTS.TASKS}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
