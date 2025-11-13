@@ -48,6 +48,8 @@ import {
   resetPassword,
   resetPasswordSuccess,
   resetPasswordFailure,
+  checkAuthSession,
+  checkAuthSessionSuccess,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -105,6 +107,24 @@ export class AuthEffects {
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(completeOnboardingFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public checkAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(checkAuthSession),
+      switchMap(() =>
+        this.authService.getUserProfile().pipe(
+          map(({ data }) =>
+            checkAuthSessionSuccess({
+              user: mapUserApiResponseToUser(data),
+            }),
+          ),
+          catchError((httpError: HttpErrorResponse) => {
+            return of(logout());
           }),
         ),
       ),
@@ -196,9 +216,9 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ user }) => {
-           this.toastService.showSuccess(
+          this.toastService.showSuccess(
             'Login Successful!',
-            "Login successful! Redirecting you to your dashboard...",
+            'Login successful! Redirecting you to your dashboard...',
           );
           if (user.state === UserState.ONBOARDED) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
@@ -305,20 +325,6 @@ export class AuthEffects {
           this.toastService.showError(
             'Verification Failed',
             error?.message || 'Invalid verification code. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  public loginFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Login Failed',
-            error?.message || 'Invalid email or password. Please try again.',
           );
         }),
       ),
@@ -439,6 +445,21 @@ export class AuthEffects {
     { dispatch: false },
   );
 
+  public logoutOrAuthFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(logoutSuccess, loginFailure),
+        tap(() => {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(loginFailure({ error: appError }));
+        }),
+      ),
+    { dispatch: false },
+  );
+
   public authFailure$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -450,6 +471,8 @@ export class AuthEffects {
           logoutFailure,
           socialLoginFailure,
           updateTourStatusFailure,
+          resetPasswordFailure,
+          resendVerificationFailure,
         ),
         tap(({ error }) => {
           this.toastService.showError(
