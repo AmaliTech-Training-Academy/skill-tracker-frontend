@@ -1,9 +1,11 @@
 $z-layers: (
   'sidebar-overlay': 19,
-  'sidebar': 30,
-  'header': 20,
+  'sidebar': 40,
+  'header': 30,
   'modal': 100,
 );
+
+$navbar-height: 72px;
 
 $space-xs: 0.5rem;
 $space-sm: 0.75rem;

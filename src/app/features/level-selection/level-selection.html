@@ -46,6 +46,7 @@
           with the right challenges
         </p>
       </header>
+
       <div class="level-selection"></div>
       <div class="skill-list">
         @for (skill of skills(); track skill.skillId) {
@@ -62,6 +63,7 @@
           <p class="empty-state">Please go back and select your interests first.</p>
         }
       </div>
+
       <div class="level-btns">
         <button class="level-btns--skip" (click)="onSkip()" [disabled]="isSubmitting()">
           Skip

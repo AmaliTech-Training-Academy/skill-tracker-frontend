@@ -23,51 +23,10 @@ import {
 } from '@app/store/auth/auth.actions';
 import { SkillLevelSelectorComponent } from '@app/shared/compomonents/skill-level-selector/skill-level-selector';
 import { APP_CONSTANTS } from '@app/core';
+import { Skill, SkillsService } from '../interests-selection/interests.service';
 
 const CONFETTI_DURATION = 3000;
 const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
-
-const ALL_INTERESTS_MAP = new Map<string, { name: string; icon: string }>([
-  ['htmlcss', { name: 'HTML & CSS (Web Basics)', icon: '/assets/htmlcss-icon.png' }],
-  ['javascript', { name: 'JavaScript', icon: '/assets/js-icon.png' }],
-  ['python', { name: 'Python', icon: '/assets/python-icon.png' }],
-  ['csharp', { name: 'C#', icon: '/assets/csharp-icon.png' }],
-  ['sql', { name: 'SQL', icon: '/assets/sql-icon.png' }],
-  [
-    'frontend-development',
-    { name: 'Frontend Development', icon: '/assets/frontend-development-icon.png' },
-  ],
-  [
-    'android-development',
-    { name: 'Android Development', icon: '/assets/android-development-icon.png' },
-  ],
-  [
-    'backend-development',
-    { name: 'Backend Development', icon: '/assets/frontend-development-icon.png' },
-  ],
-  ['git-github', { name: 'Git & GitHub', icon: '/assets/github-icon.png' }],
-  [
-    'algorithms-datastructures',
-    { name: 'Algorithm & Data Structures', icon: '/assets/algorithms-datastructures-icon.png' },
-  ],
-  ['debugging', { name: 'Debugging', icon: '/assets/debugging-icon.png' }],
-  ['api', { name: 'API Usage', icon: '/assets/api-icon.png' }],
-  ['cloudbasis', { name: 'Cloud Basics', icon: '/assets/cloudbasis-icon.png' }],
-  [
-    'game-development-basics',
-    { name: 'Game Development Basics', icon: '/assets/game-development-basics-icon.png' },
-  ],
-  [
-    'technical-communication',
-    { name: 'Technical Communication', icon: '/assets/technical-communication-icon.png' },
-  ],
-  ['databases', { name: 'Database Basics', icon: '/assets/htmlcss-icon.png' }],
-  [
-    'fullstack-development',
-    { name: 'Full Stack Development', icon: '/assets/fullstack-development-icon.png' },
-  ],
-  ['uiux-basics', { name: 'UI/UX Basics for Developers', icon: '/assets/uiux-basics-icon.png' }],
-]);
 
 @Component({
   selector: 'app-level-selection',
@@ -83,7 +42,9 @@ export class LevelSelection implements OnInit, OnDestroy {
   public isSubmitting = this.store.selectSignal(selectIsCompletingOnboarding);
 
   public skills = this.onboardingDataService.skills;
-  public levels: SkillLevel[] = ['Beginner', 'Intermediate', 'Advanced'];
+  public levels: SkillLevel[] = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
+
+  private skillInfoMap = new Map<string, { name: string; icon: string }>();
 
   constructor(
     private router: Router,
@@ -92,9 +53,17 @@ export class LevelSelection implements OnInit, OnDestroy {
     private store: Store,
     private actions$: Actions,
     private destroyRef: DestroyRef,
+    private skillsService: SkillsService,
   ) {}
 
   ngOnInit() {
+    this.skillsService.getSkills().forEach((skill: Skill) => {
+      this.skillInfoMap.set(skill.id, {
+        name: skill.label,
+        icon: skill.icon,
+      });
+    });
+
     if (!this.skills().length) {
       this.router.navigateByUrl(FULL_PAGE_ROUTES.INTEREST_SELECTION);
     }
@@ -103,7 +72,7 @@ export class LevelSelection implements OnInit, OnDestroy {
   }
 
   public getSkillInfo(skillId: string): { name: string; icon: string } {
-    return ALL_INTERESTS_MAP.get(skillId) || { name: skillId, icon: '❓' };
+    return this.skillInfoMap.get(skillId) || { name: skillId, icon: '❓' };
   }
 
   public onLevelSelect(skill: UserSkill, newLevel: SkillLevel | null) {
@@ -112,13 +81,13 @@ export class LevelSelection implements OnInit, OnDestroy {
 
   public onSkip() {
     if (this.isSubmitting()) return;
-    const payload = this.onboardingDataService.getUserStatePayLoad(true);
+    const payload = this.onboardingDataService.getPayload(true);
     this.store.dispatch(completeOnboarding({ request: payload }));
   }
 
   public onNext() {
     if (this.isSubmitting()) return;
-    const payload = this.onboardingDataService.getUserStatePayLoad(false);
+    const payload = this.onboardingDataService.getPayload(false);
     this.store.dispatch(completeOnboarding({ request: payload }));
   }
 

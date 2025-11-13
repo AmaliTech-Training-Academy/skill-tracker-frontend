@@ -100,7 +100,7 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(completeOnboarding),
       switchMap(({ request }) =>
-        this.authService.updateUserOnboardedState(request).pipe(
+        this.authService.completeOnboarding(request).pipe(
           map(({ data }) => completeOnboardingSuccess({ user: mapUserApiResponseToUser(data) })),
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);

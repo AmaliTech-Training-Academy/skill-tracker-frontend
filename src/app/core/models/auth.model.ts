@@ -91,7 +91,7 @@ export function mapUserApiResponseToUser({ is_verified, ...apiUser }: UserApiRes
   };
 }
 
-export type SkillLevel = 'Beginner' | 'Intermediate' | 'Advanced' | null;
+export type SkillLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null;
 
 export interface UserSkill {
   skillId: string;

@@ -2,19 +2,16 @@
 @use 'colors' as *;
 @use 'typography' as *;
 
-$beginner-bg: #f0fdf4;
-$beginner-text: #166534;
-$beginner-border: #bbf7d0;
-$beginner-selected-bg: #22c55e;
+$beginner-bg: #f3faf3;
+$beginner-text: #66bb6a;
+$beginner-selected-bg: #358439;
 
-$intermediate-bg: #eef2ff;
-$intermediate-text: #3730a3;
-$intermediate-border: #c7d2fe;
+$intermediate-bg: #eef4ff;
+$intermediate-text: #3366ff;
 $intermediate-selected-bg: #4f46e5;
 
 $advanced-bg: #fffbeb;
-$advanced-text: #92400e;
-$advanced-border: #fde68a;
+$advanced-text: #dd7602;
 $advanced-selected-bg: #f59e0b;
 
 $default-bg: #f4f4f5;
@@ -43,7 +40,8 @@ $hover-border: #d1d5db;
 }
 
 .level-buttons {
-  @include flex($direction: row, $gap: 8px);
+  @include flex($direction: row, $gap: 20px);
+  flex-wrap: wrap;
 }
 
 .level-btn {
@@ -60,19 +58,16 @@ $hover-border: #d1d5db;
   &.beginner {
     background-color: $beginner-bg;
     color: $beginner-text;
-    border-color: $beginner-border;
   }
 
   &.intermediate {
     background-color: $intermediate-bg;
     color: $intermediate-text;
-    border-color: $intermediate-border;
   }
 
   &.advanced {
     background-color: $advanced-bg;
     color: $advanced-text;
-    border-color: $advanced-border;
   }
 
   &.selected {
@@ -80,20 +75,24 @@ $hover-border: #d1d5db;
 
     &.beginner {
       background-color: $beginner-selected-bg;
-      border-color: $beginner-selected-bg;
     }
     &.intermediate {
       background-color: $intermediate-selected-bg;
-      border-color: $intermediate-selected-bg;
     }
     &.advanced {
       background-color: $advanced-selected-bg;
-      border-color: $advanced-selected-bg;
     }
   }
 
   &:not(.selected):hover {
     filter: brightness(0.95);
     border-color: $hover-border;
+  }
+}
+
+@include tablet {
+  .level-buttons {
+    @include flex($direction: row, $gap: 48px);
+    flex-wrap: wrap;
   }
 }

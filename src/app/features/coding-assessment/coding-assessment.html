@@ -1,0 +1,10 @@
+<div class="assessment-container">
+  @if (!assessmentStarted()) {
+    <app-challenge-description [task]="mockTask()" (startTask)="onStartTask()" />
+  } @else {
+    <div class="coding-workspace-placeholder">
+      <h2>Coding View</h2>
+      <p>Editor and Console will be added in the pr.</p>
+    </div>
+  }
+</div>

@@ -6,11 +6,11 @@
 @let isPopular = plan().isPopular;
 
 <article class="pricing-card" [class.is-popular]="isPopular">
-  @if (isPopular){
-  <div class="popular-tag-wrapper">
-    <div class="popular-tag">Most Popular </div>
-    <img src="assets/stars.png" alt="Stars emoji" class="popular-stars">
-  </div>
+  @if (isPopular) {
+    <div class="popular-tag-wrapper">
+      <div class="popular-tag">Most Popular</div>
+      <img src="assets/stars.png" alt="Stars emoji" class="popular-stars" />
+    </div>
   }
 
   <div class="card-content-wrapper">
@@ -20,23 +20,21 @@
     </header>
 
     <div class="price-container">
-      <span class="price-value">{{ price | currency:'USD':'symbol':'1.0-2' }}</span>
+      <span class="price-value">{{ price | currency: 'USD' : 'symbol' : '1.0-2' }}</span>
       <span class="price-period">{{ period }}</span>
     </div>
-
-
 
     <ul class="features-list">
       <h4 class="features-title">What you get</h4>
       @for (feature of features; track $index) {
-      <li class="feature-item">
-        <img [src]="icon" alt="Checkmark icon" class="feature-icon">
-        <span>{{ feature }}</span>
-      </li>
+        <li class="feature-item">
+          <img [src]="icon" alt="Checkmark icon" class="feature-icon" />
+          <span>{{ feature }}</span>
+        </li>
       }
     </ul>
 
-    <button class="action-button" aria-label="Select {{ name }} plan">
+    <button class="action-button" aria-label="Select {{ name }} plan" (click)="onSelectPlan()">
       I want this!
     </button>
   </div>

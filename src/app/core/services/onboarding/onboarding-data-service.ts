@@ -1,11 +1,6 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Store } from '@ngrx/store';
-import {
-  CompleteOnboardingRequest,
-  UserSkill,
-  SkillLevel,
-  UserEmailRequest,
-} from '@app/core/models/auth.model';
+import { CompleteOnboardingRequest, UserSkill, SkillLevel } from '@app/core/models/auth.model';
 import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
 @Injectable({
@@ -43,12 +38,8 @@ export class OnboardingDataService {
     const completedSkills = this.skills().filter(
       (skill): skill is UserSkill & { level: SkillLevel } => skill.level !== null,
     );
-    return { skills: completedSkills };
-  }
 
-  public getUserStatePayLoad(skipped = false): UserEmailRequest {
-    const email = this.currentUser()?.email ?? '';
-    return { email };
+    return { skills: completedSkills };
   }
 
   public reset(): void {
