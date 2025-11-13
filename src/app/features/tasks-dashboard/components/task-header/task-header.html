@@ -6,8 +6,8 @@
 
   <div class="filter-wrapper">
     <app-custom-dropdown
-      [options]="skills()"
-      [selectedValue]="selectedSkill()"
+      [options]="formattedSkills"
+      [selectedValue]="getFormattedSkillName(selectedSkill() || 'All Skills')"
       [placeholder]="'All Skills'"
       (selectionChange)="onSkillChange($event)"
     />
