@@ -1,5 +1,4 @@
-// dynamic-input.component.ts
-import { Component, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, ChangeDetectionStrategy, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,20 +9,29 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './text-area.html',
   styleUrl: './text-area.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
- 
 })
-export class TextArea {
+export class TextArea implements OnInit {
   @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
-  
+  @Input() textValue: string = '';
+
   text: string = '';
   isRecording: boolean = false;
+  @Output() textChange = new EventEmitter<string>();
 
+  ngOnInit(): void {
+    this.text = this.textValue;
+  }
+  
   onTextChange(): void {
-    // Handle text change if needed
+    this.textChange.emit(this.text);
   }
 
   toggleRecording(): void {
     this.isRecording = !this.isRecording;
+  }
+
+  ngOnChanges(): void {
+    this.text = this.textValue;
   }
 
   applyFormat(format: string): void {
@@ -31,10 +39,10 @@ export class TextArea {
     const start = element.selectionStart;
     const end = element.selectionEnd;
     const selectedText = this.text.substring(start, end);
-    
+
     let formattedText = '';
-    
-    switch(format) {
+
+    switch (format) {
       case 'italic':
         formattedText = `*${selectedText}*`;
         break;
@@ -53,9 +61,10 @@ export class TextArea {
       default:
         formattedText = selectedText;
     }
-    
+
     this.text = this.text.substring(0, start) + formattedText + this.text.substring(end);
-    
+
+
     setTimeout(() => {
       element.focus();
       element.setSelectionRange(start + formattedText.length, start + formattedText.length);

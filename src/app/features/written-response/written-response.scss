@@ -147,6 +147,7 @@
 
   .explanation {
     @include flex(row, flex-start, center, 10px);
+    display: none;
     width: 100%;
     margin-inline: auto;
     margin-block: 40px;

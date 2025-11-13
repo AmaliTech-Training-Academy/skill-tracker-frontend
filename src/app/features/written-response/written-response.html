@@ -1,114 +1,99 @@
 <div class="multiple-choice">
-    <div class="task-title-progress">
-        <div class="task-name">
-            <label for="">Task</label>
-            <img src="assets/left-progress-arrow.png" alt="progress forward">
-            <label class="task-label" for="">Web Development Knowledge check</label>
-        </div>
-
-        <div class="progress-bar">
-            <progress [value]=1 max="100"></progress>
-        </div>
+  <div class="task-title-progress">
+    <div class="task-name">
+      <label for="">Task</label>
+      <img src="assets/left-progress-arrow.png" alt="progress forward" />
+      <label class="task-label" for="">Web Development Knowledge check</label>
     </div>
 
-    
-        <div class="group1">
-            <div class="timer1">
-                <label class="timer-text"><i>10:30</i></label>
-                <img src="assets/timer-clock.png" alt="timer icon">
-            </div>
+    <div class="progress-bar">
+      <progress [value]="progressValue" max="100"></progress>
+    </div>
+  </div>
+
+  <div class="group1">
+    <div class="timer1">
+      <label class="timer-text"
+        ><i>{{ timerLabel }}</i></label
+      >
+      <img src="assets/timer-clock.png" alt="timer icon" />
+    </div>
+  </div>
+
+  @if (!quizCompleted) {
+    <div class="questions-content">
+      <div class="task-title-level-data">
+        <h1 class="task-title">Web Development Knowledge Check</h1>
+
+        <div class="task-level">
+          <label class="level" for="">Beginner</label>
+          <div class="point">50X</div>
+          <div class="timer">
+            <label class="timer-text"
+              ><i>{{ timerLabel }}</i></label
+            >
+            <img src="assets/timer-clock.png" alt="timer icon" />
+          </div>
         </div>
-    
+      </div>
 
+      <div class="question-track-level">
+        <p>{{ questionTrackerLabel }}</p>
+        <label class="level" for="">Beginner</label>
+      </div>
 
-    
-        <div class="questions-content">
-            <div class="task-title-level-data">
-                <h1 class="task-title">Web Development Knowledge Check</h1>
+      <div class="question-answers">
+        <h1 class="question">
+          {{ questionSet.questions[currentQuestionIndex].question }}
+        </h1>
 
-                <div class="task-level">
-                    <label class="level" for="">Beginner</label>
-                    <div class="point">+50 XP</div>
-
-                    
-                        <div class="timer">
-                            <label class="timer-text"><i>10:30</i></label>
-                            <img src="assets/timer-clock.png" alt="timer icon">
-                        </div>
-                    
-                </div>
-            </div>
-
-            <div class="question-track-level">
-                <p>50XP</p>
-                <label class="level" for="">Beginner</label>
-            </div>
-
-            <div class="question-answers">
-                <h1 class="question">Write a thirtenn thousand essay</h1>
-
-                
-                    <div class="question-answer">
-                        <div class="textarea-container">
-                         <app-text-area></app-text-area>
-                        </div>
-
-                    </div>
-                
-            </div>
-
-           
-                <div class="explanation">
-                    <div class="explanation-text">
-                        <p><b>Explanation: </b>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta consequuntur beatae atque quae provident eum voluptatibus fugiat pariatur voluptas molestias.</p>
-                    </div>
-                </div>
-            
-
-           
-                <div class="hint">
-                    <img src="assets/hint-bulb.png" alt="">
-                    <div class="hint-text">
-                        <p>Hint: <br> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure, quae.</p>
-                    </div>
-                </div>
-            
-
-            <div class="buttons">
-                <button 
-                    class="previous">
-                    < <label for="">Previous</label>
-                </button>
-                <button 
-                    class="next">
-                    <label for="">Next</label> >
-                </button>
-            </div>
+        <div class="question-answer">
+          <div class="textarea-container">
+            <app-text-area 
+              [textValue]="userAnswer"
+              (textChange)="onUserTyping($event)">
+            </app-text-area>
+          </div>
         </div>
-    
+      </div>
 
-   <!-- quiz complete section -->
-        <div class="group2">
-            <div class="quiz-complete">
-                <img src="assets/checked-circle.png" alt="checked circle">
-                <p>Quiz Completed</p>
-                <p class="mark">10/10</p>
-                <p class="outof">You got 7 out of 7questions correct</p>
-                <p>Use the arrows to review your questions</p>
-
-                <div class="buttons">
-                    <button 
-                        class="previous"
-                        >
-                        < <label for="">Previous</label>
-                    </button>
-                    <button 
-                        class="next"
-                        >
-                        <label for="">Next</label> >
-                    </button>
-                </div>
-            </div>
+      <div class="hint">
+        <img src="assets/hint-bulb.png" alt="" />
+        <div class="hint-text">
+          <p>
+            Hint: <br />
+            {{ questionSet.questions[currentQuestionIndex].hint }}
+          </p>
         </div>
-    
+      </div>
+
+      <div class="buttons">
+        <button class="previous" [disabled]="isPrevDisabled" (click)="prevQuestion()">
+          < <label for="">Previous</label>
+        </button>
+
+        <button class="next" [disabled]="isNextDisabled" (click)="nextQuestion()">
+          <label for="">Next</label> >
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (quizCompleted) {
+    <div class="group2">
+      <div class="quiz-complete">
+        <img src="assets/checked-circle.png" alt="checked circle" />
+        <p>Quiz Completed</p>
+        <p class="mark">{{ progressValue }}%</p>
+        <p class="outof">You answered {{ questionSet.questions.length }} questions.</p>
+        <p>Use the arrows to review your questions</p>
+
+        <div class="buttons">
+          <button class="previous" (click)="prevQuestion()">< <label>Previous</label></button>
+          <button class="next" (click)="nextQuestion()"><label>Next</label> ></button>
+        </div>
+      </div>
+    </div>
+  }
 </div>
+
