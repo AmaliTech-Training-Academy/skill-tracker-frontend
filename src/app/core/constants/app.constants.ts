@@ -30,5 +30,6 @@ export const APP_CONSTANTS = {
     FORGOT_PASSWORD: '/auth/password/forgot',
     RESET_PASSWORD: '/auth/password/reset',
     GENERATE_MCQ: '/api/v1/mcq/generate',
+    SKILLS: '/skills',
   },
 } as const;
