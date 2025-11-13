@@ -22,6 +22,18 @@ export interface ApiErrorResponse {
   };
 }
 
+export interface ApiMetadata {
+  traceId: string;
+  timestamp: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  metadata: ApiMetadata;
+}
+
 export function isApiErrorResponse(body: unknown): body is ApiErrorResponse {
   if (typeof body !== 'object' || body === null) {
     return false;

@@ -143,18 +143,6 @@ export interface GroupedTasksResponse {
   completed: PagedResponse<Task>;
 }
 
-export interface ApiMetadata {
-  traceId: string;
-  timestamp: string;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-  metadata: ApiMetadata;
-}
-
 export interface TaskPaginationParams {
   pendingPage?: number;
   pendingSize?: number;
