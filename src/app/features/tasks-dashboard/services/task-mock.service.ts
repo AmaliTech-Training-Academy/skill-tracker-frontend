@@ -14,6 +14,26 @@ import {
 
 const MOCK_API_DELAY = 500;
 
+const createMockPagedResponse = <T>(content: T[]): Omit<PagedResponse<T>, 'content'> => ({
+  pageable: {
+    pageNumber: 0,
+    pageSize: 10,
+    sort: { empty: true, sorted: false, unsorted: true },
+    offset: 0,
+    paged: true,
+    unpaged: false,
+  },
+  last: true,
+  totalElements: content.length,
+  totalPages: 1,
+  first: true,
+  size: 10,
+  number: 0,
+  sort: { empty: true, sorted: false, unsorted: true },
+  numberOfElements: content.length,
+  empty: content.length === 0,
+});
+
 @Injectable({
   providedIn: 'root',
 })
@@ -214,44 +234,12 @@ export class TaskMockService {
   public getAllTasks(): Observable<ApiResponse<GroupedTasksResponse>> {
     const pendingPage: PagedResponse<TaskUI> = {
       content: this.mockTasks,
-      pageable: {
-        pageNumber: 0,
-        pageSize: 10,
-        sort: { empty: true, sorted: false, unsorted: true },
-        offset: 0,
-        paged: true,
-        unpaged: false,
-      },
-      last: true,
-      totalElements: this.mockTasks.length,
-      totalPages: 1,
-      first: true,
-      size: 10,
-      number: 0,
-      sort: { empty: true, sorted: false, unsorted: true },
-      numberOfElements: this.mockTasks.length,
-      empty: this.mockTasks.length === 0,
+      ...createMockPagedResponse(this.mockTasks),
     };
 
     const completedPage: PagedResponse<TaskUI> = {
       content: this.mockCompletedTasks,
-      pageable: {
-        pageNumber: 0,
-        pageSize: 10,
-        sort: { empty: true, sorted: false, unsorted: true },
-        offset: 0,
-        paged: true,
-        unpaged: false,
-      },
-      last: true,
-      totalElements: this.mockCompletedTasks.length,
-      totalPages: 1,
-      first: true,
-      size: 10,
-      number: 0,
-      sort: { empty: true, sorted: false, unsorted: true },
-      numberOfElements: this.mockCompletedTasks.length,
-      empty: this.mockCompletedTasks.length === 0,
+      ...createMockPagedResponse(this.mockCompletedTasks),
     };
 
     const response: ApiResponse<GroupedTasksResponse> = {
