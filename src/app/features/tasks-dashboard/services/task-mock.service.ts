@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, map } from 'rxjs';
 import { ApiResponse } from '@app/core';
 import {
   TaskUI,
@@ -256,5 +256,14 @@ export class TaskMockService {
     };
 
     return of(response).pipe(delay(MOCK_API_DELAY));
+  }
+
+  public getProcessedTasks(): Observable<{ todayTasks: TaskUI[]; previousTasks: TaskUI[] }> {
+    return this.getAllTasks().pipe(
+      map(({ data }) => ({
+        todayTasks: data.pending.content,
+        previousTasks: data.completed.content,
+      })),
+    );
   }
 }

@@ -139,8 +139,8 @@ export interface PagedResponse<T> {
 }
 
 export interface GroupedTasksResponse {
-  pending: PagedResponse<Task>;
-  completed: PagedResponse<Task>;
+  pending: PagedResponse<TaskUI>;
+  completed: PagedResponse<TaskUI>;
 }
 
 export interface TaskPaginationParams {
