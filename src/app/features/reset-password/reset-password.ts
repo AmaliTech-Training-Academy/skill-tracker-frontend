@@ -17,6 +17,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { ToastService } from '@app/core';
 
 import { InputFieldComponent } from '../../shared/input-field/input-field';
 import { getFormControl } from '@app/shared';
@@ -58,6 +59,7 @@ export class ResetPassword implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private store: Store,
+    private toastService: ToastService,
   ) {}
 
   public ngOnInit(): void {
@@ -66,7 +68,9 @@ export class ResetPassword implements OnInit, OnDestroy {
     this.resetToken = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.resetToken) {
-      console.error('Reset token is missing from URL.');
+      this.toastService.showError('Reset Error', 'Reset token is missing. Please try again.');
+      this.router.navigateByUrl('/forgot-password');
+      return;
     }
 
     this.loginForm = this.fb.group({
