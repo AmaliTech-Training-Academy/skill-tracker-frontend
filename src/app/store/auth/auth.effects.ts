@@ -48,6 +48,8 @@ import {
   resetPassword,
   resetPasswordSuccess,
   resetPasswordFailure,
+  checkAuthSession,
+  checkAuthSessionSuccess,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -105,6 +107,24 @@ export class AuthEffects {
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(completeOnboardingFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public checkAuth$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(checkAuthSession),
+      switchMap(() =>
+        this.authService.getUserProfile().pipe(
+          map(({ data }) =>
+            checkAuthSessionSuccess({
+              user: mapUserApiResponseToUser(data),
+            }),
+          ),
+          catchError((httpError: HttpErrorResponse) => {
+            return of(logout());
           }),
         ),
       ),
@@ -176,6 +196,53 @@ export class AuthEffects {
     ),
   );
 
+  public forgotPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(forgotPassword),
+      switchMap(({ request }) =>
+        this.authService.forgotPassword(request.email).pipe(
+          map((response) =>
+            forgotPasswordSuccess({ message: 'Password reset link sent successfully.' }),
+          ),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(forgotPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public resendVerification$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resendVerification),
+      switchMap(({ email }) =>
+        this.authService.resendVerification(email).pipe(
+          map(({ message }) => resendVerificationSuccess({ message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(resendVerificationFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPassword),
+      switchMap(({ request }) =>
+        this.authService.resetPassword(request).pipe(
+          map((response) => resetPasswordSuccess({ message: response.message })),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(resetPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
   public registerSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -196,9 +263,9 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         tap(({ user }) => {
-           this.toastService.showSuccess(
+          this.toastService.showSuccess(
             'Login Successful!',
-            "Login successful! Redirecting you to your dashboard...",
+            'Login successful! Redirecting you to your dashboard...',
           );
           if (user.state === UserState.ONBOARDED) {
             this.router.navigateByUrl(APP_ROUTES.DASHBOARD);
@@ -311,35 +378,6 @@ export class AuthEffects {
     { dispatch: false },
   );
 
-  public loginFailure$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginFailure),
-        tap(({ error }) => {
-          this.toastService.showError(
-            'Login Failed',
-            error?.message || 'Invalid email or password. Please try again.',
-          );
-        }),
-      ),
-    { dispatch: false },
-  );
-
-  public resendVerification$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(resendVerification),
-      switchMap(({ email }) =>
-        this.authService.resendVerification(email).pipe(
-          map(({ message }) => resendVerificationSuccess({ message })),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
-            return of(resendVerificationFailure({ error: appError }));
-          }),
-        ),
-      ),
-    ),
-  );
-
   public resendVerificationSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -367,20 +405,6 @@ export class AuthEffects {
       ),
     { dispatch: false },
   );
-  public resetPassword$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(resetPassword),
-      switchMap(({ request }) =>
-        this.authService.resetPassword(request).pipe(
-          map((response) => resetPasswordSuccess({ message: response.message })),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
-            return of(resetPasswordFailure({ error: appError }));
-          }),
-        ),
-      ),
-    ),
-  );
 
   public resetPasswordSuccess$ = createEffect(
     () =>
@@ -395,23 +419,6 @@ export class AuthEffects {
         tap(() => this.router.navigateByUrl(APP_ROUTES.LOGIN)),
       ),
     { dispatch: false },
-  );
-
-  public forgotPassword$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(forgotPassword),
-      switchMap(({ request }) =>
-        this.authService.forgotPassword(request.email).pipe(
-          map((response) =>
-            forgotPasswordSuccess({ message: 'Password reset link sent successfully.' }),
-          ),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
-            return of(forgotPasswordFailure({ error: appError }));
-          }),
-        ),
-      ),
-    ),
   );
 
   public forgotPasswordSuccess$ = createEffect(
@@ -439,6 +446,21 @@ export class AuthEffects {
     { dispatch: false },
   );
 
+  public logoutOrAuthFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(logoutSuccess, loginFailure),
+        tap(() => {
+          this.router.navigateByUrl(APP_ROUTES.LOGIN);
+        }),
+        catchError((httpError: HttpErrorResponse) => {
+          const appError = this.errorHandlerService.getError(httpError);
+          return of(loginFailure({ error: appError }));
+        }),
+      ),
+    { dispatch: false },
+  );
+
   public authFailure$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -450,6 +472,8 @@ export class AuthEffects {
           logoutFailure,
           socialLoginFailure,
           updateTourStatusFailure,
+          resetPasswordFailure,
+          resendVerificationFailure,
         ),
         tap(({ error }) => {
           this.toastService.showError(
