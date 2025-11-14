@@ -86,6 +86,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
+      {
+        path: 'tasks/multiple-choice',
+        loadComponent: () =>
+          import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
+      },
     ],
   },
 ];

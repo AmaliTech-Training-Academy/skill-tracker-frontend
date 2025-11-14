@@ -27,6 +27,11 @@
     }
   }
 
+  .task-title-progress{
+    width: 100%;
+    margin-inline: auto;
+  }
+
   .progress-bar {
     progress {
       width: 100%;
@@ -543,11 +548,10 @@
     .questions-content {
       background-color: $gray-white;
       width: 100%;
-      max-width: 1038px;
       margin-inline: auto;
       margin-block: 25px;
       padding: 10px 20px;
-      border-radius: 5px;
+      border-radius: 5px;  
 
       .task-title-level-data {
         width: 95%;
