@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { ApiResponse } from '@app/core/models/api.model';
+import { ApiResponse } from '@app/core';
 import {
   TaskUI,
   TaskIcon,

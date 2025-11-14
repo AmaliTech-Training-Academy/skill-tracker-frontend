@@ -7,7 +7,7 @@ import {
   TaskPaginationParams,
   SuggestedTasksParams,
 } from '../../../core/models/tasks-model';
-import { ApiResponse } from '../../../core/models/api.model';
+import { ApiResponse } from '@app/core';
 import { ApiService } from '../../../core/services/api/api-service';
 import { ErrorHandlerService } from '../../../core/services/error/error-handler';
 import { APP_CONSTANTS } from '../../../core/constants/app.constants';
