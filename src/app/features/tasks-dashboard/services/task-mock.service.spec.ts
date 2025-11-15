@@ -1,6 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { TaskMockService } from './task-mock.service';
-import { TaskStatus, TaskType, TaskDifficulty, TaskUI } from '../../../core/models/tasks-model';
+import {
+  TaskStatus,
+  TaskType,
+  TaskDifficulty,
+  TaskUI,
+  CompletedPeriod,
+} from '../../../core/models/tasks-model';
 
 describe('TaskMockService', () => {
   let service: TaskMockService;
@@ -23,6 +29,44 @@ describe('TaskMockService', () => {
         expect(response.data.pending).toBeDefined();
         expect(response.data.completed).toBeDefined();
         expect(response.metadata).toBeDefined();
+        done();
+      });
+    });
+
+    it('should filter tasks by skillName', (done) => {
+      service.getAllTasks({ skillName: 'Python' }).subscribe((response) => {
+        const pendingTasks = response.data.pending.content;
+        const completedTasks = response.data.completed.content;
+
+        pendingTasks.forEach((task) => {
+          expect(task.skillName.toLowerCase()).toContain('python');
+        });
+
+        completedTasks.forEach((task) => {
+          expect(task.skillName.toLowerCase()).toContain('python');
+        });
+        done();
+      });
+    });
+
+    it('should filter completed tasks by period', (done) => {
+      service.getAllTasks({ completedPeriod: CompletedPeriod.TODAY }).subscribe((response) => {
+        const completedTasks = response.data.completed.content;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        completedTasks.forEach((task) => {
+          const taskDate = new Date(task.createdAt);
+          expect(taskDate.getTime()).toBeGreaterThanOrEqual(today.getTime());
+        });
+        done();
+      });
+    });
+
+    it('should return all tasks when no filters applied', (done) => {
+      service.getAllTasks({}).subscribe((response) => {
+        expect(response.data.pending.content.length).toBe(4);
+        expect(response.data.completed.content.length).toBe(2);
         done();
       });
     });

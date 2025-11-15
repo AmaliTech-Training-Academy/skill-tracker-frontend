@@ -8,7 +8,6 @@ import {
   TaskStatus,
   TaskContentType,
 } from '@app/core/models/tasks-model';
-import { formatText } from '@app/shared/utils/text-formatter.util';
 
 describe('TasksCard', () => {
   let component: TasksCard;
@@ -35,7 +34,7 @@ describe('TasksCard', () => {
     },
     xpReward: 50,
     estimatedDuration: 30,
-    skillName: 'JAVASCRIPT',
+    skillName: 'JavaScript',
     version: 1,
     icon: TaskIcon.ABC,
     status: TaskStatus.PENDING,
@@ -77,7 +76,7 @@ describe('TasksCard', () => {
     const skillElement = fixture.nativeElement.querySelector('.detail-item:first-child');
     const difficultyElement = fixture.nativeElement.querySelector('.detail-item:last-child');
 
-    expect(skillElement.textContent).toBe('Javascript');
+    expect(skillElement.textContent).toBe('JavaScript');
     expect(difficultyElement.textContent).toBe('Beginner');
   });
 
@@ -143,12 +142,6 @@ describe('TasksCard', () => {
     const divider = fixture.nativeElement.querySelector('.divider');
 
     expect(divider).toBeTruthy();
-  });
-
-  it('should format skill names correctly', () => {
-    expect(formatText('JAVASCRIPT')).toBe('Javascript');
-    expect(formatText('HTML_CSS')).toBe('HTML CSS');
-    expect(formatText('UI_UX_DESIGN')).toBe('UI/UX Design');
   });
 
   it('should emit task id when start task is called', () => {
