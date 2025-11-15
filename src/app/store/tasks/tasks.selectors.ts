@@ -4,6 +4,23 @@ import { TaskUI, CompletedPeriod } from '@app/core/models/tasks-model';
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
+export const selectCurrentTask = createSelector(selectTasksState, ({ currentTask }) => currentTask);
+
+export const selectCurrentTaskLoading = createSelector(
+  selectTasksState,
+  ({ currentTaskLoading }) => currentTaskLoading,
+);
+
+export const selectTimer = createSelector(selectTasksState, ({ timer }) => timer);
+
+export const selectTimerDisplay = createSelector(selectTimer, ({ remainingSeconds }) => {
+  const minutes = Math.floor(remainingSeconds / 60);
+  const seconds = remainingSeconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+});
+
+export const selectIsTimerRunning = createSelector(selectTimer, ({ isRunning }) => isRunning);
+
 export const selectTodayTasks = createSelector(
   selectTasksState,
   ({ pendingTasks }) => pendingTasks,

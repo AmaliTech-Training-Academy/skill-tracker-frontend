@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { GroupedTasksResponse, CompletedPeriod } from '@app/core/models/tasks-model';
+import { GroupedTasksResponse, CompletedPeriod, Task } from '@app/core/models/tasks-model';
 
 export const loadTasks = createAction('[Tasks Dashboard] Load Tasks');
 
@@ -24,3 +24,34 @@ export const changeTimeRangeFilter = createAction(
 );
 
 export const startTask = createAction('[Task Card] Start Task', props<{ taskId: string }>());
+
+export const loadCurrentTask = createAction(
+  '[Coding Assessment] Load Current Task',
+  props<{ taskId: string }>(),
+);
+
+export const loadCurrentTaskSuccess = createAction(
+  '[Tasks API] Load Current Task Success',
+  props<{ task: Task }>(),
+);
+
+export const loadCurrentTaskFailure = createAction(
+  '[Tasks API] Load Current Task Failure',
+  props<{ error: string }>(),
+);
+
+export const clearCurrentTask = createAction('[Coding Assessment] Clear Current Task');
+
+export const startTimer = createAction(
+  '[Coding Assessment] Start Timer',
+  props<{ durationMinutes: number }>(),
+);
+
+export const updateTimer = createAction(
+  '[Timer] Update Timer',
+  props<{ remainingSeconds: number }>(),
+);
+
+export const stopTimer = createAction('[Timer] Stop Timer');
+
+export const timerExpired = createAction('[Timer] Timer Expired');
