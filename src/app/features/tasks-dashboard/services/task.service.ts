@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, interval } from 'rxjs';
+import { map, takeWhile } from 'rxjs/operators';
 import {
   GroupedTasksResponse,
   Task,
@@ -60,6 +61,25 @@ export class TaskService {
     return this.apiService
       .get<ApiResponse<Task>>(`${APP_CONSTANTS.API_ENDPOINTS.TASKS}/${id}`)
       .pipe(catchError(this.handleError));
+  }
+
+  public createTimerStream(
+    durationMinutes: number,
+  ): Observable<{ remainingSeconds: number; expired: boolean }> {
+    const SECONDS_PER_MINUTE = 60;
+    const TIMER_INTERVAL_MS = 1000;
+    const TIMER_TICK_DECREMENT = 1;
+    const MINIMUM_SECONDS = 0;
+
+    const totalSeconds = durationMinutes * SECONDS_PER_MINUTE;
+    return interval(TIMER_INTERVAL_MS).pipe(
+      map((tick) => totalSeconds - tick - TIMER_TICK_DECREMENT),
+      takeWhile((remainingSeconds) => remainingSeconds >= MINIMUM_SECONDS, true),
+      map((remainingSeconds) => ({
+        remainingSeconds: Math.max(MINIMUM_SECONDS, remainingSeconds),
+        expired: remainingSeconds <= MINIMUM_SECONDS,
+      })),
+    );
   }
 
   private handleError = (error: unknown): Observable<never> => {
