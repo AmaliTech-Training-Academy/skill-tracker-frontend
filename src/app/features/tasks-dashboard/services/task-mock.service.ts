@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Observable, of, delay, throwError } from 'rxjs';
 import { ApiResponse } from '@app/core';
 import {
+  Task,
   TaskUI,
   TaskIcon,
   TaskDifficulty,
@@ -77,28 +78,6 @@ export class TaskMockService {
       createdAt: new Date().toISOString(),
     },
     {
-      id: 't2',
-      title: 'Explain Data Structures',
-      description: 'Write an essay explaining basic data structures.',
-      type: TaskType.ESSAY,
-      difficulty: TaskDifficulty.BEGINNER,
-      content: {
-        contentType: TaskContentType.ESSAY,
-        prompt: 'Explain what data structures are and why they are important.',
-        hints: ['Think about organization', 'Consider efficiency'],
-        wordLimit: 500,
-        guidelines: ['Be clear and concise', 'Use examples'],
-        rubric: ['Clarity', 'Accuracy', 'Examples'],
-      },
-      xpReward: 100,
-      estimatedDuration: 20,
-      skillName: 'Data Structures',
-      version: 1,
-      icon: TaskIcon.PENCIL,
-      status: TaskStatus.PENDING,
-      createdAt: new Date().toISOString(),
-    },
-    {
       id: 't3',
       title: 'HTML Form Validation',
       description: 'Create a form with proper validation attributes.',
@@ -168,34 +147,6 @@ export class TaskMockService {
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
     },
-  ];
-
-  private mockCompletedTasks: TaskUI[] = [
-    {
-      id: 'c1',
-      title: 'CSS Selectors Quiz',
-      description: 'Test your knowledge of CSS selectors.',
-      type: TaskType.MULTIPLE_CHOICE,
-      difficulty: TaskDifficulty.BEGINNER,
-      content: {
-        contentType: TaskContentType.MULTIPLE_CHOICE,
-        prompt: 'Which selector targets elements by class?',
-        hints: ['Think about the dot notation'],
-        options: [
-          { id: '1', text: '.classname', isCorrect: true },
-          { id: '2', text: '#classname', isCorrect: false },
-          { id: '3', text: 'classname', isCorrect: false },
-        ],
-        explanation: 'The dot (.) is used to select elements by class name.',
-      },
-      xpReward: 75,
-      estimatedDuration: 10,
-      skillName: 'CSS',
-      version: 1,
-      icon: TaskIcon.ABC,
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    },
     {
       id: 'c2',
       title: 'JavaScript Variables',
@@ -228,8 +179,58 @@ export class TaskMockService {
       skillName: 'JavaScript',
       version: 1,
       icon: TaskIcon.ABC,
-      status: TaskStatus.COMPLETED,
+      status: TaskStatus.PENDING,
       createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+    },
+  ];
+
+  private mockCompletedTasks: TaskUI[] = [
+    {
+      id: 'c1',
+      title: 'CSS Selectors Quiz',
+      description: 'Test your knowledge of CSS selectors.',
+      type: TaskType.MULTIPLE_CHOICE,
+      difficulty: TaskDifficulty.BEGINNER,
+      content: {
+        contentType: TaskContentType.MULTIPLE_CHOICE,
+        prompt: 'Which selector targets elements by class?',
+        hints: ['Think about the dot notation'],
+        options: [
+          { id: '1', text: '.classname', isCorrect: true },
+          { id: '2', text: '#classname', isCorrect: false },
+          { id: '3', text: 'classname', isCorrect: false },
+        ],
+        explanation: 'The dot (.) is used to select elements by class name.',
+      },
+      xpReward: 75,
+      estimatedDuration: 10,
+      skillName: 'CSS',
+      version: 1,
+      icon: TaskIcon.ABC,
+      status: TaskStatus.COMPLETED,
+      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 't2',
+      title: 'Explain Data Structures',
+      description: 'Write an essay explaining basic data structures.',
+      type: TaskType.ESSAY,
+      difficulty: TaskDifficulty.BEGINNER,
+      content: {
+        contentType: TaskContentType.ESSAY,
+        prompt: 'Explain what data structures are and why they are important.',
+        hints: ['Think about organization', 'Consider efficiency'],
+        wordLimit: 500,
+        guidelines: ['Be clear and concise', 'Use examples'],
+        rubric: ['Clarity', 'Accuracy', 'Examples'],
+      },
+      xpReward: 100,
+      estimatedDuration: 20,
+      skillName: 'Data Structures',
+      version: 1,
+      icon: TaskIcon.PENCIL,
+      status: TaskStatus.COMPLETED,
+      createdAt: new Date().toISOString(),
     },
   ];
 
@@ -308,5 +309,26 @@ export class TaskMockService {
           return true;
       }
     });
+  }
+
+  public getTaskById(id: string): Observable<ApiResponse<Task>> {
+    const allTasks = [...this.mockTasks, ...this.mockCompletedTasks];
+    const task = allTasks.find((t) => t.id === id);
+
+    if (!task) {
+      return throwError(() => new Error(`Task not found`));
+    }
+
+    const response: ApiResponse<Task> = {
+      success: true,
+      message: 'Task retrieved successfully',
+      data: task,
+      metadata: {
+        traceId: 'mock-trace-id',
+        timestamp: new Date().toISOString(),
+      },
+    };
+
+    return of(response).pipe(delay(MOCK_API_DELAY));
   }
 }
