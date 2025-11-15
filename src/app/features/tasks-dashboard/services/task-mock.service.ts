@@ -10,6 +10,8 @@ import {
   TaskContentType,
   GroupedTasksResponse,
   PagedResponse,
+  TaskPaginationParams,
+  CompletedPeriod,
 } from '../../../core/models/tasks-model';
 
 const MOCK_API_DELAY = 500;
@@ -68,7 +70,7 @@ export class TaskMockService {
       },
       xpReward: 50,
       estimatedDuration: 15,
-      skillName: 'PYTHON',
+      skillName: 'Python',
       version: 1,
       icon: TaskIcon.ABC,
       status: TaskStatus.PENDING,
@@ -90,7 +92,7 @@ export class TaskMockService {
       },
       xpReward: 100,
       estimatedDuration: 20,
-      skillName: 'DATA_STRUCTURES',
+      skillName: 'Data Structures',
       version: 1,
       icon: TaskIcon.PENCIL,
       status: TaskStatus.PENDING,
@@ -160,7 +162,7 @@ export class TaskMockService {
       },
       xpReward: 70,
       estimatedDuration: 20,
-      skillName: 'JAVASCRIPT',
+      skillName: 'JavaScript',
       version: 1,
       icon: TaskIcon.ABC,
       status: TaskStatus.PENDING,
@@ -223,7 +225,7 @@ export class TaskMockService {
       },
       xpReward: 90,
       estimatedDuration: 18,
-      skillName: 'JAVASCRIPT',
+      skillName: 'JavaScript',
       version: 1,
       icon: TaskIcon.ABC,
       status: TaskStatus.COMPLETED,
@@ -231,15 +233,36 @@ export class TaskMockService {
     },
   ];
 
-  public getAllTasks(): Observable<ApiResponse<GroupedTasksResponse>> {
+  public getAllTasks(
+    params: TaskPaginationParams = {},
+  ): Observable<ApiResponse<GroupedTasksResponse>> {
+    let filteredPendingTasks = this.mockTasks;
+    let filteredCompletedTasks = this.mockCompletedTasks;
+
+    if (params.skillName) {
+      filteredPendingTasks = filteredPendingTasks.filter((task) =>
+        task.skillName.toLowerCase().includes(params.skillName!.toLowerCase()),
+      );
+      filteredCompletedTasks = filteredCompletedTasks.filter((task) =>
+        task.skillName.toLowerCase().includes(params.skillName!.toLowerCase()),
+      );
+    }
+
+    if (params.completedPeriod && params.completedPeriod !== CompletedPeriod.ALL_PERIODS) {
+      filteredCompletedTasks = this.filterTasksByPeriod(
+        filteredCompletedTasks,
+        params.completedPeriod,
+      );
+    }
+
     const pendingPage: PagedResponse<TaskUI> = {
-      content: this.mockTasks,
-      ...createMockPagedResponse(this.mockTasks),
+      content: filteredPendingTasks,
+      ...createMockPagedResponse(filteredPendingTasks),
     };
 
     const completedPage: PagedResponse<TaskUI> = {
-      content: this.mockCompletedTasks,
-      ...createMockPagedResponse(this.mockCompletedTasks),
+      content: filteredCompletedTasks,
+      ...createMockPagedResponse(filteredCompletedTasks),
     };
 
     const response: ApiResponse<GroupedTasksResponse> = {
@@ -256,6 +279,35 @@ export class TaskMockService {
     };
 
     return of(response).pipe(delay(MOCK_API_DELAY));
+  }
+
+  private filterTasksByPeriod(tasks: TaskUI[], period: CompletedPeriod): TaskUI[] {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const last7Days = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    return tasks.filter((task) => {
+      const taskDate = new Date(task.createdAt);
+
+      switch (period) {
+        case CompletedPeriod.TODAY:
+          return taskDate >= today;
+        case CompletedPeriod.YESTERDAY:
+          return taskDate >= yesterday && taskDate < today;
+        case CompletedPeriod.LAST_7_DAYS:
+          return taskDate >= last7Days;
+        case CompletedPeriod.LAST_30_DAYS:
+          return taskDate >= last30Days;
+        case CompletedPeriod.OLDER:
+          return taskDate < last30Days;
+        case CompletedPeriod.ALL_PERIODS:
+          return true;
+        default:
+          return true;
+      }
+    });
   }
 
   public getProcessedTasks(): Observable<{ todayTasks: TaskUI[]; previousTasks: TaskUI[] }> {

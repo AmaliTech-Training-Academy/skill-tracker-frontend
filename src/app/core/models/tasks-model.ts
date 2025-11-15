@@ -20,6 +20,15 @@ export enum TaskStatus {
   COMPLETED = 'COMPLETED',
 }
 
+export enum CompletedPeriod {
+  TODAY = 'TODAY',
+  YESTERDAY = 'YESTERDAY',
+  LAST_7_DAYS = 'LAST_7_DAYS',
+  LAST_30_DAYS = 'LAST_30_DAYS',
+  OLDER = 'OLDER',
+  ALL_PERIODS = 'ALL_PERIODS',
+}
+
 export enum TaskContentType {
   CODING = 'CODING',
   ESSAY = 'ESSAY',
@@ -143,7 +152,12 @@ export interface GroupedTasksResponse {
   completed: PagedResponse<TaskUI>;
 }
 
-export interface TaskPaginationParams {
+export interface TaskFilterParams {
+  skillName?: string;
+  completedPeriod?: CompletedPeriod;
+}
+
+export interface TaskPaginationParams extends TaskFilterParams {
   pendingPage?: number;
   pendingSize?: number;
   completedPage?: number;

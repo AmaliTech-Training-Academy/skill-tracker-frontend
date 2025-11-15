@@ -19,10 +19,8 @@ export class TasksEffects {
     this.actions$.pipe(
       ofType(TasksActions.loadTasks),
       switchMap(() =>
-        this.taskMockService.getProcessedTasks().pipe(
-          map(({ todayTasks, previousTasks }) =>
-            TasksActions.loadTasksSuccess({ todayTasks, previousTasks }),
-          ),
+        this.taskMockService.getAllTasks().pipe(
+          map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
           catchError((error) =>
             of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' })),
           ),

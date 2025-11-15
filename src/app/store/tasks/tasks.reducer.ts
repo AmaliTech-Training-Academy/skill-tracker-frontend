@@ -16,10 +16,10 @@ export const tasksReducer = createReducer(
 
   on(
     TasksActions.loadTasksSuccess,
-    (state, { todayTasks, previousTasks }): TasksState => ({
+    (state, { data }): TasksState => ({
       ...state,
-      todayTasks,
-      previousTasks,
+      pendingTasks: data.pending.content,
+      completedTasks: data.completed.content,
       loading: false,
       error: null,
     }),
@@ -29,8 +29,8 @@ export const tasksReducer = createReducer(
     TasksActions.loadTasksFailure,
     (state, { error }): TasksState => ({
       ...state,
-      todayTasks: [],
-      previousTasks: [],
+      pendingTasks: [],
+      completedTasks: [],
       loading: false,
       error,
     }),
@@ -46,9 +46,9 @@ export const tasksReducer = createReducer(
 
   on(
     TasksActions.changeTimeRangeFilter,
-    (state, { timeRange }): TasksState => ({
+    (state, { period }): TasksState => ({
       ...state,
-      selectedTimeRange: timeRange,
+      selectedTimeRange: period,
     }),
   ),
 

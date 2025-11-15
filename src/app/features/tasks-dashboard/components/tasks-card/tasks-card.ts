@@ -1,14 +1,14 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TaskUI } from '@app/core/models/tasks-model';
-import { formatText } from '@app/shared/utils/text-formatter.util';
+import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-tasks-card',
   templateUrl: './tasks-card.html',
   styleUrl: './tasks-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
+  imports: [NgClass, CapitalizePipe],
   standalone: true,
 })
 export class TasksCard {
@@ -38,13 +38,5 @@ export class TasksCard {
       pencil: 'assets/pencil.png',
     };
     return iconMap[icon] || 'assets/abc.png';
-  }
-
-  public getFormattedSkill(): string {
-    return formatText(this.task().skillName);
-  }
-
-  public getFormattedDifficulty(): string {
-    return formatText(this.task().difficulty);
   }
 }

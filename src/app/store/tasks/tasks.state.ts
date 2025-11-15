@@ -1,23 +1,23 @@
-import { TaskUI } from '@app/core/models/tasks-model';
+import { TaskUI, CompletedPeriod } from '@app/core/models/tasks-model';
 
 export interface TasksState {
-  todayTasks: TaskUI[];
-  previousTasks: TaskUI[];
+  pendingTasks: TaskUI[];
+  completedTasks: TaskUI[];
   skills: string[];
   selectedSkill: string;
   timeRanges: string[];
-  selectedTimeRange: string;
+  selectedTimeRange: CompletedPeriod;
   loading: boolean;
   error: string | null;
 }
 
 export const initialTasksState: TasksState = {
-  todayTasks: [],
-  previousTasks: [],
-  skills: ['All Skills', 'HTML', 'CSS', 'DATA_STRUCTURES', 'PYTHON', 'JAVASCRIPT'],
+  pendingTasks: [],
+  completedTasks: [],
+  skills: ['All Skills', 'HTML', 'CSS', 'Data Structures', 'Python', 'JavaScript'],
   timeRanges: ['All Periods', 'Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'Older'],
   selectedSkill: 'All Skills',
-  selectedTimeRange: 'All Periods',
+  selectedTimeRange: CompletedPeriod.ALL_PERIODS,
   loading: false,
   error: null,
 };

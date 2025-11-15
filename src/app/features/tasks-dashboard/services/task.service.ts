@@ -24,11 +24,19 @@ export class TaskService {
   public getAllTasks(
     params: TaskPaginationParams = {},
   ): Observable<ApiResponse<GroupedTasksResponse>> {
-    const httpParams = new HttpParams()
+    let httpParams = new HttpParams()
       .set('pendingPage', (params.pendingPage ?? 0).toString())
       .set('pendingSize', (params.pendingSize ?? 10).toString())
       .set('completedPage', (params.completedPage ?? 0).toString())
       .set('completedSize', (params.completedSize ?? 10).toString());
+
+    if (params.skillName) {
+      httpParams = httpParams.set('skillName', params.skillName);
+    }
+
+    if (params.completedPeriod) {
+      httpParams = httpParams.set('completedPeriod', params.completedPeriod);
+    }
 
     return this.apiService
       .get<
