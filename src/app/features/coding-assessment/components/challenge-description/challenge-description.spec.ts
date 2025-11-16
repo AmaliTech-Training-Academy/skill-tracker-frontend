@@ -1,33 +1,54 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
 import { ChallengeDescription } from './challenge-description';
-import { CodingTask } from '@app/core/models/tasks-model';
+import { Task, TaskType, TaskContentType, TaskDifficulty } from '@app/core/models/tasks-model';
+import { signal } from '@angular/core';
 
 describe('ChallengeDescription', () => {
   let component: ChallengeDescription;
   let fixture: ComponentFixture<ChallengeDescription>;
 
-  const mockTask: CodingTask = {
+  const mockTask: Task = {
     id: 't1',
     title: 'Test Task',
     description: 'Test description',
-    examples: [
-      {
-        input: 'test input',
-        output: 'test output',
-        explanation: 'test explanation',
+    type: TaskType.CODING,
+    difficulty: TaskDifficulty.BEGINNER,
+    content: {
+      contentType: TaskContentType.CODING,
+      prompt: 'Test prompt',
+      examples: [
+        {
+          input: 'test input',
+          output: 'test output',
+          explanation: 'test explanation',
+        },
+      ],
+      constraints: 'Test constraints',
+      starterCode: 'console.log("test");',
+      testCases: [],
+      evaluationCriteria: {
+        correctness: [],
+        efficiency: [],
+        style: [],
       },
-    ],
-    skill: 'JavaScript',
-    difficulty: 'Beginner',
+      hints: [],
+    },
+    xpReward: 50,
     estimatedDuration: 15,
-    starterCode: 'console.log("test");',
-    language: 'JavaScript',
-    xp: 50,
+    skillName: 'JavaScript',
+    version: 1,
+  };
+
+  const mockStore = {
+    selectSignal: jest.fn().mockReturnValue(signal('15:00')),
+    dispatch: jest.fn(),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ChallengeDescription],
+      providers: [{ provide: Store, useValue: mockStore }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChallengeDescription);
@@ -40,8 +61,8 @@ describe('ChallengeDescription', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display formatted estimated time', () => {
-    expect(component.estimatedTime()).toBe('15:00');
+  it('should display formatted time', () => {
+    expect(component.displayTime()).toBe('15:00');
   });
 
   it('should emit startTask when onStartClick is called', () => {
