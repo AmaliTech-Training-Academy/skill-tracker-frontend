@@ -3,7 +3,7 @@
   <app-task-list
     [todayTasks]="todayTasks()"
     [previousTasks]="previousTasks()"
-    [selectedTimeRange]="selectedTimeRange()"
+    [selectedTimeRange]="selectedTimeRangeString"
     (timeRangeChanged)="onTimeRangeChanged($event)"
     (startTask)="onStartTask($event)"
   />
