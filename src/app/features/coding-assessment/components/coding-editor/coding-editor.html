@@ -1,0 +1,25 @@
+<div class="editor-container">
+  <div class="editor-header">
+    <p class="editor-title">Code Editor</p>
+    <div class="language-selector">
+      <span class="language-name">{{ language() | titlecase }}</span>
+      <img src="assets/caret-down-white.png" alt="Arrow down icon" class="chevron-icon" />
+    </div>
+    <div class="timer mobile-only">
+      {{ timerDisplay() }}
+      <img src="assets/clock.png" alt="Timer icon" class="timer-icon" />
+    </div>
+    <button class="run-button desktop-only" (click)="onRunCode()">
+      <img src="assets/play.png" alt="Play icon" class="play-icon" />
+      Run Code
+    </button>
+  </div>
+
+  <ngx-monaco-editor
+    class="code-editor"
+    [options]="editorOptions()"
+    [ngModel]="codeContent()"
+    (onInit)="onEditorInit($event)"
+    (ngModelChange)="onCodeChange($event)"
+  />
+</div>
