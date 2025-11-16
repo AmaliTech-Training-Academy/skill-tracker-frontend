@@ -15,6 +15,7 @@ import {
   TaskDifficulty,
   TaskContentType,
   CodingTaskContent,
+  CompletedPeriod,
 } from '../../../core/models/tasks-model';
 
 describe('TaskService', () => {
@@ -155,6 +156,7 @@ describe('TaskService', () => {
         pendingSize: 5,
         completedPage: 2,
         completedSize: 15,
+        skillName: 'JavaScript',
       };
       apiService.get.mockReturnValue(of(mockGroupedTasksResponse));
 
@@ -164,7 +166,45 @@ describe('TaskService', () => {
         .set('pendingPage', '1')
         .set('pendingSize', '5')
         .set('completedPage', '2')
-        .set('completedSize', '15');
+        .set('completedSize', '15')
+        .set('skillName', 'JavaScript');
+
+      expect(apiService.get).toHaveBeenCalledWith(APP_CONSTANTS.API_ENDPOINTS.MY_TASKS, {
+        params: expectedParams,
+      });
+    });
+
+    it('should include completedPeriod when provided', () => {
+      const params: TaskPaginationParams = {
+        completedPeriod: CompletedPeriod.TODAY,
+      };
+      apiService.get.mockReturnValue(of(mockGroupedTasksResponse));
+
+      service.getAllTasks(params).subscribe();
+
+      const expectedParams = new HttpParams()
+        .set('pendingPage', '0')
+        .set('pendingSize', '10')
+        .set('completedPage', '0')
+        .set('completedSize', '10')
+        .set('completedPeriod', CompletedPeriod.TODAY);
+
+      expect(apiService.get).toHaveBeenCalledWith(APP_CONSTANTS.API_ENDPOINTS.MY_TASKS, {
+        params: expectedParams,
+      });
+    });
+
+    it('should not include optional parameters when not provided', () => {
+      const params: TaskPaginationParams = {};
+      apiService.get.mockReturnValue(of(mockGroupedTasksResponse));
+
+      service.getAllTasks(params).subscribe();
+
+      const expectedParams = new HttpParams()
+        .set('pendingPage', '0')
+        .set('pendingSize', '10')
+        .set('completedPage', '0')
+        .set('completedSize', '10');
 
       expect(apiService.get).toHaveBeenCalledWith(APP_CONSTANTS.API_ENDPOINTS.MY_TASKS, {
         params: expectedParams,
@@ -311,6 +351,81 @@ describe('TaskService', () => {
           done();
         },
       });
+    });
+  });
+
+  describe('createTimerStream', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('should create timer stream with correct initial value', (done) => {
+      const durationMinutes = 1;
+      const timerStream = service.createTimerStream(durationMinutes);
+
+      timerStream.subscribe((timer) => {
+        expect(timer.remainingSeconds).toBe(59);
+        expect(timer.expired).toBe(false);
+        done();
+      });
+
+      jest.advanceTimersByTime(1000);
+    });
+
+    it('should countdown correctly', (done) => {
+      const durationMinutes = 0.05;
+      const timerStream = service.createTimerStream(durationMinutes);
+      const results: { remainingSeconds: number; expired: boolean }[] = [];
+
+      timerStream.subscribe({
+        next: (timer) => results.push(timer),
+        complete: () => {
+          expect(results).toHaveLength(4);
+          expect(results[0]).toEqual({ remainingSeconds: 2, expired: false });
+          expect(results[3]).toEqual({ remainingSeconds: 0, expired: true });
+          done();
+        },
+      });
+
+      jest.advanceTimersByTime(4000);
+    });
+
+    it('should handle zero duration', (done) => {
+      const durationMinutes = 0;
+      const timerStream = service.createTimerStream(durationMinutes);
+
+      timerStream.subscribe((timer) => {
+        expect(timer.remainingSeconds).toBe(0);
+        expect(timer.expired).toBe(true);
+        done();
+      });
+
+      jest.advanceTimersByTime(1000);
+    });
+
+    it('should not go below zero seconds', (done) => {
+      const durationMinutes = 0.017;
+      const timerStream = service.createTimerStream(durationMinutes);
+      const results: { remainingSeconds: number; expired: boolean }[] = [];
+
+      timerStream.subscribe({
+        next: (timer) => {
+          results.push(timer);
+          expect(timer.remainingSeconds).toBeGreaterThanOrEqual(0);
+        },
+        complete: () => {
+          const lastResult = results[results.length - 1];
+          expect(lastResult.remainingSeconds).toBe(0);
+          expect(lastResult.expired).toBe(true);
+          done();
+        },
+      });
+
+      jest.advanceTimersByTime(3000);
     });
   });
 });

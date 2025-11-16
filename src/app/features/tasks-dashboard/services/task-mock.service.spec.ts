@@ -140,4 +140,25 @@ describe('TaskMockService', () => {
       });
     });
   });
+
+  describe('getTaskById', () => {
+    it('should return task by id', (done) => {
+      service.getTaskById('t1').subscribe((response) => {
+        expect(response.success).toBe(true);
+        expect(response.message).toBe('Task retrieved successfully');
+        expect(response.data.id).toBe('t1');
+        expect(response.data.title).toBe('Fix The Print Statement');
+        done();
+      });
+    });
+
+    it('should return error for non-existent task', (done) => {
+      service.getTaskById('non-existent').subscribe({
+        error: (error) => {
+          expect(error.message).toBe('Task not found');
+          done();
+        },
+      });
+    });
+  });
 });
