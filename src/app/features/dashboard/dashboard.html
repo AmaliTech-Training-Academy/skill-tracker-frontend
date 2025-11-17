@@ -1,67 +1,33 @@
-<header class="dashboard-header">
-  <h1>Welcome, Aba 👋</h1>
-  <p>Track your progress and continue developing your skill</p>
-</header>
-<section class="stats-grid">
-  <app-stat-card title="Current Streak" [value]="4 + ' days'" [iconName]="'flame'" />
-  <app-stat-card title="Task Completed" [value]="2" iconName="clipboard-check" />
-  <app-stat-card title="Skills In Progress" [value]="1" iconName="brain-circuit" />
-</section>
-<main class="dashboard-content">
-  <section class="recommended-tasks">
-    <div class="section-header">
-      <h2>Recommended Tasks</h2>
-      <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
-    </div>
-    <div class="tasks-list">
-      @for (task of tasks; track task.id) {
-        <app-tasks-card [task]="task" />
-      }
-    </div>
-  </section>
-  <section class="progress-overview">
-    <div class="section-header">
-      <div class="header-title">
-        <h2>Your Progress</h2>
-        <span>Level 1</span>
-      </div>
-      <div class="filters">
-        <div class="skill-filter">
-          <p>Skill:</p>
-          <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
-        </div>
+<app-dashboard-header-component [username]="getUserName()" />
 
-        <div class="period-filter">
-          <p>View:</p>
-
-          <div class="button-group" role="group">
-            <button [class.active]="selectedPeriod() === 'weekly'" (click)="selectPeriod('weekly')">
-              Weekly
-            </button>
-            <button
-              [class.active]="selectedPeriod() === 'monthly'"
-              (click)="selectPeriod('monthly')"
-            >
-              Monthly
-            </button>
-            <button [class.active]="selectedPeriod() === 'yearly'" (click)="selectPeriod('yearly')">
-              Yearly
-            </button>
-          </div>
-
-          <app-custom-dropdown [options]="['Weekly', 'Monthly', 'Yearly']" selectedValue="Weekly" />
-        </div>
-      </div>
-    </div>
-
-    @if (primarySkillProgress; as firstSkill) {
-      <app-progress-bar
-        [currentXp]="firstSkill.currentXp"
-        [totalXp]="firstSkill.currentLevelTotalXp"
-        [levelName]="firstSkill.nextLevel"
-      ></app-progress-bar>
-    }
-
-    <app-progress-chart [data]="data.progressChartData.weekly" />
-  </section>
-</main>
+<div class="dashboard-container">
+  @if (isDashboardAnalyticsLoading()) {
+    <app-stats-card-skeleton />
+  } @else if (isDashboardAnalyticsError(); as err) {
+    <app-dashboard-error-component
+      [title]="'Could not load Dashboard Analytics data'"
+      [message]="err.message"
+      (onRetry)="ngOnInit()"
+    />
+  } @else {
+    <app-dashboard-stats-container
+      [userStats]="userStats()"
+      [skillsInProgressCount]="skillsInProgressCount()"
+    />
+  }
+  <main class="dashboard-content">
+    <app-dashboard-recommended-tasks
+      [recommendations]="recommendedTasks()"
+      [isRecommendedTasksLoading]="isRecommendedTasksLoading()"
+      [recommendedTasksError]="selectRecommendedTasksError()"
+    />
+    <app-dashboard-progress-overview-component
+      [primarySkillProgress]="primarySkillProgress()"
+      [progressChartData]="data.progressChartData.weekly"
+      [selectedPeriod]="selectedPeriod()"
+      [isDashboardAnalyticsError]="isDashboardAnalyticsError()"
+      [isDashboardAnalyticsLoading]="isDashboardAnalyticsLoading()"
+      (selectPeriod)="selectPeriod($event)"
+    />
+  </main>
+</div>

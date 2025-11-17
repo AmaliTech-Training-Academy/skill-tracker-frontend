@@ -1,47 +1,59 @@
-import { ChangeDetectionStrategy, Component, AfterViewInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, AfterViewInit, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StepOptions } from 'shepherd.js';
 import { ShepherdService } from 'angular-shepherd';
 import { Store } from '@ngrx/store';
-import { AppState } from '@app/store/app.state';
-import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { LucideAngularModule } from 'lucide-angular';
 
 import { getSteps as defaultSteps, defaultStepOptions } from './dashboard.config';
-import { TourGuide } from '@app/core';
-import { StatCard, ProgressBar, ProgressChart } from '@app/shared';
-import { TasksCard } from '../tasks-dashboard/components/tasks-card/tasks-card';
-import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
+
+import { AppState } from '@app/store/app.state';
 import {
-  TaskDifficulty,
-  TaskIcon,
-  TaskStatus,
-  TaskUI,
-  TaskType,
-  TaskContentType,
-} from '@app/core/models/tasks-model';
+  loadDashboardAnalytics,
+  loadRecommendedTasks,
+} from '@app/store/dashboard/dashboard.actions';
+import {
+  selectIsDashboardAnalyticsLoading,
+  selectDashboardAnalyticsError,
+  selectUserStats,
+  selectSkillsInProgressCount,
+  selectPrimarySkillProgress,
+  selectRecommendedTasks,
+  selectIsRecommendedTasksLoading,
+  selectRecommendedTasksError,
+} from '@app/store/dashboard/dashboard.selectors';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+
+import {
+  DashboardErrorComponent,
+  DashboardHeaderComponent,
+  DashboardStatsContainer,
+  DashboardRecommendedTasks,
+  StatsCardSkeleton,
+  DashboardProgressOverviewComponent,
+} from '@app/features/dashboard';
+import { TourGuide } from '@app/core';
 
 @Component({
   standalone: true,
   selector: 'app-dashboard',
-  imports: [StatCard, ProgressBar, ProgressChart, TasksCard, CustomDropdown],
+  imports: [
+    DashboardErrorComponent,
+    DashboardHeaderComponent,
+    DashboardProgressOverviewComponent,
+    LucideAngularModule,
+    DashboardStatsContainer,
+    DashboardRecommendedTasks,
+    StatsCardSkeleton,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard implements AfterViewInit {
+export class Dashboard implements OnInit, AfterViewInit {
   private user = this.store.selectSignal(selectCurrentUser);
-  public primarySkillProgress = {
-    skillId: 'temp-id-1',
-    skillName: 'HTML',
-    averageScore: 0,
-    proficiency: 0,
-    tasksCompleted: 2,
-    currentXp: 500,
-    currentLevel: 'Level 1',
-    nextLevel: 'Level 2',
-    xpToNextLevel: 4970,
-    currentLevelTotalXp: 5000,
-  };
+  public selectedPeriod = signal('weekly');
+
   public data = {
     progressChartData: {
       weekly: [
@@ -55,62 +67,26 @@ export class Dashboard implements AfterViewInit {
       ],
     },
   };
-  public tasks: TaskUI[] = [
-    {
-      id: 't1',
-      title: 'Fix The Print Statement',
-      description: 'Debug and fix the print statement syntax error.',
-      type: TaskType.CODING,
-      difficulty: TaskDifficulty.BEGINNER,
-      content: {
-        contentType: TaskContentType.CODING,
-        prompt: 'Fix the print statement in the given Python code.',
-        hints: ['Check for missing quotes'],
-        examples: [],
-        constraints: 'Use Python 3 syntax',
-        starterCode: 'print(Hello World)',
-        testCases: [],
-        evaluationCriteria: { correctness: [], efficiency: [], style: [] },
-      },
-      xpReward: 50,
-      estimatedDuration: 15,
-      skillName: 'HTML',
-      version: 1,
-      icon: TaskIcon.ABC,
-      status: TaskStatus.PENDING,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 't2',
-      title: 'Concept Explanation',
-      description: 'Explain a key concept in your own words.',
-      type: TaskType.ESSAY,
-      difficulty: TaskDifficulty.BEGINNER,
-      content: {
-        contentType: TaskContentType.ESSAY,
-        prompt: 'Explain the concept of data structures.',
-        hints: ['Think about organization'],
-        wordLimit: 500,
-        guidelines: ['Be clear and concise'],
-        rubric: ['Clarity', 'Accuracy'],
-      },
-      xpReward: 100,
-      estimatedDuration: 15,
-      skillName: 'Data Structures',
-      version: 1,
-      icon: TaskIcon.PENCIL,
-      status: TaskStatus.PENDING,
-      createdAt: new Date().toISOString(),
-    },
-  ];
 
-  public selectedPeriod = signal('weekly');
+  public isDashboardAnalyticsLoading = this.store.selectSignal(selectIsDashboardAnalyticsLoading);
+  public isDashboardAnalyticsError = this.store.selectSignal(selectDashboardAnalyticsError);
+  public userStats = this.store.selectSignal(selectUserStats);
+  public skillsInProgressCount = this.store.selectSignal(selectSkillsInProgressCount);
+  public primarySkillProgress = this.store.selectSignal(selectPrimarySkillProgress);
+  public recommendedTasks = this.store.selectSignal(selectRecommendedTasks);
+  public isRecommendedTasksLoading = this.store.selectSignal(selectIsRecommendedTasksLoading);
+  public selectRecommendedTasksError = this.store.selectSignal(selectRecommendedTasksError);
 
   constructor(
     private shepherdService: ShepherdService,
     private store: Store<AppState>,
     private router: Router,
   ) {}
+
+  ngOnInit() {
+    this.store.dispatch(loadDashboardAnalytics());
+    this.store.dispatch(loadRecommendedTasks());
+  }
 
   ngAfterViewInit() {
     if (!this.shepherdService.isActive && this.user()?.tourStatus === TourGuide.IN_PROGRESS) {
@@ -129,5 +105,9 @@ export class Dashboard implements AfterViewInit {
 
   public selectPeriod(period: string): void {
     this.selectedPeriod.set(period);
+  }
+
+  public getUserName(): string {
+    return this.user()?.username || '';
   }
 }
