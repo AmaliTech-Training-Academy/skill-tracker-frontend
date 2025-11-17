@@ -17,6 +17,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { selectResetToken } from '@app/store/auth/auth.selectors';
+
 import { ToastService } from '@app/core';
 
 import { InputFieldComponent } from '../../shared/input-field/input-field';
@@ -45,6 +47,8 @@ export class ResetPassword implements OnInit, OnDestroy {
   public resetSuccess = this.store.selectSignal(selectResetPasswordSuccess);
 
   public passwordValue = signal('');
+  public resetTokenSignal = this.store.selectSignal(selectResetToken);
+
   private resetToken: string | null = null;
   private destroy$ = new Subject<void>();
 

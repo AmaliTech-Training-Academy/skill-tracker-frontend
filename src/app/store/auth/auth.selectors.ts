@@ -1,5 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AuthState } from './auth.state';
+import { RouterReducerState } from '@ngrx/router-store';
+
+
+export const selectRouter = createFeatureSelector<RouterReducerState>('router');
 
 export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
@@ -92,3 +96,12 @@ export const selectIsLoggingOut = createSelector(
   selectAuthState,
   (state: AuthState) => state.isLoggingOut,
 );
+export const selectQueryParams = createSelector(
+  selectRouter,
+  (routerState) => routerState.state?.root?.queryParams ?? {}
+);
+export const selectResetToken = createSelector(
+  selectQueryParams,
+  (params) => params['token'] ?? null
+);
+
