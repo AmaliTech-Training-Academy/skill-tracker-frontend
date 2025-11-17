@@ -41,7 +41,7 @@ export class EmailVerification implements OnInit, OnDestroy {
   ) {}
 
   public isSubmitting = this.store.selectSignal(selectIsVerifying);
-  private userEmail = this.store.selectSignal(selectUserEmail);
+  public userEmail = this.store.selectSignal(selectUserEmail);
   public formValid = signal(false);
   public timeLeft = signal(VERIFICATION_TIME_SEC);
   public canResend = signal(false);
