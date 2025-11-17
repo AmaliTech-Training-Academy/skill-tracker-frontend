@@ -77,9 +77,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/tasks-dashboard/tasks-dashboard').then((c) => c.TasksDashboard),
          
-           children:[
-          { path: 'multiple-choice/:id', loadComponent: () => import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice)}
-        ]
       },
       {
         path: 'tasks/coding-assessment',
@@ -87,7 +84,7 @@ export const routes: Routes = [
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
       {
-        path: 'tasks/multiple-choice',
+        path: 'tasks/multiple-choice/:id',
         loadComponent: () =>
           import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
       },

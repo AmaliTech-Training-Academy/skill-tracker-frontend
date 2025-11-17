@@ -19,6 +19,16 @@ import {
   selectMcqError} from '@app/store/mcqs/mcq.selectors';
 import { AsyncPipe, CommonModule } from '@angular/common';
 
+interface QuizProgress {
+  questions: McqQuestion[];
+  currentQuestionIndex: number;
+  selectedAnswers: (number | null)[];
+  timeLeft: number;
+  totalTimeInSeconds: number;
+  isQuizComplete: boolean;
+  timestamp: number;
+}
+
 @Component({
   selector: 'app-multiple-choice',
   standalone: true, 
@@ -30,6 +40,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 export class MultipleChoice implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly STORAGE_KEY = 'mcq_quiz_progress';
   
   private destroy$ = new Subject<void>();
 
@@ -46,7 +57,13 @@ export class MultipleChoice implements OnInit, OnDestroy {
   public timerInterval: any;
 
   ngOnInit(): void {
-    this.dispatchQuizRequest();
+    // Try to restore previous progress first
+    const restored = this.restoreProgress();
+    
+    if (!restored) {
+      // No saved progress, dispatch new quiz request
+      this.dispatchQuizRequest();
+    }
 
     combineLatest([
         this.questions$,
@@ -61,14 +78,16 @@ export class MultipleChoice implements OnInit, OnDestroy {
           takeUntil(this.destroy$),
         )
         .subscribe(({ questions, totalTime, error }) => {
-          if (questions && questions.length > 0) {
+          if (questions && questions.length > 0 && !restored) {
             this.questions = questions as McqQuestion[];
             this.totalTimeInSeconds = totalTime || 0; 
             this.timeLeft = this.totalTimeInSeconds;
             this.selectedAnswers = new Array(this.questions.length).fill(null);
+            this.saveProgress();
             this.startTimer();
           } else if (error) {
              console.error('Quiz failed to load:', error);
+             this.clearProgress();
           }
           this.cdr.detectChanges(); 
         });
@@ -89,8 +108,69 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
+    // Save progress on component destroy
+    if (!this.isQuizComplete) {
+      this.saveProgress();
+    }
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private saveProgress(): void {
+    if (this.questions.length === 0) return;
+    
+    const progress: QuizProgress = {
+      questions: this.questions,
+      currentQuestionIndex: this.currentQuestionIndex,
+      selectedAnswers: this.selectedAnswers,
+      timeLeft: this.timeLeft,
+      totalTimeInSeconds: this.totalTimeInSeconds,
+      isQuizComplete: this.isQuizComplete,
+      timestamp: Date.now()
+    };
+    
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(progress));
+    } catch (error) {
+      console.error('Failed to save quiz progress:', error);
+    }
+  }
+
+  private restoreProgress(): boolean {
+    try {
+      const savedData = localStorage.getItem(this.STORAGE_KEY);
+      if (!savedData) return false;
+      
+      const progress: QuizProgress = JSON.parse(savedData);
+      
+      // Restore all state
+      this.questions = progress.questions;
+      this.currentQuestionIndex = progress.currentQuestionIndex;
+      this.selectedAnswers = progress.selectedAnswers;
+      this.timeLeft = progress.timeLeft;
+      this.totalTimeInSeconds = progress.totalTimeInSeconds;
+      this.isQuizComplete = progress.isQuizComplete;
+      
+      // Only start timer if quiz is not complete and there's time left
+      if (!this.isQuizComplete && this.timeLeft > 0) {
+        this.startTimer();
+      }
+      
+      this.cdr.detectChanges();
+      return true;
+    } catch (error) {
+      console.error('Failed to restore quiz progress:', error);
+      this.clearProgress();
+      return false;
+    }
+  }
+
+  private clearProgress(): void {
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+    } catch (error) {
+      console.error('Failed to clear quiz progress:', error);
+    }
   }
 
   private startTimer(): void {
@@ -102,6 +182,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0 && !this.isQuizComplete) {
         this.timeLeft--;
+        this.saveProgress(); // Save on every tick
         this.cdr.detectChanges(); 
       } else if (this.timeLeft === 0 && !this.isQuizComplete) {
         this.completeQuiz();
@@ -146,6 +227,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
   public selectOption(optionIndex: number): void {
     if (!this.isQuizComplete) {
       this.selectedAnswers[this.currentQuestionIndex] = optionIndex;
+      this.saveProgress();
       this.cdr.markForCheck(); 
     }
   }
@@ -162,6 +244,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (!this.isQuizComplete) {
       if (this.currentQuestionIndex < this.questions.length - 1) {
         this.currentQuestionIndex++;
+        this.saveProgress();
       } else if (
         this.currentQuestionIndex === this.questions.length - 1 &&
         this.selectedAnswers[this.currentQuestionIndex] !== null
@@ -171,8 +254,10 @@ export class MultipleChoice implements OnInit, OnDestroy {
     } else {
       if (this.currentQuestionIndex < this.questions.length) {
         this.currentQuestionIndex++;
+        this.saveProgress();
       } else {
         this.currentQuestionIndex = 0;
+        this.saveProgress();
       }
     }
     this.cdr.markForCheck(); 
@@ -181,6 +266,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
   public previousQuestion(): void {
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
+      this.saveProgress();
     }
     this.cdr.markForCheck(); 
   }
@@ -202,8 +288,25 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
-    this.currentQuestionIndex = this.questions.length; 
+    this.currentQuestionIndex = this.questions.length;
+    this.saveProgress();
+    // Clear progress after completion (optional - remove if you want to keep it)
+    // this.clearProgress();
     this.cdr.markForCheck(); 
+  }
+
+  public resetQuiz(): void {
+    this.clearProgress();
+    this.currentQuestionIndex = 0;
+    this.selectedAnswers = [];
+    this.isQuizComplete = false;
+    this.timeLeft = 0;
+    this.questions = [];
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    this.dispatchQuizRequest();
+    this.cdr.markForCheck();
   }
 
   public get score(): number {
