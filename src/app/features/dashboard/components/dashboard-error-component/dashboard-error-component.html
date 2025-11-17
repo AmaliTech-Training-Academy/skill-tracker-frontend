@@ -1,0 +1,12 @@
+<div class="error">
+  <div class="error-container">
+    <div class="error-icon">
+      <app-icon name="circle-alert" [size]="24" />
+    </div>
+    <div class="error-content">
+      <h2>{{ title }}</h2>
+      <p>{{ message }}</p>
+      <button class="error-button" (click)="onRetryClick()">Try Again</button>
+    </div>
+  </div>
+</div>
