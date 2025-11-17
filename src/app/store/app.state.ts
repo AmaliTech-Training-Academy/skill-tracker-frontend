@@ -7,6 +7,8 @@ import { tasksReducer } from './tasks/tasks.reducer';
 import { uiReducer } from './ui';
 import { authReducer } from './auth/auth.reducer';
 import { dashboardReducer } from './dashboard/dashboard.reducer';
+import { onboardingReducer } from './onboarding/onboarding.reducer';
+import { OnboardingState } from './onboarding/onboarding.state';
 
 export interface AppState {
   auth: AuthState;
@@ -14,6 +16,7 @@ export interface AppState {
   user: UserState;
   tasks: TasksState;
   dashboard: DashboardState;
+  onboarding: OnboardingState;
 }
 
 export const appState = {
@@ -21,4 +24,5 @@ export const appState = {
   auth: authReducer,
   tasks: tasksReducer,
   dashboard: dashboardReducer,
+  onboarding: onboardingReducer,
 };

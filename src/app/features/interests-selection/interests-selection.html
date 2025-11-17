@@ -8,11 +8,11 @@
       </p>
     </header>
     <div class="interests-selection">
-      @for (badge of badges; track badge.id) {
+      @for (badge of badges(); track badge.id) {
         <app-interests-chip
-          [label]="badge.label"
-          [icon]="badge.icon"
-          [selected]="selectedBadges.includes(badge.id)"
+          [label]="badge.name"
+          [icon]="badge.iconUrl"
+          [selected]="selectedBadges().includes(badge.id)"
           (chipSelect)="toggleBadge(badge.id)"
         />
       }

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, signal, WritableSignal } from '@angular/core';
 import { InterestsChipComponent } from '@app/shared/compomonents/interests-chip/interests-chip';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -6,7 +6,8 @@ import { Store } from '@ngrx/store';
 import { OnboardingDataService, APP_CONSTANTS } from '@app/core';
 import { AppState } from '@app/store/app.state';
 import { completeOnboarding } from '@app/store/auth/auth.actions';
-import { SkillsService, Skill } from './interests.service';
+import { getSkills } from '@app/store/onboarding/onboarding.actions';
+import { selectSkills } from '@app/store/onboarding/onboarding.selectors';
 
 @Component({
   selector: 'app-interests-selection',
@@ -16,34 +17,29 @@ import { SkillsService, Skill } from './interests.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InterestsSelection implements OnInit {
-  public selectedBadges: string[] = [];
-  public badges: Skill[] = [];
+  public selectedBadges: WritableSignal<string[]> = signal([]);
+  public badges = this.store.selectSignal(selectSkills);
 
   constructor(
-    private skillsService: SkillsService,
     private router: Router,
     private store: Store<AppState>,
     private onboardingDataService: OnboardingDataService,
   ) {}
 
   ngOnInit(): void {
-    this.loadSkills();
-  }
-
-  private loadSkills(): void {
-    this.badges = this.skillsService.getSkills();
+    this.store.dispatch(getSkills());
   }
 
   public toggleBadge(id: string): void {
-    if (this.selectedBadges.includes(id)) {
-      this.selectedBadges = this.selectedBadges.filter((badge) => badge !== id);
+    if (this.selectedBadges().includes(id)) {
+      this.selectedBadges.update((values) => values.filter((badge) => badge !== id));
     } else {
-      this.selectedBadges = [...this.selectedBadges, id];
+      this.selectedBadges.update((values) => [...values, id]);
     }
   }
 
   public onNext(): void {
-    this.onboardingDataService.setInterests(this.selectedBadges);
+    this.onboardingDataService.setInterests(this.selectedBadges());
     this.router.navigateByUrl(APP_CONSTANTS.FULL_PAGE_ROUTES.LEVEL_SELECTION);
   }
 
