@@ -32,6 +32,7 @@ import {
 } from '@app/store/auth/auth.selectors';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { APP_CONSTANTS } from '@app/core';
 
 @Component({
   selector: 'app-reset-password',
@@ -72,8 +73,8 @@ export class ResetPassword implements OnInit, OnDestroy {
     this.resetToken = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.resetToken) {
-      this.toastService.showError('Reset Error', 'Reset token is missing. Please try again.');
-      this.router.navigateByUrl('/forgot-password');
+      this.toastService.showError(APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE, APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE);
+      this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
       return;
     }
 

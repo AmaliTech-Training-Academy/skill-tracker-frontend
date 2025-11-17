@@ -32,4 +32,10 @@ export const APP_CONSTANTS = {
     GENERATE_MCQ: '/api/v1/mcq/generate',
     PROFILE: '/users/profile/me',
   },
+  APP_ERRORS: {
+   RESET_TOKEN:{
+    TITLE:'Reset Error',
+    MESSAGE:'Reset token is missing. Please try again.'
+   }
+  }
 } as const;
