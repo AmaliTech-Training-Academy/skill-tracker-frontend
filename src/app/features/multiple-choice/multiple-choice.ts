@@ -143,6 +143,12 @@ export class MultipleChoice implements OnInit, OnDestroy {
       
       const progress: QuizProgress = JSON.parse(savedData);
       
+      // If the quiz was already completed, clear progress and start fresh
+      if (progress.isQuizComplete) {
+        this.clearProgress();
+        return false;
+      }
+      
       // Restore all state
       this.questions = progress.questions;
       this.currentQuestionIndex = progress.currentQuestionIndex;
@@ -290,8 +296,10 @@ export class MultipleChoice implements OnInit, OnDestroy {
     }
     this.currentQuestionIndex = this.questions.length;
     this.saveProgress();
-    // Clear progress after completion (optional - remove if you want to keep it)
-    // this.clearProgress();
+    // Clear progress immediately after completion so refresh starts fresh
+    setTimeout(() => {
+      this.clearProgress();
+    }, 100);
     this.cdr.markForCheck(); 
   }
 
