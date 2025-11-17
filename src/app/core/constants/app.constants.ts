@@ -31,5 +31,8 @@ export const APP_CONSTANTS = {
     RESET_PASSWORD: '/auth/password/reset',
     GENERATE_MCQ: '/api/v1/mcq/generate',
     PROFILE: '/users/profile/me',
+    DASHBOARD_ANALYTICS: '/analytics/dashboard',
+    DASHBOARD_RECOMMENDED_TASKS: '/tasks',
+    DASHBOARD_TRAJECTORY: '/analytics/dashboard/trajectory/{skillId}',
   },
 } as const;
