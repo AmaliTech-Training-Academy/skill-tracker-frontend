@@ -1,0 +1,17 @@
+<section class="stats-grid">
+  <app-stat-card
+    title="Current Streak"
+    [value]="(userStats?.currentStreakInDays ?? 0) + ' days'"
+    [iconName]="'flame'"
+  />
+  <app-stat-card
+    title="Task Completed"
+    [value]="userStats?.totalTasksCompleted ?? 0"
+    iconName="clipboard-check"
+  />
+  <app-stat-card
+    title="Skills In Progress"
+    [value]="skillsInProgressCount"
+    iconName="brain-circuit"
+  />
+</section>
