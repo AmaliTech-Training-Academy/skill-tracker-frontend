@@ -70,12 +70,12 @@ export class TasksEffects {
           takeUntil(
             this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
           ),
-          switchMap(({ remainingSeconds, expired }) => {
+          map(({ remainingSeconds, expired }) => {
             if (expired) {
               this.toastService.showWarning('Time Up!', 'Your time for this task has expired.');
-              return of(TasksActions.timerExpired());
+              return TasksActions.timerExpired();
             }
-            return of(TasksActions.updateTimer({ remainingSeconds }));
+            return TasksActions.updateTimer({ remainingSeconds });
           }),
         ),
       ),
