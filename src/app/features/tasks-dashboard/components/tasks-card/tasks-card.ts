@@ -1,17 +1,18 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { Task } from '@app/core/models/tasks-model';
+import { TaskUI } from '@app/core/models/tasks-model';
+import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
 
 @Component({
   selector: 'app-tasks-card',
   templateUrl: './tasks-card.html',
   styleUrl: './tasks-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass],
+  imports: [NgClass, CapitalizePipe],
   standalone: true,
 })
 export class TasksCard {
-  public task = input.required<Task>();
+  public task = input.required<TaskUI>();
   public startTask = output<string>();
 
   public onStartTask(): void {

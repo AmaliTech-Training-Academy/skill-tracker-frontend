@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 
 import { OnboardingDataService, APP_CONSTANTS } from '@app/core';
 import { AppState } from '@app/store/app.state';
-import { completeOnboarding } from '@app/store/auth/auth.actions';
 import { getSkills } from '@app/store/onboarding/onboarding.actions';
 import { selectSkills } from '@app/store/onboarding/onboarding.selectors';
 
@@ -41,9 +40,5 @@ export class InterestsSelection implements OnInit {
   public onNext(): void {
     this.onboardingDataService.setInterests(this.selectedBadges());
     this.router.navigateByUrl(APP_CONSTANTS.FULL_PAGE_ROUTES.LEVEL_SELECTION);
-  }
-
-  public onSkip(): void {
-    this.store.dispatch(completeOnboarding({ request: { skills: [] } }));
   }
 }
