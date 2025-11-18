@@ -43,9 +43,8 @@
   color: $brand-text;
 }
 
-a[href='/'],
-a[href^='#']:target {
-  color: $brand-text !important;
+.nav-menu a.active {
+  color: $brand-text;
   border-bottom: 1px solid $brand-text;
   padding-bottom: 4px;
 }
@@ -137,9 +136,8 @@ a[href^='#']:target {
   padding: 8px 0;
 }
 
-a[href='/'],
-a[href^='#']:target {
-  color: $brand-text !important;
+.mobile-nav-items a.active {
+  color: $brand-text;
   border-bottom: 1px solid $brand-text;
   width: 20%;
 }
