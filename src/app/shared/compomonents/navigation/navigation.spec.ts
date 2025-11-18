@@ -11,23 +11,20 @@ class MockRouter {
 
 class MockActivatedRoute {
   snapshot = {};
-  paramMap = new Subject<unknown>();
-  queryParamMap = new Subject<unknown>();
-}
-
-interface MockChangeDetectorRef {
-  markForCheck: jest.Mock;
+  paramMap = new Subject();
+  queryParamMap = new Subject();
 }
 
 describe('Navigation', () => {
   let component: Navigation;
   let fixture: ComponentFixture<Navigation>;
   let mockRouter: MockRouter;
-  let mockCdr: MockChangeDetectorRef;
+  let mockCdr: ChangeDetectorRef;
 
   beforeEach(async () => {
     mockRouter = new MockRouter();
-    const cdrMock: MockChangeDetectorRef = {
+
+    const cdrMock = {
       markForCheck: jest.fn(),
     };
 
@@ -42,7 +39,7 @@ describe('Navigation', () => {
 
     fixture = TestBed.createComponent(Navigation);
     component = fixture.componentInstance;
-    mockCdr = TestBed.inject(ChangeDetectorRef) as unknown as MockChangeDetectorRef;
+    mockCdr = TestBed.inject(ChangeDetectorRef);
   });
 
   it('should create the component', () => {
@@ -52,6 +49,7 @@ describe('Navigation', () => {
   it('should close mobile menu if navigating to a minimal route while open', () => {
     component.isMobileMenuOpen = true;
     component.ngOnInit();
+
     mockRouter.events.next(new NavigationEnd(3, '/signup', '/signup'));
     
     expect(component.showOnlyLogo).toBeTruthy();
@@ -61,6 +59,7 @@ describe('Navigation', () => {
   it('should not close mobile menu if navigating to a standard route while open', () => {
     component.isMobileMenuOpen = true;
     component.ngOnInit();
+
     mockRouter.events.next(new NavigationEnd(4, '/platform', '/platform'));
     
     expect(component.showOnlyLogo).toBeFalsy();
