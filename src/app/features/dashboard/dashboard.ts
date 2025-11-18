@@ -11,7 +11,14 @@ import { TourGuide } from '@app/core';
 import { StatCard, ProgressBar, ProgressChart } from '@app/shared';
 import { TasksCard } from '../tasks-dashboard/components/tasks-card/tasks-card';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
-import { TaskDifficulty, TaskIcon, TaskStatus } from '@app/core/models/tasks-model';
+import {
+  TaskDifficulty,
+  TaskIcon,
+  TaskStatus,
+  TaskUI,
+  TaskType,
+  TaskContentType,
+} from '@app/core/models/tasks-model';
 
 @Component({
   standalone: true,
@@ -48,28 +55,50 @@ export class Dashboard implements AfterViewInit {
       ],
     },
   };
-  public tasks = [
+  public tasks: TaskUI[] = [
     {
       id: 't1',
       title: 'Fix The Print Statement',
-      icon: TaskIcon.ABC,
-      description: 'Assess your knowledge in this skill area.',
-      skill: 'HTML',
+      description: 'Debug and fix the print statement syntax error.',
+      type: TaskType.CODING,
       difficulty: TaskDifficulty.BEGINNER,
-      xp: 0,
-      time: '15 min',
+      content: {
+        contentType: TaskContentType.CODING,
+        prompt: 'Fix the print statement in the given Python code.',
+        hints: ['Check for missing quotes'],
+        examples: [],
+        constraints: 'Use Python 3 syntax',
+        starterCode: 'print(Hello World)',
+        testCases: [],
+        evaluationCriteria: { correctness: [], efficiency: [], style: [] },
+      },
+      xpReward: 50,
+      estimatedDuration: 15,
+      skillName: 'HTML',
+      version: 1,
+      icon: TaskIcon.ABC,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
     },
     {
       id: 't2',
       title: 'Concept Explanation',
-      icon: TaskIcon.PENCIL,
       description: 'Explain a key concept in your own words.',
-      skill: 'Data Structures',
+      type: TaskType.ESSAY,
       difficulty: TaskDifficulty.BEGINNER,
-      xp: 0,
-      time: '15 min',
+      content: {
+        contentType: TaskContentType.ESSAY,
+        prompt: 'Explain the concept of data structures.',
+        hints: ['Think about organization'],
+        wordLimit: 500,
+        guidelines: ['Be clear and concise'],
+        rubric: ['Clarity', 'Accuracy'],
+      },
+      xpReward: 100,
+      estimatedDuration: 15,
+      skillName: 'Data Structures',
+      version: 1,
+      icon: TaskIcon.PENCIL,
       status: TaskStatus.PENDING,
       createdAt: new Date().toISOString(),
     },

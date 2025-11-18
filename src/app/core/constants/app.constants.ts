@@ -32,5 +32,7 @@ export const APP_CONSTANTS = {
     GENERATE_MCQ: '/api/v1/mcq/generate',
     PROFILE: '/users/profile/me',
     SKILLS: '/skills',
+    TASKS: '/tasks',
+    MY_TASKS: '/tasks/my-tasks',
   },
 } as const;

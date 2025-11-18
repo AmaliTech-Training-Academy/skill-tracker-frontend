@@ -14,6 +14,10 @@ import {
   startTask,
 } from '@app/store/tasks/tasks.actions';
 import { TaskList } from './components/task-list/task-list';
+import {
+  completedPeriodToString,
+  stringToCompletedPeriod,
+} from '@app/shared/utils/completed-period.util';
 
 @Component({
   selector: 'app-tasks-dashboard',
@@ -30,6 +34,10 @@ export class TasksDashboard implements OnInit {
   public selectedSkill = this.store.selectSignal(selectSkillFilter);
   public selectedTimeRange = this.store.selectSignal(selectTimeRangeFilter);
 
+  public get selectedTimeRangeString(): string {
+    return completedPeriodToString(this.selectedTimeRange());
+  }
+
   public ngOnInit(): void {
     this.store.dispatch(loadTasks());
   }
@@ -39,7 +47,8 @@ export class TasksDashboard implements OnInit {
   }
 
   public onTimeRangeChanged(timeRange: string): void {
-    this.store.dispatch(changeTimeRangeFilter({ timeRange }));
+    const period = stringToCompletedPeriod(timeRange);
+    this.store.dispatch(changeTimeRangeFilter({ period }));
   }
 
   public onStartTask(taskId: string): void {
