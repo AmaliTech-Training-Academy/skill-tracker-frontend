@@ -30,7 +30,8 @@ $hover-border: #d1d5db;
   margin-bottom: var(--space-md);
 }
 
-.skill-icon, .emoji-icon {
+.skill-icon,
+.emoji-icon {
   @include flex(row, center, center);
   width: 28px;
   height: 28px;
