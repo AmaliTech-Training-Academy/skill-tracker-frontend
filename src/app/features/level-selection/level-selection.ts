@@ -73,18 +73,19 @@ export class LevelSelection implements OnInit, OnDestroy {
     this.handleCompletionState();
   }
 
+  public areAllLevelsSelected = computed(() => {
+    if (!this.skills().length) {
+      return false;
+    }
+    return this.skills().every((skill) => skill.level !== null);
+  });
+
   public getSkillInfo(skillId: string): { name: string; icon: string } {
     return this.skillInfoMap().get(skillId) || { name: skillId, icon: '❓' };
   }
 
   public onLevelSelect(skill: UserSkill, newLevel: SkillLevel | null) {
     this.onboardingDataService.updateSkillLevel(skill.skillId, newLevel);
-  }
-
-  public onSkip() {
-    if (this.isSubmitting()) return;
-    const payload = this.onboardingDataService.getPayload(true);
-    this.store.dispatch(completeOnboarding({ request: payload }));
   }
 
   public onNext() {

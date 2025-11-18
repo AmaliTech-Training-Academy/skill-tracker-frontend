@@ -32,13 +32,13 @@
         <span class="divider"></span>
         <span class="detail-item">{{ difficulty }}</span>
       </div>
-      @if (status === 'Completed') {
+      @if (status === 'COMPLETED') {
         <span class="status-completed">Completed</span>
       }
     </div>
 
     <div class="action-section">
-      @if (status !== 'Completed') {
+      @if (status !== 'COMPLETED') {
         <button class="start-button" (click)="onStartTask()" role="button" aria-label="Start Task">
           Start
         </button>

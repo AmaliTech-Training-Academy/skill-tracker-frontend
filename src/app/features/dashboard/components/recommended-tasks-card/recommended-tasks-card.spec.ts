@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RecommendedTasksCard } from './recommended-tasks-card';
+import { TaskIcon } from '@app/core/models/tasks-model';
 
 describe('TasksCard', () => {
   let component: RecommendedTasksCard;
@@ -63,16 +64,15 @@ describe('TasksCard', () => {
     expect(statusCompleted).toBeFalsy();
   });
 
-  it('should show completed status for completed tasks', () => {
-    fixture.componentRef.setInput('task', { ...mockTask, status: 'Completed' });
+  it('should display correct icon for pencil type', () => {
+    const pencilTask = { ...mockTask, icon: TaskIcon.PENCIL };
+    fixture.componentRef.setInput('task', pencilTask);
     fixture.detectChanges();
 
-    const startButton = fixture.nativeElement.querySelector('.start-button');
-    const statusCompleted = fixture.nativeElement.querySelector('.status-completed');
+    const iconImg = fixture.nativeElement.querySelector('.icon-image');
 
-    expect(startButton).toBeFalsy();
-    expect(statusCompleted).toBeTruthy();
-    expect(statusCompleted.textContent).toBe('Completed');
+    expect(iconImg).toBeTruthy();
+    expect(iconImg.src).toContain('pencil.png');
   });
 
   it('should display correct icon for abc type', () => {
