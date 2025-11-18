@@ -4,100 +4,89 @@
 @use 'components' as *;
 
 .lumina-callout {
-    background: {
-        color: $brand-text;
-        image: url('/assets/lumina-bg.png');
-        repeat: no-repeat;
-        size: cover;
-        position: center;
-    }
+  background: {
+    color: $brand-text;
+    image: url('/assets/lumina-bg.png');
+    repeat: no-repeat;
+    size: cover;
+    position: center;
+  }
 
-    padding: 2.5rem 2rem;
-    overflow: hidden;
-    border-radius: 8px;
-    max-width: 1400px;
-    position: relative;
-    margin: 4rem auto 0;
+  padding: 2.5rem 2rem;
+  overflow: hidden;
+  border-radius: 8px;
+  max-width: 1400px;
+  position: relative;
+  margin: 4rem auto 0;
 
-    @include tablet {
-        padding: 5.3rem 5rem;
-    }
+  @include tablet {
+    padding: 5.3rem 5rem;
+  }
 }
 
 .callout-inner {
-    @include flex;
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
+  @include flex;
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
 
-    .content-wrapper {
-        @include flex(column, flex-start, stretch, 2.2rem);
-        text-align: left;
+  .content-wrapper {
+    @include flex(column, flex-start, stretch, 2.2rem);
+    text-align: left;
+    color: $gray-fill;
+    max-width: 240px;
+
+    @include tablet {
+      max-width: 380px;
+    }
+
+    @include desktop {
+      max-width: 560px;
+    }
+
+    @include desktop-large {
+      max-width: 700px;
+    }
+
+    .callout-title {
+      @include h10;
+
+      @include tablet {
+        @include h4;
+      }
+    }
+
+    .callout-description {
+      display: none;
+
+      @include tablet {
+        display: inline;
+        @include h13;
         color: $gray-fill;
-        max-width: 240px;
+      }
+    }
+  }
 
-        @include tablet {
-            max-width: 380px;
-        }
+  .robot-image {
+    position: absolute;
+    width: 13.7rem;
+    height: auto;
+    right: -90px;
+    bottom: -50px;
 
-        @include desktop {
-            max-width: 560px;
-        }
-
-        @include desktop-large {
-            max-width: 700px;
-        }
-
-        .callout-title {
-            @include h10;
-
-            @include tablet {
-                @include h4;
-            }
-        }
-
-        .callout-description {
-            display: none;
-
-            @include tablet {
-                display: inline;
-                @include h13;
-                color: $gray-fill;
-            }
-        }
-
-        .callout-button {
-            @include button-transparent;
-            @include button-base($border-radius: 0.25rem);
-            width: fit-content;
-
-            @include tablet {
-                @include button-base($border-radius: 0.25rem, $padding-x: 3.125rem);
-                width: fit-content;
-            }
-        }
+    @include tablet {
+      width: 26rem;
+      right: -170px;
+      bottom: -90px;
     }
 
-    .robot-image {
-        position: absolute;
-        width: 13.7rem;
-        height: auto;
-        right: -90px;
-        bottom: -50px;
-
-        @include tablet {
-            width: 26rem;
-            right: -170px;
-            bottom: -90px;
-        }
-
-        @include desktop {
-            width: 37rem;
-        }
-
-        @include desktop-large {
-            width: 40rem;
-            right: -100px;
-        }
+    @include desktop {
+      width: 37rem;
     }
+
+    @include desktop-large {
+      width: 40rem;
+      right: -100px;
+    }
+  }
 }
