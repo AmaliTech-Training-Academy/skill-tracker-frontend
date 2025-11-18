@@ -7,7 +7,7 @@
   background: $background-white;
   height: 100svh;
   padding: 16px;
-  display: flex;
+  @include flex(row);
 }
 
 .level-container {
@@ -15,8 +15,7 @@
   background-color: var(--color-white);
   width: 100%;
 
-  display: flex;
-  flex-direction: column;
+  @include flex(column);
   flex-grow: 1;
   overflow: hidden;
   box-sizing: border-box;
@@ -90,7 +89,6 @@
   }
 }
 
-/* (The .level--spinner styles are unchanged) */
 .level--spinner {
   @include flex(column, center, center);
   height: 100%;
@@ -134,20 +132,18 @@
   }
 }
 
-/* --- Tablet & Desktop --- */
 @include tablet {
   .level {
-    // On desktop, let the height be natural
     height: auto;
     min-height: 100vh;
   }
 
   .level-container {
     padding: 48px 48px;
-    height: 100%; // Let height be natural
-    max-width: 900px; // Your old max-width
-    margin: 2rem auto; // Center it
-    border-radius: 16px; // Add rounded corners on desktop
+    height: 100%;
+    max-width: 900px;
+    margin: 2rem auto;
+    border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
     border: 1px solid #e2e8f0;
     margin: auto;
@@ -162,28 +158,34 @@
   }
 
   .level-scrollable-content {
-    // On desktop, we don't need it to scroll
     overflow-y: visible;
     flex-grow: 0;
   }
 
   .level-btns {
-    @include flex(row, center, center, 16px);
+    @include flex(row, center, center, var(--space-md));
   }
 
   .level--spinner {
-    height: 60vh; // Give the spinner a fixed height
+    height: 60vh;
 
     & div.content {
       & h1 {
         @include h9;
-        margin-bottom: 24px;
+        margin-bottom: var(--space-lg);
+      }
+    }
+  }
+
+  .level-footer-content {
+    .level-btns--next {
+      &:disabled {
+        cursor: not-allowed;
       }
     }
   }
 }
 
-/* (The custom-spinner animation is unchanged) */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -199,7 +201,7 @@
   margin: 0;
 
   border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border-top-color: var(--color-white);
   border-radius: 50%;
 
   animation: spin 0.8s linear infinite;

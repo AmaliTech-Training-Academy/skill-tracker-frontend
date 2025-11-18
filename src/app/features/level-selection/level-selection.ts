@@ -88,12 +88,6 @@ export class LevelSelection implements OnInit, OnDestroy {
     this.onboardingDataService.updateSkillLevel(skill.skillId, newLevel);
   }
 
-  // public onSkip() {
-  //   if (this.isSubmitting()) return;
-  //   const payload = this.onboardingDataService.getPayload(true);
-  //   this.store.dispatch(completeOnboarding({ request: payload }));
-  // }
-
   public onNext() {
     if (this.isSubmitting()) return;
     const payload = this.onboardingDataService.getPayload(false);
