@@ -73,7 +73,7 @@ export class Signup implements OnInit, OnDestroy {
       },
       {
         key: 'hasLowercase',
-        message: 'at least 1 lowercase letter',
+        message: 'At least 1 lowercase letter',
         error: !value || !/[a-z]/.test(value),
       },
       {
