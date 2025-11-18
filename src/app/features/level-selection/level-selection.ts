@@ -74,7 +74,7 @@ export class LevelSelection implements OnInit, OnDestroy {
   }
 
   public areAllLevelsSelected = computed(() => {
-    if (this.skills().length === 0) {
+    if (!this.skills().length) {
       return false;
     }
     return this.skills().every((skill) => skill.level !== null);
