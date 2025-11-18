@@ -83,7 +83,7 @@ export class Signup implements OnInit, OnDestroy {
       },
       {
         key: 'hasSpecialChar',
-        message: 'at least 1 special character (e.g. ! , @, #, $, %, &, *)',
+        message: 'At least 1 special character (e.g. ! , @, #, $, %, &, *)',
         error: !value || !/[!@#$%&*]/.test(value),
       },
     ];
