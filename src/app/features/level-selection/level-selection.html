@@ -34,49 +34,55 @@
 } @placeholder {
   <section class="level">
     <div class="level-container">
-      <button class="back-btn" (click)="goBack()">
-        <img src="assets/left-arrow.png" alt="Navigate back" />
-        <span>The Final Step</span>
-      </button>
-
-      <header>
-        <h1>Tell us your skill level</h1>
-        <p>
-          For each topic you slected, let us know how comfortable you feel. This helps us match you
-          with the right challenges
-        </p>
-      </header>
-
-      <div class="level-selection"></div>
-      <div class="skill-list">
-        @for (skill of skills(); track skill.skillId) {
-          <app-skill-level-selector
-            [skillName]="getSkillInfo(skill.skillId).name"
-            [skillIcon]="getSkillInfo(skill.skillId).icon"
-            [selectedLevel]="skill.level"
-            [levels]="levels"
-            (levelSelected)="onLevelSelect(skill, $event)"
-          />
-        }
-
-        @if (!skills().length) {
-          <p class="empty-state">Please go back and select your interests first.</p>
-        }
-      </div>
-
-      <div class="level-btns">
-        <button class="level-btns--skip" (click)="onSkip()" [disabled]="isSubmitting()">
-          Skip
+      <div class="level-header-content">
+        <button class="back-btn" (click)="goBack()">
+          <img src="assets/left-arrow.png" alt="Navigate back" />
+          <span>The Final Step</span>
         </button>
-        <button class="level-btns--next" (click)="onNext()" [disabled]="isSubmitting()">
-          @if (isSubmitting()) {
-            <span class_comment="You'll need CSS for .spinner"></span>
-            Finishing...
-          } @else {
-            Next
+
+        <header>
+          <h1>Tell us your skill level</h1>
+          <p>
+            For each topic you slected, let us know how comfortable you feel. This helps us match
+            you with the right challenges
+          </p>
+        </header>
+      </div>
+      <div class="level-scrollable-content">
+        <div class="level-selection"></div>
+        <div class="skill-list">
+          @for (skill of skills(); track skill.skillId) {
+            <app-skill-level-selector
+              [skillName]="getSkillInfo(skill.skillId).name"
+              [skillIcon]="getSkillInfo(skill.skillId).icon"
+              [selectedLevel]="skill.level"
+              [levels]="levels"
+              (levelSelected)="onLevelSelect(skill, $event)"
+            />
           }
-        </button>
+
+          @if (!skills().length) {
+            <p class="empty-state">Please go back and select your interests first.</p>
+          }
+        </div>
       </div>
+
+      <footer class="level-footer-content">
+        <div class="level-btns">
+          <button
+            class="level-btns--next"
+            (click)="onNext()"
+            [disabled]="isSubmitting() || !areAllLevelsSelected()"
+          >
+            @if (isSubmitting()) {
+              <span class_comment="You'll need CSS for .spinner"></span>
+              Finishing...
+            } @else {
+              Next
+            }
+          </button>
+        </div>
+      </footer>
     </div>
   </section>
 }

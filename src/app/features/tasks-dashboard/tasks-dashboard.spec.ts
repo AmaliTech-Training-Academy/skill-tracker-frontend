@@ -15,24 +15,48 @@ import {
   selectFilteredPreviousTasks,
   selectTimeRangeFilter,
 } from '@app/store/tasks/tasks.selectors';
-import { Task, TaskDifficulty, TaskIcon, TaskStatus } from '@app/core/models/tasks-model';
-import { loadTasks, changeSkillFilter, startTask } from '@app/store/tasks/tasks.actions';
+import {
+  TaskUI,
+  TaskDifficulty,
+  TaskIcon,
+  TaskStatus,
+  TaskType,
+  TaskContentType,
+  CompletedPeriod,
+} from '@app/core/models/tasks-model';
+import {
+  loadTasks,
+  changeSkillFilter,
+  startTask,
+  changeTimeRangeFilter,
+} from '@app/store/tasks/tasks.actions';
 
 describe('TasksDashboard', () => {
   let component: TasksDashboard;
   let fixture: ComponentFixture<TasksDashboard>;
   let store: MockStore;
 
-  const mockTasks: Task[] = [
+  const mockTasks: TaskUI[] = [
     {
       id: 't1',
       title: 'Test Task',
-      icon: TaskIcon.ABC,
       description: 'Test description',
-      skill: 'HTML',
+      type: TaskType.CODING,
       difficulty: TaskDifficulty.BEGINNER,
-      xp: 50,
-      time: '15 min',
+      content: {
+        contentType: TaskContentType.CODING,
+        prompt: 'Test prompt',
+        examples: [],
+        constraints: 'Test constraints',
+        starterCode: 'test code',
+        testCases: [],
+        evaluationCriteria: { correctness: [], efficiency: [], style: [] },
+      },
+      xpReward: 50,
+      estimatedDuration: 15,
+      skillName: 'HTML',
+      version: 1,
+      icon: TaskIcon.ABC,
       status: TaskStatus.PENDING,
       createdAt: '2024-01-01T00:00:00Z',
     },
@@ -47,7 +71,7 @@ describe('TasksDashboard', () => {
             { selector: selectFilteredTodayTasks, value: mockTasks },
             { selector: selectFilteredPreviousTasks, value: [] },
             { selector: selectSkillFilter, value: 'All' },
-            { selector: selectTimeRangeFilter, value: 'Yesterday' },
+            { selector: selectTimeRangeFilter, value: CompletedPeriod.YESTERDAY },
           ],
         }),
       ],
@@ -74,6 +98,18 @@ describe('TasksDashboard', () => {
 
   it('should display selected skill from store', () => {
     expect(component.selectedSkill()).toBe('All');
+  });
+
+  it('should convert CompletedPeriod to string for display', () => {
+    expect(component.selectedTimeRangeString).toBe('Yesterday');
+  });
+
+  it('should dispatch changeTimeRangeFilter when time range changes', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    component.onTimeRangeChanged('Today');
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      changeTimeRangeFilter({ period: CompletedPeriod.TODAY }),
+    );
   });
 
   it('should dispatch changeSkillFilter when skill changes', () => {
