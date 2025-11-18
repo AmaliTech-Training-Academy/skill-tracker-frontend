@@ -34,17 +34,18 @@ describe('SkillLevelSelectorComponent', () => {
   });
 
   it('should set the img src and alt attributes correctly', () => {
-    let iconEl: HTMLImageElement = fixture.nativeElement.querySelector('.skill-icon');
-    expect(iconEl).not.toBeNull();
-
-    expect(iconEl.src).not.toContain('assets/test-icon.png');
-    expect(iconEl.alt).toBe('Test Skill');
+    let iconEl: HTMLElement = fixture.nativeElement.querySelector('.skill-icon');
+    expect(iconEl.tagName).toBe('SPAN');
+    expect(iconEl.classList.contains('emoji-icon')).toBe(true);
+    expect(iconEl.textContent).toContain('❓');
 
     component.skillIcon = 'assets/test-icon.png';
     fixture.detectChanges();
 
-    iconEl = fixture.nativeElement.querySelector('.skill-icon');
-    expect(iconEl.src).toContain('assets/test-icon.png');
+    const imgEl: HTMLImageElement = fixture.nativeElement.querySelector('.skill-icon');
+    expect(imgEl.tagName).toBe('IMG');
+    expect(imgEl.src).toContain('assets/test-icon.png');
+    expect(imgEl.alt).toBe('Test Skill');
   });
 
   it('should render the default levels', () => {
