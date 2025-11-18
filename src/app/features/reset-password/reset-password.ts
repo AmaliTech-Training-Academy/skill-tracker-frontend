@@ -61,7 +61,6 @@ export class ResetPassword implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private library: FaIconLibrary,
-    private route: ActivatedRoute,
     private router: Router,
     private store: Store,
     private toastService: ToastService,
@@ -73,7 +72,7 @@ export class ResetPassword implements OnInit, OnDestroy {
 
     if (!this.resetToken) {
       this.toastService.showError(APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE, APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE);
-      this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
+      // this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
       return;
     }
 
