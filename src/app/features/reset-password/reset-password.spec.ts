@@ -17,24 +17,26 @@ import {
 } from '@app/store/auth/auth.selectors';
 import { APP_CONSTANTS } from '@app/core';
 
-class MockRouter {
-  navigateByUrl = jest.fn();
+interface MockRouter {
+  navigateByUrl: jest.Mock;
 }
 
-class MockActivatedRoute {
-  snapshot = {
-    paramMap: {
-      get: jest.fn(),
-    },
+interface MockActivatedRouteSnapshot {
+  queryParamMap: {
+    get: jest.Mock;
   };
 }
 
-class MockToastService {
-  showError = jest.fn();
+interface MockActivatedRoute {
+  snapshot: MockActivatedRouteSnapshot;
 }
 
-class MockFaIconLibrary {
-  addIcons = jest.fn();
+interface MockToastService {
+  showError: jest.Mock;
+}
+
+interface MockFaIconLibrary {
+  addIcons: jest.Mock;
 }
 
 describe('ResetPassword', () => {
@@ -48,9 +50,21 @@ describe('ResetPassword', () => {
   const mockToken = 'valid-reset-token';
 
   beforeEach(async () => {
-    mockRouter = new MockRouter();
-    mockToastService = new MockToastService();
-    mockActivatedRoute = new MockActivatedRoute();
+    mockRouter = {
+      navigateByUrl: jest.fn(),
+    };
+    
+    mockToastService = {
+      showError: jest.fn(),
+    };
+    
+    mockActivatedRoute = {
+      snapshot: {
+        queryParamMap: {
+          get: jest.fn(),
+        },
+      },
+    };
 
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, ResetPassword],
@@ -59,7 +73,7 @@ describe('ResetPassword', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: ToastService, useValue: mockToastService },
-        { provide: FaIconLibrary, useValue: new MockFaIconLibrary() },
+        { provide: FaIconLibrary, useValue: { addIcons: jest.fn() } as MockFaIconLibrary },
         provideStore(),
       ],
     }).compileComponents();
@@ -67,18 +81,18 @@ describe('ResetPassword', () => {
     fixture = TestBed.createComponent(ResetPassword);
     component = fixture.componentInstance;
     mockStore = TestBed.inject(Store);
-    mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
+    mockActivatedRoute = TestBed.inject(ActivatedRoute) as unknown as MockActivatedRoute;
   });
 
   it('should create the component', () => {
-    jest.spyOn(mockActivatedRoute.snapshot.paramMap, 'get').mockReturnValue(mockToken);
+    jest.spyOn(mockActivatedRoute.snapshot.queryParamMap, 'get').mockReturnValue(mockToken);
     component.ngOnInit();
     expect(component).toBeTruthy();
   });
 
   it('should initialize form when reset token is present', () => {
-    jest.spyOn(mockActivatedRoute.snapshot.paramMap, 'get').mockReturnValue(mockToken);
-    (component as any)['resetToken'] = mockToken;
+    jest.spyOn(mockActivatedRoute.snapshot.queryParamMap, 'get').mockReturnValue(mockToken);
+    (component as unknown as { resetToken: string | null })['resetToken'] = mockToken;
     component.ngOnInit();
     expect(component.loginForm).toBeDefined();
     expect(component.loginForm.contains('password')).toBeTruthy();
@@ -88,15 +102,18 @@ describe('ResetPassword', () => {
   });
 
   it('should navigate away and show error if reset token is missing', () => {
-    jest.spyOn(mockActivatedRoute.snapshot.paramMap, 'get').mockReturnValue(null);
+    jest.spyOn(mockActivatedRoute.snapshot.queryParamMap, 'get').mockReturnValue(null);
     component.ngOnInit();
-    expect(mockToastService.showError).toHaveBeenCalledWith(APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE, APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE);
+    expect(mockToastService.showError).toHaveBeenCalledWith(
+      APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE, 
+      APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE
+    );
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
   });
 
   it('should update passwordValue signal on password input change', fakeAsync(() => {
-    jest.spyOn(mockActivatedRoute.snapshot.paramMap, 'get').mockReturnValue(mockToken);
-    (component as any)['resetToken'] = mockToken;
+    jest.spyOn(mockActivatedRoute.snapshot.queryParamMap, 'get').mockReturnValue(mockToken);
+    (component as unknown as { resetToken: string | null })['resetToken'] = mockToken;
     component.ngOnInit();
     
     component.currentPasswordControl.setValue('NewPass1!');
@@ -105,10 +122,9 @@ describe('ResetPassword', () => {
     expect(component.passwordValue()).toBe('NewPass1!');
   }));
 
-
   it('should not submit if form is invalid', () => {
-    jest.spyOn(mockActivatedRoute.snapshot.paramMap, 'get').mockReturnValue(mockToken);
-    (component as any)['resetToken'] = mockToken;
+    jest.spyOn(mockActivatedRoute.snapshot.queryParamMap, 'get').mockReturnValue(mockToken);
+    (component as unknown as { resetToken: string | null })['resetToken'] = mockToken;
     const dispatchSpy = jest.spyOn(mockStore, 'dispatch');
     component.ngOnInit();
     
@@ -122,10 +138,10 @@ describe('ResetPassword', () => {
   });
 
   it('should unsubscribe on ngOnDestroy', () => {
-    jest.spyOn(mockActivatedRoute.snapshot.paramMap, 'get').mockReturnValue(mockToken);
-    (component as any)['resetToken'] = mockToken;
+    jest.spyOn(mockActivatedRoute.snapshot.queryParamMap, 'get').mockReturnValue(mockToken);
+    (component as unknown as { resetToken: string | null })['resetToken'] = mockToken;
     component.ngOnInit();
-    const destroySubject = (component as any).destroy$;
+    const destroySubject = (component as unknown as { destroy$: Subject<void> }).destroy$;
     const nextSpy = jest.spyOn(destroySubject, 'next');
     const completeSpy = jest.spyOn(destroySubject, 'complete');
     
