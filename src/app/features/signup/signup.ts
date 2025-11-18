@@ -68,7 +68,7 @@ export class Signup implements OnInit, OnDestroy {
     return [
       {
         key: 'hasUppercase',
-        message: 'at least 1 uppercase letter',
+        message: 'At least 1 uppercase letter',
         error: !value || !/[A-Z]/.test(value),
       },
       {
