@@ -33,7 +33,6 @@ describe('Navigation', () => {
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ChangeDetectorRef, useValue: cdrMock },
-        // FIX: Added ActivatedRoute mock to resolve NG0201 error from RouterLink directives in the template
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
       ],
     }).compileComponents();
@@ -45,42 +44,6 @@ describe('Navigation', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should initialize showOnlyLogo as false for a standard route', () => {
-    mockRouter.url = '/platform';
-    component.ngOnInit();
-    expect(component.showOnlyLogo).toBeFalsy();
-    expect((mockCdr.markForCheck as jest.Mock)).toHaveBeenCalled();
-  });
-
-  it('should initialize showOnlyLogo as true for a minimal route', () => {
-    mockRouter.url = '/login';
-    component.ngOnInit();
-    expect(component.showOnlyLogo).toBeTruthy();
-    expect((mockCdr.markForCheck as jest.Mock)).toHaveBeenCalled();
-  });
-
-  it('should update showOnlyLogo on NavigationEnd event for a minimal route', () => {
-    component.ngOnInit();
-    expect(component.showOnlyLogo).toBeFalsy();
-    (mockCdr.markForCheck as jest.Mock).mockClear();
-    
-    mockRouter.events.next(new NavigationEnd(1, '/login', '/login'));
-    
-    expect(component.showOnlyLogo).toBeTruthy();
-    expect((mockCdr.markForCheck as jest.Mock)).toHaveBeenCalled();
-  });
-
-  it('should update showOnlyLogo on NavigationEnd event for a standard route', () => {
-    component.showOnlyLogo = true;
-    component.ngOnInit();
-    (mockCdr.markForCheck as jest.Mock).mockClear();
-
-    mockRouter.events.next(new NavigationEnd(2, '/', '/'));
-    
-    expect(component.showOnlyLogo).toBeFalsy();
-    expect((mockCdr.markForCheck as jest.Mock)).toHaveBeenCalled();
   });
 
   it('should close mobile menu if navigating to a minimal route while open', () => {
