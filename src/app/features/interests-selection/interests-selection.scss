@@ -37,6 +37,7 @@
 
   &-selection {
     margin-top: 48px;
+    @include flex($direction: row, $align: center);
   }
 
   &-btns {

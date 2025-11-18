@@ -23,6 +23,11 @@
     height: 18px;
   }
 
+  .emoji-icon {
+    line-height: 1;
+    font-size: 18px;
+  }
+
   &.selected {
     background-color: $brand-text;
     color: var(--color-white);
