@@ -23,7 +23,7 @@ import { APP_CONSTANTS } from '@app/core';
 import * as AuthActions from '@app/store/auth/auth.actions';
 import { selectIsVerifying, selectUserEmail } from '@app/store/auth/auth.selectors';
 
-const VERIFICATION_TIME_SEC = 30;
+const VERIFICATION_TIME_SEC = 120;
 const INTERVAL_MS = 1000;
 
 @Component({
