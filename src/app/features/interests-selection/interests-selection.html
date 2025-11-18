@@ -19,8 +19,9 @@
     </div>
 
     <div class="interests-btns">
-      <button class="interests-btns--skip" (click)="onSkip()">Skip</button>
-      <button class="interests-btns--next" (click)="onNext()">Next</button>
+      <button class="interests-btns--next" (click)="onNext()" [disabled]="!selectedBadges().length">
+        Next
+      </button>
     </div>
   </div>
 </section>
