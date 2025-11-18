@@ -78,7 +78,7 @@ export class Signup implements OnInit, OnDestroy {
       },
       {
         key: 'hasNumber',
-        message: 'at least 1 number',
+        message: 'At least 1 number',
         error: !value || !/[0-9]/.test(value),
       },
       {
