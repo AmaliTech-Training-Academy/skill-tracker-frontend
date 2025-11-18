@@ -70,7 +70,6 @@ export class ResetPassword implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.library.addIcons(faCheck, faTimes);
 
-    this.resetToken = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.resetToken) {
       this.toastService.showError(APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE, APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE);
