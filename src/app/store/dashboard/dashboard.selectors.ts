@@ -5,15 +5,15 @@ export const selectDashboardState = createFeatureSelector<DashboardState>('dashb
 
 export const selectIsDashboardAnalyticsLoading = createSelector(
   selectDashboardState,
-  (state) => state.isDashboardAnalyticsLoading,
+  ({ isDashboardAnalyticsLoading }) => isDashboardAnalyticsLoading,
 );
 
 export const selectDashboardAnalyticsError = createSelector(
   selectDashboardState,
-  (state) => state.isDashboardAnalyticsError,
+  ({ isDashboardAnalyticsError }) => isDashboardAnalyticsError,
 );
 
-export const selectDashboardData = createSelector(selectDashboardState, (state) => state.data);
+export const selectDashboardData = createSelector(selectDashboardState, ({ data }) => data);
 
 export const selectUserStats = createSelector(
   selectDashboardData,
@@ -37,30 +37,30 @@ export const selectGoalStatus = createSelector(
 
 export const selectRecommendedTasks = createSelector(
   selectDashboardState,
-  (state) => state.recommendedTasks,
+  ({ recommendedTasks }) => recommendedTasks,
 );
 
 export const selectIsRecommendedTasksLoading = createSelector(
   selectDashboardState,
-  (state) => state.isRecommendedTasksLoading,
+  ({ isRecommendedTasksLoading }) => isRecommendedTasksLoading,
 );
 
 export const selectRecommendedTasksError = createSelector(
   selectDashboardState,
-  (state) => state.isRecommendedTasksError,
+  ({ isRecommendedTasksError }) => isRecommendedTasksError,
 );
 
 export const selectTrajectoryData = createSelector(
   selectDashboardState,
-  (state) => state.trajectoryData,
+  ({ trajectoryData }) => trajectoryData,
 );
 
 export const selectIsTrajectoryLoading = createSelector(
   selectDashboardState,
-  (state) => state.isTrajectoryLoading,
+  ({ isTrajectoryLoading }) => isTrajectoryLoading,
 );
 
 export const selectTrajectoryError = createSelector(
   selectDashboardState,
-  (state) => state.isTrajectoryError,
+  ({ isTrajectoryError }) => isTrajectoryError,
 );
