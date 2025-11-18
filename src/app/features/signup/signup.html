@@ -1,82 +1,73 @@
 <div class="signup-page">
-    <main class="signup-container">
-        <div class="card">
-            <div class="card-header-text">
-                <h1 class="card-title">Create Your Free Account</h1>
-                <p class="card-subtitle">
-                    Join thousands of learners leveling up their skills with personalized
-                    challenges and real-time feedback
-                </p>
-            </div>
+  <main class="signup-container">
+    <div class="card">
+      <div class="card-header-text">
+        <h1 class="card-title">Create Your Free Account</h1>
+        <p class="card-subtitle">
+          Join thousands of learners leveling up their skills with personalized challenges and
+          real-time feedback
+        </p>
+      </div>
 
-            <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
-                <!-- Email Field -->
-                <app-input-field
-                    label="Email"
-                    type="email"
-                    id="email"
-                    placeholder="Email"
-                    [control]="getFormControl(signupForm,'email')">
-                </app-input-field>
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+        <app-input-field
+          label="Email"
+          type="email"
+          id="email"
+          placeholder="Email"
+          [control]="getFormControl(signupForm, 'email')"
+        >
+        </app-input-field>
 
-                <!-- Password Field -->
-                <app-input-field
-                    label="Password"
-                    type="password"
-                    id="password"
-                    placeholder="***********"
-                    [control]="getFormControl(signupForm,'password')"
-                    [passwordRequirements]="passwordRequirements()"
-                    [showPasswordRequirements]="true">
-                </app-input-field>
+        <app-input-field
+          label="Password"
+          type="password"
+          id="password"
+          placeholder="***********"
+          [control]="getFormControl(signupForm, 'password')"
+          [passwordRequirements]="passwordRequirements()"
+          [showPasswordRequirements]="true"
+        >
+        </app-input-field>
 
-                <!-- Confirm Password Field -->
-                <app-input-field
-                    label="Confirm Password"
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="***********"
-                    [control]="getFormControl(signupForm,'confirmPassword')"
-                    [formHasPasswordMismatch]="signupForm.hasError('passwordsMismatch')">
-                </app-input-field>
+        <app-input-field
+          label="Confirm Password"
+          type="password"
+          id="confirmPassword"
+          placeholder="***********"
+          [control]="getFormControl(signupForm, 'confirmPassword')"
+          [formHasPasswordMismatch]="signupForm.hasError('passwordsMismatch')"
+        >
+        </app-input-field>
 
-                <!-- Terms Checkbox -->
-                <div class="terms-checkbox">
-                    <input type="checkbox" id="terms" formControlName="termsAccepted" />
-                    <label for="terms">
-                        I've read <a href="#" class="link">terms and conditions</a>
-                    </label>
-                </div>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting() || signupForm.invalid">
+          @if (isSubmitting()) {
+            <span class="loader"></span> Signing Up...
+          } @else {
+            Create Account
+          }
+        </button>
+      </form>
 
-                <!-- Submit Button -->
-                <button type="submit" class="btn-primary" [disabled]="isSubmitting() || signupForm.invalid">
-                    @if (isSubmitting()) {
-                    <span class="loader"></span> Signing Up...
-                    } @else {
-                    Create Account
-                    }
-                </button>
-            </form>
-
-            <div class="footer">
-                <!-- Divider -->
-                <div class="divider">
-                    <span class="divider-text">Already have an account? <button type="button" class="link" (click)="goToLogin()">Login</button></span>
-                </div>
-                <div class="or-divider">or</div>
-
-                <!-- Social Sign-in Buttons -->
-                <div class="button-wrapper">
-                    <button class="btn-social google" (click)="signInWithGoogle()">
-                        <img src="assets/google-icon.png" alt="Google logo" class="social-icon" />
-                        <span>Sign in with Google</span>
-                    </button>
-                    <button class="btn-social github" (click)="signInWithGithub()">
-                        <img src="assets/github-icon.png" alt="Github logo" class="social-icon" />
-                        <span>Sign in with GitHub</span>
-                    </button>
-                </div>
-            </div>
+      <div class="footer">
+        <div class="divider">
+          <span class="divider-text"
+            >Already have an account?
+            <button type="button" class="link" (click)="goToLogin()">Login</button></span
+          >
         </div>
-    </main>
+        <div class="or-divider">or</div>
+        <div class="button-wrapper">
+          <button class="btn-social google" (click)="signInWithGoogle()">
+            <img src="assets/google-icon.png" alt="Google logo" class="social-icon" />
+            <span>Sign in with Google</span>
+          </button>
+          <button class="btn-social github" (click)="signInWithGithub()">
+            <img src="assets/github-icon.png" alt="Github logo" class="social-icon" />
+            <span>Sign in with GitHub</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>

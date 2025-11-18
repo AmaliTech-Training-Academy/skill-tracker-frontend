@@ -51,7 +51,6 @@ export class Signup implements OnInit, OnDestroy {
         ],
       ],
       confirmPassword: ['', [Validators.required]],
-      termsAccepted: [false, [Validators.requiredTrue]],
     },
     { validators: CustomValidators.passwordMatchValidator },
   );
