@@ -14,16 +14,19 @@ export const tasksReducer = createReducer(
     }),
   ),
 
-  on(
-    TasksActions.loadTasksSuccess,
-    (state, { data }): TasksState => ({
+  on(TasksActions.loadTasksSuccess, (state, { data }): TasksState => {
+    const {
+      pending: { content: pendingContent },
+      completed: { content: completedContent },
+    } = data;
+    return {
       ...state,
-      pendingTasks: data.pending.content,
-      completedTasks: data.completed.content,
+      pendingTasks: pendingContent,
+      completedTasks: completedContent,
       loading: false,
       error: null,
-    }),
-  ),
+    };
+  }),
 
   on(
     TasksActions.loadTasksFailure,

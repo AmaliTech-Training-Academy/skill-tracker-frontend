@@ -50,6 +50,7 @@ import {
   resetPasswordFailure,
   checkAuthSession,
   checkAuthSessionSuccess,
+  checkAuthSessionFailure,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -124,7 +125,14 @@ export class AuthEffects {
             }),
           ),
           catchError((httpError: HttpErrorResponse) => {
-            return of(logout());
+            return of(
+              checkAuthSessionFailure({
+                error: {
+                  message: 'No active session',
+                  type: AppErrorType.AUTH,
+                },
+              }),
+            );
           }),
         ),
       ),

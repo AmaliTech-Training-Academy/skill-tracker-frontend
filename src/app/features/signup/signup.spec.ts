@@ -2,9 +2,9 @@ jest.mock('@app/core', () => ({
   APP_CONSTANTS: {
     APP_ROUTES: {
       LOGIN: '/login',
-      EMAIL_VERIFICATION: '/email-verification'
-    }
-  }
+      EMAIL_VERIFICATION: '/email-verification',
+    },
+  },
 }));
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -29,7 +29,7 @@ describe('Signup', () => {
 
     mockStore = {
       dispatch: jest.fn(),
-      selectSignal: jest.fn().mockReturnValue(signal(false))
+      selectSignal: jest.fn().mockReturnValue(signal(false)),
     } as jest.Mocked<Pick<Store, 'dispatch' | 'selectSignal'>>;
 
     await TestBed.configureTestingModule({
@@ -54,7 +54,6 @@ describe('Signup', () => {
     expect(component.signupForm.get('email')?.hasError('required')).toBe(true);
     expect(component.signupForm.get('password')?.hasError('required')).toBe(true);
     expect(component.signupForm.get('confirmPassword')?.hasError('required')).toBe(true);
-    expect(component.signupForm.get('termsAccepted')?.hasError('required')).toBe(true);
   });
 
   it('should validate email format', () => {
@@ -115,30 +114,29 @@ describe('Signup', () => {
       email: 'test@example.com',
       password: 'StrongPass123!',
       confirmPassword: 'StrongPass123!',
-      termsAccepted: true,
     });
 
     component.onSubmit();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AuthActions.registerUser({ 
-        request: { 
-          email: 'test@example.com', 
-          password: 'StrongPass123!' 
-        } 
-      })
+      AuthActions.registerUser({
+        request: {
+          email: 'test@example.com',
+          password: 'StrongPass123!',
+        },
+      }),
     );
   });
 
   it('should dispatch social login actions', () => {
     component.signInWithGoogle();
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AuthActions.socialLogin({ provider: 'google' })
+      AuthActions.socialLogin({ provider: 'google' }),
     );
 
     component.signInWithGithub();
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      AuthActions.socialLogin({ provider: 'github' })
+      AuthActions.socialLogin({ provider: 'github' }),
     );
   });
 

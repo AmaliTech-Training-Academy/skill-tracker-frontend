@@ -3,7 +3,7 @@
     <div class="header">
       <h1 class="title">Verify Your Email</h1>
       <p class="subtitle">
-        We've sent a 6-digit code to [your@email.com].<br />
+        We've sent a 6-digit code to {{ userEmail() }}.<br />
         Please enter it below to confirm your email address.
       </p>
     </div>
@@ -11,8 +11,14 @@
     <form [formGroup]="otpForm" class="otp-form" (ngSubmit)="onSubmit()">
       <div class="input-group">
         @for (field of otpFields; track field.index) {
-        <input #otpInput maxlength="1" [formControlName]="field.name" (input)="onInput($event, field.index)"
-          (keydown)="onKeyDown($event, field.index)" (paste)="onPaste($event, field.index)"/>
+          <input
+            #otpInput
+            maxlength="1"
+            [formControlName]="field.name"
+            (input)="onInput($event, field.index)"
+            (keydown)="onKeyDown($event, field.index)"
+            (paste)="onPaste($event, field.index)"
+          />
         }
       </div>
 
@@ -20,24 +26,23 @@
         <p class="resend-info">
           Didn't get the code?
           @if (canResend()) {
-          <button type="button" class="resend-link" (click)="resendCode()">Resend Code</button>
+            <button type="button" class="resend-link" (click)="resendCode()">Resend Code</button>
           } @else {
-          <button type="button" class="resend-link" disabled>Resend Code</button>
-          <span class="timer"> in {{ (timeLeft() * 1000) | date:'mm:ss':'UTC' }}</span>
+            <button type="button" class="resend-link" disabled>Resend Code</button>
+            <span class="timer"> in {{ timeLeft() * 1000 | date: 'mm:ss' : 'UTC' }}</span>
           }
         </p>
         <p class="edit-email">
-          Entered the wrong email? <button class="link" type="button" (click)="goToSignUp()">
-            Go Back
-          </button>
+          Entered the wrong email?
+          <button class="link" type="button" (click)="goToSignUp()">Go Back</button>
         </p>
       </div>
 
       <button class="btn-primary" type="submit" [disabled]="!formValid() || isSubmitting()">
-        @if(isSubmitting()){
-        <span class="loader"></span> Verifying...
+        @if (isSubmitting()) {
+          <span class="loader"></span> Verifying...
         } @else {
-        Verify and Continue
+          Verify and Continue
         }
       </button>
     </form>

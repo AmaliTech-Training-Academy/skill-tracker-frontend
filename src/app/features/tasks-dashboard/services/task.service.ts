@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError, interval } from 'rxjs';
-import { map, takeWhile } from 'rxjs/operators';
+import { map, takeWhile, takeUntil } from 'rxjs/operators';
+import * as TasksActions from '../../../store/tasks/tasks.actions';
 import {
   GroupedTasksResponse,
   Task,
@@ -79,6 +80,15 @@ export class TaskService {
         remainingSeconds: Math.max(MINIMUM_SECONDS, remainingSeconds),
         expired: remainingSeconds <= MINIMUM_SECONDS,
       })),
+    );
+  }
+
+  public startTimerWithCancellation(durationMinutes: number, cancel$: Observable<unknown>) {
+    return this.createTimerStream(durationMinutes).pipe(
+      takeUntil(cancel$),
+      map(({ remainingSeconds, expired }) =>
+        expired ? TasksActions.timerExpired() : TasksActions.updateTimer({ remainingSeconds }),
+      ),
     );
   }
 
