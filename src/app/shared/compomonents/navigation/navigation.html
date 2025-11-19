@@ -1,21 +1,13 @@
 <nav class="navbar">
   <div class="navbar-container">
-
-    
     @if (showOnlyLogo) {
       <a href="#" class="logo">SkillDev</a>
     } @else {
-
-      
       <a href="#" class="logo">SkillDev</a>
 
       <div class="nav-menu">
         @for (item of navItems; track item.label) {
-          <a
-            [routerLink]="item.link"
-            [fragment]="item.fragment"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: item.exact }">
+          <a [href]="item.href">
             {{ item.label }}
           </a>
         }
@@ -44,11 +36,7 @@
 
   <div class="mobile-nav-items">
     @for (item of navItems; track item.label) {
-      <a
-        [routerLink]="item.link"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: item.exact }"
-        (click)="toggleMenu()">
+      <a [href]="item.href">
         {{ item.label }}
       </a>
     }

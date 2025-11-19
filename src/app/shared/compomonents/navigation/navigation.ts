@@ -30,10 +30,10 @@ export class Navigation implements OnInit, OnDestroy {
   ];
 
   public readonly navItems = [
-    { label: 'Platform', link: '/', fragment:'/', exact: false },
-    { label: 'How It Works', link: '#how-it-works',fragment:'how-it-works', exact: false },
-    { label: 'Skills', link: '#skills',fragment:'skills', exact: false },
-    { label: 'Pricing', link: '#pricing',fragment:'pricing', exact: false },
+    { label: 'Platform', href: '/' },
+    { label: 'How It Works', href: '#how-it-works' },
+    { label: 'Skills', href: '#skills' },
+    { label: 'Pricing', href: '#pricing' },
   ];
 
   private destroy$ = new Subject<void>();
