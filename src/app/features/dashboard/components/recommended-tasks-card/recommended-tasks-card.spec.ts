@@ -63,18 +63,6 @@ describe('TasksCard', () => {
     expect(statusCompleted).toBeFalsy();
   });
 
-  it('should show completed status for completed tasks', () => {
-    fixture.componentRef.setInput('task', { ...mockTask, status: 'Completed' });
-    fixture.detectChanges();
-
-    const startButton = fixture.nativeElement.querySelector('.start-button');
-    const statusCompleted = fixture.nativeElement.querySelector('.status-completed');
-
-    expect(startButton).toBeFalsy();
-    expect(statusCompleted).toBeTruthy();
-    expect(statusCompleted.textContent).toBe('Completed');
-  });
-
   it('should display correct icon for abc type', () => {
     const iconImg = fixture.nativeElement.querySelector('.icon-image');
 

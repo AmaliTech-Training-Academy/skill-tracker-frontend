@@ -27,6 +27,7 @@ export interface AuthState {
   isCheckingAuthSession: boolean;
   checkAuthSessionError: AppError | null;
   passwordResetSuccess: boolean;
+  isAuthCheckComplete: boolean;
 }
 
 export const initialAuthState: AuthState = {
@@ -55,4 +56,5 @@ export const initialAuthState: AuthState = {
   isCheckingAuthSession: false,
   checkAuthSessionError: null,
   passwordResetSuccess: false,
+  isAuthCheckComplete: false,
 };

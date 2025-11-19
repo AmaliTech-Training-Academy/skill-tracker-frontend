@@ -62,19 +62,17 @@ export class ResetPassword implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    
     this.resetToken = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.resetToken) {
       this.toastService.showError(
         APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE,
-        APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE
+        APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE,
       );
       this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
       return;
     }
 
-    
     this.loginForm = this.fb.group({
       password: [
         '',
@@ -93,7 +91,6 @@ export class ResetPassword implements OnInit, OnDestroy {
     const passwordControl = this.loginForm.get('password') as FormControl;
     const confirmPasswordControl = this.loginForm.get('confirmPassword') as FormControl;
 
-    
     passwordControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.passwordValue.set(value || '');
       this.checkMismatch();
@@ -105,11 +102,11 @@ export class ResetPassword implements OnInit, OnDestroy {
   }
 
   public get hasPasswordMismatch(): boolean {
-  return !!(
-    this.newPasswordControl?.hasError('passwordMismatch') &&
-    (this.newPasswordControl?.touched || this.newPasswordControl?.dirty)
-  );
-}
+    return !!(
+      this.newPasswordControl?.hasError('passwordMismatch') &&
+      (this.newPasswordControl?.touched || this.newPasswordControl?.dirty)
+    );
+  }
 
   private checkMismatch(): void {
     const passwordControl = this.loginForm.get('password') as FormControl;
