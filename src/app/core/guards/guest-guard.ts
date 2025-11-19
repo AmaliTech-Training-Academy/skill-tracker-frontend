@@ -14,7 +14,7 @@ export const guestGuard: CanActivateFn = () => {
   const user = store.selectSignal(AuthSelectors.selectCurrentUser)();
   const isAuthenticated = store.selectSignal(AuthSelectors.selectIsAuthenticated)();
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated || !user || !user.isVerified) {
     return true;
   }
 
