@@ -4,26 +4,29 @@ import {
   Router,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
+  GuardResult,
 } from '@angular/router';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { firstValueFrom, Observable } from 'rxjs';
 
 import { guestGuard } from './guest-guard';
-import { selectIsAuthenticated, selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { selectCurrentUser, selectIsAuthCheckComplete } from '@app/store/auth/auth.selectors';
 import { APP_CONSTANTS } from '../constants/app.constants';
-import { User, UserState, UserRole, PremiumTier, TourGuide } from '../models/auth.model';
+import { User, UserState, UserRole, PremiumTier } from '../models/auth.model';
 
 describe('guestGuard', () => {
   let store: MockStore;
-  let router: Router;
+  let router: jest.Mocked<Router>;
 
-  const dummyRoute = {} as ActivatedRouteSnapshot;
-  const dummyState = {} as RouterStateSnapshot;
-  const { APP_ROUTES } = APP_CONSTANTS;
+  const { APP_ROUTES, FULL_PAGE_ROUTES } = APP_CONSTANTS;
 
-  const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => guestGuard(...guardParameters));
+  const mockRoute = {} as ActivatedRouteSnapshot;
+  const mockState = {} as RouterStateSnapshot;
 
-  const createMockUser = (overrides: Partial<User>): User => {
+  const executeGuard: CanActivateFn = (route, state) =>
+    TestBed.runInInjectionContext(() => guestGuard(route, state));
+
+  const createMockUser = (overrides: Partial<User> = {}): User => {
     const defaultUser: User = {
       id: '1',
       email: 'test@example.com',
@@ -41,41 +44,56 @@ describe('guestGuard', () => {
   };
 
   beforeEach(() => {
+    const routerMock = {
+      navigateByUrl: jest.fn(),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         provideMockStore({
-          initialState: {},
-          selectors: [
-            { selector: selectIsAuthenticated, value: false },
-            { selector: selectCurrentUser, value: null },
-          ],
+          initialState: { auth: { user: null, isAuthCheckComplete: false } },
         }),
         {
           provide: Router,
-          useValue: {
-            navigateByUrl: jest.fn(),
-          },
+          useValue: routerMock,
         },
       ],
     });
 
     store = TestBed.inject(MockStore);
-    router = TestBed.inject(Router);
+    router = TestBed.inject(Router) as jest.Mocked<Router>;
   });
 
   it('should be created', () => {
     expect(executeGuard).toBeTruthy();
   });
 
-  it('should allow access for an unauthenticated user', () => {
-    const result = executeGuard(dummyRoute, dummyState);
+  it('should wait until isAuthCheckComplete is true before proceeding', async () => {
+    store.overrideSelector(selectIsAuthCheckComplete, false);
+    store.overrideSelector(selectCurrentUser, null);
+
+    const guardResult$ = executeGuard(mockRoute, mockState) as Observable<GuardResult>;
+    const resultPromise = firstValueFrom(guardResult$);
+
+    store.overrideSelector(selectIsAuthCheckComplete, true);
+    store.refreshState();
+
+    await expect(resultPromise).resolves.toBeDefined();
+  });
+
+  it('should ALLOW access (return true) for an unauthenticated user (Guest)', async () => {
+    store.overrideSelector(selectIsAuthCheckComplete, true);
+    store.overrideSelector(selectCurrentUser, null);
+    store.refreshState();
+
+    const result = await firstValueFrom(executeGuard(mockRoute, mockState) as Observable<boolean>);
 
     expect(router.navigateByUrl).not.toHaveBeenCalled();
     expect(result).toBe(true);
   });
 
-  it('should BLOCK and redirect to dashboard for an ACTIVE user', () => {
-    store.overrideSelector(selectIsAuthenticated, true);
+  it('should BLOCK and redirect to DASHBOARD if user is ONBOARDED', async () => {
+    store.overrideSelector(selectIsAuthCheckComplete, true);
     store.overrideSelector(
       selectCurrentUser,
       createMockUser({
@@ -83,10 +101,45 @@ describe('guestGuard', () => {
         isVerified: true,
       }),
     );
+    store.refreshState();
 
-    const result = executeGuard(dummyRoute, dummyState);
+    const result = await firstValueFrom(executeGuard(mockRoute, mockState) as Observable<boolean>);
 
     expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.DASHBOARD);
+    expect(result).toBe(false);
+  });
+
+  it('should BLOCK and redirect to INTEREST_SELECTION if user is verified but NOT onboarded', async () => {
+    store.overrideSelector(selectIsAuthCheckComplete, true);
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.REGISTERED,
+        isVerified: true,
+      }),
+    );
+    store.refreshState();
+
+    const result = await firstValueFrom(executeGuard(mockRoute, mockState) as Observable<boolean>);
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith(FULL_PAGE_ROUTES.INTEREST_SELECTION);
+    expect(result).toBe(false);
+  });
+
+  it('should BLOCK and redirect to EMAIL_VERIFICATION if user is NOT verified', async () => {
+    store.overrideSelector(selectIsAuthCheckComplete, true);
+    store.overrideSelector(
+      selectCurrentUser,
+      createMockUser({
+        state: UserState.REGISTERED,
+        isVerified: false,
+      }),
+    );
+    store.refreshState();
+
+    const result = await firstValueFrom(executeGuard(mockRoute, mockState) as Observable<boolean>);
+
+    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.EMAIL_VERIFICATION);
     expect(result).toBe(false);
   });
 });

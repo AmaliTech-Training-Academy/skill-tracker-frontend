@@ -108,6 +108,7 @@ export const authReducer = createReducer(
   })),
   on(logoutSuccess, (state) => ({
     ...initialAuthState,
+    isAuthCheckComplete: true,
   })),
   on(logoutFailure, (state, { error }) => ({
     ...state,
