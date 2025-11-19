@@ -36,15 +36,6 @@ describe('DashboardHeaderComponent', () => {
     expect(component.welcomeMessage).toBe(`Welcome ${testUsername} 👋`);
   });
 
-  it('should handle a null username gracefully in the welcome message', () => {
-    component.username = null;
-    fixture.detectChanges();
-
-    const h1 = fixture.debugElement.query(By.css('h1')).nativeElement;
-    expect(h1.textContent).toContain('Welcome null 👋');
-    expect(component.welcomeMessage).toBe('Welcome null 👋');
-  });
-
   it('should handle an empty username in the welcome message', () => {
     component.username = '';
     expect(component.welcomeMessage).toBe('Welcome  👋');

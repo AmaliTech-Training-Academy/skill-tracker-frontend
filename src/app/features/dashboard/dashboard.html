@@ -3,10 +3,10 @@
 <div class="dashboard-container">
   @if (isDashboardAnalyticsLoading()) {
     <app-stats-card-skeleton />
-  } @else if (isDashboardAnalyticsError(); as err) {
+  } @else if (isDashboardAnalyticsError(); as error) {
     <app-dashboard-error-component
       [title]="'Could not load Dashboard Analytics data'"
-      [message]="err.message"
+      [message]="error.message"
       (onRetry)="getDashboardAnalytics()"
     />
   } @else {
