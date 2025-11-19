@@ -35,4 +35,10 @@ export const APP_CONSTANTS = {
     TASKS: '/tasks',
     MY_TASKS: '/tasks/my-tasks',
   },
+  APP_ERRORS: {
+   RESET_TOKEN:{
+    TITLE:'Reset Error',
+    MESSAGE:'Reset token is missing. Please try again.'
+   }
+  }
 } as const;
