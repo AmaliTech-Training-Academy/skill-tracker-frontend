@@ -5,95 +5,95 @@ export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
 export const selectIsRegistering = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isRegistering,
+  ({ isRegistering }: AuthState) => isRegistering,
 );
 
 export const selectRegistrationError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.registrationError,
+  ({ registrationError }: AuthState) => registrationError,
 );
 
 export const selectRegistrationSuccess = createSelector(
   selectAuthState,
-  (state: AuthState) => state.registrationSuccess,
+  ({ registrationSuccess }: AuthState) => registrationSuccess,
 );
 
-export const selectCurrentUser = createSelector(selectAuthState, (state: AuthState) => state.user);
+export const selectCurrentUser = createSelector(selectAuthState, ({ user }: AuthState) => user);
 
 export const selectIsAuthenticated = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isAuthenticated,
+  ({ isAuthenticated }: AuthState) => isAuthenticated,
 );
 
 export const selectIsVerifying = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isVerifying,
+  ({ isVerifying }: AuthState) => isVerifying,
 );
 
 export const selectVerificationError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.verificationError,
+  ({ verificationError }: AuthState) => verificationError,
 );
 
 export const selectVerificationSuccess = createSelector(
   selectAuthState,
-  (state: AuthState) => state.verificationSuccess,
+  ({ verificationSuccess }: AuthState) => verificationSuccess,
 );
 
 export const selectIsCompletingOnboarding = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isCompleteOnboarding,
+  ({ isCompleteOnboarding }: AuthState) => isCompleteOnboarding,
 );
 
 export const selectOnboardingError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.onboardingError,
+  ({ onboardingError }: AuthState) => onboardingError,
 );
 
 export const selectUserEmail = createSelector(
   selectAuthState,
-  (state: AuthState) => state.user?.email ?? null,
+  ({ user }: AuthState) => user?.email ?? null,
 );
 export const selectIsLoggingIn = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isLoggingIn,
+  ({ isLoggingIn }: AuthState) => isLoggingIn,
 );
 
 export const selectLoginError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.loginError,
+  ({ loginError }: AuthState) => loginError,
 );
 export const selectIsRequestingPasswordReset = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isRequestingPasswordReset,
+  ({ isRequestingPasswordReset }: AuthState) => isRequestingPasswordReset,
 );
 
 export const selectPasswordResetError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.passwordResetError,
+  ({ passwordResetError }: AuthState) => passwordResetError,
 );
 
 export const selectIsResettingPassword = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isResettingPassword,
+  ({ isResettingPassword }: AuthState) => isResettingPassword,
 );
 
 export const selectResetPasswordError = createSelector(
   selectAuthState,
-  (state: AuthState) => state.resetPasswordError,
+  ({ resetPasswordError }: AuthState) => resetPasswordError,
 );
 
 export const selectResetPasswordSuccess = createSelector(
   selectAuthState,
-  (state: AuthState) => state.resetPasswordSuccess,
+  ({ resetPasswordSuccess }: AuthState) => resetPasswordSuccess,
 );
 
 export const selectIsLoggingOut = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isLoggingOut,
+  ({ isLoggingOut }: AuthState) => isLoggingOut,
 );
 
 export const selectIsAuthCheckComplete = createSelector(
   selectAuthState,
-  (state: AuthState) => state.isAuthCheckComplete,
+  ({ isAuthCheckComplete }: AuthState) => isAuthCheckComplete,
 );
