@@ -1,0 +1,20 @@
+<section class="recommended-tasks">
+  <div class="section-header">
+    <h2>Recommended Tasks</h2>
+    <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
+  </div>
+  <div class="tasks-list">
+    @if (isRecommendedTasksLoading) {
+      <app-recommended-tasks-card-skeleton />
+    } @else if (recommendedTasksError; as err) {
+      <app-dashboard-error-component
+        [title]="'Could not load Recommended Tasks'"
+        [message]="err.message"
+      />
+    } @else {
+      @for (task of recommendations; track task.id) {
+        <app-recommended-tasks-card [task]="task" />
+      }
+    }
+  </div>
+</section>
