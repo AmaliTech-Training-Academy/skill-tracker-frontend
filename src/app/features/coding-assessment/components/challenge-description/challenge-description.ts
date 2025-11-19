@@ -49,7 +49,12 @@ export class ChallengeDescription {
     const isRunning = this.isTimerRunning();
 
     if (task && !isRunning && window.innerWidth >= DESKTOP_BREAKPOINT) {
-      this.store.dispatch(TasksActions.startTimer({ durationMinutes: task.estimatedDuration }));
+      this.store.dispatch(
+        TasksActions.startTimer({
+          durationMinutes: task.estimatedDuration,
+          taskId: task.id,
+        }),
+      );
     }
   });
 
