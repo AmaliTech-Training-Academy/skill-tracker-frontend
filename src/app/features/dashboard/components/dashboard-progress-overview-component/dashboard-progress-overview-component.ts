@@ -6,6 +6,7 @@ import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
 import { ProgressBarSkeleton } from '../progress-bar-skeleton/progress-bar-skeleton';
 
 @Component({
+  standalone: true,
   selector: 'app-dashboard-progress-overview-component',
   imports: [ProgressBar, ProgressChart, CustomDropdown, CapitalizePipe, ProgressBarSkeleton],
   templateUrl: './dashboard-progress-overview-component.html',
@@ -33,7 +34,7 @@ export class DashboardProgressOverviewComponent {
         { label: 'Sun', value: 0 },
       ],
     },
-  };
+  } as const;
 
   public onSelectPeriod(period: string): void {
     this.selectPeriod.emit(period);
