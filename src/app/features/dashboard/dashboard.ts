@@ -84,8 +84,8 @@ export class Dashboard implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.store.dispatch(loadDashboardAnalytics());
-    this.store.dispatch(loadRecommendedTasks());
+    this.getDashboardAnalytics();
+    this.getRecommendedTasks();
   }
 
   ngAfterViewInit() {
@@ -107,7 +107,15 @@ export class Dashboard implements OnInit, AfterViewInit {
     this.selectedPeriod.set(period);
   }
 
-  public getUserName(): string {
-    return this.user()?.username || '';
+  public get userName(): string {
+    return this.user()?.username || 'User';
+  }
+
+  public getDashboardAnalytics(): void {
+    this.store.dispatch(loadDashboardAnalytics());
+  }
+
+  public getRecommendedTasks(): void {
+    this.store.dispatch(loadRecommendedTasks());
   }
 }

@@ -1,4 +1,4 @@
-<app-dashboard-header-component [username]="getUserName()" />
+<app-dashboard-header-component [username]="userName" />
 
 <div class="dashboard-container">
   @if (isDashboardAnalyticsLoading()) {
@@ -7,7 +7,7 @@
     <app-dashboard-error-component
       [title]="'Could not load Dashboard Analytics data'"
       [message]="err.message"
-      (onRetry)="ngOnInit()"
+      (onRetry)="getDashboardAnalytics()"
     />
   } @else {
     <app-dashboard-stats-container
