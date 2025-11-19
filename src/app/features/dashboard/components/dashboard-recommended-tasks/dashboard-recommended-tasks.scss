@@ -1,0 +1,52 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  --recommended-task-x: 1.75rem;
+}
+
+.recommended-tasks {
+  background-color: var(--color-white);
+  padding: var(--space-lg) var(--space-lg);
+  margin-bottom: var(--space-2xl);
+
+  .section-header {
+    margin-bottom: var(--space-lg);
+
+    h2 {
+      @include h13;
+      color: var(--color-background-overlay);
+    }
+
+    app-custom-dropdown {
+      display: none;
+    }
+  }
+
+  .tasks-list {
+    @include flex($direction: column, $gap: var(--space-md));
+  }
+}
+
+@include tablet {
+  .recommended-tasks {
+    margin-bottom: var(--space-xl);
+    background-color: var(--color-white);
+    padding: var(--space-xl) var(--recommended-task-x);
+
+    .section-header {
+      @include flex($direction: row, $justify: space-between, $align: center);
+      margin-bottom: var(--space-xl);
+
+      h2 {
+        @include h11;
+        font-weight: 500;
+      }
+
+      app-custom-dropdown {
+        display: block;
+      }
+    }
+  }
+}

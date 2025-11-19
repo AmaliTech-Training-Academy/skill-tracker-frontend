@@ -1,0 +1,33 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+  --header-margin-top: 1.25rem;
+}
+
+.dashboard-header {
+  padding: var(--space-md) var(--space-xl);
+
+  h1 {
+    @include h10;
+    color: var(--color-gray-text-strong);
+    margin-bottom: var(--space-sm);
+  }
+  p {
+    @include h13;
+    color: var(--color-gray-stroke-strong);
+  }
+}
+
+@include tablet {
+  .dashboard-header {
+    padding: var(--space-sm) var(--space-2xl);
+    margin-top: var(--header-margin-top);
+    margin-bottom: var(--space-xs);
+
+    h1 {
+      @include typography(2rem, 40px, 600);
+    }
+  }
+}

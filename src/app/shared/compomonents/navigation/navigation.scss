@@ -43,8 +43,9 @@
   color: $brand-text;
 }
 
-.nav-menu a.active {
-  color: $brand-text;
+a[href='/'],
+a[href^='#']:target {
+  color: $brand-text !important;
   border-bottom: 1px solid $brand-text;
   padding-bottom: 4px;
 }
@@ -136,8 +137,9 @@
   padding: 8px 0;
 }
 
-.mobile-nav-items a.active {
-  color: $brand-text;
+a[href='/'],
+a[href^='#']:target {
+  color: $brand-text !important;
   border-bottom: 1px solid $brand-text;
   width: 20%;
 }

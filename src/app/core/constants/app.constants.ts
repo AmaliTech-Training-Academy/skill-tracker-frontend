@@ -31,8 +31,17 @@ export const APP_CONSTANTS = {
     RESET_PASSWORD: '/auth/password/reset',
     GENERATE_MCQ: '/api/v1/mcq/generate',
     PROFILE: '/users/profile/me',
+    DASHBOARD_ANALYTICS: '/analytics/dashboard',
+    DASHBOARD_RECOMMENDED_TASKS: '/tasks',
+    DASHBOARD_TRAJECTORY: '/analytics/dashboard/trajectory/{skillId}',
     SKILLS: '/skills',
     TASKS: '/tasks',
     MY_TASKS: '/tasks/my-tasks',
+  },
+  APP_ERRORS: {
+    RESET_TOKEN: {
+      TITLE: 'Reset Error',
+      MESSAGE: 'Reset token is missing. Please try again.',
+    },
   },
 } as const;

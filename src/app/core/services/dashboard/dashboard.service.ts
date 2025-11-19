@@ -1,0 +1,37 @@
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import {
+  DashboardResponse,
+  RecommendedTasksResponse,
+  TrajectoryGranularity,
+  SkillTrajectoryResponse,
+} from '../../models/dashboard.model';
+import { APP_CONSTANTS } from '../../constants/app.constants';
+import { ApiService } from '../../services/api/api-service';
+
+const { API_ENDPOINTS } = APP_CONSTANTS;
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DashboardService {
+  constructor(private api: ApiService) {}
+
+  public getDashboardAnalytics(): Observable<DashboardResponse> {
+    return this.api.get<DashboardResponse>(API_ENDPOINTS.DASHBOARD_ANALYTICS);
+  }
+
+  public getDashboardRecommendedTasks(): Observable<RecommendedTasksResponse> {
+    return this.api.get<RecommendedTasksResponse>(API_ENDPOINTS.DASHBOARD_RECOMMENDED_TASKS);
+  }
+
+  public getDashboardTrajectory(
+    skillId: string,
+    granularity: TrajectoryGranularity,
+  ): Observable<SkillTrajectoryResponse> {
+    const url = API_ENDPOINTS.DASHBOARD_TRAJECTORY.replace('{skillId}', skillId);
+    const options = { params: { granularity } };
+    return this.api.get<SkillTrajectoryResponse>(url, options);
+  }
+}

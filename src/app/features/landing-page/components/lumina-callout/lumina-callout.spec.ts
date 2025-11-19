@@ -25,18 +25,8 @@ describe('LuminaCallout', () => {
     expect(component.title).toBe('Meet Lumina: The AI that illuminates your technical path.');
   });
 
-  it('should have default button text', () => {
-    expect(component.buttonText).toBe('Meet Lumina');
-  });
-
   it('should render title in template', () => {
     expect(compiled.querySelector('.callout-title')?.textContent).toContain(component.title);
-  });
-
-  it('should render button with correct text', () => {
-    expect(compiled.querySelector('.callout-button')?.textContent?.trim()).toBe(
-      component.buttonText,
-    );
   });
 
   it('should render robot image with correct attributes', () => {

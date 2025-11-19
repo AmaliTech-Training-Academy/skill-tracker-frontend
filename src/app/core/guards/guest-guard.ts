@@ -19,7 +19,7 @@ export const guestGuard: CanActivateFn = () => {
     map((user) => {
       const isAuthenticated = !!user;
 
-      if (!isAuthenticated || !user) {
+      if (!isAuthenticated || !user || !user.isVerified) {
         return true;
       }
 

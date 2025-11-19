@@ -125,21 +125,4 @@ describe('guestGuard', () => {
     expect(router.navigateByUrl).toHaveBeenCalledWith(FULL_PAGE_ROUTES.INTEREST_SELECTION);
     expect(result).toBe(false);
   });
-
-  it('should BLOCK and redirect to EMAIL_VERIFICATION if user is NOT verified', async () => {
-    store.overrideSelector(selectIsAuthCheckComplete, true);
-    store.overrideSelector(
-      selectCurrentUser,
-      createMockUser({
-        state: UserState.REGISTERED,
-        isVerified: false,
-      }),
-    );
-    store.refreshState();
-
-    const result = await firstValueFrom(executeGuard(mockRoute, mockState) as Observable<boolean>);
-
-    expect(router.navigateByUrl).toHaveBeenCalledWith(APP_ROUTES.EMAIL_VERIFICATION);
-    expect(result).toBe(false);
-  });
 });
