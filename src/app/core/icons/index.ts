@@ -13,6 +13,7 @@ import {
   Flame,
   ClipboardCheck,
   BrainCircuit,
+  CircleAlert,
 } from 'lucide-angular';
 
 export const appIcons = {
@@ -30,4 +31,5 @@ export const appIcons = {
   Flame,
   ClipboardCheck,
   BrainCircuit,
+  CircleAlert,
 };

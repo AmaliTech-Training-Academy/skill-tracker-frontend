@@ -1,0 +1,61 @@
+<main class="dashboard-content">
+  <section class="progress-overview">
+    <div class="section-header">
+      <div class="header-title">
+        <h2>Your Progress</h2>
+        @if (primarySkillProgress?.currentLevel) {
+          <span>{{ primarySkillProgress?.currentLevel | capitalize }}</span>
+        }
+      </div>
+      <div class="filters">
+        <div class="skill-filter">
+          <p>Skill:</p>
+          <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
+        </div>
+
+        <div class="period-filter">
+          <p>View:</p>
+
+          <div class="button-group" role="group">
+            <button [class.active]="selectedPeriod === 'weekly'" (click)="onSelectPeriod('daily')">
+              Daily
+            </button>
+            <button
+              [class.active]="selectedPeriod === 'monthly'"
+              (click)="onSelectPeriod('weekly')"
+            >
+              Weekly
+            </button>
+            <button
+              [class.active]="selectedPeriod === 'yearly'"
+              (click)="onSelectPeriod('monthly')"
+            >
+              Monthly
+            </button>
+          </div>
+
+          <app-custom-dropdown [options]="['Weekly', 'Monthly', 'Yearly']" selectedValue="Weekly" />
+        </div>
+      </div>
+    </div>
+    @if (isDashboardAnalyticsLoading) {
+      <app-progress-bar-skeleton />
+    } @else if (isDashboardAnalyticsError) {
+      <div class="error-container">
+        <h2 class="error-title">Progress</h2>
+        <span class="error-message"
+          >{{ isDashboardAnalyticsError.message || 'Failed to Load Progress Data' }}
+        </span>
+      </div>
+    }
+
+    @if (primarySkillProgress; as firstSkill) {
+      <app-progress-bar
+        [currentXp]="firstSkill.currentXp"
+        [totalXp]="firstSkill.currentLevelTotalXp"
+        [levelName]="firstSkill?.nextLevel ?? ''"
+      />
+    }
+    <app-progress-chart [data]="progressChartData" />
+  </section>
+</main>

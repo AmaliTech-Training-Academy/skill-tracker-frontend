@@ -1,0 +1,48 @@
+@let icon = task().icon;
+@let title = task().title;
+@let description = task().description;
+@let xp = task().xp;
+@let time = task().time;
+@let skill = task().skill;
+@let difficulty = task().difficulty;
+@let status = task().status;
+
+<div class="task-card">
+  <div class="icon-wrapper" [ngClass]="getIconClass(icon)">
+    <img class="icon-image" [src]="getIconPath(icon)" [alt]="icon + ' icon'" />
+  </div>
+
+  <div class="card-content">
+    <div class="title-row">
+      <div class="title-group">
+        <h3 class="title">{{ title }}</h3>
+        <p class="description">{{ description }}</p>
+      </div>
+      <div class="meta-tags">
+        @if (xp) {
+          <span class="tag tag-xp">+{{ xp }} XP</span>
+        }
+        <span class="tag tag-time">{{ time }}</span>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="details">
+        <span class="detail-item">{{ skill }}</span>
+        <span class="divider"></span>
+        <span class="detail-item">{{ difficulty }}</span>
+      </div>
+      @if (status === 'COMPLETED') {
+        <span class="status-completed">Completed</span>
+      }
+    </div>
+
+    <div class="action-section">
+      @if (status !== 'COMPLETED') {
+        <button class="start-button" (click)="onStartTask()" role="button" aria-label="Start Task">
+          Start
+        </button>
+      }
+    </div>
+  </div>
+</div>

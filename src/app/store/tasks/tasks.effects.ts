@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { map, catchError, switchMap, tap, takeUntil } from 'rxjs/operators';
+import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { TaskMockService } from '@app/features/tasks-dashboard/services/task-mock.service';
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
@@ -66,19 +66,22 @@ export class TasksEffects {
     this.actions$.pipe(
       ofType(TasksActions.startTimer),
       switchMap(({ durationMinutes }) =>
-        this.taskService.createTimerStream(durationMinutes).pipe(
-          takeUntil(
-            this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
-          ),
-          switchMap(({ remainingSeconds, expired }) => {
-            if (expired) {
-              this.toastService.showWarning('Time Up!', 'Your time for this task has expired.');
-              return of(TasksActions.timerExpired());
-            }
-            return of(TasksActions.updateTimer({ remainingSeconds }));
-          }),
+        this.taskService.startTimerWithCancellation(
+          durationMinutes,
+          this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
         ),
       ),
     ),
+  );
+
+  public timerExpired$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TasksActions.timerExpired),
+        tap(() =>
+          this.toastService.showWarning('Time Up!', 'Your time for this task has expired.'),
+        ),
+      ),
+    { dispatch: false },
   );
 }

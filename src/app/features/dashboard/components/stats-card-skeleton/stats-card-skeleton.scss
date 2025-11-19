@@ -1,0 +1,82 @@
+@use 'skeletons' as *;
+@use 'mixins' as *;
+
+:host {
+  @include flex($direction: row, $gap: var(--space-md));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+
+  box-sizing: border-box;
+  padding: 0 1.5rem;
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.skeleton-text,
+.skeleton-icon {
+  @extend .skeleton-placeholder;
+}
+
+.skeleton-card {
+  border: 1px solid var(--color-gray-fill);
+  background-color: var(--color-white);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  height: 120px;
+
+  flex: 0 0 80%;
+  scroll-snap-align: end;
+}
+
+.skeleton-header {
+  @include flex($direction: row, $align: center, $gap: 0.75rem);
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-text {
+  border-radius: 6px;
+  height: 1.25rem;
+}
+
+.skeleton-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.skeleton-title {
+  width: 60%;
+  height: 1rem;
+}
+
+.skeleton-value {
+  width: 50%;
+  height: 1.4rem;
+}
+
+@media (min-width: 768px) {
+  :host {
+    @include grid($columns: 3, $gap: var(--space-lg));
+
+    overflow-x: visible;
+    scroll-snap-type: none;
+    padding: 0 var(--space-2xl);
+  }
+
+  .skeleton-card {
+    flex: 1 1 auto;
+    scroll-snap-align: none;
+  }
+
+  .skeleton-value {
+    width: 40%;
+  }
+}

@@ -1,0 +1,39 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.stats-grid {
+  @include flex($direction: row, $gap: var(--space-md));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--space-xl);
+  margin-bottom: var(--space-2xl);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  app-stat-card {
+    flex: 0 0 80%;
+    scroll-snap-align: end;
+  }
+}
+
+@include tablet {
+  .stats-grid {
+    @include grid($columns: 3, $gap: var(--space-lg));
+    margin-top: 4px;
+    margin-bottom: 0;
+    padding: 0 var(--space-2xl);
+
+    app-stat-card {
+      flex: 0 0 100%;
+      scroll-snap-align: end;
+    }
+  }
+}
