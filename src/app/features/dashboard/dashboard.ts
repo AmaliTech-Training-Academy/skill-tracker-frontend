@@ -108,7 +108,7 @@ export class Dashboard implements OnInit, AfterViewInit {
   }
 
   public get userName(): string {
-    return this.user()?.username || 'User';
+    return this.user()?.username || '';
   }
 
   public getDashboardAnalytics(): void {

@@ -71,6 +71,7 @@ export interface UserApiResponse {
 export interface User {
   id: string;
   email: string;
+  avatarUrl?: string;
   username: string | null;
   role: UserRole;
   state: UserState;
