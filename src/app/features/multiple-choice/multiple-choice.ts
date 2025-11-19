@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { McqQuestion, McqGenerationRequest } from '@app/core/models/mcq-model'; 
+import { McqQuestion, McqRetrieveRequest } from '@app/core/models/mcq-model'; 
 import { generateMcqQuiz } from '@app/store/mcqs/mcq.actions';
 import {
   selectMcqQuestions,
@@ -57,11 +57,9 @@ export class MultipleChoice implements OnInit, OnDestroy {
   public timerInterval: any;
 
   ngOnInit(): void {
-    // Try to restore previous progress first
     const restored = this.restoreProgress();
     
     if (!restored) {
-      // No saved progress, dispatch new quiz request
       this.dispatchQuizRequest();
     }
 
@@ -94,11 +92,8 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   public dispatchQuizRequest(): void {
-    const requestPayload: McqGenerationRequest = {
-      userId: 'mock-user-id-12345',
-      interest: 'Database', 
-      difficulty: 'intermediate',
-      no_of_questions: 10,
+    const requestPayload: McqRetrieveRequest = {
+      taskId: 'mock-user-id-12345'
     };
     this.store.dispatch(generateMcqQuiz({ request: requestPayload }));
     this.cdr.markForCheck();
@@ -108,7 +103,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
-    // Save progress on component destroy
     if (!this.isQuizComplete) {
       this.saveProgress();
     }
