@@ -30,14 +30,12 @@ import {
   selectResetPasswordError,
   selectResetPasswordSuccess,
 } from '@app/store/auth/auth.selectors';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { APP_CONSTANTS } from '@app/core';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent, FontAwesomeModule],
+  imports: [CommonModule, ReactiveFormsModule, InputFieldComponent],
   templateUrl: './reset-password.html',
   styleUrls: ['./reset-password.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,27 +53,28 @@ export class ResetPassword implements OnInit, OnDestroy {
 
   public loginForm!: FormGroup;
 
-  public faCheck = faCheck;
-  public faTimes = faTimes;
-
   constructor(
     private fb: FormBuilder,
-    private library: FaIconLibrary,
+    private route: ActivatedRoute,
     private router: Router,
     private store: Store,
     private toastService: ToastService,
   ) {}
 
   public ngOnInit(): void {
-    this.library.addIcons(faCheck, faTimes);
-
+    
+    this.resetToken = this.route.snapshot.queryParamMap.get('token');
 
     if (!this.resetToken) {
-      this.toastService.showError(APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE, APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE);
-      // this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
+      this.toastService.showError(
+        APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.TITLE,
+        APP_CONSTANTS.APP_ERRORS.RESET_TOKEN.MESSAGE
+      );
+      this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.FORGOT_PASSWORD);
       return;
     }
 
+    
     this.loginForm = this.fb.group({
       password: [
         '',
@@ -94,32 +93,43 @@ export class ResetPassword implements OnInit, OnDestroy {
     const passwordControl = this.loginForm.get('password') as FormControl;
     const confirmPasswordControl = this.loginForm.get('confirmPassword') as FormControl;
 
-    const checkMismatch = () => {
-      if (passwordControl.value !== confirmPasswordControl.value) {
-        if (confirmPasswordControl.dirty || confirmPasswordControl.touched) {
-          confirmPasswordControl.setErrors({
-            ...(confirmPasswordControl.errors || {}),
-            passwordMismatch: true,
-          });
-        }
-      } else if (confirmPasswordControl.hasError('passwordMismatch')) {
-        const errors = confirmPasswordControl.errors;
-        if (errors) {
-          delete errors['passwordMismatch'];
-          confirmPasswordControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
-        }
-      }
-      this.loginForm.updateValueAndValidity({ emitEvent: false });
-    };
-
+    
     passwordControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.passwordValue.set(value || '');
-      checkMismatch();
+      this.checkMismatch();
     });
 
     confirmPasswordControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      checkMismatch();
+      this.checkMismatch();
     });
+  }
+
+  public get hasPasswordMismatch(): boolean {
+  return !!(
+    this.newPasswordControl?.hasError('passwordMismatch') &&
+    (this.newPasswordControl?.touched || this.newPasswordControl?.dirty)
+  );
+}
+
+  private checkMismatch(): void {
+    const passwordControl = this.loginForm.get('password') as FormControl;
+    const confirmPasswordControl = this.loginForm.get('confirmPassword') as FormControl;
+
+    if (passwordControl.value !== confirmPasswordControl.value) {
+      if (confirmPasswordControl.dirty || confirmPasswordControl.touched) {
+        confirmPasswordControl.setErrors({
+          ...(confirmPasswordControl.errors || {}),
+          passwordMismatch: true,
+        });
+      }
+    } else if (confirmPasswordControl.hasError('passwordMismatch')) {
+      const errors = confirmPasswordControl.errors;
+      if (errors) {
+        delete errors['passwordMismatch'];
+        confirmPasswordControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
+      }
+    }
+    this.loginForm.updateValueAndValidity({ emitEvent: false });
   }
 
   public ngOnDestroy(): void {
@@ -153,19 +163,6 @@ export class ResetPassword implements OnInit, OnDestroy {
     ];
   });
 
-  public get hasUppercase(): boolean {
-    return !this.passwordRequirements().find((req) => req.key === 'hasUppercase')?.error;
-  }
-  public get hasLowercase(): boolean {
-    return !this.passwordRequirements().find((req) => req.key === 'hasLowercase')?.error;
-  }
-  public get hasNumber(): boolean {
-    return !this.passwordRequirements().find((req) => req.key === 'hasNumber')?.error;
-  }
-  public get hasSpecialChar(): boolean {
-    return !this.passwordRequirements().find((req) => req.key === 'hasSpecialChar')?.error;
-  }
-
   public onSubmit(): void {
     this.loginForm.markAllAsTouched();
 
@@ -191,30 +188,6 @@ export class ResetPassword implements OnInit, OnDestroy {
 
   public get newPasswordControl(): FormControl {
     return this.loginForm.get('confirmPassword') as FormControl;
-  }
-
-  public get errorMessage(): string | null {
-    const error = this.resetError();
-    if (error) {
-      return error.message;
-    }
-
-    if (
-      this.newPasswordControl?.hasError('passwordMismatch') &&
-      (this.newPasswordControl.touched || this.newPasswordControl.dirty)
-    ) {
-      return 'Passwords do not match.';
-    }
-
-    if (!this.resetToken) {
-      return 'A required reset token is missing. Please use the link sent to your email.';
-    }
-
-    return null;
-  }
-
-  public get successMessage(): string | null {
-    return this.resetSuccess() ? 'Password reset successfully! Redirecting to login...' : null;
   }
 
   public getFormControl = getFormControl;
