@@ -12,7 +12,7 @@ import { Subject, filter, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink],
   templateUrl: './navigation.html',
   styleUrls: ['./navigation.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
