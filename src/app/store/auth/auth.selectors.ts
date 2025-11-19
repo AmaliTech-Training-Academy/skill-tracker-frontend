@@ -92,3 +92,8 @@ export const selectIsLoggingOut = createSelector(
   selectAuthState,
   (state: AuthState) => state.isLoggingOut,
 );
+
+export const selectIsAuthCheckComplete = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.isAuthCheckComplete,
+);

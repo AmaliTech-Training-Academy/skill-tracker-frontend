@@ -177,6 +177,7 @@ export const authReducer = createReducer(
     ...state,
     isCheckingAuthSession: true,
     checkAuthSessionError: null,
+    isAuthCheckComplete: false,
   })),
   on(checkAuthSessionSuccess, (state, { user }) => ({
     ...state,
@@ -184,6 +185,7 @@ export const authReducer = createReducer(
     isAuthenticated: true,
     user: user,
     checkAuthSessionError: null,
+    isAuthCheckComplete: true,
   })),
   on(checkAuthSessionFailure, (state, { error }) => ({
     ...state,
@@ -191,5 +193,6 @@ export const authReducer = createReducer(
     isAuthenticated: false,
     user: null,
     checkAuthSessionError: error,
+    isAuthCheckComplete: true,
   })),
 );
