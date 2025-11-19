@@ -88,13 +88,13 @@ describe('EmailVerification', () => {
 
   it('should start timer on init', fakeAsync(() => {
     component.startTimer();
-    expect(component.timeLeft()).toBe(30);
+    expect(component.timeLeft()).toBe(120);
     expect(component.canResend()).toBe(false);
 
     tick(1000);
-    expect(component.timeLeft()).toBe(29);
+    expect(component.timeLeft()).toBe(119);
 
-    tick(30000);
+    tick(120000);
     expect(component.timeLeft()).toBe(0);
     expect(component.canResend()).toBe(true);
   }));
@@ -108,7 +108,7 @@ describe('EmailVerification', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(
       AuthActions.resendVerification({ email: 'test@example.com' }),
     );
-    expect(component.timeLeft()).toBe(30);
+    expect(component.timeLeft()).toBe(120);
     expect(component.canResend()).toBe(false);
   });
 

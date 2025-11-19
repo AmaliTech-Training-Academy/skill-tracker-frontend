@@ -13,6 +13,7 @@ import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideRouterStore } from '@ngrx/router-store';
+import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 import { LucideAngularModule } from 'lucide-angular';
 import { appIcons } from '@app/core';
 
@@ -28,6 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideEffects(appEffects),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideRouterStore(),
+    provideMonacoEditor(),
     importProvidersFrom(LucideAngularModule.pick(appIcons)),
     provideAnimations(),
   ],

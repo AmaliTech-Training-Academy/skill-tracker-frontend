@@ -72,7 +72,6 @@ $total-padding: 4rem;
     box-sizing: border-box;
   }
 
-
   input.ng-invalid.ng-touched {
     border-color: $red-text;
   }
@@ -108,30 +107,6 @@ $total-padding: 4rem;
         width: 20px;
         height: 20px;
       }
-    }
-  }
-}
-
-.terms-checkbox {
-  @include flex(row, flex-start, center, 8px);
-
-  input[type='checkbox'] {
-    width: 20px;
-    height: 20px;
-    accent-color: $brand-text;
-  }
-
-  label {
-    @include h13;
-    color: $gray-stroke-strong;
-
-    @include mobile-large {
-      @include h11;
-    }
-
-    .link {
-      color: $brand-text;
-      text-decoration: none;
     }
   }
 }

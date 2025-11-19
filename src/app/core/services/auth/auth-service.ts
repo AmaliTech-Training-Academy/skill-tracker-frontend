@@ -35,8 +35,8 @@ export class AuthService {
   }
 
   public forgotPassword(email: string): Observable<{ message: string }> {
-    const params = new HttpParams().set('email', email);
-    return this.api.post<{ message: string }>(API_ENDPOINTS.FORGOT_PASSWORD, null, { params });
+    const payload = { email };
+    return this.api.post<{ message: string }>(API_ENDPOINTS.FORGOT_PASSWORD, payload);
   }
 
   public verifyEmail({ code, email }: VerifyEmailRequest): Observable<UserResponse> {
@@ -70,5 +70,9 @@ export class AuthService {
   public updateTourStatus({ email }: UserEmailRequest): Observable<UserResponse> {
     const params = new HttpParams().set('email', email);
     return this.api.post<UserResponse>(API_ENDPOINTS.UPDATE_TOUR_STATUS, null, { params });
+  }
+
+  public getUserProfile(): Observable<UserResponse> {
+    return this.api.get<UserResponse>(API_ENDPOINTS.PROFILE);
   }
 }

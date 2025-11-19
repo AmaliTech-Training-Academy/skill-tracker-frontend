@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
-import { Task } from '@app/core/models/tasks-model';
+import { TaskUI } from '@app/core/models/tasks-model';
 import { TasksCard } from '../tasks-card/tasks-card';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
 import { selectTimeRanges } from '@app/store/tasks/tasks.selectors';
@@ -16,8 +16,8 @@ import { Store } from '@ngrx/store';
 export class TaskList {
   constructor(private store: Store) {}
 
-  public todayTasks = input.required<Task[]>();
-  public previousTasks = input.required<Task[]>();
+  public todayTasks = input.required<TaskUI[]>();
+  public previousTasks = input.required<TaskUI[]>();
   public selectedTimeRange = input<string | undefined>();
 
   public timeRangeChanged = output<string>();

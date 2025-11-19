@@ -1,3 +1,6 @@
+import { ApiResponse, SkillLevel } from './auth.model';
+import { TaskIcon, TaskStatus } from './tasks-model';
+
 export interface UserStats {
   totalTasksCompleted: number;
   currentStreakInDays: number;
@@ -12,28 +15,80 @@ export interface SkillProgress {
   proficiency: number;
   tasksCompleted: number;
   currentXp: number;
-  currentLevel: string;
-  nextLevel: string;
+  currentLevel: SkillLevel;
+  nextLevel: SkillLevel;
   xpToNextLevel: number;
   currentLevelTotalXp: number;
+}
+
+export interface GoalStatus {
+  goalId: string;
+  description: string;
+  type: string;
+  currentValue: number;
+  targetValue: number;
+  initialValue: number;
+  progressPercentage: number;
+  deadline: string;
+  status: string;
+}
+
+export interface SkillGap {
+  rubric: string;
+  averageScore: number;
+  description: string;
+}
+
+export interface Recommendation {
+  recommendationText: string;
+  relatedRubric: string;
 }
 
 export interface DashboardData {
   userStats: UserStats;
   skillProgress: SkillProgress[];
-  recommendedTasks: RecommendedTask[];
-  progressChartData: ProgressChartData;
+  goalStatus: GoalStatus[];
+  skillGaps: SkillGap[];
+  recommendations: Recommendation[];
+  globalRank: number | null;
+}
+
+export enum RecommendedTaskType {
+  CODING = 'CODING',
+  ESSAY = 'ESSAY',
 }
 
 export interface RecommendedTask {
   id: string;
-  type: 'Skill Assessment' | 'Concept Explanation';
   title: string;
-  tags: string[];
-  xp: number;
-  durationInMin?: number;
+  type: RecommendedTaskType;
+  difficulty: SkillLevel;
+  skillName: string;
+  xpReward: number;
+  estimatedDuration: number;
 }
 
-export interface ProgressChartData {
-  weekly: { label: string; value: number }[];
+export interface RecommendedTaskUI extends RecommendedTask {
+  icon: TaskIcon;
+  description: string;
+  status: TaskStatus;
+  time: string;
+  skill: string;
+  xp: number;
 }
+
+export enum TrajectoryGranularity {
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+}
+
+export interface SkillTrajectoryData {
+  snapshotDate: string;
+  averageXpEarned: number;
+  tasksCompletedUpToDate: number;
+}
+
+export type DashboardResponse = ApiResponse<DashboardData>;
+export type RecommendedTasksResponse = ApiResponse<RecommendedTaskUI[]>;
+export type SkillTrajectoryResponse = ApiResponse<SkillTrajectoryData[]>;

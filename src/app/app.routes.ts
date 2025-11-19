@@ -79,7 +79,7 @@ export const routes: Routes = [
          
       },
       {
-        path: 'tasks/coding-assessment',
+        path: 'tasks/coding-assessment/:taskId',
         loadComponent: () =>
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },

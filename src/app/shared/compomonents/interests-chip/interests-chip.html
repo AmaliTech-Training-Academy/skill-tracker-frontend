@@ -1,4 +1,9 @@
 <button type="button" class="badge" [class.selected]="selected" (click)="onSelect()">
-  <img [src]="icon" alt="{{ label }}" class="icon" />
+  @if (icon) {
+    <img [src]="icon" [alt]="label" class="icon" />
+  } @else {
+    <span class="icon emoji-icon">❓</span>
+  }
+
   <span class="label">{{ label }}</span>
 </button>

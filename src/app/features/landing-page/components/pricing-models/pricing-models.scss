@@ -15,8 +15,12 @@
   @include flex($direction: column, $gap: 1rem);
 
   .section-title {
-    @include h5;
+    @include h8;
     color: $gray-text-strong;
+
+    @include tablet {
+      @include h5;
+    }
   }
 
   .section-subtitle {

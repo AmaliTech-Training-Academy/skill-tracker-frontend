@@ -51,7 +51,6 @@ export class Signup implements OnInit, OnDestroy {
         ],
       ],
       confirmPassword: ['', [Validators.required]],
-      termsAccepted: [false, [Validators.requiredTrue]],
     },
     { validators: CustomValidators.passwordMatchValidator },
   );
@@ -69,22 +68,22 @@ export class Signup implements OnInit, OnDestroy {
     return [
       {
         key: 'hasUppercase',
-        message: '1 uppercase letter',
+        message: 'At least 1 uppercase letter',
         error: !value || !/[A-Z]/.test(value),
       },
       {
         key: 'hasLowercase',
-        message: '1 lowercase letter',
+        message: 'At least 1 lowercase letter',
         error: !value || !/[a-z]/.test(value),
       },
       {
         key: 'hasNumber',
-        message: '1 number',
+        message: 'At least 1 number',
         error: !value || !/[0-9]/.test(value),
       },
       {
         key: 'hasSpecialChar',
-        message: '1 special character (e.g. ! , @, #, $, %, &, *)',
+        message: 'At least 1 special character (e.g. ! , @, #, $, %, &, *)',
         error: !value || !/[!@#$%&*]/.test(value),
       },
     ];

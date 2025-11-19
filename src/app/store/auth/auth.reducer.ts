@@ -26,6 +26,9 @@ import {
   resetPassword,
   resetPasswordSuccess,
   resetPasswordFailure,
+  checkAuthSession,
+  checkAuthSessionSuccess,
+  checkAuthSessionFailure,
 } from './auth.actions';
 
 export const authReducer = createReducer(
@@ -105,6 +108,7 @@ export const authReducer = createReducer(
   })),
   on(logoutSuccess, (state) => ({
     ...initialAuthState,
+    isAuthCheckComplete: true,
   })),
   on(logoutFailure, (state, { error }) => ({
     ...state,
@@ -169,5 +173,27 @@ export const authReducer = createReducer(
     isResettingPassword: false,
     resetPasswordError: error,
     resetPasswordSuccess: false,
+  })),
+  on(checkAuthSession, (state) => ({
+    ...state,
+    isCheckingAuthSession: true,
+    checkAuthSessionError: null,
+    isAuthCheckComplete: false,
+  })),
+  on(checkAuthSessionSuccess, (state, { user }) => ({
+    ...state,
+    isCheckingAuthSession: false,
+    isAuthenticated: true,
+    user: user,
+    checkAuthSessionError: null,
+    isAuthCheckComplete: true,
+  })),
+  on(checkAuthSessionFailure, (state, { error }) => ({
+    ...state,
+    isCheckingAuthSession: false,
+    isAuthenticated: false,
+    user: null,
+    checkAuthSessionError: error,
+    isAuthCheckComplete: true,
   })),
 );
