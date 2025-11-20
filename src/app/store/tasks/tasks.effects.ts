@@ -3,7 +3,6 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
-import { TaskMockService } from '@app/features/tasks-dashboard/services/task-mock.service';
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
 import * as TasksActions from './tasks.actions';
@@ -13,7 +12,6 @@ import { APP_CONSTANTS } from '@app/core';
 export class TasksEffects {
   constructor(
     private actions$: Actions,
-    private taskMockService: TaskMockService,
     private taskService: TaskService,
     private router: Router,
     private toastService: ToastService,
@@ -23,7 +21,7 @@ export class TasksEffects {
     this.actions$.pipe(
       ofType(TasksActions.loadTasks),
       switchMap(() =>
-        this.taskMockService.getAllTasks().pipe(
+        this.taskService.getAllTasks().pipe(
           map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
           catchError((error) =>
             of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' })),
@@ -48,7 +46,7 @@ export class TasksEffects {
     this.actions$.pipe(
       ofType(TasksActions.loadCurrentTask),
       switchMap(({ taskId }) =>
-        this.taskMockService.getTaskById(taskId).pipe(
+        this.taskService.getTaskById(taskId).pipe(
           map((response) => TasksActions.loadCurrentTaskSuccess({ task: response.data })),
           catchError((error) => {
             this.toastService.showError(

@@ -23,7 +23,7 @@ export const initialTasksState: TasksState = {
   pendingTasks: [],
   completedTasks: [],
   currentTask: null,
-  skills: ['All Skills', 'HTML', 'CSS', 'Data Structures', 'Python', 'JavaScript'],
+  skills: ['All Skills'],
   timeRanges: ['All Periods', 'Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'Older'],
   selectedSkill: 'All Skills',
   selectedTimeRange: CompletedPeriod.ALL_PERIODS,
