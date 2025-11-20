@@ -1,3 +1,5 @@
+//THIS IS A MOCK SERVICE, IT WILL BE DISCARDED LATER
+
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 import { McqResponse, McqQuestion } from '@app/core/models/mcq-model';
@@ -9,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class McqMockService {
   private mockQuizzes: { [key: string]: McqQuestion[] } = {
-    'ef457756648836664': [
+    ef457756648836664: [
       {
         question_number: '1',
         question_duration: 30,
@@ -26,7 +28,8 @@ export class McqMockService {
         options: ['Swift', 'Kotlin', 'Python', 'Ruby'],
         hint: 'It runs on the JVM',
         correct_answer: 'Kotlin',
-        explanation: 'Kotlin is the preferred language for Android development, officially supported by Google.',
+        explanation:
+          'Kotlin is the preferred language for Android development, officially supported by Google.',
       },
       {
         question_number: '3',
@@ -38,9 +41,10 @@ export class McqMockService {
           'Home Tool Markup Language',
           'Hyperlinks and Text Markup Language',
         ],
-        hint: 'It\'s used to structure web pages',
+        hint: "It's used to structure web pages",
         correct_answer: 'Hyper Text Markup Language',
-        explanation: 'HTML stands for Hyper Text Markup Language and is the standard markup language for creating web pages.',
+        explanation:
+          'HTML stands for Hyper Text Markup Language and is the standard markup language for creating web pages.',
       },
       {
         question_number: '4',
@@ -49,21 +53,18 @@ export class McqMockService {
         options: ['Venus', 'Mars', 'Jupiter', 'Saturn'],
         hint: 'Named after the Roman god of war',
         correct_answer: 'Mars',
-        explanation: 'Mars is called the Red Planet due to its reddish appearance caused by iron oxide on its surface.',
+        explanation:
+          'Mars is called the Red Planet due to its reddish appearance caused by iron oxide on its surface.',
       },
       {
         question_number: '5',
         question_duration: 50,
         question_text: 'In Angular, what is the purpose of NgRx?',
-        options: [
-          'Styling components',
-          'State management',
-          'Routing',
-          'HTTP requests',
-        ],
+        options: ['Styling components', 'State management', 'Routing', 'HTTP requests'],
         hint: 'It helps manage application data',
         correct_answer: 'State management',
-        explanation: 'NgRx is a framework for building reactive applications in Angular using state management patterns inspired by Redux.',
+        explanation:
+          'NgRx is a framework for building reactive applications in Angular using state management patterns inspired by Redux.',
       },
     ],
     'mock-user-id-12345': [
@@ -74,14 +75,15 @@ export class McqMockService {
         options: ['O(n)', 'O(log n)', 'O(n²)', 'O(1)'],
         hint: 'It divides the search space in half each time',
         correct_answer: 'O(log n)',
-        explanation: 'Binary search has a time complexity of O(log n) because it halves the search space with each iteration.',
+        explanation:
+          'Binary search has a time complexity of O(log n) because it halves the search space with each iteration.',
       },
       {
         question_number: '2',
         question_duration: 35,
         question_text: 'Which CSS property is used to change text color?',
         options: ['font-color', 'text-color', 'color', 'foreground-color'],
-        hint: 'It\'s a simple, short property name',
+        hint: "It's a simple, short property name",
         correct_answer: 'color',
         explanation: 'The CSS "color" property is used to set the color of text content.',
       },
@@ -97,7 +99,8 @@ export class McqMockService {
         ],
         hint: 'It allows different software to communicate',
         correct_answer: 'Application Programming Interface',
-        explanation: 'API stands for Application Programming Interface, which allows different software applications to communicate with each other.',
+        explanation:
+          'API stands for Application Programming Interface, which allows different software applications to communicate with each other.',
       },
       {
         question_number: '4',
@@ -106,7 +109,8 @@ export class McqMockService {
         options: ['GET', 'POST', 'PUT', 'DELETE'],
         hint: 'Think about replacing existing data',
         correct_answer: 'PUT',
-        explanation: 'PUT is the HTTP method typically used to update an existing resource on the server.',
+        explanation:
+          'PUT is the HTTP method typically used to update an existing resource on the server.',
       },
     ],
     // Add more mock quiz sets with different IDs as needed
@@ -123,7 +127,8 @@ export class McqMockService {
         ],
         hint: 'It helps create and manage Angular projects',
         correct_answer: 'Project scaffolding and development',
-        explanation: 'Angular CLI is a command-line interface tool for initializing, developing, and maintaining Angular applications.',
+        explanation:
+          'Angular CLI is a command-line interface tool for initializing, developing, and maintaining Angular applications.',
       },
       {
         question_number: '2',
@@ -137,7 +142,8 @@ export class McqMockService {
         ],
         hint: 'It provides information about the component',
         correct_answer: 'To define component metadata',
-        explanation: 'The @Component decorator is used to define metadata for a component, including its selector, template, and styles.',
+        explanation:
+          'The @Component decorator is used to define metadata for a component, including its selector, template, and styles.',
       },
       {
         question_number: '3',
@@ -146,31 +152,27 @@ export class McqMockService {
         options: ['Directives', 'Services', 'Pipes', 'Modules'],
         hint: 'It can be injected into multiple components',
         correct_answer: 'Services',
-        explanation: 'Services are singleton objects in Angular that can be injected into multiple components to share data and functionality.',
+        explanation:
+          'Services are singleton objects in Angular that can be injected into multiple components to share data and functionality.',
       },
     ],
   };
 
   constructor(
-    private toastService : ToastService,
-    private router : Router
+    private toastService: ToastService,
+    private router: Router,
   ) {}
 
-  /**
-   * Mock method to generate/retrieve a quiz based on taskId
-   * Simulates API call with delay
-   */
   public generateQuiz(taskId: string): Observable<McqResponse> {
     // Simulate network delay (500-1500ms)
     const networkDelay = Math.floor(Math.random() * 1000) + 500;
 
-    // Get quiz questions for the given taskId
     const questions = this.mockQuizzes[taskId];
 
     if (!questions) {
       // Return error response if taskId not found
-    this.toastService.showError('Quize Error', 'Task could not be found. Try again'),
-    this.router.navigateByUrl('dashboard/tasks')
+      this.toastService.showError('Quize Error', 'Task could not be found. Try again');
+      this.router.navigateByUrl('dashboard/tasks');
 
       return of({
         success: false,
