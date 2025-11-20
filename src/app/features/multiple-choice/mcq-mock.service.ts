@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 import { McqResponse, McqQuestion } from '@app/core/models/mcq-model';
+import { ToastService } from '@app/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -149,7 +151,10 @@ export class McqMockService {
     ],
   };
 
-  constructor() {}
+  constructor(
+    private toastService : ToastService,
+    private router : Router
+  ) {}
 
   /**
    * Mock method to generate/retrieve a quiz based on taskId
@@ -164,6 +169,9 @@ export class McqMockService {
 
     if (!questions) {
       // Return error response if taskId not found
+    this.toastService.showError('Quize Error', 'Task could not be found. Try again'),
+    this.router.navigateByUrl('dashboard/tasks')
+
       return of({
         success: false,
         message: `Quiz not found for taskId: ${taskId}`,

@@ -12,6 +12,10 @@ import { Subject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { McqQuestion, McqRetrieveRequest } from '@app/core/models/mcq-model'; 
 import { generateMcqQuiz } from '@app/store/mcqs/mcq.actions';
+import { ActivatedRoute } from '@angular/router';
+import { ToastService } from '@app/core';
+import { Router } from '@angular/router';
+
 import {
   selectMcqQuestions,
   selectMcqTotalTime,
@@ -40,6 +44,11 @@ interface QuizProgress {
 export class MultipleChoice implements OnInit, OnDestroy {
   private readonly store = inject(Store);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
+  
+
   private readonly STORAGE_KEY = 'mcq_quiz_progress';
   
   private destroy$ = new Subject<void>();
@@ -92,12 +101,23 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   public dispatchQuizRequest(): void {
-    const requestPayload: McqRetrieveRequest = {
-      taskId: 'mock-user-id-12345'
-    };
-    this.store.dispatch(generateMcqQuiz({ request: requestPayload }));
-    this.cdr.markForCheck();
+  const taskId = this.route.snapshot.paramMap.get('id');
+
+  if (!taskId) {
+    this.toastService.showError('Invalid Task','Task was not found. Please try again')
+    this.router.navigateByUrl('/dashboard/tasks');
+    return;
   }
+
+   const requestPayload: McqRetrieveRequest = {
+    taskId: taskId
+  };
+  
+
+  this.store.dispatch(generateMcqQuiz({ request: requestPayload }));
+  this.cdr.markForCheck();
+}
+
 
   ngOnDestroy(): void {
     if (this.timerInterval) {
