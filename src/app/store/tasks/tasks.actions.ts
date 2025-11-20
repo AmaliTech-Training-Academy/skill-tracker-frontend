@@ -100,18 +100,6 @@ export const submitTaskSolutionFailure = createAction(
   props<{ error: string }>(),
 );
 
-export const loadLanguages = createAction('[Coding Assessment] Load Languages');
-
-export const loadLanguagesSuccess = createAction(
-  '[Tasks API] Load Languages Success',
-  props<{ languages: import('@app/core/models/tasks-model').ProgrammingLanguage[] }>(),
-);
-
-export const loadLanguagesFailure = createAction(
-  '[Tasks API] Load Languages Failure',
-  props<{ error: string }>(),
-);
-
 export const updateUserCode = createAction(
   '[Coding Assessment] Update User Code',
   props<{ code: string; taskId: string }>(),

@@ -226,32 +226,6 @@ export const tasksReducer = createReducer(
     }),
   ),
 
-  on(
-    TasksActions.loadLanguages,
-    (state): TasksState => ({
-      ...state,
-      languagesLoading: true,
-    }),
-  ),
-
-  on(
-    TasksActions.loadLanguagesSuccess,
-    (state, { languages }): TasksState => ({
-      ...state,
-      languages,
-      languagesLoading: false,
-    }),
-  ),
-
-  on(
-    TasksActions.loadLanguagesFailure,
-    (state, { error }): TasksState => ({
-      ...state,
-      languagesLoading: false,
-      error,
-    }),
-  ),
-
   on(TasksActions.updateUserCode, (state, { code, taskId }): TasksState => {
     localStorage.setItem(`userCode_${taskId}`, code);
     return {

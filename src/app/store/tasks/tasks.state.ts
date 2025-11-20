@@ -1,10 +1,4 @@
-import {
-  TaskUI,
-  CompletedPeriod,
-  Task,
-  CodeExecutionResponse,
-  ProgrammingLanguage,
-} from '@app/core/models/tasks-model';
+import { TaskUI, CompletedPeriod, Task, CodeExecutionResponse } from '@app/core/models/tasks-model';
 
 export interface TasksState {
   pendingTasks: TaskUI[];
@@ -20,8 +14,6 @@ export interface TasksState {
   codeExecuting: boolean;
   submitting: boolean;
   executionResult: CodeExecutionResponse | null;
-  languages: ProgrammingLanguage[];
-  languagesLoading: boolean;
   error: string | null;
   timer: {
     isRunning: boolean;
@@ -45,8 +37,6 @@ export const initialTasksState: TasksState = {
   codeExecuting: false,
   submitting: false,
   executionResult: null,
-  languages: [],
-  languagesLoading: false,
   error: null,
   timer: {
     isRunning: false,

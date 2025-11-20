@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TasksState } from './tasks.state';
 import { TaskUI, CompletedPeriod } from '@app/core/models/tasks-model';
+import { PROGRAMMING_LANGUAGES } from '@app/core/constants/programming-languages';
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
@@ -59,14 +60,18 @@ export const selectTestResults = createSelector(
     })) || [],
 );
 
-export const selectLanguages = createSelector(selectTasksState, ({ languages }) => languages);
-
-export const selectLanguagesLoading = createSelector(
-  selectTasksState,
-  ({ languagesLoading }) => languagesLoading,
-);
-
 export const selectUserCode = createSelector(selectTasksState, ({ userCode }) => userCode);
+
+export const selectCurrentTaskLanguageId = createSelector(selectCurrentTask, (task) => {
+  if (!task?.skillName) return 113;
+
+  const skillName = task.skillName.toLowerCase();
+  const language = PROGRAMMING_LANGUAGES.find((lang) =>
+    lang.name.toLowerCase().includes(skillName),
+  );
+
+  return language?.id || 113;
+});
 
 export const selectTodayTasks = createSelector(
   selectTasksState,

@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { map, catchError, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
 import * as TasksActions from './tasks.actions';
+import { selectCurrentTaskLanguageId } from './tasks.selectors';
 import { APP_CONSTANTS } from '@app/core';
 
 @Injectable()
@@ -15,6 +17,7 @@ export class TasksEffects {
     private taskService: TaskService,
     private router: Router,
     private toastService: ToastService,
+    private store: Store,
   ) {}
 
   public loadTasks$ = createEffect(() =>
@@ -118,7 +121,8 @@ export class TasksEffects {
   public executeCode$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.executeCode),
-      switchMap(({ taskId, code, languageId }) =>
+      withLatestFrom(this.store.select(selectCurrentTaskLanguageId)),
+      switchMap(([{ taskId, code }, languageId]) =>
         this.taskService.executeCode({ taskId, code, languageId }).pipe(
           map((response) => TasksActions.executeCodeSuccess({ result: response.data })),
           catchError((error) => {
@@ -133,7 +137,8 @@ export class TasksEffects {
   public submitTaskSolution$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.submitTaskSolution),
-      switchMap(({ taskId, code, languageId }) =>
+      withLatestFrom(this.store.select(selectCurrentTaskLanguageId)),
+      switchMap(([{ taskId, code }, languageId]) =>
         this.taskService
           .submitTask({
             taskId,
@@ -153,20 +158,6 @@ export class TasksEffects {
               );
             }),
           ),
-      ),
-    ),
-  );
-
-  public loadLanguages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(TasksActions.loadLanguages),
-      switchMap(() =>
-        this.taskService.getLanguages().pipe(
-          map((languages) => TasksActions.loadLanguagesSuccess({ languages })),
-          catchError((error) =>
-            of(TasksActions.loadLanguagesFailure({ error: 'Failed to load languages' })),
-          ),
-        ),
       ),
     ),
   );
