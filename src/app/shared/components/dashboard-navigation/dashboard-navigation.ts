@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
+import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { AppState } from '@app/store';
 
 @Component({
   selector: 'app-dashboard-navigation',
@@ -11,7 +14,9 @@ import { LucideAngularModule } from 'lucide-angular';
 export class DashboardNavigation {
   @Output() public toggleSidebar = new EventEmitter<void>();
   @Input({ required: true }) public isSidebarOpen!: boolean;
+  public user = this.store.selectSignal(selectCurrentUser);
 
+  constructor(private store: Store<AppState>) {}
   public onToggleSidebar(): void {
     this.toggleSidebar.emit();
   }

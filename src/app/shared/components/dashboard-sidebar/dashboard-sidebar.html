@@ -15,7 +15,7 @@
             [routerLink]="item.route"
             (click)="onNavigate()"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLinkActiveOptions]="getRouterLinkOptions(item.route)"
             [attr.data-tour-id]="item.tourId"
           >
             <lucide-icon [name]="item.icon" [size]="20" color="currentColor" [strokeWidth]="1.5" />

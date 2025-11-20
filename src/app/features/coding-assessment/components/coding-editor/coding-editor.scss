@@ -1,0 +1,115 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'components' as *;
+@use 'typography' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: $background-dark;
+}
+
+.editor-container {
+  @include flex($direction: column);
+  height: 100%;
+  background-color: $background-dark;
+  overflow: hidden;
+}
+
+.editor-header {
+  @include flex($direction: row, $justify: space-between, $align: center, $gap: 1rem);
+  padding: 0.75rem 1rem;
+  background-color: $base-dark;
+  height: 4rem;
+}
+
+.editor-title {
+  @include h13;
+  color: $background-white;
+
+  @include tablet {
+    @include h11;
+  }
+}
+
+.language-selector {
+  @include flex($direction: row, $align: center, $gap: 0.625rem);
+
+  .language-name {
+    @include h13;
+    color: $background-white;
+  }
+
+  .chevron-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.timer {
+  @include flex($direction: row, $justify: center, $align: center, $gap: 0.5rem);
+  @include typography(0.875rem, 0, 800);
+  background-color: $red-text;
+  color: $green-success-fill;
+  padding: 0.375rem 1.094rem;
+  border-radius: 0.25rem;
+
+  .timer-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  @include desktop {
+    display: none;
+  }
+}
+
+.run-button {
+  @include flex($direction: row, $align: center, $gap: 0.5rem);
+  @include button-base(0.625rem, 1rem, 0.5rem, 1rem, 400, 1.25rem);
+  background-color: $green-success-text;
+  color: $gray-fill;
+  max-width: 9.875rem;
+  display: none;
+
+  &:hover {
+    background-color: $green-stroke-strong;
+  }
+
+  .play-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  @include desktop {
+    display: flex;
+  }
+}
+
+.code-editor {
+  flex: 1;
+  height: 100%;
+
+  ::ng-deep {
+    .monaco-editor .margin {
+      background-color: $base-dark;
+      border: solid 1px $background-dark;
+    }
+
+    .editor-container {
+      height: 100%;
+    }
+
+    .monaco-editor-background {
+      background-color: $background-dark;
+      padding-left: 1rem;
+    }
+
+    .margin-view-overlays .line-numbers {
+      color: $gray-fill;
+      @include typography(1rem, 100%, 700);
+      font-family: 'Courier New', Courier, monospace;
+    }
+  }
+}

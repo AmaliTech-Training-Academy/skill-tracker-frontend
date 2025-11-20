@@ -89,7 +89,7 @@ export class Dashboard implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (!this.shepherdService.isActive && this.user()?.tourStatus === TourGuide.IN_PROGRESS) {
+    if (!this.shepherdService.isActive && this.user()?.tourStatus === TourGuide.NOT_STARTED) {
       this.startTour();
     }
   }
@@ -108,7 +108,7 @@ export class Dashboard implements OnInit, AfterViewInit {
   }
 
   public get userName(): string {
-    return this.user()?.username || 'User';
+    return this.user()?.username || '';
   }
 
   public getDashboardAnalytics(): void {

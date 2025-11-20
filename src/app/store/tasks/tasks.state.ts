@@ -14,7 +14,8 @@ export interface TasksState {
   timer: {
     isRunning: boolean;
     remainingSeconds: number;
-    totalSeconds: number;
+    endTime: number | null;
+    taskId: string | null;
   };
 }
 
@@ -22,7 +23,7 @@ export const initialTasksState: TasksState = {
   pendingTasks: [],
   completedTasks: [],
   currentTask: null,
-  skills: ['All Skills', 'HTML', 'CSS', 'Data Structures', 'Python', 'JavaScript'],
+  skills: ['All Skills'],
   timeRanges: ['All Periods', 'Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'Older'],
   selectedSkill: 'All Skills',
   selectedTimeRange: CompletedPeriod.ALL_PERIODS,
@@ -32,6 +33,7 @@ export const initialTasksState: TasksState = {
   timer: {
     isRunning: false,
     remainingSeconds: 0,
-    totalSeconds: 0,
+    endTime: null,
+    taskId: null,
   },
 };

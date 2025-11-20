@@ -41,4 +41,8 @@ export class DashboardSidebar {
     if (this.isSubmitting()) return;
     this.store.dispatch(logout());
   }
+
+  public getRouterLinkOptions(route: string): { exact: boolean } {
+    return { exact: route !== '/dashboard/tasks' };
+  }
 }

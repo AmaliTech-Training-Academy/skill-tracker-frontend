@@ -31,6 +31,7 @@ export const routes: Routes = [
 
       {
         path: 'reset-password',
+        canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
       },

@@ -1,10 +1,42 @@
-<div class="assessment-container">
-  @if (!assessmentStarted()) {
-    <app-challenge-description [task]="mockTask()" (startTask)="onStartTask()" />
-  } @else {
-    <div class="coding-workspace-placeholder">
-      <h2>Coding View</h2>
-      <p>Editor and Console will be added in the pr.</p>
-    </div>
+<main class="assessment-container" aria-label="Coding Assessment">
+  @switch (viewState()) {
+    @case ('loading') {
+      <div class="loading-container" role="status" aria-live="polite">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p class="loading-text">Loading task...</p>
+      </div>
+    }
+    @case ('description') {
+      @if (currentTask(); as task) {
+        <section class="mobile-description-view" aria-label="Task Description">
+          <app-challenge-description [task]="task" (startTask)="onStartTask()" />
+        </section>
+        <section class="coding-workspace-desktop" aria-label="Coding Workspace">
+          <div class="desktop-top-row">
+            <app-challenge-description
+              class="desktop-description-panel"
+              [task]="task"
+              (startTask)="onStartTask()"
+            />
+            <app-coding-editor
+              class="desktop-editor"
+              [task]="task"
+              (codeChanged)="onCodeChanged($event)"
+            />
+          </div>
+        </section>
+      }
+    }
+    @case ('coding') {
+      @if (currentTask(); as task) {
+        <section class="coding-workspace-mobile" aria-label="Code Editor">
+          <app-coding-editor
+            class="mobile-editor"
+            [task]="task"
+            (codeChanged)="onCodeChanged($event)"
+          />
+        </section>
+      }
+    }
   }
-</div>
+</main>

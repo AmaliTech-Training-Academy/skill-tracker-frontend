@@ -101,21 +101,27 @@ export const tasksReducer = createReducer(
       timer: {
         isRunning: false,
         remainingSeconds: 0,
-        totalSeconds: 0,
+        endTime: null,
+        taskId: null,
       },
     }),
   ),
 
-  on(TasksActions.startTimer, (state, { durationMinutes }): TasksState => {
+  on(TasksActions.startTimer, (state, { durationMinutes, taskId }): TasksState => {
+    if (state.timer.isRunning && state.timer.taskId === taskId) {
+      return state;
+    }
+
     const totalSeconds = durationMinutes * 60;
-    return {
-      ...state,
-      timer: {
-        isRunning: true,
-        remainingSeconds: totalSeconds,
-        totalSeconds,
-      },
+    const endTime = Date.now() + totalSeconds * 1000;
+    const timerState = {
+      isRunning: true,
+      remainingSeconds: totalSeconds,
+      endTime,
+      taskId,
     };
+
+    return { ...state, timer: timerState };
   }),
 
   on(
@@ -133,10 +139,7 @@ export const tasksReducer = createReducer(
     TasksActions.stopTimer,
     (state): TasksState => ({
       ...state,
-      timer: {
-        ...state.timer,
-        isRunning: false,
-      },
+      timer: { ...state.timer, isRunning: false },
     }),
   ),
 
@@ -144,11 +147,15 @@ export const tasksReducer = createReducer(
     TasksActions.timerExpired,
     (state): TasksState => ({
       ...state,
-      timer: {
-        ...state.timer,
-        isRunning: false,
-        remainingSeconds: 0,
-      },
+      timer: { ...state.timer, isRunning: false, remainingSeconds: 0 },
+    }),
+  ),
+
+  on(
+    TasksActions.restoreTimerSuccess,
+    (state, { timer }): TasksState => ({
+      ...state,
+      timer,
     }),
   ),
 );
