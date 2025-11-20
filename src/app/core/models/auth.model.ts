@@ -44,6 +44,7 @@ export enum UserState {
 }
 
 export enum TourGuide {
+  NOT_STARTED = 'NOT_STARTED',
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
 }
@@ -71,6 +72,7 @@ export interface UserApiResponse {
 export interface User {
   id: string;
   email: string;
+  avatarUrl?: string;
   username: string | null;
   role: UserRole;
   state: UserState;

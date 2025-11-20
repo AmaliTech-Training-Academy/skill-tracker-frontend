@@ -8,6 +8,7 @@ import {
   LoginRequest,
   ResetPasswordRequest,
   CompleteOnboardingRequest,
+  TourGuide,
 } from '@app/core';
 
 export const registerUser = createAction(
@@ -136,7 +137,10 @@ export const resetPasswordFailure = createAction(
   '[Auth/Password] Reset Password Failure',
   props<{ error: AppError }>(),
 );
-export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
+export const updateTourStatus = createAction(
+  '[Auth/Tour] Update Tour Status',
+  props<{ tourStatus: TourGuide }>(),
+);
 
 export const updateTourStatusSuccess = createAction(
   '[Auth/Tour] Update Tour Status Success',
