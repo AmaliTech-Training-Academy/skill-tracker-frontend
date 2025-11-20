@@ -78,9 +78,9 @@ describe('TasksEffects', () => {
     });
 
     effects = TestBed.inject(TasksEffects);
-    taskService = TestBed.inject(TaskService) as any;
-    toastService = TestBed.inject(ToastService) as any;
-    router = TestBed.inject(Router) as any;
+    taskService = taskServiceSpy;
+    toastService = toastServiceSpy;
+    router = routerSpy;
     store = TestBed.inject(MockStore);
   });
 
