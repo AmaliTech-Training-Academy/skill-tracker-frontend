@@ -176,15 +176,53 @@ export interface TaskExample {
   explanation?: string;
 }
 
-export interface CodingTask {
-  id: string;
-  title: string;
-  description: string;
-  examples: TaskExample[];
-  skill: string;
-  difficulty: string;
-  estimatedDuration: number;
-  starterCode: string;
-  language: string;
-  xp: number;
+export interface CodeExecutionRequest {
+  taskId: string;
+  code: string;
+  languageId: number;
+}
+
+export interface TestResult {
+  passed: boolean;
+  input: string;
+  expectedOutput: string;
+  actualOutput: string;
+  executionTimeMs: number;
+  memoryUsedKb: number;
+  statusDescription: string;
+}
+
+export interface CodeExecutionResponse {
+  testResults: TestResult[];
+  allTestsPassed: boolean;
+  testsPassed: number;
+  testsTotal: number;
+  stdout: string;
+  stderr: string | null;
+  avgExecutionTimeMs: number;
+  avgMemoryUsedKb: number;
+}
+
+export interface TaskSubmission {
+  taskId: string;
+  answer: {
+    answerType: string;
+    code: string;
+    languageId: number;
+  };
+}
+
+export interface SubmissionResponse {
+  submissionId: string;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  feedback?: Record<string, unknown>;
+  isCorrect?: boolean;
+  scoreEarned?: number;
+  submittedAt?: string;
+  evaluatedAt?: string;
+}
+
+export interface ProgrammingLanguage {
+  id: number;
+  name: string;
 }

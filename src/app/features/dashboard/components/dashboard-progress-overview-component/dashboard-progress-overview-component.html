@@ -17,17 +17,14 @@
           <p>View:</p>
 
           <div class="button-group" role="group">
-            <button [class.active]="selectedPeriod === 'weekly'" (click)="onSelectPeriod('daily')">
+            <button [class.active]="selectedPeriod === 'daily'" (click)="onSelectPeriod('daily')">
               Daily
             </button>
-            <button
-              [class.active]="selectedPeriod === 'monthly'"
-              (click)="onSelectPeriod('weekly')"
-            >
+            <button [class.active]="selectedPeriod === 'weekly'" (click)="onSelectPeriod('weekly')">
               Weekly
             </button>
             <button
-              [class.active]="selectedPeriod === 'yearly'"
+              [class.active]="selectedPeriod === 'monthly'"
               (click)="onSelectPeriod('monthly')"
             >
               Monthly
@@ -55,6 +52,8 @@
         [totalXp]="firstSkill.currentLevelTotalXp"
         [levelName]="firstSkill?.nextLevel ?? ''"
       />
+    } @else {
+      <app-progress-bar [currentXp]="0" [totalXp]="0" levelName="" />
     }
     <app-progress-chart [data]="progressChartData" />
   </section>

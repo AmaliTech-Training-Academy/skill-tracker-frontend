@@ -31,6 +31,7 @@ export const routes: Routes = [
 
       {
         path: 'reset-password',
+        canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
       },
@@ -81,6 +82,11 @@ export const routes: Routes = [
         path: 'tasks/coding-assessment/:taskId',
         loadComponent: () =>
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
+      },
+      {
+        path: 'tasks/multiple-choice/:id',
+        loadComponent: () =>
+          import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
       },
     ],
   },

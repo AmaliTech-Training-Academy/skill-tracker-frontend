@@ -8,6 +8,10 @@ import {
   Task,
   TaskPaginationParams,
   SuggestedTasksParams,
+  CodeExecutionRequest,
+  CodeExecutionResponse,
+  TaskSubmission,
+  SubmissionResponse,
 } from '../../../core/models/tasks-model';
 import { ApiResponse } from '@app/core';
 import { ApiService } from '../../../core/services/api/api-service';
@@ -150,6 +154,28 @@ export class TaskService {
 
   public clearTimerStorage(): void {
     localStorage.removeItem('taskTimer');
+  }
+
+  public executeCode(
+    request: CodeExecutionRequest,
+  ): Observable<ApiResponse<CodeExecutionResponse>> {
+    return this.apiService
+      .post<ApiResponse<CodeExecutionResponse>>(APP_CONSTANTS.API_ENDPOINTS.RUN_CODE, request)
+      .pipe(catchError(this.handleError));
+  }
+
+  public submitTask(submission: TaskSubmission): Observable<ApiResponse<SubmissionResponse>> {
+    return this.apiService
+      .post<ApiResponse<SubmissionResponse>>(APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS, submission)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getSubmissionStatus(submissionId: string): Observable<ApiResponse<SubmissionResponse>> {
+    return this.apiService
+      .get<
+        ApiResponse<SubmissionResponse>
+      >(`${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/${submissionId}`)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError = (error: unknown): Observable<never> => {
