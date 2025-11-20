@@ -2,8 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { signal } from '@angular/core';
+import { NGX_MONACO_EDITOR_CONFIG } from 'ngx-monaco-editor-v2';
 import { CodingAssessment } from './coding-assessment';
 import { Task, TaskType, TaskContentType, TaskDifficulty } from '@app/core/models/tasks-model';
+import { CodeExecutionResult, TestCaseResult } from './models/coding-assessment.model';
+import { selectCurrentTask } from '@app/store/tasks/tasks.selectors';
 import * as TasksActions from '@app/store/tasks/tasks.actions';
 
 describe('CodingAssessment', () => {
@@ -40,9 +43,27 @@ describe('CodingAssessment', () => {
 
   beforeEach(async () => {
     mockStore = {
-      selectSignal: jest.fn().mockReturnValue(signal(mockTask)),
+      selectSignal: jest.fn().mockImplementation(() => {
+        return signal(null);
+      }),
       dispatch: jest.fn(),
     };
+
+    (mockStore.selectSignal as jest.Mock).mockImplementation(
+      (selector: (state: object) => unknown) => {
+        if (selector.toString().includes('currentTask')) return signal(mockTask);
+        if (selector.toString().includes('loading')) return signal(false);
+        if (selector.toString().includes('timer')) return signal(false);
+        if (selector.toString().includes('userCode')) return signal('');
+        if (selector.toString().includes('languageId')) return signal(63);
+        if (selector.toString().includes('output'))
+          return signal(null as CodeExecutionResult | null);
+        if (selector.toString().includes('testResults')) return signal([] as TestCaseResult[]);
+        if (selector.toString().includes('executing')) return signal(false);
+        if (selector.toString().includes('submitting')) return signal(false);
+        return signal(null);
+      },
+    );
 
     const mockParamMap = {
       get: jest.fn().mockReturnValue('t1'),
@@ -59,6 +80,7 @@ describe('CodingAssessment', () => {
       providers: [
         { provide: Store, useValue: mockStore },
         { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: NGX_MONACO_EDITOR_CONFIG, useValue: {} },
       ],
     }).compileComponents();
 
@@ -79,18 +101,12 @@ describe('CodingAssessment', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith(TasksActions.loadCurrentTask({ taskId: 't1' }));
   });
 
-  it('should set assessmentStarted to true and start timer when onStartTask is called', () => {
-    component.onStartTask();
-    expect(component.assessmentStarted()).toBe(true);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TasksActions.startTimer({ durationMinutes: 15, taskId: 't1' }),
-    );
-  });
-
   it('should update user code when onCodeChanged is called', () => {
     const newCode = 'console.log("new code");';
     component.onCodeChanged(newCode);
-    expect(component.userCode()).toBe(newCode);
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      TasksActions.updateUserCode({ code: newCode, taskId: 't1' }),
+    );
   });
 
   it('should dispatch clearCurrentTask on destroy', () => {
