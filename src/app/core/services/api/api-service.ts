@@ -40,6 +40,14 @@ export class ApiService {
     return this.requestWithBody('put', url, body, options);
   }
 
+  public patch<Res, Req = unknown>(
+    url: string,
+    body: Req,
+    options: ApiRequestOptions = {},
+  ): Observable<Res> {
+    return this.requestWithBody('patch', url, body, options);
+  }
+
   public delete(url: string, options: ApiRequestOptions = {}): Observable<void> {
     return this.http.delete<void>(this.buildApiUrl(url), this.mergeOptions(options));
   }
