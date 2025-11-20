@@ -24,8 +24,6 @@ import {
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { QuizProgress } from '@app/core/models/mcq-model';
 
-
-
 @Component({
   selector: 'app-multiple-choice',
   standalone: true,
