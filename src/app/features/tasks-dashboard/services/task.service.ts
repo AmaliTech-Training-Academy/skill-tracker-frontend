@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError, interval, of, merge } from 'rxjs';
-import { map, takeWhile, takeUntil } from 'rxjs/operators';
+import { map, takeWhile, takeUntil, scan } from 'rxjs/operators';
 import * as TasksActions from '../../../store/tasks/tasks.actions';
 import {
   GroupedTasksResponse,
@@ -74,7 +74,7 @@ export class TaskService {
 
     const totalSeconds = durationMinutes * SECONDS_PER_MINUTE;
     return interval(TIMER_INTERVAL_MS).pipe(
-      map((tick) => totalSeconds - tick - TIMER_TICK_DECREMENT),
+      scan((remainingSeconds) => remainingSeconds - TIMER_TICK_DECREMENT, totalSeconds),
       takeWhile((remainingSeconds) => remainingSeconds >= MINIMUM_SECONDS, true),
       map((remainingSeconds) => ({
         remainingSeconds: Math.max(MINIMUM_SECONDS, remainingSeconds),
@@ -98,7 +98,7 @@ export class TaskService {
     const MINIMUM_SECONDS = 0;
 
     return interval(TIMER_INTERVAL_MS).pipe(
-      map((tick) => remainingSeconds - tick - TIMER_TICK_DECREMENT),
+      scan((remaining) => remaining - TIMER_TICK_DECREMENT, remainingSeconds),
       takeWhile((remaining) => remaining >= MINIMUM_SECONDS, true),
       takeUntil(cancel$),
       map((remaining) => ({
