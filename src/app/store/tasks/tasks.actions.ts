@@ -44,7 +44,7 @@ export const clearCurrentTask = createAction('[Coding Assessment] Clear Current 
 
 export const startTimer = createAction(
   '[Coding Assessment] Start Timer',
-  props<{ durationMinutes: number }>(),
+  props<{ durationMinutes: number; taskId: string }>(),
 );
 
 export const updateTimer = createAction(
@@ -55,3 +55,12 @@ export const updateTimer = createAction(
 export const stopTimer = createAction('[Timer] Stop Timer');
 
 export const timerExpired = createAction('[Timer] Timer Expired');
+
+export const restoreTimer = createAction('[App] Restore Timer');
+
+export const restoreTimerSuccess = createAction(
+  '[Timer] Restore Timer Success',
+  props<{
+    timer: { isRunning: boolean; remainingSeconds: number; endTime: number; taskId: string };
+  }>(),
+);

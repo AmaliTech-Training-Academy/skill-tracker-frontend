@@ -72,13 +72,45 @@ export class TasksEffects {
     ),
   );
 
+  public restoreTimer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.restoreTimer),
+      switchMap(() =>
+        this.taskService.restoreTimerFromStorage(
+          this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
+        ),
+      ),
+    ),
+  );
+
   public timerExpired$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(TasksActions.timerExpired),
-        tap(() =>
-          this.toastService.showWarning('Time Up!', 'Your time for this task has expired.'),
-        ),
+        tap(() => {
+          this.toastService.showWarning('Time Up!', 'Your time for this task has expired.');
+          this.taskService.clearTimerStorage();
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public saveTimerState$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TasksActions.startTimer),
+        tap(({ durationMinutes, taskId }) => {
+          this.taskService.saveTimerState(durationMinutes, taskId);
+        }),
+      ),
+    { dispatch: false },
+  );
+
+  public clearTimerStorage$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask),
+        tap(() => this.taskService.clearTimerStorage()),
       ),
     { dispatch: false },
   );
