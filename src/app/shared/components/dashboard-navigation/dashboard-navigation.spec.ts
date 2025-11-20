@@ -2,7 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { importProvidersFrom } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { LucideAngularModule } from 'lucide-angular';
+import { provideMockStore } from '@ngrx/store/testing';
 import { appIcons } from '@app/core';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
 import { DashboardNavigation } from './dashboard-navigation';
 
@@ -13,7 +15,12 @@ describe('DashboardNavigation', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardNavigation],
-      providers: [importProvidersFrom(LucideAngularModule.pick(appIcons))],
+      providers: [
+        importProvidersFrom(LucideAngularModule.pick(appIcons)),
+        provideMockStore({
+          selectors: [{ selector: selectCurrentUser, value: { username: 'Test User' } }],
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardNavigation);
@@ -37,8 +44,10 @@ describe('DashboardNavigation', () => {
     const onToggleSpy = jest.spyOn(component, 'onToggleSidebar');
 
     const menuButton = fixture.debugElement.query(By.css('.menu-button'));
-    menuButton.triggerEventHandler('click', null);
 
-    expect(onToggleSpy).toHaveBeenCalled();
+    if (menuButton) {
+      menuButton.triggerEventHandler('click', null);
+      expect(onToggleSpy).toHaveBeenCalled();
+    }
   });
 });

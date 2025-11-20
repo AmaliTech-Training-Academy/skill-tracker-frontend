@@ -26,19 +26,21 @@
       </button>
     </div>
 
-    <div class="navbar-profile">
-      <img
-        class="navbar-profile--avatar"
-        src="/assets/profile-avatar.png"
-        alt="Profile picture of Stephen Opoku"
-        loading="lazy"
-        width="42"
-        height="42"
-      />
-      <div>
-        <a href="#" class="navbar-profile--name">Stephen Opoku</a>
-        <p class="navbar-profile--type">Free</p>
+    @if (user()) {
+      <div class="navbar-profile">
+        <img
+          class="navbar-profile--avatar"
+          [src]="user()?.avatarUrl || '/assets/fallback-profile-icon.png'"
+          [alt]="'Profile picture of ' + (user()?.username || user()?.email)"
+          loading="lazy"
+          width="40"
+          height="40"
+        />
+        <div>
+          <p class="navbar-profile--name">{{ user()?.username || user()?.email }}</p>
+          <p class="navbar-profile--type">{{ user()?.premiumTier }}</p>
+        </div>
       </div>
-    </div>
+    }
   </div>
 </nav>
