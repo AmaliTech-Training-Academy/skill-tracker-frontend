@@ -79,7 +79,6 @@ export class MultipleChoice implements OnInit, OnDestroy {
           this.saveProgress();
           this.startTimer();
         } else if (error) {
-          console.error('Quiz failed to load:', error);
           this.clearProgress();
         }
         this.cdr.detectChanges();
@@ -128,39 +127,32 @@ export class MultipleChoice implements OnInit, OnDestroy {
     };
 
     localStorage.setItem(this.storageKey, JSON.stringify(progress));
-   
   }
 
   private restoreProgress(): boolean {
-    try {
-      const savedData = localStorage.getItem(this.storageKey);
-      if (!savedData) return false;
+    const savedData = localStorage.getItem(this.storageKey);
+    if (!savedData) return false;
 
-      const progress: QuizProgress = JSON.parse(savedData);
+    const progress: QuizProgress = JSON.parse(savedData);
 
-      if (progress.isQuizComplete) {
-        this.clearProgress();
-        return false;
-      }
-
-      this.questions = progress.questions;
-      this.currentQuestionIndex = progress.currentQuestionIndex;
-      this.selectedAnswers = progress.selectedAnswers;
-      this.timeLeft = progress.timeLeft;
-      this.totalTimeInSeconds = progress.totalTimeInSeconds;
-      this.isQuizComplete = progress.isQuizComplete;
-
-      if (!this.isQuizComplete && this.timeLeft > 0) {
-        this.startTimer();
-      }
-
-      this.cdr.detectChanges();
-      return true;
-    } catch (error) {
-      console.error('Failed to restore quiz progress:', error);
+    if (progress.isQuizComplete) {
       this.clearProgress();
       return false;
     }
+
+    this.questions = progress.questions;
+    this.currentQuestionIndex = progress.currentQuestionIndex;
+    this.selectedAnswers = progress.selectedAnswers;
+    this.timeLeft = progress.timeLeft;
+    this.totalTimeInSeconds = progress.totalTimeInSeconds;
+    this.isQuizComplete = progress.isQuizComplete;
+
+    if (!this.isQuizComplete && this.timeLeft > 0) {
+      this.startTimer();
+    }
+
+    this.cdr.detectChanges();
+    return true;
   }
 
   private clearProgress(): void {
