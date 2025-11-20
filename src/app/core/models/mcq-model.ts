@@ -23,3 +23,13 @@ export interface McqResponse {
     traceId: string;
   };
 }
+
+export interface QuizProgress {
+  questions: McqQuestion[];
+  currentQuestionIndex: number;
+  selectedAnswers: (number | null)[];
+  timeLeft: number;
+  totalTimeInSeconds: number;
+  isQuizComplete: boolean;
+  timestamp: number;
+}

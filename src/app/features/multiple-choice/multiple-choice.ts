@@ -22,16 +22,9 @@ import {
   selectMcqError,
 } from '@app/store/mcqs/mcq.selectors';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { QuizProgress } from '@app/core/models/mcq-model';
 
-interface QuizProgress {
-  questions: McqQuestion[];
-  currentQuestionIndex: number;
-  selectedAnswers: (number | null)[];
-  timeLeft: number;
-  totalTimeInSeconds: number;
-  isQuizComplete: boolean;
-  timestamp: number;
-}
+
 
 @Component({
   selector: 'app-multiple-choice',
