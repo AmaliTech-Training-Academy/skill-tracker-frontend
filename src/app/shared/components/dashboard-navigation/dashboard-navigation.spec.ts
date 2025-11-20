@@ -48,8 +48,6 @@ describe('DashboardNavigation', () => {
     if (menuButton) {
       menuButton.triggerEventHandler('click', null);
       expect(onToggleSpy).toHaveBeenCalled();
-    } else {
-      console.warn('Menu button not found in template, skipping click test');
     }
   });
 });
