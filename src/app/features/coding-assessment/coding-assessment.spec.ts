@@ -83,7 +83,7 @@ describe('CodingAssessment', () => {
     component.onStartTask();
     expect(component.assessmentStarted()).toBe(true);
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      TasksActions.startTimer({ durationMinutes: 15 }),
+      TasksActions.startTimer({ durationMinutes: 15, taskId: 't1' }),
     );
   });
 
