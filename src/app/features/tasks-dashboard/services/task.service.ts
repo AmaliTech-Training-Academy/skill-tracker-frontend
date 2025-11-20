@@ -8,11 +8,17 @@ import {
   Task,
   TaskPaginationParams,
   SuggestedTasksParams,
+  CodeExecutionRequest,
+  CodeExecutionResponse,
+  TaskSubmission,
+  SubmissionResponse,
+  ProgrammingLanguage,
 } from '../../../core/models/tasks-model';
 import { ApiResponse } from '@app/core';
 import { ApiService } from '../../../core/services/api/api-service';
 import { ErrorHandlerService } from '../../../core/services/error/error-handler';
 import { APP_CONSTANTS } from '../../../core/constants/app.constants';
+import { PROGRAMMING_LANGUAGES } from '../../../core/constants/programming-languages';
 
 @Injectable({
   providedIn: 'root',
@@ -150,6 +156,32 @@ export class TaskService {
 
   public clearTimerStorage(): void {
     localStorage.removeItem('taskTimer');
+  }
+
+  public executeCode(
+    request: CodeExecutionRequest,
+  ): Observable<ApiResponse<CodeExecutionResponse>> {
+    return this.apiService
+      .post<ApiResponse<CodeExecutionResponse>>(APP_CONSTANTS.API_ENDPOINTS.RUN_CODE, request)
+      .pipe(catchError(this.handleError));
+  }
+
+  public submitTask(submission: TaskSubmission): Observable<ApiResponse<SubmissionResponse>> {
+    return this.apiService
+      .post<ApiResponse<SubmissionResponse>>(APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS, submission)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getSubmissionStatus(submissionId: string): Observable<ApiResponse<SubmissionResponse>> {
+    return this.apiService
+      .get<
+        ApiResponse<SubmissionResponse>
+      >(`${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/${submissionId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getLanguages(): Observable<ProgrammingLanguage[]> {
+    return of(PROGRAMMING_LANGUAGES);
   }
 
   private handleError = (error: unknown): Observable<never> => {
