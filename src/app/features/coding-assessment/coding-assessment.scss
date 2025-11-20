@@ -51,6 +51,10 @@
     }
   }
 
+  .coding-workspace-desktop {
+    display: none;
+  }
+
   @include desktop {
     .mobile-description-view,
     .coding-workspace-mobile {

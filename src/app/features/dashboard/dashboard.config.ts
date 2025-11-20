@@ -3,6 +3,7 @@ import { ShepherdService } from 'angular-shepherd';
 import { Store } from '@ngrx/store';
 import { AppState } from '@app/store/app.state';
 import { updateTourStatus } from '@app/store/auth/auth.actions';
+import { TourGuide } from '@app/core';
 
 export const STEPS_BUTTONS = {
   back: {
@@ -47,7 +48,7 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
         {
           text: 'Skip Tour',
           action: () => {
-            store.dispatch(updateTourStatus());
+            store.dispatch(updateTourStatus({ tourStatus: TourGuide.COMPLETED }));
             service.cancel();
           },
           classes: 'shepherd-button-secondary',
@@ -106,7 +107,7 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
       },
       buttons: [STEPS_BUTTONS.cancel, STEPS_BUTTONS.finish],
       action: () => {
-        store.dispatch(updateTourStatus());
+        store.dispatch(updateTourStatus({ tourStatus: TourGuide.COMPLETED }));
       },
       id: 'skill-arena-link',
       title: 'Community',

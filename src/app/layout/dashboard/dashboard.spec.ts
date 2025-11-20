@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { LucideAngularModule } from 'lucide-angular';
-import { appIcons } from '@app/core';
+import { appIcons, TourGuide } from '@app/core';
+import { initialAuthState } from '@app/store/auth/auth.state';
 
 import { Dashboard } from './dashboard';
 import { DashboardNavigation, DashboardSidebar } from '@app/shared';
@@ -12,13 +13,24 @@ import { DashboardNavigation, DashboardSidebar } from '@app/shared';
 describe('Dashboard', () => {
   let component: Dashboard;
   let fixture: ComponentFixture<Dashboard>;
+  let store: MockStore;
+
+  const mockAuthState = {
+    ...initialAuthState,
+    user: {
+      ...initialAuthState.user,
+      tourStatus: TourGuide.IN_PROGRESS,
+    },
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
         provideRouter([]),
-        provideMockStore(),
+        provideMockStore({
+          initialState: { auth: mockAuthState },
+        }),
         importProvidersFrom(LucideAngularModule.pick(appIcons)),
       ],
     }).compileComponents();
