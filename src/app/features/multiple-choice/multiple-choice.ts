@@ -71,7 +71,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(({ questions, totalTime, error }) => {
-        if (questions && questions.length > 0 && !restored) {
+        if (questions && questions.length && !restored) {
           this.questions = questions as McqQuestion[];
           this.totalTimeInSeconds = totalTime || 0;
           this.timeLeft = this.totalTimeInSeconds;
