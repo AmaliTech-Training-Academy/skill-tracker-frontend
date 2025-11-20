@@ -1,0 +1,142 @@
+<div class="multiple-choice">
+  <div class="task-title-progress">
+    <div class="task-name">
+      <label for="">Task</label>
+      <img src="assets/left-progress-arrow.png" alt="progress forward" />
+      <label class="task-label" for="">Web Development Knowledge Check</label>
+    </div>
+
+    <div class="progress-bar">
+      @if (questions.length > 0 || isQuizComplete) {
+        <progress [value]="progressValue" max="100"></progress>
+      }
+    </div>
+  </div>
+
+  @if (loading$ | async) {
+    <div class="loading-modal">
+      <div class="lading-container">
+        <p>Generating your quiz questions...</p>
+        <p>Please wait a moment.</p>
+      </div>
+    </div>
+  } @else if (error$ | async; as errorMessage) {
+    <div class="error-modal">
+      <div class="error-message-container">
+        <img src="assets/alert-error.png" alt="error png" />
+        <h1>Quiz Generation Failed</h1>
+        <p>{{ errorMessage }}</p>
+
+        <button class="retry-button" (click)="dispatchQuizRequest()">Generate Quiz Again</button>
+
+        <button class="back-button" routerLink="/dashboard/tasks">Back to tasks</button>
+      </div>
+    </div>
+  } @else if (questions.length > 0) {
+    @if (!isQuizComplete && currentQuestionIndex < questions.length) {
+      <div class="group1">
+        <div class="timer1">
+          <label class="timer-text"
+            ><i>{{ formattedTime }}</i></label
+          >
+          <img src="assets/timer-clock.png" alt="timer icon" />
+        </div>
+      </div>
+    }
+
+    @if (currentQuestionIndex < questions.length) {
+      <div class="questions-content">
+        <div class="task-title-level-data">
+          <h1 class="task-title">Web Development Knowledge Check</h1>
+
+          <div class="task-level">
+            <label class="level" for="">Beginner</label>
+            <div class="point">+50 XP</div>
+
+            @if (!isQuizComplete) {
+              <div class="timer">
+                <label class="timer-text"
+                  ><i>{{ formattedTime }}</i></label
+                >
+                <img src="assets/timer-clock.png" alt="timer icon" />
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="question-track-level">
+          <p>{{ questionTrack }}</p>
+          <label class="level" for="">Beginner</label>
+        </div>
+
+        <div class="question-answers">
+          <h1 class="question">{{ currentQuestion.question_text }}</h1>
+
+          @for (option of currentQuestion.options; track $index) {
+            <div class="question-options">
+              <div
+                class="option"
+                [class.selected]="isOptionSelected($index)"
+                [class.correct-answer]="isQuizComplete && isCorrectAnswer($index)"
+                [class.incorrect-answer]="
+                  isQuizComplete && isOptionSelected($index) && !isCorrectAnswer($index)
+                "
+                [class.disabled]="isQuizComplete"
+                (click)="selectOption($index)"
+              >
+                <label>{{ getOptionLabel($index) }}</label>
+                <p class="answer">{{ option }}</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        @if (isQuizComplete) {
+          <div class="explanation">
+            <div class="explanation-text">
+              <p><b>Explanation: </b>{{ currentQuestion.explanation }}</p>
+            </div>
+          </div>
+        } @else {
+          <div class="hint">
+            <img src="assets/hint-bulb.png" alt="" />
+            <div class="hint-text">
+              <p>
+                Hint: <br />
+                {{ currentQuestion.hint }}
+              </p>
+            </div>
+          </div>
+        }
+
+        <div class="buttons">
+          <button class="previous" (click)="previousQuestion()" [disabled]="!canGoPrevious">
+            < <label for="">Previous</label>
+          </button>
+          <button class="next" (click)="nextQuestion()" [disabled]="!canGoNext">
+            <label for="">Next</label> >
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (isQuizComplete && currentQuestionIndex === questions.length) {
+      <div class="group2">
+        <div class="quiz-complete">
+          <img src="assets/checked-circle.png" alt="checked circle" />
+          <p>Quiz Completed</p>
+          <p class="mark">{{ score }}/{{ questions.length }}</p>
+          <p class="outof">You got {{ score }} out of {{ questions.length }} questions correct</p>
+          <p>Use the arrows to review your questions</p>
+
+          <div class="buttons">
+            <button class="previous" (click)="previousQuestion()" [disabled]="!canGoPrevious">
+              < <label for="">Previous</label>
+            </button>
+            <button class="next" (click)="nextQuestion()"><label for="">Next</label> ></button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</div>

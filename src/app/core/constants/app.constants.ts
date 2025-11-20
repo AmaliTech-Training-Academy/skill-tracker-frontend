@@ -29,7 +29,7 @@ export const APP_CONSTANTS = {
     UPDATE_TOUR_STATUS: '/users/tour-status',
     FORGOT_PASSWORD: '/auth/password/forgot',
     RESET_PASSWORD: '/auth/password/reset',
-    GENERATE_MCQ: '/api/v1/mcq/generate',
+    GENERATE_MCQ: '/generate/mcq',
     PROFILE: '/users/profile/me',
     DASHBOARD_ANALYTICS: '/analytics/dashboard',
     DASHBOARD_RECOMMENDED_TASKS: '/tasks',

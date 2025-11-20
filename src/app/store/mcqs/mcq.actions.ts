@@ -1,9 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { McqGenerationRequest, McqResponse } from '@app/core/models/mcq-model';
+import { McqRetrieveRequest, McqResponse } from '@app/core/models/mcq-model';
 
 export const generateMcqQuiz = createAction(
   '[MCQ] Generate MCQ Quiz',
-  props<{ request: McqGenerationRequest }>(),
+  props<{ request: McqRetrieveRequest }>(),
 );
 
 export const generateMcqQuizSuccess = createAction(
