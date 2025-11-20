@@ -1,9 +1,6 @@
 import { Component, ChangeDetectionStrategy, input, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  CodeExecutionResult,
-  TestCaseResult,
-} from '@app/features/coding-assessment/models/coding-assessment.model';
+import { CodeExecutionResult, TestCaseResult } from '../../models/coding-assessment.model';
 
 @Component({
   selector: 'app-output-console',
