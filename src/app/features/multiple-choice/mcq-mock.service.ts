@@ -1,5 +1,3 @@
-//THIS IS A MOCK SERVICE, IT WILL BE DISCARDED LATER
-
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
 import { McqResponse, McqQuestion } from '@app/core/models/mcq-model';
@@ -113,7 +111,6 @@ export class McqMockService {
           'PUT is the HTTP method typically used to update an existing resource on the server.',
       },
     ],
-    // Add more mock quiz sets with different IDs as needed
     'quiz-angular-basics': [
       {
         question_number: '1',
@@ -164,13 +161,11 @@ export class McqMockService {
   ) {}
 
   public generateQuiz(taskId: string): Observable<McqResponse> {
-    // Simulate network delay (500-1500ms)
     const networkDelay = Math.floor(Math.random() * 1000) + 500;
 
     const questions = this.mockQuizzes[taskId];
 
     if (!questions) {
-      // Return error response if taskId not found
       this.toastService.showError('Quize Error', 'Task could not be found. Try again');
       this.router.navigateByUrl('dashboard/tasks');
 
@@ -187,7 +182,6 @@ export class McqMockService {
       }).pipe(delay(networkDelay));
     }
 
-    // Return success response
     return of({
       success: true,
       message: 'Quiz retrieved successfully',
@@ -201,23 +195,14 @@ export class McqMockService {
     }).pipe(delay(networkDelay));
   }
 
-  /**
-   * Generate a random trace ID for mock responses
-   */
   private generateTraceId(): string {
     return `mock-trace-${Math.random().toString(36).substring(2, 15)}`;
   }
 
-  /**
-   * Helper method to add more mock quizzes dynamically
-   */
   public addMockQuiz(taskId: string, questions: McqQuestion[]): void {
     this.mockQuizzes[taskId] = questions;
   }
 
-  /**
-   * Helper method to get all available mock quiz IDs
-   */
   public getAvailableQuizIds(): string[] {
     return Object.keys(this.mockQuizzes);
   }

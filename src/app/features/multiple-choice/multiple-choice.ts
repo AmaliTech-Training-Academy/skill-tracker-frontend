@@ -127,11 +127,8 @@ export class MultipleChoice implements OnInit, OnDestroy {
       timestamp: Date.now(),
     };
 
-    try {
-      localStorage.setItem(this.storageKey, JSON.stringify(progress));
-    } catch (error) {
-      console.error('Failed to save quiz progress:', error);
-    }
+    localStorage.setItem(this.storageKey, JSON.stringify(progress));
+   
   }
 
   private restoreProgress(): boolean {
@@ -167,11 +164,7 @@ export class MultipleChoice implements OnInit, OnDestroy {
   }
 
   private clearProgress(): void {
-    try {
-      localStorage.removeItem(this.storageKey);
-    } catch (error) {
-      console.error('Failed to clear quiz progress:', error);
-    }
+    localStorage.removeItem(this.storageKey);
   }
 
   private startTimer(): void {
