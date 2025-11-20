@@ -48,6 +48,14 @@ export const tasksReducer = createReducer(
   ),
 
   on(
+    TasksActions.changeSkillFilter,
+    (state, { skill }): TasksState => ({
+      ...state,
+      selectedSkill: skill,
+    }),
+  ),
+
+  on(
     TasksActions.changeTimeRangeFilter,
     (state, { period }): TasksState => ({
       ...state,
@@ -91,21 +99,25 @@ export const tasksReducer = createReducer(
     }),
   ),
 
-  on(
-    TasksActions.clearCurrentTask,
-    (state): TasksState => ({
+  on(TasksActions.clearCurrentTask, (state): TasksState => {
+    if (state.timer.taskId) {
+      localStorage.removeItem(`userCode_${state.timer.taskId}`);
+    }
+    return {
       ...state,
       currentTask: null,
       currentTaskLoading: false,
       error: null,
+      executionResult: null,
+      userCode: '',
       timer: {
         isRunning: false,
         remainingSeconds: 0,
         endTime: null,
         taskId: null,
       },
-    }),
-  ),
+    };
+  }),
 
   on(TasksActions.startTimer, (state, { durationMinutes, taskId }): TasksState => {
     if (state.timer.isRunning && state.timer.taskId === taskId) {
@@ -158,4 +170,101 @@ export const tasksReducer = createReducer(
       timer,
     }),
   ),
+
+  on(
+    TasksActions.executeCode,
+    (state): TasksState => ({
+      ...state,
+      codeExecuting: true,
+      error: null,
+    }),
+  ),
+
+  on(
+    TasksActions.executeCodeSuccess,
+    (state, { result }): TasksState => ({
+      ...state,
+      codeExecuting: false,
+      executionResult: result,
+      error: null,
+    }),
+  ),
+
+  on(
+    TasksActions.executeCodeFailure,
+    (state, { error }): TasksState => ({
+      ...state,
+      codeExecuting: false,
+      error,
+    }),
+  ),
+
+  on(
+    TasksActions.submitTaskSolution,
+    (state): TasksState => ({
+      ...state,
+      submitting: true,
+      error: null,
+    }),
+  ),
+
+  on(
+    TasksActions.submitTaskSolutionSuccess,
+    (state): TasksState => ({
+      ...state,
+      submitting: false,
+      error: null,
+    }),
+  ),
+
+  on(
+    TasksActions.submitTaskSolutionFailure,
+    (state, { error }): TasksState => ({
+      ...state,
+      submitting: false,
+      error,
+    }),
+  ),
+
+  on(
+    TasksActions.loadLanguages,
+    (state): TasksState => ({
+      ...state,
+      languagesLoading: true,
+    }),
+  ),
+
+  on(
+    TasksActions.loadLanguagesSuccess,
+    (state, { languages }): TasksState => ({
+      ...state,
+      languages,
+      languagesLoading: false,
+    }),
+  ),
+
+  on(
+    TasksActions.loadLanguagesFailure,
+    (state, { error }): TasksState => ({
+      ...state,
+      languagesLoading: false,
+      error,
+    }),
+  ),
+
+  on(TasksActions.updateUserCode, (state, { code, taskId }): TasksState => {
+    localStorage.setItem(`userCode_${taskId}`, code);
+    return {
+      ...state,
+      userCode: code,
+    };
+  }),
+
+  on(TasksActions.restoreUserCode, (state, { taskId }): TasksState => {
+    const savedCode = localStorage.getItem(`userCode_${taskId}`) || '';
+    return {
+      ...state,
+      userCode: savedCode,
+    };
+  }),
 );

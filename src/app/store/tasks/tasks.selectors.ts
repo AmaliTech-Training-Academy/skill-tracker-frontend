@@ -21,6 +21,53 @@ export const selectTimerDisplay = createSelector(selectTimer, ({ remainingSecond
 
 export const selectIsTimerRunning = createSelector(selectTimer, ({ isRunning }) => isRunning);
 
+export const selectCodeExecuting = createSelector(
+  selectTasksState,
+  ({ codeExecuting }) => codeExecuting,
+);
+
+export const selectSubmitting = createSelector(selectTasksState, ({ submitting }) => submitting);
+
+export const selectExecutionResult = createSelector(
+  selectTasksState,
+  ({ executionResult }) => executionResult,
+);
+
+export const selectConsoleOutput = createSelector(selectExecutionResult, (result) =>
+  result
+    ? {
+        output: result.stdout || result.stderr || '',
+        type: result.allTestsPassed ? ('success' as const) : ('error' as const),
+        executionTime: result.avgExecutionTimeMs,
+      }
+    : null,
+);
+
+export const selectTestResults = createSelector(
+  selectExecutionResult,
+  (result) =>
+    result?.testResults?.map((test) => ({
+      testCase: {
+        input: test.input,
+        expectedOutput: test.expectedOutput,
+        isHidden: false,
+        description: test.statusDescription,
+      },
+      passed: test.passed,
+      actualOutput: test.actualOutput,
+      feedback: test.statusDescription,
+    })) || [],
+);
+
+export const selectLanguages = createSelector(selectTasksState, ({ languages }) => languages);
+
+export const selectLanguagesLoading = createSelector(
+  selectTasksState,
+  ({ languagesLoading }) => languagesLoading,
+);
+
+export const selectUserCode = createSelector(selectTasksState, ({ userCode }) => userCode);
+
 export const selectTodayTasks = createSelector(
   selectTasksState,
   ({ pendingTasks }) => pendingTasks,

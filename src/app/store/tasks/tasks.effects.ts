@@ -114,4 +114,60 @@ export class TasksEffects {
       ),
     { dispatch: false },
   );
+
+  public executeCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.executeCode),
+      switchMap(({ taskId, code, languageId }) =>
+        this.taskService.executeCode({ taskId, code, languageId }).pipe(
+          map((response) => TasksActions.executeCodeSuccess({ result: response.data })),
+          catchError((error) => {
+            this.toastService.showError('Execution Error', 'Failed to execute code');
+            return of(TasksActions.executeCodeFailure({ error: 'Failed to execute code' }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public submitTaskSolution$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.submitTaskSolution),
+      switchMap(({ taskId, code, languageId }) =>
+        this.taskService
+          .submitTask({
+            taskId,
+            answer: { answerType: 'CODE', code, languageId },
+          })
+          .pipe(
+            map((response) => {
+              this.toastService.showSuccess('Success', 'Solution submitted successfully');
+              return TasksActions.submitTaskSolutionSuccess({
+                submissionId: response.data.submissionId,
+              });
+            }),
+            catchError((error) => {
+              this.toastService.showError('Submission Error', 'Failed to submit solution');
+              return of(
+                TasksActions.submitTaskSolutionFailure({ error: 'Failed to submit solution' }),
+              );
+            }),
+          ),
+      ),
+    ),
+  );
+
+  public loadLanguages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.loadLanguages),
+      switchMap(() =>
+        this.taskService.getLanguages().pipe(
+          map((languages) => TasksActions.loadLanguagesSuccess({ languages })),
+          catchError((error) =>
+            of(TasksActions.loadLanguagesFailure({ error: 'Failed to load languages' })),
+          ),
+        ),
+      ),
+    ),
+  );
 }
