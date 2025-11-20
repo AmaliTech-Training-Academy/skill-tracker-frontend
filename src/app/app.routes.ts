@@ -76,7 +76,6 @@ export const routes: Routes = [
         path: 'tasks',
         loadComponent: () =>
           import('./features/tasks-dashboard/tasks-dashboard').then((c) => c.TasksDashboard),
-         
       },
       {
         path: 'tasks/coding-assessment/:taskId',
