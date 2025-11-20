@@ -35,7 +35,7 @@ describe('ProgressBar', () => {
 
     expect(titleEl.textContent).toContain('Progress to Next Level');
     expect(ratioEl.textContent).toContain('0XP / 100XP');
-    expect(footerEl.textContent).toContain('100XP needed');
+    expect(footerEl.textContent).toContain('100 XP needed');
     expect(fillEl.style.width).toBe('0%');
   });
 
@@ -55,7 +55,7 @@ describe('ProgressBar', () => {
 
     expect(titleEl.textContent).toContain('Progress to Level 5');
     expect(ratioEl.textContent).toContain('50XP / 100XP');
-    expect(footerEl.textContent).toContain('50XP needed');
+    expect(footerEl.textContent).toContain('50 XP needed');
     expect(fillEl.style.width).toBe('50%');
   });
 
@@ -72,7 +72,7 @@ describe('ProgressBar', () => {
     const fillEl = fixture.debugElement.query(By.css('.progress-bar-fill')).nativeElement;
 
     expect(ratioEl.textContent).toContain('1,250XP / 5,000XP');
-    expect(footerEl.textContent).toContain('3,750XP needed');
+    expect(footerEl.textContent).toContain('3,750 XP needed to proceed to the next level');
     expect(fillEl.style.width).toBe('25%');
   });
 
