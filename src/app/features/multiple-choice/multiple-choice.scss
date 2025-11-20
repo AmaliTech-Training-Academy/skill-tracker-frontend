@@ -316,6 +316,7 @@
     left: 0;
     z-index: 1000;
     @include flex(row, center, center);
+
     .error-message-container {
       max-width: 600px;
       width: 90%;
@@ -365,6 +366,7 @@
     left: 0;
     z-index: 1000;
     @include flex(row, center, center);
+
     .loading-container {
       max-width: 600px;
       width: 90%;
@@ -381,6 +383,13 @@
         margin-bottom: 20px;
         margin-inline: auto;
       }
+    }
+
+    img {
+      background-color: rgba($red-stroke-weak, 0.5);
+      margin-bottom: 20px;
+      border-radius: 50%;
+      padding: 10px;
     }
   }
 
@@ -414,7 +423,7 @@
 
           .level,
           .point {
-            display: none; // hidden on tablet
+            display: none;
           }
 
           .timer {
@@ -438,103 +447,24 @@
     }
 
     .error-modal {
-      background-color: rgba(0, 0, 0, 0.5);
-      position: absolute;
-      width: 100%;
-      height: 100vh;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      @include flex(row, center, center);
       .error-message-container {
-        max-width: 600px;
         width: 50%;
         margin-inline: auto;
         margin-block: auto;
         padding: 20px;
-        background-color: $brand-fill;
-        border-radius: 5px;
-        text-align: center;
-
-        h1 {
-          @include h9;
-          color: $gray-text-strong;
-          margin-bottom: 10px;
-          font-weight: 600;
-        }
-
-        p {
-          @include h13;
-          color: $gray-text-weak;
-          margin-bottom: 20px;
-        }
-
-        .retry-button {
-          @include button-primary;
-          margin-block: 20px;
-        }
-
-        .back-button {
-          @include button-outline;
-        }
-      }
-
-      img {
-        background-color: rgba($red-stroke-weak, 0.5);
-        margin-bottom: 20px;
-        border-radius: 50%;
-        padding: 10px;
       }
     }
 
     .loading-modal {
-      position: absolute;
-      width: 100%;
-      height: 100vh;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-      @include flex(row, center, center);
       .loading-container {
-        max-width: 600px;
         width: 50%;
         margin-inline: auto;
         margin-block: auto;
         padding: 20px;
-        background-color: $brand-fill;
-        border-radius: 5px;
-        text-align: center;
-
-        h1 {
-          @include h9;
-          color: $gray-text-strong;
-          margin-bottom: 10px;
-          font-weight: 600;
-        }
-
-        p {
-          @include h13;
-          color: $gray-text-weak;
-          margin-bottom: 20px;
-        }
-      }
-
-      img {
-        background-color: rgba($red-stroke-weak, 0.5);
-        margin-bottom: 20px;
-        border-radius: 50%;
-        padding: 10px;
       }
     }
 
     .questions-content {
-      background-color: $gray-white;
-      width: 100%;
-      margin-inline: auto;
-      margin-block: 25px;
-      padding: 10px 20px;
-      border-radius: 5px;
-
       .task-title-level-data {
         width: 95%;
         margin-inline: auto;

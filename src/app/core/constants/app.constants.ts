@@ -30,6 +30,7 @@ export const APP_CONSTANTS = {
     FORGOT_PASSWORD: '/auth/password/forgot',
     RESET_PASSWORD: '/auth/password/reset',
     GENERATE_MCQ: '/generate/mcq',
+    FETCH_MCQ: 'tasks/getMCQs',
     PROFILE: '/users/profile/me',
     DASHBOARD_ANALYTICS: '/analytics/dashboard',
     DASHBOARD_RECOMMENDED_TASKS: '/tasks',
