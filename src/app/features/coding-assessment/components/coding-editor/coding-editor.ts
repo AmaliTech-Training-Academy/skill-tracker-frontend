@@ -1,13 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  input,
-  output,
-  signal,
-  computed,
-  effect,
-} from '@angular/core';
-import { TitleCasePipe } from '@angular/common';
+import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import type { editor } from 'monaco-editor';
@@ -17,7 +8,7 @@ import { selectTimerDisplay } from '@app/store/tasks/tasks.selectors';
 
 @Component({
   selector: 'app-coding-editor',
-  imports: [FormsModule, MonacoEditorModule, TitleCasePipe],
+  imports: [FormsModule, MonacoEditorModule],
   templateUrl: './coding-editor.html',
   styleUrl: './coding-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,11 +17,11 @@ export class CodingEditor {
   constructor(private store: Store) {}
 
   public readonly task = input.required<Task | null>();
-  public readonly codeContent = signal('');
+  public readonly userCode = input.required<string>();
   public readonly timerDisplay = this.store.selectSignal(selectTimerDisplay);
 
   public readonly codeChanged = output<string>();
-  public readonly runCode = output<string>();
+  public readonly runCode = output<void>();
 
   public readonly codingContent = computed(() => {
     const task = this.task();
@@ -62,23 +53,15 @@ export class CodingEditor {
 
   private editorInstance?: editor.IStandaloneCodeEditor;
 
-  private readonly syncInitialCode = effect(() => {
-    const code = this.initialCode();
-    if (code && code !== this.codeContent()) {
-      this.codeContent.set(code);
-    }
-  });
-
   public onEditorInit(editor: editor.IStandaloneCodeEditor): void {
     this.editorInstance = editor;
   }
 
   public onCodeChange(code: string): void {
-    this.codeContent.set(code);
     this.codeChanged.emit(code);
   }
 
   public onRunCode(): void {
-    this.runCode.emit(this.codeContent());
+    this.runCode.emit();
   }
 }
