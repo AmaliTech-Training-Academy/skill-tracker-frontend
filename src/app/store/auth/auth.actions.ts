@@ -163,3 +163,5 @@ export const checkAuthSessionFailure = createAction(
   '[Auth API] Check Auth Session Failure',
   props<{ error: AppError }>(),
 );
+
+export const updateUserXp = createAction('[Auth] Update User XP', props<{ xpToAdd: number }>());
