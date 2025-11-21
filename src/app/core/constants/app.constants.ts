@@ -1,3 +1,5 @@
+import { HttpContextToken } from '@angular/common/http';
+
 export const APP_CONSTANTS = {
   RETRY: {
     COUNT: 2,
@@ -46,3 +48,5 @@ export const APP_CONSTANTS = {
     },
   },
 } as const;
+
+export const SKIP_ERROR_NOTIFICATION = new HttpContextToken<boolean>(() => false);

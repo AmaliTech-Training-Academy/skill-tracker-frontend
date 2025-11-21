@@ -5,6 +5,7 @@ import { DashboardService } from './dashboard.service';
 import { ApiService } from '../../services/api/api-service';
 import { APP_CONSTANTS } from '../../constants/app.constants';
 import { TrajectoryGranularity } from '../../models/dashboard.model';
+import { HttpContext } from '@angular/common/http';
 
 const mockApiService = {
   get: jest.fn(),
@@ -52,7 +53,13 @@ describe('DashboardService', () => {
 
       service.getDashboardRecommendedTasks().subscribe((response) => {
         expect(response).toEqual(mockResponse);
-        expect(apiService.get).toHaveBeenCalledWith(API_ENDPOINTS.DASHBOARD_RECOMMENDED_TASKS);
+
+        expect(apiService.get).toHaveBeenCalledWith(
+          API_ENDPOINTS.DASHBOARD_RECOMMENDED_TASKS,
+          expect.objectContaining({
+            context: expect.any(HttpContext),
+          }),
+        );
         done();
       });
     });
