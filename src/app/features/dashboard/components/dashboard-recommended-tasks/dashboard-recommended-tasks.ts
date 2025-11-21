@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AppError, RecommendedTaskUI } from '@app/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AppError, RecommendedTaskUI, UserSelectedSkill } from '@app/core';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
 import { DashboardErrorComponent } from '../dashboard-error-component/dashboard-error-component';
 import { RecommendedTasksCard } from '../recommended-tasks-card/recommended-tasks-card';
@@ -21,4 +21,28 @@ export class DashboardRecommendedTasks {
   @Input({ required: true }) public recommendations: RecommendedTaskUI[] = [];
   @Input() public isRecommendedTasksLoading = false;
   @Input() public recommendedTasksError: AppError | null = null;
+  @Input() public userSkills: UserSelectedSkill[] = [];
+  @Input() public selectedSkill: string | null = null;
+  @Output() public selectSkill = new EventEmitter<string>();
+  @Output() public retry = new EventEmitter<void>();
+
+  public get skillOptions(): string[] {
+    return this.userSkills.map((skill) => skill.skillName);
+  }
+
+  public get selectedSkillName(): string {
+    const skill = this.userSkills.find((s) => s.skillId === this.selectedSkill);
+    return skill?.skillName || '';
+  }
+
+  public onSelectSkill(skillName: string): void {
+    const skill = this.userSkills.find((s) => s.skillName === skillName);
+    if (skill) {
+      this.selectSkill.emit(skill.skillId);
+    }
+  }
+
+  public handleRetryClick() {
+    this.retry.emit();
+  }
 }
