@@ -1,7 +1,11 @@
 <section class="recommended-tasks">
   <div class="section-header">
     <h2>Recommended Tasks</h2>
-    <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
+    <app-custom-dropdown
+      [options]="skillOptions"
+      [selectedValue]="selectedSkillName"
+      (selectOption)="onSelectSkill($event.toString())"
+    />
   </div>
   <div class="tasks-list">
     @if (isRecommendedTasksLoading) {

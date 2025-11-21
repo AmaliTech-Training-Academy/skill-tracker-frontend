@@ -20,6 +20,9 @@
       [recommendations]="recommendedTasks()"
       [isRecommendedTasksLoading]="isRecommendedTasksLoading()"
       [recommendedTasksError]="selectRecommendedTasksError()"
+      [userSkills]="userSkills()"
+      [selectedSkill]="selectedSkillId()"
+      (selectSkill)="onSkillChange($event)"
       (retry)="getRecommendedTasks()"
     />
     <app-dashboard-progress-overview-component
