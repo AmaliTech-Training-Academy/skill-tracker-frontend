@@ -22,11 +22,12 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
-                "input": "public"
-              },
-              "src/assets"
+                "input": "node_modules/monaco-editor",
+                "output": "assets/monaco"
+              }
             ],
             "styles": ["node_modules/shepherd.js/dist/css/shepherd.css", "src/styles.scss"],
             "stylePreprocessorOptions": {
@@ -38,13 +39,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "700kB",
                   "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "15kB"
                 }
               ],
               "fileReplacements": [
@@ -87,11 +88,12 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
-                "input": "public"
-              },
-              "src/assets"
+                "input": "node_modules/monaco-editor",
+                "output": "assets/monaco"
+              }
             ],
             "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {

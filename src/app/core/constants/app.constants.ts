@@ -29,6 +29,20 @@ export const APP_CONSTANTS = {
     UPDATE_TOUR_STATUS: '/users/tour-status',
     FORGOT_PASSWORD: '/auth/password/forgot',
     RESET_PASSWORD: '/auth/password/reset',
-    GENERATE_MCQ: '/api/v1/mcq/generate',
+    GENERATE_MCQ: '/generate/mcq',
+    FETCH_MCQ: 'tasks/getMCQs',
+    PROFILE: '/users/profile/me',
+    DASHBOARD_ANALYTICS: '/analytics/dashboard',
+    DASHBOARD_RECOMMENDED_TASKS: '/tasks',
+    DASHBOARD_TRAJECTORY: '/analytics/dashboard/trajectory/{skillId}',
+    SKILLS: '/skills',
+    TASKS: '/tasks',
+    MY_TASKS: '/tasks/my-tasks',
+  },
+  APP_ERRORS: {
+    RESET_TOKEN: {
+      TITLE: 'Reset Error',
+      MESSAGE: 'Reset token is missing. Please try again.',
+    },
   },
 } as const;

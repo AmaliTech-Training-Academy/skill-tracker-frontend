@@ -1,8 +1,5 @@
-export interface McqGenerationRequest {
-  userId: string;
-  interest: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  no_of_questions: number;
+export interface McqRetrieveRequest {
+  taskId: string;
 }
 
 export interface McqQuestion {
@@ -25,4 +22,14 @@ export interface McqResponse {
     timestamp: string;
     traceId: string;
   };
+}
+
+export interface QuizProgress {
+  questions: McqQuestion[];
+  currentQuestionIndex: number;
+  selectedAnswers: (number | null)[];
+  timeLeft: number;
+  totalTimeInSeconds: number;
+  isQuizComplete: boolean;
+  timestamp: number;
 }

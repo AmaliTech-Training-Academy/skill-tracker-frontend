@@ -1,0 +1,66 @@
+@use 'mixins' as *;
+@use 'skeletons' as *;
+
+.task-card-skeleton {
+  @include flex($direction: row, $align: flex-start, $gap: var(--space-md));
+  padding: var(--space-md);
+  border: 1px solid var(--color-gray-fill);
+  border-radius: var(--rounded-sm);
+  background-color: var(--color-white);
+  margin-bottom: var(--space-md);
+}
+
+.icon-wrapper-skeleton {
+  @extend .skeleton-placeholder;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-content-skeleton {
+  flex-grow: 1;
+  @include flex($direction: column, $gap: var(--space-sm));
+  padding-top: 4px;
+}
+
+.title-row-skeleton {
+  @include flex($direction: row, $justify: space-between);
+  width: 100%;
+}
+
+.title-group-skeleton {
+  width: 60%;
+}
+
+.title-skeleton {
+  @extend .skeleton-placeholder;
+  height: 20px;
+  width: 80%;
+  margin-bottom: var(--rounded-sm);
+}
+
+.description-skeleton {
+  height: 14px;
+  width: 100%;
+}
+
+.meta-tags-skeleton {
+  @include flex($direction: row, $gap: var(--space-xs));
+  .tag-skeleton {
+    @extend .skeleton-placeholder;
+    height: 24px;
+    width: 60px;
+  }
+}
+
+.card-footer-skeleton,
+.details-skeleton {
+  @include flex($direction: row, $gap: var(--space-sm));
+
+  .detail-item-skeleton {
+    @extend .skeleton-placeholder;
+    height: 16px;
+    width: 80px;
+  }
+}

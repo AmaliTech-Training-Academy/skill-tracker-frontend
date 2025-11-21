@@ -10,6 +10,7 @@ import {
   CompleteOnboardingRequest,
   UserEmailRequest,
   ResetPasswordRequest,
+  TourGuide,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
@@ -35,8 +36,8 @@ export class AuthService {
   }
 
   public forgotPassword(email: string): Observable<{ message: string }> {
-    const params = new HttpParams().set('email', email);
-    return this.api.post<{ message: string }>(API_ENDPOINTS.FORGOT_PASSWORD, null, { params });
+    const payload = { email };
+    return this.api.post<{ message: string }>(API_ENDPOINTS.FORGOT_PASSWORD, payload);
   }
 
   public verifyEmail({ code, email }: VerifyEmailRequest): Observable<UserResponse> {
@@ -67,8 +68,11 @@ export class AuthService {
     window.location.href = `${this.baseUrl}${API_ENDPOINTS.SOCIAL_LOGIN}/${provider}`;
   }
 
-  public updateTourStatus({ email }: UserEmailRequest): Observable<UserResponse> {
-    const params = new HttpParams().set('email', email);
-    return this.api.post<UserResponse>(API_ENDPOINTS.UPDATE_TOUR_STATUS, null, { params });
+  public updateTourStatus(tourStatus: TourGuide): Observable<UserResponse> {
+    return this.api.patch<UserResponse>(API_ENDPOINTS.UPDATE_TOUR_STATUS, { tourStatus });
+  }
+
+  public getUserProfile(): Observable<UserResponse> {
+    return this.api.get<UserResponse>(API_ENDPOINTS.PROFILE);
   }
 }

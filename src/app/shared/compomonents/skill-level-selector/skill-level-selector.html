@@ -1,6 +1,10 @@
 <div class="skill-item">
   <div class="skill-info">
-    <img [src]="skillIcon" class="skill-icon" [alt]="skillName" />
+    @if (skillIcon) {
+      <img [src]="skillIcon" class="skill-icon" [alt]="skillName" />
+    } @else {
+      <span class="skill-icon emoji-icon">❓</span>
+    }
     <span class="skill-name">{{ skillName }}</span>
   </div>
 

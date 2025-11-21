@@ -41,6 +41,7 @@
   --color-background-overlay: #{$background-overlay};
   --color-white: #{$white};
   --color-text-gray: #{$text-gray};
+  --color-gray-background-weak: #{$gray-background-weak};
 
   --space-xs: #{$space-xs};
   --space-sm: #{$space-sm};
@@ -58,6 +59,7 @@
 
 html {
   font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../api/api-service';
-import { McqGenerationRequest, McqResponse } from '@app/core/models/mcq-model';
+import { McqRetrieveRequest, McqResponse } from '@app/core/models/mcq-model';
+import { McqMockService } from '@app/features/multiple-choice/mcq-mock.service';
 
 import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
@@ -9,9 +10,20 @@ import { APP_CONSTANTS } from '@app/core/constants/app.constants';
   providedIn: 'root',
 })
 export class McqGenerationService {
-  constructor(private readonly api: ApiService) {}
+  private readonly useMock = true;
+  constructor(
+    private readonly api: ApiService,
+    private readonly mockService: McqMockService,
+  ) {}
 
-  public generateQuiz(payload: McqGenerationRequest): Observable<McqResponse> {
-    return this.api.post<McqResponse>(APP_CONSTANTS.API_ENDPOINTS.GENERATE_MCQ, payload);
+  public fetchQuiz(payload: McqRetrieveRequest): Observable<McqResponse> {
+    if (this.useMock) {
+      return this.mockService.fetchQuiz(payload.taskId);
+    }
+
+    return this.api.post<McqResponse>(
+      `${APP_CONSTANTS.API_ENDPOINTS.FETCH_MCQ}/${payload.taskId}`,
+      {},
+    );
   }
 }

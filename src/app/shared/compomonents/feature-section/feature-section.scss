@@ -3,7 +3,7 @@
 @use 'typography' as *;
 
 .features-section {
-  @include flex(column, center, center, 4rem);
+  @include flex(column, center, center, 2rem);
   padding: 4rem 0 0;
   text-align: center;
   width: 100%;
@@ -16,8 +16,12 @@
   max-width: 700px;
 
   .section-title {
-    @include h5;
+    @include h8;
     color: $gray-text-strong;
+
+    @include tablet {
+      @include h5;
+    }
   }
 
   .section-subtitle {

@@ -17,7 +17,7 @@ export class McqGenerationEffects {
       ofType(McqActions.generateMcqQuiz),
 
       switchMap((action) =>
-        this.mcqService.generateQuiz(action.request).pipe(
+        this.mcqService.fetchQuiz(action.request).pipe(
           map((response) => McqActions.generateMcqQuizSuccess({ response })),
 
           catchError((error) => {

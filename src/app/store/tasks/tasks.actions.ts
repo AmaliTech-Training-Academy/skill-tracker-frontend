@@ -1,11 +1,11 @@
 import { createAction, props } from '@ngrx/store';
-import { Task } from '@app/core/models/tasks-model';
+import { GroupedTasksResponse, CompletedPeriod, Task } from '@app/core/models/tasks-model';
 
 export const loadTasks = createAction('[Tasks Dashboard] Load Tasks');
 
 export const loadTasksSuccess = createAction(
   '[Tasks API] Load Tasks Success',
-  props<{ todayTasks: Task[]; previousTasks: Task[] }>(),
+  props<{ data: GroupedTasksResponse }>(),
 );
 
 export const loadTasksFailure = createAction(
@@ -19,8 +19,48 @@ export const changeSkillFilter = createAction(
 );
 
 export const changeTimeRangeFilter = createAction(
-  '[Tasks List] Change Time Range Filter',
-  props<{ timeRange: string }>(),
+  '[Tasks List] Change Time Range Period Filter',
+  props<{ period: CompletedPeriod }>(),
 );
 
 export const startTask = createAction('[Task Card] Start Task', props<{ taskId: string }>());
+
+export const loadCurrentTask = createAction(
+  '[Coding Assessment] Load Current Task',
+  props<{ taskId: string }>(),
+);
+
+export const loadCurrentTaskSuccess = createAction(
+  '[Tasks API] Load Current Task Success',
+  props<{ task: Task }>(),
+);
+
+export const loadCurrentTaskFailure = createAction(
+  '[Tasks API] Load Current Task Failure',
+  props<{ error: string }>(),
+);
+
+export const clearCurrentTask = createAction('[Coding Assessment] Clear Current Task');
+
+export const startTimer = createAction(
+  '[Coding Assessment] Start Timer',
+  props<{ durationMinutes: number; taskId: string }>(),
+);
+
+export const updateTimer = createAction(
+  '[Timer] Update Timer',
+  props<{ remainingSeconds: number }>(),
+);
+
+export const stopTimer = createAction('[Timer] Stop Timer');
+
+export const timerExpired = createAction('[Timer] Timer Expired');
+
+export const restoreTimer = createAction('[App] Restore Timer');
+
+export const restoreTimerSuccess = createAction(
+  '[Timer] Restore Timer Success',
+  props<{
+    timer: { isRunning: boolean; remainingSeconds: number; endTime: number; taskId: string };
+  }>(),
+);

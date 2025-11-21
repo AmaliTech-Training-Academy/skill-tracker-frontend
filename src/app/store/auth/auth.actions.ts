@@ -8,6 +8,7 @@ import {
   LoginRequest,
   ResetPasswordRequest,
   CompleteOnboardingRequest,
+  TourGuide,
 } from '@app/core';
 
 export const registerUser = createAction(
@@ -102,6 +103,7 @@ export const resendVerificationFailure = createAction(
   '[Auth/Verification] Resend Verification Failure',
   props<{ error: AppError }>(),
 );
+
 export const forgotPassword = createAction(
   '[Auth/Password Reset] Forgot Password',
   props<{ request: UserEmailRequest }>(),
@@ -120,6 +122,7 @@ export const forgotPasswordFailure = createAction(
 export const resetPasswordResetState = createAction(
   '[Auth/Password Reset] Reset Password Reset State',
 );
+
 export const resetPassword = createAction(
   '[Auth/Password] Reset Password',
   props<{ request: ResetPasswordRequest }>(),
@@ -134,7 +137,10 @@ export const resetPasswordFailure = createAction(
   '[Auth/Password] Reset Password Failure',
   props<{ error: AppError }>(),
 );
-export const updateTourStatus = createAction('[Auth/Tour] Update Tour Status');
+export const updateTourStatus = createAction(
+  '[Auth/Tour] Update Tour Status',
+  props<{ tourStatus: TourGuide }>(),
+);
 
 export const updateTourStatusSuccess = createAction(
   '[Auth/Tour] Update Tour Status Success',
@@ -143,5 +149,17 @@ export const updateTourStatusSuccess = createAction(
 
 export const updateTourStatusFailure = createAction(
   '[Auth/Tour] Update Tour Status Failure',
+  props<{ error: AppError }>(),
+);
+
+export const checkAuthSession = createAction('[Auth] Check Auth Session');
+
+export const checkAuthSessionSuccess = createAction(
+  '[Auth API] Check Auth Session Success',
+  props<{ user: User }>(),
+);
+
+export const checkAuthSessionFailure = createAction(
+  '[Auth API] Check Auth Session Failure',
   props<{ error: AppError }>(),
 );

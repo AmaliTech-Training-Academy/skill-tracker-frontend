@@ -31,6 +31,7 @@ export const routes: Routes = [
 
       {
         path: 'reset-password',
+        canActivate: [guestGuard],
         loadComponent: () =>
           import('./features/reset-password/reset-password').then((c) => c.ResetPassword),
       },
@@ -65,7 +66,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
     loadComponent: () => import('./layout/dashboard/dashboard').then((c) => c.Dashboard),
     children: [
       {
@@ -78,14 +79,19 @@ export const routes: Routes = [
           import('./features/tasks-dashboard/tasks-dashboard').then((c) => c.TasksDashboard),
       },
       {
-        path: 'tasks/coding-assessment',
+        path: 'tasks/coding-assessment/:taskId',
         loadComponent: () =>
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
       {
         path: 'tasks/written-assessment',
         loadComponent: () =>
-          import('./features/written-response/written-response').then((c) => c.WrittenResponse),
+          import('./features/written-response/written-response').then((c) => c.WrittenResponse)
+      },
+      {
+        path: 'tasks/multiple-choice/:id',
+        loadComponent: () =>
+          import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
       },
     ],
   },

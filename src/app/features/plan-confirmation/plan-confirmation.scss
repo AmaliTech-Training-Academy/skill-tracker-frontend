@@ -13,7 +13,8 @@
 
   .plan-levels {
     width: 90%;
-    padding: 10px 0;
+    max-width: 825px;
+    margin-top: 4rem;
     border-radius: 10px;
     margin-inline: auto;
   }
@@ -162,9 +163,12 @@
   }
 
   .expiry-cvv {
-    @include flex;
-    gap: 10px;
+    @include flex(row, space-between, center, 10px);
     margin-top: 20px;
+
+    & > * {
+      width: 48%;
+    }
 
     @include desktop {
       margin-top: 0;

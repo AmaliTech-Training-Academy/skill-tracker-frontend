@@ -1,145 +1,39 @@
-import { Task, TaskIcon, TaskDifficulty, TaskStatus } from '@app/core/models/tasks-model';
+import { TaskUI, CompletedPeriod, Task } from '@app/core/models/tasks-model';
 
 export interface TasksState {
-  todayTasks: Task[];
-  previousTasks: Task[];
+  pendingTasks: TaskUI[];
+  completedTasks: TaskUI[];
+  currentTask: Task | null;
   skills: string[];
   selectedSkill: string;
   timeRanges: string[];
-  selectedTimeRange: string;
+  selectedTimeRange: CompletedPeriod;
   loading: boolean;
+  currentTaskLoading: boolean;
   error: string | null;
+  timer: {
+    isRunning: boolean;
+    remainingSeconds: number;
+    endTime: number | null;
+    taskId: string | null;
+  };
 }
 
 export const initialTasksState: TasksState = {
-  todayTasks: [
-    {
-      id: 't1',
-      title: 'Fix The Print Statement',
-      icon: TaskIcon.ABC,
-      description: 'Assess your knowledge in this skill area.',
-      skill: 'HTML',
-      difficulty: TaskDifficulty.BEGINNER,
-      xp: 50,
-      time: '15 min',
-      status: TaskStatus.PENDING,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 't2',
-      title: 'Concept Explanation',
-      icon: TaskIcon.PENCIL,
-      description: 'Explain a key concept in your own words.',
-      skill: 'Data Structures',
-      difficulty: TaskDifficulty.BEGINNER,
-      xp: 150,
-      time: '15 min',
-      status: TaskStatus.PENDING,
-      createdAt: new Date().toISOString(),
-    },
-  ],
-  previousTasks: [
-    {
-      id: 'p1',
-      title: 'Skill Assessment',
-      icon: TaskIcon.ABC,
-      description: 'Assess your knowledge in this skill area.',
-      skill: 'Data Structures',
-      difficulty: TaskDifficulty.BEGINNER,
-      xp: 50,
-      time: '15 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'p2',
-      title: 'Skill Assessment',
-      icon: TaskIcon.PENCIL,
-      description: 'Assess your knowledge in this skill area.',
-      skill: 'CSS',
-      difficulty: TaskDifficulty.BEGINNER,
-      xp: 50,
-      time: '15 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'p3',
-      title: 'Build a Responsive Layout',
-      icon: TaskIcon.ABC,
-      description: 'Use Flexbox and Grid to create a responsive layout.',
-      skill: 'CSS',
-      difficulty: TaskDifficulty.INTERMEDIATE,
-      xp: 80,
-      time: '30 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'p4',
-      title: 'Semantic HTML Challenge',
-      icon: TaskIcon.PENCIL,
-      description: 'Refactor a webpage to use semantic HTML5.',
-      skill: 'HTML',
-      difficulty: TaskDifficulty.INTERMEDIATE,
-      xp: 70,
-      time: '25 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'p5',
-      title: 'Algorithm Practice',
-      icon: TaskIcon.ABC,
-      description: 'Solve common array and string manipulation problems.',
-      skill: 'Data Structures',
-      difficulty: TaskDifficulty.INTERMEDIATE,
-      xp: 100,
-      time: '40 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'p6',
-      title: 'Design a User Flow',
-      icon: TaskIcon.PENCIL,
-      description: 'Create a simple wireframe and flow for a registration process.',
-      skill: 'UI/UX Design',
-      difficulty: TaskDifficulty.BEGINNER,
-      xp: 60,
-      time: '20 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'p7',
-      title: 'Accessibility Audit',
-      icon: TaskIcon.ABC,
-      description: 'Evaluate a webpage and identify accessibility improvements.',
-      skill: 'UI/UX Design',
-      difficulty: TaskDifficulty.ADVANCED,
-      xp: 120,
-      time: '45 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-    {
-      id: 'p8',
-      title: 'Form Validation Exercise',
-      icon: TaskIcon.PENCIL,
-      description: 'Implement and validate forms using HTML5 attributes.',
-      skill: 'HTML',
-      difficulty: TaskDifficulty.INTERMEDIATE,
-      xp: 90,
-      time: '35 min',
-      status: TaskStatus.COMPLETED,
-      createdAt: new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString(),
-    },
-  ],
-  skills: ['All Skills', 'HTML', 'CSS', 'UI/UX Design', 'Data Structures'],
+  pendingTasks: [],
+  completedTasks: [],
+  currentTask: null,
+  skills: ['All Skills'],
   timeRanges: ['All Periods', 'Today', 'Yesterday', 'Last 7 days', 'Last 30 days', 'Older'],
   selectedSkill: 'All Skills',
-  selectedTimeRange: 'All Periods',
+  selectedTimeRange: CompletedPeriod.ALL_PERIODS,
   loading: false,
+  currentTaskLoading: false,
   error: null,
+  timer: {
+    isRunning: false,
+    remainingSeconds: 0,
+    endTime: null,
+    taskId: null,
+  },
 };
