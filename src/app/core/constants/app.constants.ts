@@ -38,6 +38,10 @@ export const APP_CONSTANTS = {
     SKILLS: '/skills',
     TASKS: '/tasks',
     MY_TASKS: '/tasks/my-tasks',
+    RUN_CODE: '/submissions/run-code',
+    SUBMISSIONS: '/submissions',
+    CODE_EXECUTE: '/code/execute',
+    USER_SKILLS: '/skills/me',
   },
   APP_ERRORS: {
     RESET_TOKEN: {
