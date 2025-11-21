@@ -16,9 +16,9 @@ export class TasksCard {
   public startTask = output<string>();
 
   private taskTypeIconMap = {
-    [TaskType.ESSAY]: { icon: 'pencil', class: 'icon-pencil', path: 'assets/pencil.png' },
-    [TaskType.MULTIPLE_CHOICE]: { icon: 'abc', class: 'icon-abc', path: 'assets/abc.png' },
-    [TaskType.CODING]: { icon: 'code', class: 'icon-code', path: 'assets/code-task.png' },
+    [TaskType.ESSAY]: { class: 'icon-pencil', path: 'assets/pencil.png' },
+    [TaskType.MULTIPLE_CHOICE]: { class: 'icon-abc', path: 'assets/abc.png' },
+    [TaskType.CODING]: { class: 'icon-code', path: 'assets/code-task.png' },
   };
 
   public iconClass = computed(() => {
