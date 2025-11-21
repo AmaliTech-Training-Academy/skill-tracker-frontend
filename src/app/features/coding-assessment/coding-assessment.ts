@@ -13,7 +13,7 @@ import { ChallengeDescription } from './components/challenge-description/challen
 import { CodingEditor } from './components/coding-editor/coding-editor';
 import { OutputConsole } from './components/output-console/output-console';
 import { TaskComplete } from '@app/shared/components/task-complete/task-complete';
-import { TaskFailure } from '@app/shared/task-failure';
+import { TaskFailure } from '@app/shared/components/task-failure/task-failure';
 import {
   selectCurrentTask,
   selectIsTimerRunning,
