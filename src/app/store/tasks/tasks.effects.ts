@@ -78,9 +78,10 @@ export class TasksEffects {
   public restoreTimer$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.restoreTimer),
-      switchMap(() =>
+      switchMap(({ taskId }) =>
         this.taskService.restoreTimerFromStorage(
           this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
+          taskId,
         ),
       ),
     ),

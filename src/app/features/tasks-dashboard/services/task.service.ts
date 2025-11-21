@@ -115,7 +115,7 @@ export class TaskService {
     );
   }
 
-  public restoreTimerFromStorage(cancel$: Observable<unknown>) {
+  public restoreTimerFromStorage(cancel$: Observable<unknown>, currentTaskId?: string) {
     const MILLISECONDS_TO_SECONDS = 1000;
     const saved = localStorage.getItem('taskTimer');
     if (!saved) return of();
@@ -125,7 +125,10 @@ export class TaskService {
 
     if (remainingMs <= 0) {
       this.clearTimerStorage();
-      return of(TasksActions.timerExpired());
+      if (currentTaskId && timerData.taskId === currentTaskId) {
+        return of(TasksActions.timerExpired());
+      }
+      return of();
     }
 
     const remainingSeconds = Math.ceil(remainingMs / MILLISECONDS_TO_SECONDS);

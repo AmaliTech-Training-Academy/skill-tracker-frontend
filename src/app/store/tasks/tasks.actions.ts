@@ -61,7 +61,7 @@ export const stopTimer = createAction('[Timer] Stop Timer');
 
 export const timerExpired = createAction('[Timer] Timer Expired');
 
-export const restoreTimer = createAction('[App] Restore Timer');
+export const restoreTimer = createAction('[App] Restore Timer', props<{ taskId?: string }>());
 
 export const restoreTimerSuccess = createAction(
   '[Timer] Restore Timer Success',
