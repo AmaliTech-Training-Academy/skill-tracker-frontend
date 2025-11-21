@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AppError, RecommendedTaskUI } from '@app/core';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
 import { DashboardErrorComponent } from '../dashboard-error-component/dashboard-error-component';
@@ -21,4 +21,9 @@ export class DashboardRecommendedTasks {
   @Input({ required: true }) public recommendations: RecommendedTaskUI[] = [];
   @Input() public isRecommendedTasksLoading = false;
   @Input() public recommendedTasksError: AppError | null = null;
+  @Output() public retry = new EventEmitter<void>();
+
+  public handleRetryClick() {
+    this.retry.emit();
+  }
 }
