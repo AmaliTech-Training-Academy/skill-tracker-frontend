@@ -20,6 +20,7 @@
       [recommendations]="recommendedTasks()"
       [isRecommendedTasksLoading]="isRecommendedTasksLoading()"
       [recommendedTasksError]="selectRecommendedTasksError()"
+      (retry)="getRecommendedTasks()"
     />
     <app-dashboard-progress-overview-component
       [primarySkillProgress]="primarySkillProgress()"
