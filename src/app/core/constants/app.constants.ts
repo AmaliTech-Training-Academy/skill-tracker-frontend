@@ -40,6 +40,7 @@ export const APP_CONSTANTS = {
     RUN_CODE: '/submissions/run-code',
     SUBMISSIONS: '/submissions',
     CODE_EXECUTE: '/code/execute',
+    USER_SKILLS: '/skills/me',
   },
   APP_ERRORS: {
     RESET_TOKEN: {

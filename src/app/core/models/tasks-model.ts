@@ -226,3 +226,10 @@ export interface ProgrammingLanguage {
   id: number;
   name: string;
 }
+
+export interface TaskUserSkill {
+  skillId: string;
+  skillName: string;
+  difficultyLevel: string;
+  selectedAt: string;
+}

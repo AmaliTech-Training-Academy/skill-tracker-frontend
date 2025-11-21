@@ -119,6 +119,23 @@ export class TasksEffects {
     { dispatch: false },
   );
 
+  public loadUserSkills$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.loadUserSkills),
+      switchMap(() =>
+        this.taskService.getUserSkills().pipe(
+          map((skills) => {
+            const skillNames = ['All Skills', ...skills.map(({ skillName }) => skillName)];
+            return TasksActions.loadUserSkillsSuccess({ skills: skillNames });
+          }),
+          catchError(() =>
+            of(TasksActions.loadUserSkillsFailure({ error: 'Failed to load user skills' })),
+          ),
+        ),
+      ),
+    ),
+  );
+
   public executeCode$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.executeCode),

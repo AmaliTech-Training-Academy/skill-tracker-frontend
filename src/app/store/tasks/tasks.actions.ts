@@ -70,6 +70,18 @@ export const restoreTimerSuccess = createAction(
   }>(),
 );
 
+export const loadUserSkills = createAction('[Tasks Dashboard] Load User Skills');
+
+export const loadUserSkillsSuccess = createAction(
+  '[Tasks API] Load User Skills Success',
+  props<{ skills: string[] }>(),
+);
+
+export const loadUserSkillsFailure = createAction(
+  '[Tasks API] Load User Skills Failure',
+  props<{ error: string }>(),
+);
+
 export const executeCode = createAction(
   '[Coding Assessment] Execute Code',
   props<{ taskId: string; code: string; languageId: number }>(),

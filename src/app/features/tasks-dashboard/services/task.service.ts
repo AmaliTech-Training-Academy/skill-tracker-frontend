@@ -12,6 +12,7 @@ import {
   CodeExecutionResponse,
   TaskSubmission,
   SubmissionResponse,
+  TaskUserSkill,
 } from '../../../core/models/tasks-model';
 import { ApiResponse } from '@app/core';
 import { ApiService } from '../../../core/services/api/api-service';
@@ -178,6 +179,12 @@ export class TaskService {
       .get<
         ApiResponse<SubmissionResponse>
       >(`${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/${submissionId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getUserSkills(): Observable<TaskUserSkill[]> {
+    return this.apiService
+      .get<TaskUserSkill[]>(APP_CONSTANTS.API_ENDPOINTS.USER_SKILLS)
       .pipe(catchError(this.handleError));
   }
 
