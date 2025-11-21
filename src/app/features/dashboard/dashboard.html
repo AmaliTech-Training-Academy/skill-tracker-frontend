@@ -24,6 +24,7 @@
       [selectedSkill]="selectedSkillId()"
       (selectSkill)="onSkillChange($event)"
       (retry)="getRecommendedTasks()"
+      (skillChange)="onRecommendedTasksSkillChange($event)"
     />
     <app-dashboard-progress-overview-component
       [primarySkillProgress]="primarySkillProgress()"

@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AppError, RecommendedTaskUI, UserSelectedSkill } from '@app/core';
-import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
 import { DashboardErrorComponent } from '../dashboard-error-component/dashboard-error-component';
 import { RecommendedTasksCard } from '../recommended-tasks-card/recommended-tasks-card';
 import { RecommendedTasksCardSkeleton } from '../recommended-tasks-card-skeleton/recommended-tasks-card-skeleton';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-dashboard-recommended-tasks',
   imports: [
-    CustomDropdown,
     DashboardErrorComponent,
     RecommendedTasksCard,
     RecommendedTasksCardSkeleton,
+    FormsModule,
   ],
   templateUrl: './dashboard-recommended-tasks.html',
   styleUrl: './dashboard-recommended-tasks.scss',
@@ -25,6 +25,7 @@ export class DashboardRecommendedTasks {
   @Input() public selectedSkill: string | null = null;
   @Output() public selectSkill = new EventEmitter<string>();
   @Output() public retry = new EventEmitter<void>();
+  @Output() public skillChange = new EventEmitter<string>();
 
   public get skillOptions(): string[] {
     return this.userSkills.map((skill) => skill.skillName);
@@ -40,6 +41,10 @@ export class DashboardRecommendedTasks {
     if (skill) {
       this.selectSkill.emit(skill.skillId);
     }
+  }
+
+  public onSelectSkillName(skillName: string): void {
+    this.skillChange.emit(skillName);
   }
 
   public handleRetryClick() {

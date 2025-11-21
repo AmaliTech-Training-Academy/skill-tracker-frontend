@@ -115,7 +115,6 @@ export class Dashboard implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.getDashboardAnalytics();
-    this.getRecommendedTasks();
     this.getUserSkills();
   }
 
@@ -151,7 +150,17 @@ export class Dashboard implements OnInit, AfterViewInit {
   }
 
   public getRecommendedTasks(): void {
-    this.store.dispatch(loadRecommendedTasks());
+    const skills = this.userSkills();
+    const selectedId = this.selectedSkillId();
+
+    const skill = skills.find((s) => s.skillId === selectedId) || skills[0];
+    if (skill) {
+      this.store.dispatch(loadRecommendedTasks({ skillName: skill.skillName }));
+    }
+  }
+
+  public onRecommendedTasksSkillChange(skillName: string): void {
+    this.store.dispatch(loadRecommendedTasks({ skillName }));
   }
 
   public onSkillChange(skillId: string): void {

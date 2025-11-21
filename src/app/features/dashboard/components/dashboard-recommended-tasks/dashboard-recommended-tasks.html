@@ -1,11 +1,16 @@
 <section class="recommended-tasks">
   <div class="section-header">
     <h2>Recommended Tasks</h2>
-    <app-custom-dropdown
-      [options]="skillOptions"
-      [selectedValue]="selectedSkillName"
-      (selectOption)="onSelectSkill($event.toString())"
-    />
+
+    <select
+      class="styled-select"
+      [ngModel]="selectedSkillName"
+      (ngModelChange)="onSelectSkill($event)"
+    >
+      @for (skill of userSkills; track skill.skillId) {
+        <option [ngValue]="skill.skillName">{{ skill.skillName }}</option>
+      }
+    </select>
   </div>
   <div class="tasks-list">
     @if (isRecommendedTasksLoading) {

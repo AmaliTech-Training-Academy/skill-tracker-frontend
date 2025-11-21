@@ -19,7 +19,10 @@ export const loadDashboardAnalyticsFailure = createAction(
   props<{ error: AppError }>(),
 );
 
-export const loadRecommendedTasks = createAction('[Dashboard Page] Load Recommended Tasks');
+export const loadRecommendedTasks = createAction(
+  '[Dashboard Page] Load Recommended Tasks',
+  props<{ skillName?: string }>(),
+);
 
 export const loadRecommendedTasksSuccess = createAction(
   '[Dashboard API] Load Recommended Tasks Success',

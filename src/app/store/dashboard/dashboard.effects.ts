@@ -46,8 +46,8 @@ export class DashboardEffects {
   public loadRecommendedTasks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(loadRecommendedTasks),
-      switchMap(() =>
-        this.dashboardService.getDashboardRecommendedTasks().pipe(
+      switchMap(({ skillName }) =>
+        this.dashboardService.getDashboardRecommendedTasks(skillName).pipe(
           map(({ data }) => loadRecommendedTasksSuccess({ tasks: data })),
           catchError((error: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(error);
@@ -98,6 +98,14 @@ export class DashboardEffects {
           granularity: TrajectoryGranularity.WEEKLY,
         }),
       ),
+    ),
+  );
+
+  public loadRecommendedTasksOnSkillsLoaded$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadUserSkillsSuccess),
+      filter(({ skills }) => skills.length > 0),
+      map(({ skills }) => loadRecommendedTasks({ skillName: skills[0].skillName })),
     ),
   );
 }
