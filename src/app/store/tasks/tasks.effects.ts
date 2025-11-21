@@ -78,9 +78,10 @@ export class TasksEffects {
   public restoreTimer$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.restoreTimer),
-      switchMap(() =>
+      switchMap(({ taskId }) =>
         this.taskService.restoreTimerFromStorage(
           this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
+          taskId,
         ),
       ),
     ),
@@ -116,6 +117,23 @@ export class TasksEffects {
         tap(() => this.taskService.clearTimerStorage()),
       ),
     { dispatch: false },
+  );
+
+  public loadUserSkills$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.loadUserSkills),
+      switchMap(() =>
+        this.taskService.getUserSkills().pipe(
+          map((skills) => {
+            const skillNames = ['All Skills', ...skills.map(({ skillName }) => skillName)];
+            return TasksActions.loadUserSkillsSuccess({ skills: skillNames });
+          }),
+          catchError(() =>
+            of(TasksActions.loadUserSkillsFailure({ error: 'Failed to load user skills' })),
+          ),
+        ),
+      ),
+    ),
   );
 
   public executeCode$ = createEffect(() =>

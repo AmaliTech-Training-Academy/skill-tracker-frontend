@@ -9,7 +9,7 @@ import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 describe('McqGenerationService', () => {
   let service: McqGenerationService;
   let apiServiceMock: jest.Mocked<Pick<ApiService, 'post'>>;
-  let mockServiceMock: jest.Mocked<Pick<McqMockService, 'generateQuiz'>>;
+  let mockServiceMock: jest.Mocked<Pick<McqMockService, 'fetchQuiz'>>;
 
   beforeEach(() => {
     apiServiceMock = {
@@ -17,7 +17,7 @@ describe('McqGenerationService', () => {
     };
 
     mockServiceMock = {
-      generateQuiz: jest.fn(),
+      fetchQuiz: jest.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -39,7 +39,7 @@ describe('McqGenerationService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('generateQuiz', () => {
+  describe('fetchQuiz', () => {
     const mockPayload: McqRetrieveRequest = {
       taskId: 'test-task-123',
     };
@@ -75,34 +75,34 @@ describe('McqGenerationService', () => {
       },
     };
 
-    it('should call mockService.generateQuiz when USE_MOCK is true', (done) => {
-      mockServiceMock.generateQuiz.mockReturnValue(of(mockResponse));
+    it('should call mockService.fetchQuiz when USE_MOCK is true', (done) => {
+      mockServiceMock.fetchQuiz.mockReturnValue(of(mockResponse));
 
-      service.generateQuiz(mockPayload).subscribe((response) => {
+      service.fetchQuiz(mockPayload).subscribe((response) => {
         expect(response).toEqual(mockResponse);
-        expect(mockServiceMock.generateQuiz).toHaveBeenCalledWith(mockPayload.taskId);
-        expect(mockServiceMock.generateQuiz).toHaveBeenCalledTimes(1);
+        expect(mockServiceMock.fetchQuiz).toHaveBeenCalledWith(mockPayload.taskId);
+        expect(mockServiceMock.fetchQuiz).toHaveBeenCalledTimes(1);
         expect(apiServiceMock.post).not.toHaveBeenCalled();
         done();
       });
     });
 
-    it('should pass the correct taskId to mockService.generateQuiz', (done) => {
+    it('should pass the correct taskId to mockService.fetchQuiz', (done) => {
       const customPayload: McqRetrieveRequest = {
         taskId: 'custom-task-456',
       };
-      mockServiceMock.generateQuiz.mockReturnValue(of(mockResponse));
+      mockServiceMock.fetchQuiz.mockReturnValue(of(mockResponse));
 
-      service.generateQuiz(customPayload).subscribe(() => {
-        expect(mockServiceMock.generateQuiz).toHaveBeenCalledWith('custom-task-456');
+      service.fetchQuiz(customPayload).subscribe(() => {
+        expect(mockServiceMock.fetchQuiz).toHaveBeenCalledWith('custom-task-456');
         done();
       });
     });
 
     it('should return Observable<McqResponse> from mockService', (done) => {
-      mockServiceMock.generateQuiz.mockReturnValue(of(mockResponse));
+      mockServiceMock.fetchQuiz.mockReturnValue(of(mockResponse));
 
-      service.generateQuiz(mockPayload).subscribe((response) => {
+      service.fetchQuiz(mockPayload).subscribe((response) => {
         expect(response).toBeDefined();
         expect(response.success).toBe(true);
         expect(response.message).toBe('Quiz generated successfully');
@@ -116,9 +116,9 @@ describe('McqGenerationService', () => {
     });
 
     it('should not call apiService.post when USE_MOCK is true', (done) => {
-      mockServiceMock.generateQuiz.mockReturnValue(of(mockResponse));
+      mockServiceMock.fetchQuiz.mockReturnValue(of(mockResponse));
 
-      service.generateQuiz(mockPayload).subscribe(() => {
+      service.fetchQuiz(mockPayload).subscribe(() => {
         expect(apiServiceMock.post).not.toHaveBeenCalled();
         done();
       });
@@ -132,10 +132,10 @@ describe('McqGenerationService', () => {
       const emptyPayload: McqRetrieveRequest = {
         taskId: '',
       };
-      mockServiceMock.generateQuiz.mockReturnValue(of(mockResponse));
+      mockServiceMock.fetchQuiz.mockReturnValue(of(mockResponse));
 
-      service.generateQuiz(emptyPayload).subscribe((response) => {
-        expect(mockServiceMock.generateQuiz).toHaveBeenCalledWith('');
+      service.fetchQuiz(emptyPayload).subscribe((response) => {
+        expect(mockServiceMock.fetchQuiz).toHaveBeenCalledWith('');
         expect(response).toEqual(mockResponse);
         done();
       });
@@ -143,9 +143,9 @@ describe('McqGenerationService', () => {
 
     it('should propagate errors from mockService', (done) => {
       const error = new Error('Mock service error');
-      mockServiceMock.generateQuiz.mockReturnValue(throwError(() => error));
+      mockServiceMock.fetchQuiz.mockReturnValue(throwError(() => error));
 
-      service.generateQuiz(mockPayload).subscribe({
+      service.fetchQuiz(mockPayload).subscribe({
         error: (err: Error) => {
           expect(err).toEqual(error);
           done();
