@@ -41,6 +41,10 @@
     .title-row {
       @include flex($direction: row, $justify: space-between, $align: flex-start);
 
+      @include tablet {
+        @include flex($direction: row, $justify: space-between, $align: flex-start, $gap: 1.8rem);
+      }
+
       .title-group {
         @include flex($direction: column, $gap: 0.25rem);
         flex: 1;
@@ -146,7 +150,7 @@
     }
   }
 
-  @include mobile-large {
+  @include tablet {
     .card-content {
       .card-footer {
         @include flex($direction: row, $justify: space-between, $align: center);

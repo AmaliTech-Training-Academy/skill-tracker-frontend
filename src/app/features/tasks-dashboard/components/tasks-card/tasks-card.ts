@@ -39,4 +39,8 @@ export class TasksCard {
     };
     return iconMap[icon] || 'assets/abc.png';
   }
+
+  public truncateDescription(text: string): string {
+    return text.length > 30 ? text.substring(0, 130) + '...' : text;
+  }
 }
