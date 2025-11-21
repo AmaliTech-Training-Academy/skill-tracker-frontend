@@ -3,6 +3,10 @@ import { NgClass } from '@angular/common';
 import { TaskUI } from '@app/core/models/tasks-model';
 import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
 
+const DESCRIPTION_MIN_LENGTH = 30;
+const DESCRIPTION_MAX_LENGTH = 80;
+const SUBSTRING_START_INDEX = 0;
+
 @Component({
   selector: 'app-tasks-card',
   templateUrl: './tasks-card.html',
@@ -41,6 +45,8 @@ export class TasksCard {
   }
 
   public truncateDescription(text: string): string {
-    return text.length > 30 ? text.substring(0, 130) + '...' : text;
+    return text.length > DESCRIPTION_MIN_LENGTH
+      ? text.substring(SUBSTRING_START_INDEX, DESCRIPTION_MAX_LENGTH) + '...'
+      : text;
   }
 }
