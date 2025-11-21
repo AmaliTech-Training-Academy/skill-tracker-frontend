@@ -8,8 +8,9 @@ import {
   SkillTrajectoryResponse,
   UserSelectedSkill,
 } from '../../models/dashboard.model';
-import { APP_CONSTANTS } from '../../constants/app.constants';
+import { APP_CONSTANTS, SKIP_ERROR_NOTIFICATION } from '../../constants/app.constants';
 import { ApiService } from '../../services/api/api-service';
+import { HttpContext } from '@angular/common/http';
 
 const { API_ENDPOINTS } = APP_CONSTANTS;
 
@@ -24,7 +25,9 @@ export class DashboardService {
   }
 
   public getDashboardRecommendedTasks(): Observable<RecommendedTasksResponse> {
-    return this.api.get<RecommendedTasksResponse>(API_ENDPOINTS.DASHBOARD_RECOMMENDED_TASKS);
+    return this.api.get<RecommendedTasksResponse>(API_ENDPOINTS.DASHBOARD_RECOMMENDED_TASKS, {
+      context: new HttpContext().set(SKIP_ERROR_NOTIFICATION, true),
+    });
   }
 
   public getDashboardTrajectory(
