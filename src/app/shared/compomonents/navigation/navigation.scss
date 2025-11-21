@@ -71,6 +71,7 @@ a[href^='#']:target {
   color: $background-white;
   transition: background-color 0.2s;
   @include h12;
+  cursor: pointer;
 }
 
 .signup-btn:hover {

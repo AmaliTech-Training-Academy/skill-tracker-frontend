@@ -134,6 +134,7 @@
       border: 2px solid #e2e8f0;
       background-color: transparent;
       padding: 16px;
+      cursor: pointer;
       @include flex(row, center, center);
 
       @media screen and (min-width: 768px) {
