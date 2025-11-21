@@ -6,6 +6,7 @@ import {
   RecommendedTasksResponse,
   TrajectoryGranularity,
   SkillTrajectoryResponse,
+  UserSelectedSkill,
 } from '../../models/dashboard.model';
 import { APP_CONSTANTS, SKIP_ERROR_NOTIFICATION } from '../../constants/app.constants';
 import { ApiService } from '../../services/api/api-service';
@@ -36,5 +37,9 @@ export class DashboardService {
     const url = API_ENDPOINTS.DASHBOARD_TRAJECTORY.replace('{skillId}', skillId);
     const options = { params: { granularity } };
     return this.api.get<SkillTrajectoryResponse>(url, options);
+  }
+
+  public getUserSkills(): Observable<UserSelectedSkill[]> {
+    return this.api.get<UserSelectedSkill[]>(API_ENDPOINTS.USER_SKILLS);
   }
 }

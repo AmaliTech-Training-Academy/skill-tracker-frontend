@@ -20,15 +20,21 @@
       [recommendations]="recommendedTasks()"
       [isRecommendedTasksLoading]="isRecommendedTasksLoading()"
       [recommendedTasksError]="selectRecommendedTasksError()"
+      [userSkills]="userSkills()"
+      [selectedSkill]="selectedSkillId()"
+      (selectSkill)="onSkillChange($event)"
       (retry)="getRecommendedTasks()"
     />
     <app-dashboard-progress-overview-component
       [primarySkillProgress]="primarySkillProgress()"
-      [progressChartData]="data.progressChartData.weekly"
+      [progressChartData]="progressChartData()"
       [selectedPeriod]="selectedPeriod()"
       [isDashboardAnalyticsError]="isDashboardAnalyticsError()"
       [isDashboardAnalyticsLoading]="isDashboardAnalyticsLoading()"
-      (selectPeriod)="selectPeriod($event)"
+      (selectPeriod)="onPeriodChange($event)"
+      [selectedSkill]="selectedSkillId()"
+      (selectSkill)="onSkillChange($event)"
+      [userSkills]="userSkills()"
     />
   </main>
 </div>

@@ -47,7 +47,7 @@ export class ProgressChart implements OnChanges {
     name: 'XP',
     domain: ['#4f46e5'],
     selectable: false,
-    group: ScaleType.Time,
+    group: ScaleType.Ordinal,
   };
 
   public schemeType: ScaleType = ScaleType.Ordinal;
