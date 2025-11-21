@@ -5,6 +5,7 @@ import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth/auth-service';
 import { ToastService } from '../services/toast/toast-service';
 import { ErrorHandlerService } from '../services/error/error-handler';
+import { SKIP_ERROR_NOTIFICATION } from '../constants/app.constants';
 
 export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
@@ -13,6 +14,8 @@ export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      const shouldSkipToast = req.context.get(SKIP_ERROR_NOTIFICATION);
+
       if (error.status === 401) {
         authService.logout();
       }
@@ -20,12 +23,12 @@ export const globalHttpErrorInterceptor: HttpInterceptorFn = (req, next) => {
       const isNetworkError = error.status === 0;
       const isServerError = error.status >= 500 && error.status < 600;
 
-      if (isNetworkError || isServerError) {
+      if (!shouldSkipToast && (isNetworkError || isServerError)) {
         const appError = errorHandlerService.getError(error);
 
         toastService.showError('Error', appError.message);
       }
-      
+
       return throwError(() => error);
     }),
   );
