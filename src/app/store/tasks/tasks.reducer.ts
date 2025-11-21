@@ -172,6 +172,22 @@ export const tasksReducer = createReducer(
   ),
 
   on(
+    TasksActions.loadUserSkillsSuccess,
+    (state, { skills }): TasksState => ({
+      ...state,
+      skills,
+    }),
+  ),
+
+  on(
+    TasksActions.loadUserSkillsFailure,
+    (state, { error }): TasksState => ({
+      ...state,
+      error,
+    }),
+  ),
+
+  on(
     TasksActions.executeCode,
     (state): TasksState => ({
       ...state,

@@ -98,13 +98,14 @@ export class CodingAssessment implements OnInit, OnDestroy {
   ngOnInit() {
     if (this.taskId) {
       this.store.dispatch(TasksActions.loadCurrentTask({ taskId: this.taskId }));
-      this.store.dispatch(TasksActions.restoreTimer());
+      this.store.dispatch(TasksActions.restoreTimer({ taskId: this.taskId }));
     }
 
     window.addEventListener('resize', this.resizeHandler);
   }
 
   ngOnDestroy() {
+    this.store.dispatch(TasksActions.stopTimer());
     this.store.dispatch(TasksActions.clearCurrentTask());
     window.removeEventListener('resize', this.resizeHandler);
   }

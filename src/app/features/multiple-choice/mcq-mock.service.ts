@@ -160,14 +160,14 @@ export class McqMockService {
     private router: Router,
   ) {}
 
-  public generateQuiz(taskId: string): Observable<McqResponse> {
+  public fetchQuiz(taskId: string): Observable<McqResponse> {
     const networkDelay = Math.floor(Math.random() * 1000) + 500;
 
     const questions = this.mockQuizzes[taskId];
 
     if (!questions) {
       this.toastService.showError('Quize Error', 'Task could not be found. Try again');
-      this.router.navigateByUrl('dashboard/tasks');
+      this.router.navigateByUrl('/dashboard/tasks');
 
       return of({
         success: false,

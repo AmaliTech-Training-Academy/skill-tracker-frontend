@@ -12,6 +12,7 @@ import {
   CodeExecutionResponse,
   TaskSubmission,
   SubmissionResponse,
+  TaskUserSkill,
 } from '../../../core/models/tasks-model';
 import { ApiResponse } from '@app/core';
 import { ApiService } from '../../../core/services/api/api-service';
@@ -115,7 +116,7 @@ export class TaskService {
     );
   }
 
-  public restoreTimerFromStorage(cancel$: Observable<unknown>) {
+  public restoreTimerFromStorage(cancel$: Observable<unknown>, currentTaskId?: string) {
     const MILLISECONDS_TO_SECONDS = 1000;
     const saved = localStorage.getItem('taskTimer');
     if (!saved) return of();
@@ -125,7 +126,10 @@ export class TaskService {
 
     if (remainingMs <= 0) {
       this.clearTimerStorage();
-      return of(TasksActions.timerExpired());
+      if (currentTaskId && timerData.taskId === currentTaskId) {
+        return of(TasksActions.timerExpired());
+      }
+      return of();
     }
 
     const remainingSeconds = Math.ceil(remainingMs / MILLISECONDS_TO_SECONDS);
@@ -175,6 +179,12 @@ export class TaskService {
       .get<
         ApiResponse<SubmissionResponse>
       >(`${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/${submissionId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getUserSkills(): Observable<TaskUserSkill[]> {
+    return this.apiService
+      .get<TaskUserSkill[]>(APP_CONSTANTS.API_ENDPOINTS.USER_SKILLS)
       .pipe(catchError(this.handleError));
   }
 

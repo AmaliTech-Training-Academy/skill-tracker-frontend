@@ -16,7 +16,7 @@
   @if (loading$ | async) {
     <div class="loading-modal">
       <div class="lading-container">
-        <p>Generating your quiz questions...</p>
+        <p>Fetching your quiz questions...</p>
         <p>Please wait a moment.</p>
       </div>
     </div>
@@ -24,10 +24,10 @@
     <div class="error-modal">
       <div class="error-message-container">
         <img src="assets/alert-error.png" alt="error png" />
-        <h1>Quiz Generation Failed</h1>
-        <p>{{ errorMessage }}</p>
+        <h1>Task Fetch Failed</h1>
+        <p>There is no task with that ID</p>
 
-        <button class="retry-button" (click)="dispatchQuizRequest()">Generate Quiz Again</button>
+        <button class="retry-button" (click)="dispatchQuizRequest()">Try Again</button>
 
         <button class="back-button" routerLink="/dashboard/tasks">Back to tasks</button>
       </div>

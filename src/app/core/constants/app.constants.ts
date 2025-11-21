@@ -30,6 +30,7 @@ export const APP_CONSTANTS = {
     FORGOT_PASSWORD: '/auth/password/forgot',
     RESET_PASSWORD: '/auth/password/reset',
     GENERATE_MCQ: '/generate/mcq',
+    FETCH_MCQ: 'tasks/getMCQs',
     PROFILE: '/users/profile/me',
     DASHBOARD_ANALYTICS: '/analytics/dashboard',
     DASHBOARD_RECOMMENDED_TASKS: '/tasks',
@@ -40,6 +41,7 @@ export const APP_CONSTANTS = {
     RUN_CODE: '/submissions/run-code',
     SUBMISSIONS: '/submissions',
     CODE_EXECUTE: '/code/execute',
+    USER_SKILLS: '/skills/me',
   },
   APP_ERRORS: {
     RESET_TOKEN: {

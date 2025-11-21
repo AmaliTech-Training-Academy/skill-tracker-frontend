@@ -10,18 +10,20 @@ import { APP_CONSTANTS } from '@app/core/constants/app.constants';
   providedIn: 'root',
 })
 export class McqGenerationService {
-  private readonly USE_MOCK = true;
+  private readonly useMock = true;
   constructor(
     private readonly api: ApiService,
-    private readonly mockService: McqMockService
+    private readonly mockService: McqMockService,
   ) {}
 
-  public generateQuiz(payload: McqRetrieveRequest): Observable<McqResponse> {
-
-    if (this.USE_MOCK) {
-      return this.mockService.generateQuiz(payload.taskId);
+  public fetchQuiz(payload: McqRetrieveRequest): Observable<McqResponse> {
+    if (this.useMock) {
+      return this.mockService.fetchQuiz(payload.taskId);
     }
-    
-    return this.api.post<McqResponse>(APP_CONSTANTS.API_ENDPOINTS.GENERATE_MCQ, payload);
+
+    return this.api.post<McqResponse>(
+      `${APP_CONSTANTS.API_ENDPOINTS.FETCH_MCQ}/${payload.taskId}`,
+      {},
+    );
   }
 }

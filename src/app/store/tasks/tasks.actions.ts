@@ -61,13 +61,25 @@ export const stopTimer = createAction('[Timer] Stop Timer');
 
 export const timerExpired = createAction('[Timer] Timer Expired');
 
-export const restoreTimer = createAction('[App] Restore Timer');
+export const restoreTimer = createAction('[App] Restore Timer', props<{ taskId?: string }>());
 
 export const restoreTimerSuccess = createAction(
   '[Timer] Restore Timer Success',
   props<{
     timer: { isRunning: boolean; remainingSeconds: number; endTime: number; taskId: string };
   }>(),
+);
+
+export const loadUserSkills = createAction('[Tasks Dashboard] Load User Skills');
+
+export const loadUserSkillsSuccess = createAction(
+  '[Tasks API] Load User Skills Success',
+  props<{ skills: string[] }>(),
+);
+
+export const loadUserSkillsFailure = createAction(
+  '[Tasks API] Load User Skills Failure',
+  props<{ error: string }>(),
 );
 
 export const executeCode = createAction(
