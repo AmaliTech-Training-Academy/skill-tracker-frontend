@@ -14,6 +14,7 @@
       <app-dashboard-error-component
         [title]="'Could not load Recommended Tasks'"
         [message]="error.message"
+        (retry)="handleRetryClick()"
       />
     } @else {
       @for (task of recommendations; track task.id) {

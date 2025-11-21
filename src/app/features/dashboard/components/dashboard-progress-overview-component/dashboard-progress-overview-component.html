@@ -10,21 +10,30 @@
       <div class="filters">
         <div class="skill-filter">
           <p>Skill:</p>
-          <app-custom-dropdown [options]="['HTML', 'CSS', 'JavaScript']" selectedValue="HTML" />
+
+          <select
+            class="styled-select"
+            [ngModel]="selectedSkill"
+            (ngModelChange)="onSelectSkill($event)"
+          >
+            @for (skill of userSkills; track skill.skillId) {
+              <option [ngValue]="skill.skillId">{{ skill.skillName }}</option>
+            }
+          </select>
         </div>
 
         <div class="period-filter">
           <p>View:</p>
 
           <div class="button-group" role="group">
-            <button [class.active]="selectedPeriod === 'daily'" (click)="onSelectPeriod('daily')">
+            <button [class.active]="selectedPeriod === 'DAILY'" (click)="onSelectPeriod('daily')">
               Daily
             </button>
-            <button [class.active]="selectedPeriod === 'weekly'" (click)="onSelectPeriod('weekly')">
+            <button [class.active]="selectedPeriod === 'WEEKLY'" (click)="onSelectPeriod('weekly')">
               Weekly
             </button>
             <button
-              [class.active]="selectedPeriod === 'monthly'"
+              [class.active]="selectedPeriod === 'MONTHLY'"
               (click)="onSelectPeriod('monthly')"
             >
               Monthly

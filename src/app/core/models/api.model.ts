@@ -1,8 +1,9 @@
-import { HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpParams, HttpHeaders, HttpContext } from '@angular/common/http';
 
 export interface ApiRequestOptions {
   params?: HttpParams | Record<string, string | number | boolean>;
   headers?: HttpHeaders | Record<string, string | string[]>;
+  context?: HttpContext;
 }
 
 export interface ValidationDetail {
