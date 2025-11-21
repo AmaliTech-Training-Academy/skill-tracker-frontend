@@ -20,4 +20,15 @@ describe('TaskComplete', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should display the correct XP earned', () => {
+    expect(component.xpEarned()).toBe(50);
+  });
+
+  it('should emit continue when continue button is clicked', () => {
+    component.continue.emit = jest.fn();
+    const button = fixture.nativeElement.querySelector('.continue-button');
+    button.click();
+    expect(component.continue.emit).toHaveBeenCalled();
+  });
 });
