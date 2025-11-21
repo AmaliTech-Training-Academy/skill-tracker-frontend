@@ -109,6 +109,7 @@ export const tasksReducer = createReducer(
       currentTaskLoading: false,
       error: null,
       executionResult: null,
+      submissionResult: null,
       userCode: '',
       timer: {
         isRunning: false,
@@ -226,9 +227,10 @@ export const tasksReducer = createReducer(
 
   on(
     TasksActions.submitTaskSolutionSuccess,
-    (state): TasksState => ({
+    (state, { xpEarned }): TasksState => ({
       ...state,
       submitting: false,
+      submissionResult: { success: true, xpEarned },
       error: null,
     }),
   ),
@@ -238,7 +240,16 @@ export const tasksReducer = createReducer(
     (state, { error }): TasksState => ({
       ...state,
       submitting: false,
+      submissionResult: { success: false, error },
       error,
+    }),
+  ),
+
+  on(
+    TasksActions.clearSubmissionResult,
+    (state): TasksState => ({
+      ...state,
+      submissionResult: null,
     }),
   ),
 

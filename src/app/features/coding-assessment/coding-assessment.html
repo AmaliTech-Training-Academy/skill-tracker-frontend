@@ -62,4 +62,16 @@
       />
     </section>
   }
+
+  @if (submissionResult()?.success) {
+    <app-task-complete [xpEarned]="xpEarned()" (continue)="onTaskComplete()" />
+  }
+
+  @if (submissionResult() && !submissionResult()?.success) {
+    <app-task-failure
+      [errorMessage]="submissionResult()?.error || 'An error occurred'"
+      (tryAgain)="onTryAgain()"
+      (backToDashboard)="onBackToDashboard()"
+    />
+  }
 </main>

@@ -3,7 +3,9 @@
     <span class="logo">Dashboard</span>
   </div>
   <div class="navbar-info">
-    <span class="navbar-item" aria-label="You have 50 experience points">50 xp</span>
+    <span class="navbar-item" [attr.aria-label]="'You have ' + userXp() + ' experience points'"
+      >{{ userXp() }} xp</span
+    >
     <button class="icon-button" aria-label="View notifications">
       <lucide-icon name="bell-dot" [size]="24" color="currentColor" [strokeWidth]="1.5" />
     </button>
@@ -20,7 +22,9 @@
 <nav class="navbar desktop-navbar">
   <div class="navbar-items">
     <div class="navbar-info">
-      <span class="navbar-item" aria-label="You have 50 experience points">50 xp</span>
+      <span class="navbar-item" [attr.aria-label]="'You have ' + userXp() + ' experience points'"
+        >{{ userXp() }} xp</span
+      >
       <button class="icon-button" aria-label="View notifications">
         <lucide-icon name="bell-dot" [size]="24" color="currentColor" [strokeWidth]="1.5" />
       </button>

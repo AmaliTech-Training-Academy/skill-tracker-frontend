@@ -1,0 +1,16 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <h2 class="modal-title">Are you sure you want to Submit?</h2>
+
+    <p class="modal-message">Once you submit, you can't go back to it again.</p>
+
+    <div class="actions">
+      <button class="submit-button" (click)="onConfirm()">
+        <img src="assets/paper_plane.png" alt="" class="icon" />
+        Submit
+      </button>
+
+      <button class="return-button" (click)="onCancel()">Return</button>
+    </div>
+  </div>
+</div>

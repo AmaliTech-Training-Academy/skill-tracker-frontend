@@ -25,10 +25,16 @@ describe('OutputConsole', () => {
     expect(component.runCode.emit).toHaveBeenCalled();
   });
 
-  it('should emit submitTask when onSubmitTask is called', () => {
-    component.submitTask.emit = jest.fn();
+  it('should show confirm modal when onSubmitTask is called', () => {
     component.onSubmitTask();
+    expect(component.showConfirmModal()).toBe(true);
+  });
+
+  it('should emit submitTask when onConfirmSubmit is called', () => {
+    component.submitTask.emit = jest.fn();
+    component.onConfirmSubmit();
     expect(component.submitTask.emit).toHaveBeenCalled();
+    expect(component.showConfirmModal()).toBe(false);
   });
 
   it('should set active tab to console', () => {

@@ -5,7 +5,10 @@ import { PROGRAMMING_LANGUAGES } from '@app/core/constants/programming-languages
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
-export const selectCurrentTask = createSelector(selectTasksState, ({ currentTask }) => currentTask);
+export const selectCurrentTask = createSelector(
+  selectTasksState,
+  (state) => state?.currentTask || null,
+);
 
 export const selectCurrentTaskLoading = createSelector(
   selectTasksState,
@@ -148,4 +151,14 @@ export const selectFilteredPreviousTasks = createSelector(
 
     return filteredTasks;
   },
+);
+
+export const selectSubmissionResult = createSelector(
+  selectTasksState,
+  ({ submissionResult }) => submissionResult,
+);
+
+export const selectXpEarned = createSelector(
+  selectSubmissionResult,
+  (result) => result?.xpEarned || 0,
 );

@@ -7,11 +7,13 @@ import {
   computed,
   effect,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ChallengeDescription } from './components/challenge-description/challenge-description';
 import { CodingEditor } from './components/coding-editor/coding-editor';
 import { OutputConsole } from './components/output-console/output-console';
+import { TaskComplete } from '@app/shared/components/task-complete/task-complete';
+import { TaskFailure } from '@app/shared/components/task-failure/task-failure';
 import {
   selectCurrentTask,
   selectIsTimerRunning,
@@ -22,8 +24,11 @@ import {
   selectSubmitting,
   selectUserCode,
   selectCurrentTaskLanguageId,
+  selectSubmissionResult,
+  selectXpEarned,
 } from '@app/store/tasks/tasks.selectors';
 import * as TasksActions from '@app/store/tasks/tasks.actions';
+import * as AuthActions from '@app/store/auth/auth.actions';
 import { TaskType, CodingTaskContent } from '@app/core/models/tasks-model';
 
 const DEFAULT_DURATION_MINUTES = 30;
@@ -33,7 +38,7 @@ type ViewState = 'loading' | 'no-task' | 'description' | 'coding';
 
 @Component({
   selector: 'app-coding-assessment',
-  imports: [ChallengeDescription, CodingEditor, OutputConsole],
+  imports: [ChallengeDescription, CodingEditor, OutputConsole, TaskComplete, TaskFailure],
   templateUrl: './coding-assessment.html',
   styleUrl: './coding-assessment.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +47,7 @@ export class CodingAssessment implements OnInit, OnDestroy {
   constructor(
     private store: Store,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   public currentTask = this.store.selectSignal(selectCurrentTask);
@@ -55,6 +61,8 @@ export class CodingAssessment implements OnInit, OnDestroy {
   public testResults = this.store.selectSignal(selectTestResults);
   public codeExecuting = this.store.selectSignal(selectCodeExecuting);
   public submitting = this.store.selectSignal(selectSubmitting);
+  public submissionResult = this.store.selectSignal(selectSubmissionResult);
+  public xpEarned = this.store.selectSignal(selectXpEarned);
   public isDesktop = signal(window.innerWidth >= DESKTOP_BREAKPOINT);
 
   private taskId = this.route.snapshot.paramMap.get('taskId');
@@ -147,5 +155,23 @@ export class CodingAssessment implements OnInit, OnDestroy {
     }
 
     this.store.dispatch(TasksActions.submitTaskSolution({ taskId: task.id, code, languageId }));
+  }
+
+  public onTaskComplete(): void {
+    const xpEarned = this.xpEarned();
+    if (xpEarned > 0) {
+      this.store.dispatch(AuthActions.updateUserXp({ xpToAdd: xpEarned }));
+    }
+    this.store.dispatch(TasksActions.clearSubmissionResult());
+    this.router.navigate(['/dashboard/tasks']);
+  }
+
+  public onTryAgain(): void {
+    this.store.dispatch(TasksActions.clearSubmissionResult());
+  }
+
+  public onBackToDashboard(): void {
+    this.store.dispatch(TasksActions.clearSubmissionResult());
+    this.router.navigate(['/dashboard/tasks']);
   }
 }

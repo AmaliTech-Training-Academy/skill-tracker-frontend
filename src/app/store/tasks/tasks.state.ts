@@ -14,6 +14,11 @@ export interface TasksState {
   codeExecuting: boolean;
   submitting: boolean;
   executionResult: CodeExecutionResponse | null;
+  submissionResult: {
+    success: boolean;
+    xpEarned?: number;
+    error?: string;
+  } | null;
   error: string | null;
   timer: {
     isRunning: boolean;
@@ -37,6 +42,7 @@ export const initialTasksState: TasksState = {
   codeExecuting: false,
   submitting: false,
   executionResult: null,
+  submissionResult: null,
   error: null,
   timer: {
     isRunning: false,

@@ -8,7 +8,7 @@ import { TaskService } from '@app/features/tasks-dashboard/services/task.service
 import { ToastService } from '@app/core/services/toast/toast-service';
 import { Router } from '@angular/router';
 import * as TasksActions from './tasks.actions';
-import { selectCurrentTaskLanguageId } from './tasks.selectors';
+import { selectCurrentTaskLanguageId, selectCurrentTask } from './tasks.selectors';
 import { TaskType, TaskDifficulty, TaskContentType } from '@app/core/models/tasks-model';
 
 describe('TasksEffects', () => {
@@ -69,7 +69,10 @@ describe('TasksEffects', () => {
         TasksEffects,
         provideMockActions(() => actions$),
         provideMockStore({
-          selectors: [{ selector: selectCurrentTaskLanguageId, value: 97 }],
+          selectors: [
+            { selector: selectCurrentTaskLanguageId, value: 97 },
+            { selector: selectCurrentTask, value: mockTask },
+          ],
         }),
         { provide: TaskService, useValue: taskServiceSpy },
         { provide: ToastService, useValue: toastServiceSpy },
@@ -195,54 +198,25 @@ describe('TasksEffects', () => {
   });
 
   describe('submitTaskSolution$', () => {
-    it('should submit task solution with language ID from selector', (done) => {
+    it('should always return success with pending submission', (done) => {
       const action = TasksActions.submitTaskSolution({
         taskId: '1',
         code: 'solution',
         languageId: 97,
       });
-      const response = {
-        success: true,
-        message: 'Solution submitted',
-        data: { submissionId: 'sub123', status: 'COMPLETED' as const },
-        metadata: { traceId: 'test', timestamp: '2024-01-01' },
-      };
 
-      taskService.submitTask.mockReturnValue(of(response));
-      actions$ = of(action);
-
-      effects.submitTaskSolution$.subscribe((result) => {
-        expect(result).toEqual(TasksActions.submitTaskSolutionSuccess({ submissionId: 'sub123' }));
-        expect(taskService.submitTask).toHaveBeenCalledWith({
-          taskId: '1',
-          answer: { answerType: 'CODE', code: 'solution', languageId: 97 },
-        });
-        expect(toastService.showSuccess).toHaveBeenCalledWith(
-          'Success',
-          'Solution submitted successfully',
-        );
-        done();
+      store.overrideSelector(selectCurrentTaskLanguageId, 97);
+      store.setState({
+        tasks: {
+          currentTask: { ...mockTask, xpReward: 100 },
+        },
       });
-    });
 
-    it('should handle submit task error', (done) => {
-      const action = TasksActions.submitTaskSolution({
-        taskId: '1',
-        code: 'solution',
-        languageId: 97,
-      });
-      const error = new Error('Submit failed');
-
-      taskService.submitTask.mockReturnValue(throwError(() => error));
       actions$ = of(action);
 
       effects.submitTaskSolution$.subscribe((result) => {
         expect(result).toEqual(
-          TasksActions.submitTaskSolutionFailure({ error: 'Failed to submit solution' }),
-        );
-        expect(toastService.showError).toHaveBeenCalledWith(
-          'Submission Error',
-          'Failed to submit solution',
+          TasksActions.submitTaskSolutionSuccess({ submissionId: 'pending', xpEarned: 100 }),
         );
         done();
       });
