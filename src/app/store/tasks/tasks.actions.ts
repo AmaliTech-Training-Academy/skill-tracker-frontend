@@ -104,13 +104,15 @@ export const submitTaskSolution = createAction(
 
 export const submitTaskSolutionSuccess = createAction(
   '[Tasks API] Submit Task Solution Success',
-  props<{ submissionId: string }>(),
+  props<{ submissionId: string; xpEarned: number }>(),
 );
 
 export const submitTaskSolutionFailure = createAction(
   '[Tasks API] Submit Task Solution Failure',
   props<{ error: string }>(),
 );
+
+export const clearSubmissionResult = createAction('[Tasks] Clear Submission Result');
 
 export const updateUserCode = createAction(
   '[Coding Assessment] Update User Code',

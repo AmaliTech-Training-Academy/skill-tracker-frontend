@@ -7,7 +7,7 @@ import { map, catchError, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
 import * as TasksActions from './tasks.actions';
-import { selectCurrentTaskLanguageId } from './tasks.selectors';
+import { selectCurrentTaskLanguageId, selectCurrentTask } from './tasks.selectors';
 import { APP_CONSTANTS } from '@app/core';
 
 @Injectable()
@@ -155,28 +155,19 @@ export class TasksEffects {
   public submitTaskSolution$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.submitTaskSolution),
-      withLatestFrom(this.store.select(selectCurrentTaskLanguageId)),
-      switchMap(([{ taskId, code }, languageId]) =>
-        this.taskService
-          .submitTask({
-            taskId,
-            answer: { answerType: 'CODE', code, languageId },
-          })
-          .pipe(
-            map((response) => {
-              this.toastService.showSuccess('Success', 'Solution submitted successfully');
-              return TasksActions.submitTaskSolutionSuccess({
-                submissionId: response.data.submissionId,
-              });
-            }),
-            catchError((error) => {
-              this.toastService.showError('Submission Error', 'Failed to submit solution');
-              return of(
-                TasksActions.submitTaskSolutionFailure({ error: 'Failed to submit solution' }),
-              );
-            }),
-          ),
+      withLatestFrom(
+        this.store.select(selectCurrentTaskLanguageId),
+        this.store.select(selectCurrentTask),
       ),
+      switchMap(([{ taskId, code }, languageId, currentTask]) => {
+        const xpEarned = currentTask?.xpReward || 0;
+        return of(
+          TasksActions.submitTaskSolutionSuccess({
+            submissionId: 'pending',
+            xpEarned,
+          }),
+        );
+      }),
     ),
   );
 }
