@@ -77,6 +77,13 @@ export interface RecommendedTaskUI extends RecommendedTask {
   xp: number;
 }
 
+export interface UserSelectedSkill {
+  skillId: string;
+  skillName: string;
+  difficultyLevel: SkillLevel;
+  selectedAt: string;
+}
+
 export enum TrajectoryGranularity {
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',

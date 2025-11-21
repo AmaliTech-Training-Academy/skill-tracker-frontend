@@ -64,3 +64,18 @@ export const selectTrajectoryError = createSelector(
   selectDashboardState,
   ({ isTrajectoryError }) => isTrajectoryError,
 );
+
+export const selectUserSkills = createSelector(
+  selectDashboardState,
+  ({ userSkills }: DashboardState) => userSkills,
+);
+
+export const selectIsUserSkillsLoading = createSelector(
+  selectDashboardState,
+  ({ isUserSkillsLoading }: DashboardState) => isUserSkillsLoading,
+);
+
+export const selectSelectedSkillId = createSelector(
+  selectDashboardState,
+  ({ selectedSkillId }: DashboardState) => selectedSkillId,
+);
