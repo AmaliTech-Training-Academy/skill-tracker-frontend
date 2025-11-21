@@ -38,6 +38,7 @@ export const APP_CONSTANTS = {
     SKILLS: '/skills',
     TASKS: '/tasks',
     MY_TASKS: '/tasks/my-tasks',
+    USER_SKILLS: '/skills/me',
   },
   APP_ERRORS: {
     RESET_TOKEN: {
