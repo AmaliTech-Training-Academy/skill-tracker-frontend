@@ -10,7 +10,7 @@ import {
 } from '../../models/dashboard.model';
 import { APP_CONSTANTS, SKIP_ERROR_NOTIFICATION } from '../../constants/app.constants';
 import { ApiService } from '../../services/api/api-service';
-import { HttpContext } from '@angular/common/http';
+import { HttpContext, HttpParams } from '@angular/common/http';
 
 const { API_ENDPOINTS } = APP_CONSTANTS;
 
@@ -24,8 +24,15 @@ export class DashboardService {
     return this.api.get<DashboardResponse>(API_ENDPOINTS.DASHBOARD_ANALYTICS);
   }
 
-  public getDashboardRecommendedTasks(): Observable<RecommendedTasksResponse> {
+  public getDashboardRecommendedTasks(skillName?: string): Observable<RecommendedTasksResponse> {
+    let params = new HttpParams();
+
+    if (skillName) {
+      params = params.set('skillName', skillName);
+    }
+
     return this.api.get<RecommendedTasksResponse>(API_ENDPOINTS.DASHBOARD_RECOMMENDED_TASKS, {
+      params,
       context: new HttpContext().set(SKIP_ERROR_NOTIFICATION, true),
     });
   }
