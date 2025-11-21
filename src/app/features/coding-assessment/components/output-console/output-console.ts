@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, input, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CodeExecutionResult, TestCaseResult } from '../../models/coding-assessment.model';
+import { ConfirmModal } from '@app/shared/components/confirm-modal/confirm-modal';
 
 @Component({
   selector: 'app-output-console',
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmModal],
   templateUrl: './output-console.html',
   styleUrl: './output-console.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,6 +18,7 @@ export class OutputConsole {
 
   public readonly activeTab = signal<'console' | 'tests'>('console');
   public readonly isRunning = signal(false);
+  public readonly showConfirmModal = signal(false);
 
   public readonly runCode = output<void>();
   public readonly submitTask = output<void>();
@@ -30,6 +32,15 @@ export class OutputConsole {
   }
 
   public onSubmitTask(): void {
+    this.showConfirmModal.set(true);
+  }
+
+  public onConfirmSubmit(): void {
+    this.showConfirmModal.set(false);
     this.submitTask.emit();
+  }
+
+  public onCancelSubmit(): void {
+    this.showConfirmModal.set(false);
   }
 }

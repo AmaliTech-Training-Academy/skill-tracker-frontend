@@ -80,4 +80,8 @@
       <p>Submit Task</p>
     </button>
   </div>
+
+  @if (showConfirmModal()) {
+    <app-confirm-modal (confirmSubmit)="onConfirmSubmit()" (cancelSubmit)="onCancelSubmit()" />
+  }
 </div>
