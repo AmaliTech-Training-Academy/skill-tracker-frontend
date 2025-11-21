@@ -6,10 +6,11 @@
   <div class="tasks-list">
     @if (isRecommendedTasksLoading) {
       <app-recommended-tasks-card-skeleton />
-    } @else if (recommendedTasksError; as err) {
+    } @else if (recommendedTasksError; as error) {
       <app-dashboard-error-component
         [title]="'Could not load Recommended Tasks'"
-        [message]="err.message"
+        [message]="error.message"
+        (retry)="handleRetryClick()"
       />
     } @else {
       @for (task of recommendations; track task.id) {
