@@ -15,7 +15,7 @@ export const STEPS_BUTTONS = {
   cancel: {
     classes: 'cancel-button',
     secondary: true,
-    text: 'Skip Tour',
+    text: 'Cancel',
     type: 'cancel',
   },
   next: {
@@ -105,10 +105,17 @@ export function getSteps(router: Router, service: ShepherdService, store: Store<
         element: '[data-tour-id="sidebar-groups"]',
         on: 'right',
       },
-      buttons: [STEPS_BUTTONS.cancel, STEPS_BUTTONS.finish],
-      action: () => {
-        store.dispatch(updateTourStatus({ tourStatus: TourGuide.COMPLETED }));
-      },
+      buttons: [
+        STEPS_BUTTONS.cancel,
+        {
+          text: 'Finish Tour',
+          action: () => {
+            store.dispatch(updateTourStatus({ tourStatus: TourGuide.COMPLETED }));
+            service.complete();
+          },
+          classes: 'shepherd-button-primary',
+        },
+      ],
       id: 'skill-arena-link',
       title: 'Community',
       text: 'Join or create groups to learn together. Collaborate, share progress, and support each other on your skill journey.',
