@@ -8,12 +8,14 @@ import { Task, TaskType, TaskContentType, TaskDifficulty } from '@app/core/model
 import { CodeExecutionResult, TestCaseResult } from './models/coding-assessment.model';
 import { selectCurrentTask } from '@app/store/tasks/tasks.selectors';
 import * as TasksActions from '@app/store/tasks/tasks.actions';
+import { ToastService } from '@app/core/services/toast/toast-service';
 
 describe('CodingAssessment', () => {
   let component: CodingAssessment;
   let fixture: ComponentFixture<CodingAssessment>;
   let mockStore: Partial<Store>;
   let mockRoute: Partial<ActivatedRoute>;
+  let mockToastService: Partial<ToastService>;
 
   const mockTask: Task = {
     id: 't1',
@@ -46,7 +48,12 @@ describe('CodingAssessment', () => {
       selectSignal: jest.fn().mockImplementation(() => {
         return signal(null);
       }),
+      select: jest.fn().mockReturnValue(signal(null)),
       dispatch: jest.fn(),
+    };
+
+    mockToastService = {
+      showInfo: jest.fn(),
     };
 
     (mockStore.selectSignal as jest.Mock).mockImplementation(
@@ -80,6 +87,7 @@ describe('CodingAssessment', () => {
       providers: [
         { provide: Store, useValue: mockStore },
         { provide: ActivatedRoute, useValue: mockRoute },
+        { provide: ToastService, useValue: mockToastService },
         { provide: NGX_MONACO_EDITOR_CONFIG, useValue: {} },
       ],
     }).compileComponents();
@@ -98,6 +106,8 @@ describe('CodingAssessment', () => {
   });
 
   it('should dispatch loadCurrentTask on init', () => {
+    jest.clearAllMocks();
+    component.ngOnInit();
     expect(mockStore.dispatch).toHaveBeenCalledWith(TasksActions.loadCurrentTask({ taskId: 't1' }));
   });
 
@@ -112,5 +122,38 @@ describe('CodingAssessment', () => {
   it('should dispatch clearCurrentTask on destroy', () => {
     component.ngOnDestroy();
     expect(mockStore.dispatch).toHaveBeenCalledWith(TasksActions.clearCurrentTask());
+  });
+
+  it('should show mobile toast message when on tablet/mobile device', () => {
+    jest.clearAllMocks();
+    Object.defineProperty(window, 'innerWidth', { value: 600, writable: true });
+
+    const mobileFixture = TestBed.createComponent(CodingAssessment);
+    const mobileComponent = mobileFixture.componentInstance;
+
+    mobileComponent.ngOnInit();
+
+    expect(mockToastService.showInfo).toHaveBeenCalledWith(
+      'Info Message',
+      "You'll have a better experience coding using your laptop.",
+    );
+  });
+
+  it('should not show mobile toast message when on desktop', () => {
+    jest.clearAllMocks();
+    Object.defineProperty(window, 'innerWidth', { value: 1000, writable: true });
+
+    const desktopFixture = TestBed.createComponent(CodingAssessment);
+    const desktopComponent = desktopFixture.componentInstance;
+
+    desktopComponent.ngOnInit();
+
+    expect(mockToastService.showInfo).not.toHaveBeenCalled();
+  });
+
+  it('should set userHasEditedCode to true when code changes', () => {
+    const newCode = 'console.log("edited");';
+    component.onCodeChanged(newCode);
+    expect(component['userHasEditedCode']()).toBe(true);
   });
 });
