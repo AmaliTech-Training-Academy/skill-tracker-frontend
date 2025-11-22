@@ -65,11 +65,11 @@
 
 .tab-button {
   padding: 0.5rem 0 0.813rem;
-  font-family: $output-console-font;
   background-color: transparent;
   color: $gray-inactive;
   border: none;
-  @include typography(0.875rem, 1.313rem, 600);
+  @include typography(0.875rem, 1.313rem, 700);
+  font-family: $output-console-font;
   border-bottom: transparent 3px solid;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -129,7 +129,7 @@
     margin-bottom: 0.5rem;
 
     pre {
-      @include typography(1rem, 1.5rem, 500);
+      @include typography(0.9rem, 1.5rem, 500);
       font-family: $output-console-font;
       margin: 0;
       white-space: pre-wrap;
