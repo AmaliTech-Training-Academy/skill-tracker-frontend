@@ -6,6 +6,7 @@ import {
   OnDestroy,
   computed,
   effect,
+  HostListener,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -30,9 +31,11 @@ import {
 import * as TasksActions from '@app/store/tasks/tasks.actions';
 import * as AuthActions from '@app/store/auth/auth.actions';
 import { TaskType, CodingTaskContent } from '@app/core/models/tasks-model';
+import { ToastService } from '@app/core/services/toast/toast-service';
 
 const DEFAULT_DURATION_MINUTES = 30;
 const DESKTOP_BREAKPOINT = 1024;
+const TABLET_BREAKPOINT = 768;
 
 type ViewState = 'loading' | 'no-task' | 'description' | 'coding';
 
@@ -48,6 +51,7 @@ export class CodingAssessment implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
+    private toastService: ToastService,
   ) {}
 
   public currentTask = this.store.selectSignal(selectCurrentTask);
@@ -57,6 +61,7 @@ export class CodingAssessment implements OnInit, OnDestroy {
   public assessmentStarted = signal(false);
   public userCode = this.store.selectSignal(selectUserCode);
   public currentLanguageId = this.store.selectSignal(selectCurrentTaskLanguageId);
+  private userHasEditedCode = signal(false);
   public executionResult = this.store.selectSignal(selectConsoleOutput);
   public testResults = this.store.selectSignal(selectTestResults);
   public codeExecuting = this.store.selectSignal(selectCodeExecuting);
@@ -64,19 +69,21 @@ export class CodingAssessment implements OnInit, OnDestroy {
   public submissionResult = this.store.selectSignal(selectSubmissionResult);
   public xpEarned = this.store.selectSignal(selectXpEarned);
   public isDesktop = signal(window.innerWidth >= DESKTOP_BREAKPOINT);
+  public isTablet = signal(window.innerWidth <= TABLET_BREAKPOINT);
 
-  private taskId = this.route.snapshot.paramMap.get('taskId');
+  private readonly taskId = this.route.snapshot.paramMap.get('taskId');
 
-  private resizeHandler = () => {
+  @HostListener('window:resize')
+  public onWindowResize(): void {
     this.isDesktop.set(window.innerWidth >= DESKTOP_BREAKPOINT);
-  };
+  }
 
   private readonly syncStarterCode = effect(() => {
     const task = this.currentTask();
     if (task?.type === TaskType.CODING && this.taskId) {
       this.store.dispatch(TasksActions.restoreUserCode({ taskId: this.taskId }));
       const userCode = this.userCode();
-      if (!userCode) {
+      if (userCode === '' && !this.userHasEditedCode()) {
         const codingContent = task.content as CodingTaskContent;
         if (codingContent.starterCode) {
           this.store.dispatch(
@@ -109,13 +116,17 @@ export class CodingAssessment implements OnInit, OnDestroy {
       this.store.dispatch(TasksActions.restoreTimer({ taskId: this.taskId }));
     }
 
-    window.addEventListener('resize', this.resizeHandler);
+    if (this.isTablet()) {
+      this.toastService.showInfo(
+        'Info Message',
+        "You'll have a better experience coding using your laptop.",
+      );
+    }
   }
 
   ngOnDestroy() {
     this.store.dispatch(TasksActions.stopTimer());
     this.store.dispatch(TasksActions.clearCurrentTask());
-    window.removeEventListener('resize', this.resizeHandler);
   }
 
   public onStartTask(): void {
@@ -129,6 +140,7 @@ export class CodingAssessment implements OnInit, OnDestroy {
 
   public onCodeChanged(newCode: string): void {
     if (this.taskId) {
+      this.userHasEditedCode.set(true);
       this.store.dispatch(TasksActions.updateUserCode({ code: newCode, taskId: this.taskId }));
     }
   }
