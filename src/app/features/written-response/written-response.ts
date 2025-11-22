@@ -1,4 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -26,6 +32,7 @@ import { TextArea } from './components/text-area/text-area';
   imports: [CommonModule, TextArea, FormsModule],
   templateUrl: './written-response.html',
   styleUrls: ['./written-response.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WrittenResponse implements OnInit, OnDestroy {
   public taskTitle$: Observable<string> = this.store.select(selectWrittenResponseTitle);
@@ -36,12 +43,14 @@ export class WrittenResponse implements OnInit, OnDestroy {
   public userAnswer$: Observable<string> = this.store.select(selectWrittenResponseUserAnswer);
   public loading$: Observable<boolean> = this.store.select(selectWrittenResponseLoading);
   public error$: Observable<string | null> = this.store.select(selectWrittenResponseError);
-  public expectedDuration$: Observable<number> = this.store.select(selectWrittenResponseExpectedDuration);
+  public expectedDuration$: Observable<number> = this.store.select(
+    selectWrittenResponseExpectedDuration,
+  );
 
   public progressValue: number = 0;
   public timerLabel: string = '00:00';
   public quizCompleted: boolean = false;
-  private intervalId?: any;
+  private intervalId?: ReturnType<typeof setInterval>;
   private timerSubscription!: Subscription;
 
   constructor(
@@ -49,7 +58,7 @@ export class WrittenResponse implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private toast: ToastService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -58,10 +67,11 @@ export class WrittenResponse implements OnInit, OnDestroy {
     if (taskId) {
       this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId }));
     } else {
-     
       this.toast.showError('Task Error', 'The task is not available, try a different task');
       this.router.navigateByUrl('/dashboard/tasks');
-      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTaskFailure({ error: 'Task ID not provided.' }));
+      this.store.dispatch(
+        WrittenResponseActions.loadWrittenResponseTaskFailure({ error: 'Task ID not provided.' }),
+      );
     }
 
     this.timerSubscription = this.expectedDuration$.pipe(take(1)).subscribe((duration) => {
@@ -108,9 +118,7 @@ export class WrittenResponse implements OnInit, OnDestroy {
   }
 
   public onUserTyping(value: string): void {
-    this.store.dispatch(
-      WrittenResponseActions.updateWrittenResponseUserAnswer({ answer: value }),
-    );
+    this.store.dispatch(WrittenResponseActions.updateWrittenResponseUserAnswer({ answer: value }));
   }
 
   private pad(num: number): string {

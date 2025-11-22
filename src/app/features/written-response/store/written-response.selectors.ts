@@ -24,7 +24,6 @@ export const selectWrittenResponseUserAnswer = createSelector(
   (state) => state.userAnswer,
 );
 
-// Derived selectors for component simplicity
 export const selectWrittenResponsePrompt = createSelector(
   selectWrittenResponseTask,
   (task) => task?.content?.prompt,

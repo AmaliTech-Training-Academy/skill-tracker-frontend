@@ -21,19 +21,17 @@
   </div>
 
   @if (loading$ | async) {
-    <div class="flex items-center justify-center h-48">
-      <p class="text-xl text-gray-500">Loading task details...</p>
+    <div>
+      <p>Loading task details...</p>
     </div>
-  } 
-  
-  @else if (error$ | async; as error) {
-    <div class="flex items-center justify-center h-48">
-      <p class="text-xl text-red-600">Error: {{ error }}</p>
+
+  } @else if (error$ | async; as error) {
+    <div>
+      <p>Error: {{ error }}</p>
     </div>
-  } 
-  
-  @else if (!(quizCompleted)) {
-    <form (ngSubmit)="false">
+
+  } @else if (!quizCompleted) {
+    <form (ngSubmit)="(false)">
       <div class="questions-content">
         <div class="task-title-level-data">
           <h1 class="task-title">{{ taskTitle$ | async }}</h1>
@@ -61,7 +59,7 @@
 
           <div class="question-answer">
             <div class="textarea-container">
-              <app-text-area 
+              <app-text-area
                 [textValue]="(userAnswer$ | async) ?? ''"
                 (textChange)="onUserTyping($event)"
                 (keydown.enter)="$event.stopPropagation()"
@@ -90,10 +88,10 @@
             <label for="">Drafting...</label>
           </button>
 
-          <button 
+          <button
             type="button"
-            class="next" 
-            [disabled]="!(((userAnswer$ | async) ?? '').trim().length > 0)" 
+            class="next"
+            [disabled]="!((userAnswer$ | async) ?? '').trim().length"
             (click)="submitTask()"
           >
             <label for="">Submit</label> >
@@ -112,10 +110,9 @@
           <p class="mark">Task Completed</p>
           <p class="outof">You can review your answer below.</p>
 
-
-          <div class="review-answer ">
-              <h3 >Your Submitted Response:</h3>
-              <p>{{ userAnswer }}</p>
+          <div class="review-answer">
+            <h3>Your Submitted Response:</h3>
+            <p>{{ userAnswer }}</p>
           </div>
         </div>
       }
