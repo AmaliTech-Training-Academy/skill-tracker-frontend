@@ -99,3 +99,4 @@ export interface SkillTrajectoryData {
 export type DashboardResponse = ApiResponse<DashboardData>;
 export type RecommendedTasksResponse = ApiResponse<RecommendedTaskUI[]>;
 export type SkillTrajectoryResponse = ApiResponse<SkillTrajectoryData[]>;
+export type UserSelectedSkillsResponse = ApiResponse<UserSelectedSkill[]>;
