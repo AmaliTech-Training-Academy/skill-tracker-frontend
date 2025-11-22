@@ -182,9 +182,9 @@ export class TaskService {
       .pipe(catchError(this.handleError));
   }
 
-  public getUserSkills(): Observable<TaskUserSkill[]> {
+  public getUserSkills(): Observable<ApiResponse<TaskUserSkill[]>> {
     return this.apiService
-      .get<TaskUserSkill[]>(APP_CONSTANTS.API_ENDPOINTS.USER_SKILLS)
+      .get<ApiResponse<TaskUserSkill[]>>(APP_CONSTANTS.API_ENDPOINTS.USER_SKILLS)
       .pipe(catchError(this.handleError));
   }
 
