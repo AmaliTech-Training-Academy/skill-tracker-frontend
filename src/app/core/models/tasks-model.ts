@@ -20,6 +20,15 @@ export enum TaskStatus {
   COMPLETED = 'COMPLETED',
 }
 
+export enum SubmissionStatus {
+  IDLE = 'idle',
+  SUBMITTING = 'submitting',
+  PROCESSING = 'processing',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  ERROR = 'error',
+}
+
 export enum CompletedPeriod {
   TODAY = 'TODAY',
   YESTERDAY = 'YESTERDAY',
@@ -213,8 +222,9 @@ export interface TaskSubmission {
 }
 
 export interface SubmissionResponse {
+  id: string;
   submissionId: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'ERROR';
   feedback?: Record<string, unknown>;
   isCorrect?: boolean;
   scoreEarned?: number;
