@@ -66,7 +66,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     loadComponent: () => import('./layout/dashboard/dashboard').then((c) => c.Dashboard),
     children: [
       {
@@ -84,7 +84,7 @@ export const routes: Routes = [
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
       {
-        path: 'tasks/written-assessment',
+        path: 'tasks/written-assessment/:id',
         loadComponent: () =>
           import('./features/written-response/written-response').then((c) => c.WrittenResponse)
       },

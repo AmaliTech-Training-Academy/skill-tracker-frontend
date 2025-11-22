@@ -1,131 +1,131 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TextArea } from './components/text-area/text-area';
 import { FormsModule } from '@angular/forms';
-
-interface Question {
-  questionId: string;
-  question: string;
-  hint: string;
-}
-
-interface QuestionSet {
-  timerInSeconds: number;
-  questions: Question[];
-}
+import { Store } from '@ngrx/store';
+import { Observable, Subscription, take } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import {
+  selectWrittenResponseError,
+  selectWrittenResponseLoading,
+  selectWrittenResponsePrompt,
+  selectWrittenResponseUserAnswer,
+  selectWrittenResponseTitle,
+  selectWrittenResponseDifficulty,
+  selectWrittenResponseXpReward,
+  selectWrittenResponseHints,
+  selectWrittenResponseExpectedDuration,
+} from './store/written-response.selectors';
+import * as WrittenResponseActions from './store/written-response.action';
+import { TextArea } from './components/text-area/text-area';
 
 @Component({
   selector: 'app-written-response',
   standalone: true,
   imports: [CommonModule, TextArea, FormsModule],
   templateUrl: './written-response.html',
-  styleUrls: ['./written-response.scss']
+  styleUrls: ['./written-response.scss'],
 })
-export class WrittenResponse implements OnInit {
-  questionSet: QuestionSet = {
-    timerInSeconds: 300,
-    questions: [
-      { questionId: '1', question: 'What is this?', hint: 'wwwwwwwwwwwww' },
-      { questionId: '2', question: 'What does HTML stand for?', hint: 'It is the standard markup language for creating web pages.' },
-      { questionId: '3', question: 'What is the purpose of CSS?', hint: 'It is used to style and layout web pages.' },
-      { questionId: '4', question: 'What is TypeScript?', hint: 'It is a superset of JavaScript that adds static typing.' },
-      { questionId: '5', question: 'What is Angular primarily used for?', hint: 'It is a framework for building single-page applications.' }
-    ]
-  };
+export class WrittenResponse implements OnInit, OnDestroy {
+  public taskTitle$: Observable<string> = this.store.select(selectWrittenResponseTitle);
+  public taskDifficulty$: Observable<string> = this.store.select(selectWrittenResponseDifficulty);
+  public xpReward$: Observable<number> = this.store.select(selectWrittenResponseXpReward);
+  public prompt$: Observable<string | undefined> = this.store.select(selectWrittenResponsePrompt);
+  public hints$: Observable<string[]> = this.store.select(selectWrittenResponseHints);
+  public userAnswer$: Observable<string> = this.store.select(selectWrittenResponseUserAnswer);
+  public loading$: Observable<boolean> = this.store.select(selectWrittenResponseLoading);
+  public error$: Observable<string | null> = this.store.select(selectWrittenResponseError);
+  public expectedDuration$: Observable<number> = this.store.select(selectWrittenResponseExpectedDuration);
 
-  currentQuestionIndex = 0;
-  progressValue = 0;
-  timeRemaining = this.questionSet.timerInSeconds;
-  timerLabel = '00:00';
-  quizCompleted = false;
+  public progressValue: number = 0;
+  public timerLabel: string = '00:00';
+  public quizCompleted: boolean = false;
   private intervalId?: any;
-  userAnswer: string = '';
-  userAnswers: { [key: string]: string } = {};
+  private timerSubscription!: Subscription;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private store: Store,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
-    this.updateTimerLabel();
-    this.startTimer();
-    this.updateProgress();
-    this.loadCurrentAnswer();
+    // 1. Get taskId from URL (as requested)
+    const taskId = this.route.snapshot.paramMap.get('id');
+
+    if (taskId) {
+      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId }));
+    } else {
+      // Handle case where taskId is missing, e.g., show an error or load a default
+      console.error('Task ID not found in route parameters.');
+      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTaskFailure({ error: 'Task ID not provided.' }));
+    }
+
+    // 2. Start timer logic after task duration is loaded
+    this.timerSubscription = this.expectedDuration$.pipe(take(1)).subscribe((duration) => {
+      // Convert duration from minutes to seconds
+      const totalSeconds = duration * 60;
+      this.startTimer(totalSeconds);
+    });
+
+    // Set initial progress for the drafting stage
+    this.progressValue = 50;
   }
 
-  private startTimer(): void {
+  ngOnDestroy(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
+    }
+    this.store.dispatch(WrittenResponseActions.clearWrittenResponseState());
+  }
+
+  private startTimer(initialTimeInSeconds: number): void {
+    let timeRemaining = initialTimeInSeconds;
+    this.updateTimerLabel(timeRemaining);
+
     this.intervalId = setInterval(() => {
-      if (this.timeRemaining > 0 && !this.quizCompleted) {
-        this.timeRemaining--;
-        this.updateTimerLabel();
+      if (timeRemaining > 0 && !this.quizCompleted) {
+        timeRemaining--;
+        this.updateTimerLabel(timeRemaining);
         this.cd.detectChanges();
-      } else if (this.timeRemaining === 0) {
+      } else if (timeRemaining === 0) {
         this.completeQuiz();
       }
     }, 1000);
   }
 
-  private updateTimerLabel(): void {
-    const minutes = Math.floor(this.timeRemaining / 60);
-    const seconds = this.timeRemaining % 60;
+  private updateTimerLabel(timeInSeconds: number): void {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
     this.timerLabel = `${this.pad(minutes)}:${this.pad(seconds)}`;
   }
 
-  onUserTyping(value: string): void {
-    this.userAnswer = value;
-    this.userAnswers[this.questionSet.questions[this.currentQuestionIndex].questionId] = value;
+  public onUserTyping(value: string): void {
+    this.store.dispatch(
+      WrittenResponseActions.updateWrittenResponseUserAnswer({ answer: value }),
+    );
   }
 
   private pad(num: number): string {
     return num < 10 ? `0${num}` : `${num}`;
   }
 
-  get isPrevDisabled(): boolean {
-    return this.currentQuestionIndex === 0;
+  public submitTask(): void {
+    this.progressValue = 100;
+    this.completeQuiz();
   }
 
-  get isNextDisabled(): boolean {
-    if (this.quizCompleted) return false;
-    const currentQuestionId = this.questionSet.questions[this.currentQuestionIndex].questionId;
-    const answer = this.userAnswers[currentQuestionId] || '';
-    return answer.trim() === '';
-  }
-
-  get questionTrackerLabel(): string {
-    const currentNumber = this.currentQuestionIndex + 1;
-    const totalQuestions = this.questionSet.questions.length;
-    return `Question ${currentNumber} out of ${totalQuestions}`;
-  }
-
-  nextQuestion(): void {
-    if (this.currentQuestionIndex < this.questionSet.questions.length - 1) {
-      this.currentQuestionIndex++;
-      this.loadCurrentAnswer();
-      this.updateProgress();
-    } else {
-      this.completeQuiz();
-    }
-  }
-
-  prevQuestion(): void {
-    if (this.currentQuestionIndex > 0) {
-      this.currentQuestionIndex--;
-      this.loadCurrentAnswer();
-      this.updateProgress();
-    }
-  }
-
-  private loadCurrentAnswer(): void {
-    const currentQuestionId = this.questionSet.questions[this.currentQuestionIndex].questionId;
-    this.userAnswer = this.userAnswers[currentQuestionId] || '';
-  }
-
-  private updateProgress(): void {
-    const progress = ((this.currentQuestionIndex + 1) / this.questionSet.questions.length) * 100;
-    this.progressValue = Math.round(progress);
+  public reviewTask(): void {
+    this.quizCompleted = false;
+    this.progressValue = 50;
   }
 
   private completeQuiz(): void {
-    clearInterval(this.intervalId);
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
     this.quizCompleted = true;
-    this.progressValue = 100;
   }
 }

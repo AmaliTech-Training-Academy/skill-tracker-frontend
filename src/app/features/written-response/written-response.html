@@ -3,7 +3,7 @@
     <div class="task-name">
       <label for="">Task</label>
       <img src="assets/left-progress-arrow.png" alt="progress forward" />
-      <label class="task-label" for="">Web Development Knowledge check</label>
+      <label class="task-label" for="">{{ taskTitle$ | async }}</label>
     </div>
 
     <div class="progress-bar">
@@ -20,80 +20,111 @@
     </div>
   </div>
 
-  @if (!quizCompleted) {
-    <div class="questions-content">
-      <div class="task-title-level-data">
-        <h1 class="task-title">Web Development Knowledge Check</h1>
-
-        <div class="task-level">
-          <label class="level" for="">Beginner</label>
-          <div class="point">50X</div>
-          <div class="timer">
-            <label class="timer-text"
-              ><i>{{ timerLabel }}</i></label
-            >
-            <img src="assets/timer-clock.png" alt="timer icon" />
-          </div>
-        </div>
-      </div>
-
-      <div class="question-track-level">
-        <p>{{ questionTrackerLabel }}</p>
-        <label class="level" for="">Beginner</label>
-      </div>
-
-      <div class="question-answers">
-        <h1 class="question">
-          {{ questionSet.questions[currentQuestionIndex].question }}
-        </h1>
-
-        <div class="question-answer">
-          <div class="textarea-container">
-            <app-text-area 
-              [textValue]="userAnswer"
-              (textChange)="onUserTyping($event)">
-            </app-text-area>
-          </div>
-        </div>
-      </div>
-
-      <div class="hint">
-        <img src="assets/hint-bulb.png" alt="" />
-        <div class="hint-text">
-          <p>
-            Hint: <br />
-            {{ questionSet.questions[currentQuestionIndex].hint }}
-          </p>
-        </div>
-      </div>
-
-      <div class="buttons">
-        <button class="previous" [disabled]="isPrevDisabled" (click)="prevQuestion()">
-          < <label for="">Previous</label>
-        </button>
-
-        <button class="next" [disabled]="isNextDisabled" (click)="nextQuestion()">
-          <label for="">Next</label> >
-        </button>
-      </div>
+  @if (loading$ | async) {
+    <div class="flex items-center justify-center h-48">
+      <p class="text-xl text-gray-500">Loading task details...</p>
     </div>
+  } 
+  
+  @else if (error$ | async; as error) {
+    <div class="flex items-center justify-center h-48">
+      <p class="text-xl text-red-600">Error: {{ error }}</p>
+    </div>
+  } 
+  
+  @else if (!(quizCompleted)) {
+    <form (ngSubmit)="false">
+      <div class="questions-content">
+        <div class="task-title-level-data">
+          <h1 class="task-title">{{ taskTitle$ | async }}</h1>
+
+          <div class="task-level">
+            <label class="level" for="">{{ taskDifficulty$ | async }}</label>
+            <div class="point">{{ xpReward$ | async }} XP</div>
+            <div class="timer">
+              <label class="timer-text"
+                ><i>{{ timerLabel }}</i></label
+              >
+              <img src="assets/timer-clock.png" alt="timer icon" />
+            </div>
+          </div>
+        </div>
+
+        <div class="question-track-level">
+          <p>Written Response Prompt</p>
+          <label class="level" for="">{{ taskDifficulty$ | async }}</label>
+        </div>
+
+        <div class="question-answers">
+          <h1 class="question">
+            {{ prompt$ | async }}
+          </h1>
+
+          <div class="question-answer">
+            <div class="textarea-container">
+              <app-text-area 
+                [textValue]="(userAnswer$ | async) ?? ''"
+                (textChange)="onUserTyping($event)"
+                (keydown.enter)="$event.stopPropagation()"
+              >
+              </app-text-area>
+            </div>
+          </div>
+        </div>
+
+        <div class="hint">
+          <img src="assets/hint-bulb.png" alt="" />
+          <div class="hint-text">
+            <p>
+              Hint: <br />
+              @if ((hints$ | async)?.length) {
+                {{ (hints$ | async)![0] }}
+              } @else {
+                No hints provided for this task.
+              }
+            </p>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button class="previous" disabled>
+            <label for="">Drafting...</label>
+          </button>
+
+          <button 
+            type="button"
+            class="next" 
+            [disabled]="!(((userAnswer$ | async) ?? '').trim().length > 0)" 
+            (click)="submitTask()"
+          >
+            <label for="">Submit Response</label> >
+          </button>
+        </div>
+      </div>
+    </form>
   }
 
   @if (quizCompleted) {
     <div class="group2">
-      <div class="quiz-complete">
-        <img src="assets/checked-circle.png" alt="checked circle" />
-        <p>Quiz Completed</p>
-        <p class="mark">{{ progressValue }}%</p>
-        <p class="outof">You answered {{ questionSet.questions.length }} questions.</p>
-        <p>Use the arrows to review your questions</p>
+      @if (userAnswer$ | async; as userAnswer) {
+        <div class="quiz-complete">
+          <img src="assets/checked-circle.png" alt="checked circle" />
+          <p>Task Submitted</p>
+          <p class="mark">Drafting Complete</p>
+          <p class="outof">You can review your answer below.</p>
+          <p>Review: {{ userAnswer.length || 0 }} characters.</p>
 
-        <div class="buttons">
-          <button class="previous" (click)="prevQuestion()">< <label>Previous</label></button>
-          <button class="next" (click)="nextQuestion()"><label>Next</label> ></button>
+          <div class="buttons">
+            <button class="previous" (click)="reviewTask()"><label>Review / Edit</label></button>
+            <button class="next" disabled><label>Task Complete</label></button>
+          </div>
+
+          <div class="review-answer mt-6 p-4 border rounded-lg bg-gray-50 max-w-lg mx-auto">
+              <h3 class="text-lg font-semibold mb-2">Your Submitted Response:</h3>
+              <p class="whitespace-pre-wrap">{{ userAnswer }}</p>
+          </div>
         </div>
-      </div>
+      }
     </div>
   }
 </div>
-

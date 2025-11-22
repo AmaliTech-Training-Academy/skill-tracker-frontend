@@ -2,6 +2,7 @@ import { AuthEffects } from './auth/auth.effects';
 import { OnboardingEffects } from './onboarding/onboarding.effects';
 import { UIEffects } from './ui/ui.effects';
 import { McqGenerationEffects } from './mcqs/mcq.effects';
+import { WrittenResponseEffects } from '@app/features/written-response/store/written-response.effects';
 
 
 import { DashboardEffects } from './dashboard/dashboard.effects';
@@ -13,6 +14,7 @@ export const appEffects = [
   DashboardEffects,
   OnboardingEffects,
   TasksEffects,
-  McqGenerationEffects
+  McqGenerationEffects,
+  WrittenResponseEffects
 ];
 
