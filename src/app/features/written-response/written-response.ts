@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { ToastService } from '@app/core';
+import { Router } from '@angular/router';
 import {
   selectWrittenResponseError,
   selectWrittenResponseLoading,
@@ -46,32 +48,31 @@ export class WrittenResponse implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private store: Store,
     private route: ActivatedRoute,
+    private toast: ToastService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    // 1. Get taskId from URL (as requested)
     const taskId = this.route.snapshot.paramMap.get('id');
 
     if (taskId) {
       this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId }));
     } else {
-      // Handle case where taskId is missing, e.g., show an error or load a default
-      console.error('Task ID not found in route parameters.');
+     
+      this.toast.showError('Task Error', 'The task is not available, try a different task');
+      this.router.navigateByUrl('/dashboard/tasks');
       this.store.dispatch(WrittenResponseActions.loadWrittenResponseTaskFailure({ error: 'Task ID not provided.' }));
     }
 
-    // 2. Start timer logic after task duration is loaded
     this.timerSubscription = this.expectedDuration$.pipe(take(1)).subscribe((duration) => {
-      // Convert duration from minutes to seconds
       if (duration && duration > 0) {
-    const totalSeconds = duration * 60;
-    this.startTimer(totalSeconds);
-  } else {
-    this.startTimer(10 * 60); // Default to 10 minutes
-  }
+        const totalSeconds = duration * 60;
+        this.startTimer(totalSeconds);
+      } else {
+        this.startTimer(10 * 60);
+      }
     });
 
-    // Set initial progress for the drafting stage
     this.progressValue = 0;
   }
 

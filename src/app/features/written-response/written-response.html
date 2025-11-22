@@ -96,7 +96,7 @@
             [disabled]="!(((userAnswer$ | async) ?? '').trim().length > 0)" 
             (click)="submitTask()"
           >
-            <label for="">Submit Response</label> >
+            <label for="">Submit</label> >
           </button>
         </div>
       </div>
@@ -109,18 +109,13 @@
         <div class="quiz-complete">
           <img src="assets/checked-circle.png" alt="checked circle" />
           <p>Task Submitted</p>
-          <p class="mark">Drafting Complete</p>
+          <p class="mark">Task Completed</p>
           <p class="outof">You can review your answer below.</p>
-          <p>Review: {{ userAnswer.length || 0 }} characters.</p>
 
-          <div class="buttons">
-            <button class="previous" (click)="reviewTask()"><label>Review / Edit</label></button>
-            <button class="next" disabled><label>Task Complete</label></button>
-          </div>
 
-          <div class="review-answer mt-6 p-4 border rounded-lg bg-gray-50 max-w-lg mx-auto">
-              <h3 class="text-lg font-semibold mb-2">Your Submitted Response:</h3>
-              <p class="whitespace-pre-wrap">{{ userAnswer }}</p>
+          <div class="review-answer ">
+              <h3 >Your Submitted Response:</h3>
+              <p>{{ userAnswer }}</p>
           </div>
         </div>
       }
