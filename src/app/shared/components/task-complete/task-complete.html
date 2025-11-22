@@ -1,0 +1,20 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="image-wrapper">
+      <img src="assets/happy-robot.png" alt="Success Robot" class="robot-image" />
+    </div>
+
+    <h2 class="modal-title">Task Submission Processing!</h2>
+
+    <div class="xp-reward">+{{ xpEarned() }} XP</div>
+
+    <p class="modal-message">
+      Your submission is being processed in the background. You'll receive an email notification
+      once it's complete. You'll earn +{{ xpEarned() }} XP for successfully finishing your task!
+    </p>
+
+    <button class="continue-button" (click)="continue.emit()">
+      <span class="button-text">Continue</span>
+    </button>
+  </div>
+</div>

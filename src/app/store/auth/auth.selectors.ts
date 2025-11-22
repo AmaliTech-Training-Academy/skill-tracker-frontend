@@ -112,3 +112,15 @@ export const selectResetToken = createSelector(
   selectQueryParams,
   (params) => params['token'] ?? null,
 );
+
+export const selectUserXp = createSelector(selectCurrentUser, (user) => {
+  if (user?.totalXp !== undefined) {
+    return user.totalXp;
+  }
+  try {
+    const storedXp = localStorage.getItem('userXp');
+    return storedXp ? parseInt(storedXp, 10) : 0;
+  } catch {
+    return 0;
+  }
+});

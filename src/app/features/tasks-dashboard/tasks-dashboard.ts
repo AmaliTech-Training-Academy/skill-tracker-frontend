@@ -11,6 +11,7 @@ import {
   changeSkillFilter,
   changeTimeRangeFilter,
   loadTasks,
+  loadUserSkills,
   startTask,
 } from '@app/store/tasks/tasks.actions';
 import { TaskList } from './components/task-list/task-list';
@@ -40,6 +41,7 @@ export class TasksDashboard implements OnInit {
 
   public ngOnInit(): void {
     this.store.dispatch(loadTasks());
+    this.store.dispatch(loadUserSkills());
   }
 
   public onSkillChange(skill: string): void {

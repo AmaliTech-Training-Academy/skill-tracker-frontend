@@ -1,4 +1,10 @@
-import { AppError, DashboardData, RecommendedTaskUI, SkillTrajectoryData } from '@app/core';
+import {
+  AppError,
+  DashboardData,
+  RecommendedTaskUI,
+  SkillTrajectoryData,
+  UserSelectedSkill,
+} from '@app/core';
 
 export interface DashboardState {
   data: DashboardData | null;
@@ -12,6 +18,11 @@ export interface DashboardState {
   trajectoryData: SkillTrajectoryData[];
   isTrajectoryLoading: boolean;
   isTrajectoryError: AppError | null;
+
+  userSkills: UserSelectedSkill[];
+  isUserSkillsLoading: boolean;
+  isUserSkillsError: AppError | null;
+  selectedSkillId: string | null;
 }
 
 export const initialDashboardState: DashboardState = {
@@ -26,4 +37,9 @@ export const initialDashboardState: DashboardState = {
   trajectoryData: [],
   isTrajectoryLoading: false,
   isTrajectoryError: null,
+
+  userSkills: [],
+  isUserSkillsLoading: false,
+  isUserSkillsError: null,
+  selectedSkillId: null,
 };

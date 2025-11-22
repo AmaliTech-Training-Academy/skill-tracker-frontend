@@ -1,4 +1,12 @@
-import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+  HostListener,
+  ElementRef,
+} from '@angular/core';
 
 @Component({
   selector: 'app-custom-dropdown',
@@ -8,6 +16,8 @@ import { Component, input, output, signal, ChangeDetectionStrategy } from '@angu
   standalone: true,
 })
 export class CustomDropdown {
+  constructor(private readonly elementRef: ElementRef) {}
+
   public options = input.required<string[]>();
   public selectedValue = input<string | undefined>();
   public placeholder = input<string>('Select an option');
@@ -15,16 +25,19 @@ export class CustomDropdown {
 
   public isOpen = signal(false);
 
+  @HostListener('document:click', ['$event'])
+  public onDocumentClick(event: Event): void {
+    if (event.target && !this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.isOpen.set(false);
+    }
+  }
+
   public toggleDropdown(): void {
     this.isOpen.set(!this.isOpen());
   }
 
   public selectOption(option: string): void {
     this.selectionChange.emit(option);
-    this.isOpen.set(false);
-  }
-
-  public closeDropdown(): void {
     this.isOpen.set(false);
   }
 }

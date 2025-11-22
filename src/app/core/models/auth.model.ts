@@ -83,6 +83,7 @@ export interface User {
   timezone: string;
   updatedAt: string;
   lastLoginAt: string | null;
+  totalXp?: number;
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

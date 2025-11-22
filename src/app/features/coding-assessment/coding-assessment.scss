@@ -42,12 +42,20 @@
     }
   }
 
-  .coding-workspace-mobile {
+  .desktop-workspace {
+    display: none;
+  }
+
+  .mobile-coding-workspace {
     @include flex($direction: column);
     height: 100vh;
 
     .mobile-editor {
-      height: 100%;
+      height: 60%;
+    }
+
+    .mobile-console {
+      height: 40%;
     }
   }
 
@@ -57,22 +65,31 @@
 
   @include desktop {
     .mobile-description-view,
-    .coding-workspace-mobile {
+    .mobile-coding-workspace {
       display: none;
     }
 
-    .coding-workspace-desktop {
+    .desktop-workspace {
       @include flex($direction: column);
       height: 100vh;
+      display: flex;
 
       .desktop-top-row {
         @include grid($columns: 2, $gap: 0);
         height: calc(100vh - 150px);
+
+        .desktop-description {
+          overflow-y: auto;
+        }
+
+        .desktop-editor {
+          overflow: hidden;
+        }
       }
 
-      .desktop-description-panel,
-      .desktop-editor {
-        overflow-y: auto;
+      .desktop-console {
+        height: 300px;
+        flex-shrink: 0;
       }
     }
   }

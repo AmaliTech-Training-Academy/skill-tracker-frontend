@@ -10,6 +10,10 @@ import {
   loadDashboardTrajectory,
   loadDashboardTrajectorySuccess,
   loadDashboardTrajectoryFailure,
+  loadUserSkills,
+  loadUserSkillsSuccess,
+  loadUserSkillsFailure,
+  setSelectedSkill,
 } from './dashboard.actions';
 
 export const dashboardReducer = createReducer(
@@ -61,5 +65,26 @@ export const dashboardReducer = createReducer(
     ...state,
     isTrajectoryLoading: false,
     isTrajectoryError: error,
+  })),
+  on(loadUserSkills, (state) => ({
+    ...state,
+    isUserSkillsLoading: true,
+    isUserSkillsError: null,
+  })),
+  on(loadUserSkillsSuccess, (state, { skills }) => ({
+    ...state,
+    userSkills: skills,
+    isUserSkillsLoading: false,
+    isUserSkillsError: null,
+    selectedSkillId: skills.length > 0 ? skills[0].skillId : null,
+  })),
+  on(loadUserSkillsFailure, (state, { error }) => ({
+    ...state,
+    isUserSkillsLoading: false,
+    isUserSkillsError: error,
+  })),
+  on(setSelectedSkill, (state, { skillId }) => ({
+    ...state,
+    selectedSkillId: skillId,
   })),
 );

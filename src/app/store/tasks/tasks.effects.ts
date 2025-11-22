@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
+import { map, catchError, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
 import * as TasksActions from './tasks.actions';
+import { selectCurrentTaskLanguageId, selectCurrentTask } from './tasks.selectors';
 import { APP_CONSTANTS } from '@app/core';
 
 @Injectable()
@@ -15,6 +17,7 @@ export class TasksEffects {
     private taskService: TaskService,
     private router: Router,
     private toastService: ToastService,
+    private store: Store,
   ) {}
 
   public loadTasks$ = createEffect(() =>
@@ -75,9 +78,10 @@ export class TasksEffects {
   public restoreTimer$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.restoreTimer),
-      switchMap(() =>
+      switchMap(({ taskId }) =>
         this.taskService.restoreTimerFromStorage(
           this.actions$.pipe(ofType(TasksActions.stopTimer, TasksActions.clearCurrentTask)),
+          taskId,
         ),
       ),
     ),
@@ -113,5 +117,57 @@ export class TasksEffects {
         tap(() => this.taskService.clearTimerStorage()),
       ),
     { dispatch: false },
+  );
+
+  public loadUserSkills$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.loadUserSkills),
+      switchMap(() =>
+        this.taskService.getUserSkills().pipe(
+          map(({ data }) => {
+            const skillNames = ['All Skills', ...data.map(({ skillName }) => skillName)];
+            return TasksActions.loadUserSkillsSuccess({ skills: skillNames });
+          }),
+          catchError(() =>
+            of(TasksActions.loadUserSkillsFailure({ error: 'Failed to load user skills' })),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  public executeCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.executeCode),
+      withLatestFrom(this.store.select(selectCurrentTaskLanguageId)),
+      switchMap(([{ taskId, code }, languageId]) =>
+        this.taskService.executeCode({ taskId, code, languageId }).pipe(
+          map((response) => TasksActions.executeCodeSuccess({ result: response.data })),
+          catchError((error) => {
+            this.toastService.showError('Execution Error', 'Failed to execute code');
+            return of(TasksActions.executeCodeFailure({ error: 'Failed to execute code' }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public submitTaskSolution$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.submitTaskSolution),
+      withLatestFrom(
+        this.store.select(selectCurrentTaskLanguageId),
+        this.store.select(selectCurrentTask),
+      ),
+      switchMap(([{ taskId, code }, languageId, currentTask]) => {
+        const xpEarned = currentTask?.xpReward || 0;
+        return of(
+          TasksActions.submitTaskSolutionSuccess({
+            submissionId: 'pending',
+            xpEarned,
+          }),
+        );
+      }),
+    ),
   );
 }

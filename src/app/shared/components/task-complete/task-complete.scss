@@ -1,0 +1,64 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  @include flex($justify: center, $align: center);
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: $white;
+  border-radius: 1rem;
+  padding: 7.5rem 5.813rem;
+  width: 100%;
+  max-width: 650px;
+  @include flex($direction: column, $align: center, $gap: 2rem);
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.image-wrapper {
+  width: 152px;
+  height: 152px;
+  background-color: $brand-fill;
+  border-radius: 0.5rem;
+  @include flex($justify: center, $align: center);
+  margin-bottom: 0.5rem;
+
+  .robot-image {
+    width: 128.11px;
+    height: 127.43px;
+  }
+}
+
+.modal-title {
+  @include h8;
+  color: $gray-text-strong;
+}
+
+.xp-reward {
+  @include typography(3.5rem, 2.75rem, 600);
+  color: $brand-text;
+}
+
+.modal-message {
+  @include h11;
+  color: $gray-text-weak;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.continue-button {
+  @include button-primary;
+  width: 100%;
+  font-weight: 600;
+}

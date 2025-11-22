@@ -8,6 +8,11 @@ import {
   Task,
   TaskPaginationParams,
   SuggestedTasksParams,
+  CodeExecutionRequest,
+  CodeExecutionResponse,
+  TaskSubmission,
+  SubmissionResponse,
+  TaskUserSkill,
 } from '../../../core/models/tasks-model';
 import { ApiResponse } from '@app/core';
 import { ApiService } from '../../../core/services/api/api-service';
@@ -111,7 +116,7 @@ export class TaskService {
     );
   }
 
-  public restoreTimerFromStorage(cancel$: Observable<unknown>) {
+  public restoreTimerFromStorage(cancel$: Observable<unknown>, currentTaskId?: string) {
     const MILLISECONDS_TO_SECONDS = 1000;
     const saved = localStorage.getItem('taskTimer');
     if (!saved) return of();
@@ -121,7 +126,10 @@ export class TaskService {
 
     if (remainingMs <= 0) {
       this.clearTimerStorage();
-      return of(TasksActions.timerExpired());
+      if (currentTaskId && timerData.taskId === currentTaskId) {
+        return of(TasksActions.timerExpired());
+      }
+      return of();
     }
 
     const remainingSeconds = Math.ceil(remainingMs / MILLISECONDS_TO_SECONDS);
@@ -150,6 +158,34 @@ export class TaskService {
 
   public clearTimerStorage(): void {
     localStorage.removeItem('taskTimer');
+  }
+
+  public executeCode(
+    request: CodeExecutionRequest,
+  ): Observable<ApiResponse<CodeExecutionResponse>> {
+    return this.apiService
+      .post<ApiResponse<CodeExecutionResponse>>(APP_CONSTANTS.API_ENDPOINTS.RUN_CODE, request)
+      .pipe(catchError(this.handleError));
+  }
+
+  public submitTask(submission: TaskSubmission): Observable<ApiResponse<SubmissionResponse>> {
+    return this.apiService
+      .post<ApiResponse<SubmissionResponse>>(APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS, submission)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getSubmissionStatus(submissionId: string): Observable<ApiResponse<SubmissionResponse>> {
+    return this.apiService
+      .get<
+        ApiResponse<SubmissionResponse>
+      >(`${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/${submissionId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  public getUserSkills(): Observable<ApiResponse<TaskUserSkill[]>> {
+    return this.apiService
+      .get<ApiResponse<TaskUserSkill[]>>(APP_CONSTANTS.API_ENDPOINTS.USER_SKILLS)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError = (error: unknown): Observable<never> => {

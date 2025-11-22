@@ -1,0 +1,87 @@
+<div class="console-container">
+  <div class="console-title-bar">
+    <h2 class="console-title">Output Console</h2>
+    <button class="run-button" (click)="onRunCode()">
+      <img src="assets/play.png" alt="Play icon" class="play-icon" />
+    </button>
+  </div>
+  <div class="console-header">
+    <div class="tab-buttons">
+      <button
+        class="tab-button"
+        [class.active]="activeTab() === 'console'"
+        (click)="setActiveTab('console')"
+      >
+        Console Output
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab() === 'tests'"
+        (click)="setActiveTab('tests')"
+      >
+        Test Cases
+      </button>
+    </div>
+  </div>
+
+  <div class="console-content">
+    @if (activeTab() === 'console') {
+      <div class="console-output">
+        @if (output(); as consoleOutput) {
+          <div class="output-item" [class]="consoleOutput.type">
+            <pre>{{ consoleOutput.output }}</pre>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="test-cases">
+        @if (testCases().length > 0) {
+          @for (testResult of testCases(); track $index) {
+            <div
+              class="test-case"
+              [class.passed]="testResult.passed"
+              [class.failed]="testResult.passed === false"
+            >
+              <div class="test-header">
+                <span class="test-label">Test Case {{ $index + 1 }}</span>
+                @if (testResult.passed !== undefined) {
+                  <span
+                    class="test-status"
+                    [class.passed]="testResult.passed"
+                    [class.failed]="!testResult.passed"
+                  >
+                    {{ testResult.passed ? 'PASSED' : 'FAILED' }}
+                  </span>
+                }
+              </div>
+              <div class="test-details">
+                <div class="test-input">
+                  <strong>Input:</strong> {{ testResult.testCase.input }}
+                </div>
+                <div class="test-expected">
+                  <strong>Expected:</strong> {{ testResult.testCase.expectedOutput }}
+                </div>
+                @if (testResult.actualOutput !== undefined) {
+                  <div class="test-actual">
+                    <strong>Actual:</strong> {{ testResult.actualOutput }}
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  <div class="console-footer">
+    <button class="submit-button" (click)="onSubmitTask()">
+      <img src="assets/paper_plane.png" alt="Submit icon" class="submit-icon" />
+      <p>Submit Task</p>
+    </button>
+  </div>
+
+  @if (showConfirmModal()) {
+    <app-confirm-modal (confirmSubmit)="onConfirmSubmit()" (cancelSubmit)="onCancelSubmit()" />
+  }
+</div>

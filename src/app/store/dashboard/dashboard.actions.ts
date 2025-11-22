@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { AppError } from '@app/core';
+import { AppError, UserSelectedSkill } from '@app/core';
 import {
   DashboardData,
   RecommendedTaskUI,
@@ -19,7 +19,10 @@ export const loadDashboardAnalyticsFailure = createAction(
   props<{ error: AppError }>(),
 );
 
-export const loadRecommendedTasks = createAction('[Dashboard Page] Load Recommended Tasks');
+export const loadRecommendedTasks = createAction(
+  '[Dashboard Page] Load Recommended Tasks',
+  props<{ skillName?: string }>(),
+);
 
 export const loadRecommendedTasksSuccess = createAction(
   '[Dashboard API] Load Recommended Tasks Success',
@@ -44,4 +47,21 @@ export const loadDashboardTrajectorySuccess = createAction(
 export const loadDashboardTrajectoryFailure = createAction(
   '[Dashboard API] Load Dashboard Trajectory Failure',
   props<{ error: AppError }>(),
+);
+
+export const loadUserSkills = createAction('[Dashboard Page] Load User Skills');
+
+export const loadUserSkillsSuccess = createAction(
+  '[Dashboard API] Load User Skills Success',
+  props<{ skills: UserSelectedSkill[] }>(),
+);
+
+export const loadUserSkillsFailure = createAction(
+  '[Dashboard API] Load User Skills Failure',
+  props<{ error: AppError }>(),
+);
+
+export const setSelectedSkill = createAction(
+  '[Dashboard Page] Set Selected Skill',
+  props<{ skillId: string }>(),
 );

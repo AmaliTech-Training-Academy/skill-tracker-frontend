@@ -1,10 +1,14 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TasksState } from './tasks.state';
 import { TaskUI, CompletedPeriod } from '@app/core/models/tasks-model';
+import { PROGRAMMING_LANGUAGES } from '@app/core/constants/programming-languages';
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
-export const selectCurrentTask = createSelector(selectTasksState, ({ currentTask }) => currentTask);
+export const selectCurrentTask = createSelector(
+  selectTasksState,
+  (state) => state?.currentTask || null,
+);
 
 export const selectCurrentTaskLoading = createSelector(
   selectTasksState,
@@ -20,6 +24,57 @@ export const selectTimerDisplay = createSelector(selectTimer, ({ remainingSecond
 });
 
 export const selectIsTimerRunning = createSelector(selectTimer, ({ isRunning }) => isRunning);
+
+export const selectCodeExecuting = createSelector(
+  selectTasksState,
+  ({ codeExecuting }) => codeExecuting,
+);
+
+export const selectSubmitting = createSelector(selectTasksState, ({ submitting }) => submitting);
+
+export const selectExecutionResult = createSelector(
+  selectTasksState,
+  ({ executionResult }) => executionResult,
+);
+
+export const selectConsoleOutput = createSelector(selectExecutionResult, (result) =>
+  result
+    ? {
+        output: result.stdout || result.stderr || '',
+        type: result.allTestsPassed ? ('success' as const) : ('error' as const),
+        executionTime: result.avgExecutionTimeMs,
+      }
+    : null,
+);
+
+export const selectTestResults = createSelector(
+  selectExecutionResult,
+  (result) =>
+    result?.testResults?.map((test) => ({
+      testCase: {
+        input: test.input,
+        expectedOutput: test.expectedOutput,
+        isHidden: false,
+        description: test.statusDescription,
+      },
+      passed: test.passed,
+      actualOutput: test.actualOutput,
+      feedback: test.statusDescription,
+    })) || [],
+);
+
+export const selectUserCode = createSelector(selectTasksState, ({ userCode }) => userCode);
+
+export const selectCurrentTaskLanguageId = createSelector(selectCurrentTask, (task) => {
+  if (!task?.skillName) return 113;
+
+  const skillName = task.skillName.toLowerCase();
+  const language = PROGRAMMING_LANGUAGES.find((lang) =>
+    lang.name.toLowerCase().includes(skillName),
+  );
+
+  return language?.id || 113;
+});
 
 export const selectTodayTasks = createSelector(
   selectTasksState,
@@ -96,4 +151,14 @@ export const selectFilteredPreviousTasks = createSelector(
 
     return filteredTasks;
   },
+);
+
+export const selectSubmissionResult = createSelector(
+  selectTasksState,
+  ({ submissionResult }) => submissionResult,
+);
+
+export const selectXpEarned = createSelector(
+  selectSubmissionResult,
+  (result) => result?.xpEarned || 0,
 );

@@ -1,5 +1,6 @@
 @use 'typography' as *;
 @use 'mixins' as *;
+@use 'colors' as *;
 
 :host {
   display: block;
@@ -26,6 +27,42 @@
 
   .tasks-list {
     @include flex($direction: column, $gap: var(--space-md));
+  }
+}
+
+.styled-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  display: inline-block;
+  width: 100%;
+  max-width: 5rem;
+
+  @include h14;
+  color: $gray-text-strong;
+  background-color: $white;
+
+  border: 1px solid $text-gray;
+  border-radius: 0.375rem;
+
+  padding: 0.375rem 2.5rem 0.375rem 0.625rem;
+
+  background-image: url('/assets/caret-down.png');
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.25rem;
+
+  cursor: pointer;
+
+  &:focus {
+    outline: 2px solid $text-gray;
+    outline-offset: 2px;
+  }
+
+  @include mobile-large {
+    @include h13;
+    max-width: 6.938rem;
   }
 }
 
