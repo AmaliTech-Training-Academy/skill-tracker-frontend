@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, Input, ChangeDetectionStrategy, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, ChangeDetectionStrategy, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './text-area.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextArea implements OnInit {
+export class TextArea implements OnInit, OnChanges {
   @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
   @Input() textValue: string = '';
 
@@ -21,6 +21,12 @@ export class TextArea implements OnInit {
   ngOnInit(): void {
     this.text = this.textValue;
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['textValue'] && changes['textValue'].currentValue !== undefined) {
+      this.text = changes['textValue'].currentValue;
+    }
+  }
   
   onTextChange(): void {
     this.textChange.emit(this.text);
@@ -28,10 +34,6 @@ export class TextArea implements OnInit {
 
   toggleRecording(): void {
     this.isRecording = !this.isRecording;
-  }
-
-  ngOnChanges(): void {
-    this.text = this.textValue;
   }
 
   applyFormat(format: string): void {
@@ -63,7 +65,6 @@ export class TextArea implements OnInit {
     }
 
     this.text = this.text.substring(0, start) + formattedText + this.text.substring(end);
-
 
     setTimeout(() => {
       element.focus();

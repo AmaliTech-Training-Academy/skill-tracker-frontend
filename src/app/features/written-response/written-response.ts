@@ -63,12 +63,16 @@ export class WrittenResponse implements OnInit, OnDestroy {
     // 2. Start timer logic after task duration is loaded
     this.timerSubscription = this.expectedDuration$.pipe(take(1)).subscribe((duration) => {
       // Convert duration from minutes to seconds
-      const totalSeconds = duration * 60;
-      this.startTimer(totalSeconds);
+      if (duration && duration > 0) {
+    const totalSeconds = duration * 60;
+    this.startTimer(totalSeconds);
+  } else {
+    this.startTimer(10 * 60); // Default to 10 minutes
+  }
     });
 
     // Set initial progress for the drafting stage
-    this.progressValue = 50;
+    this.progressValue = 0;
   }
 
   ngOnDestroy(): void {
