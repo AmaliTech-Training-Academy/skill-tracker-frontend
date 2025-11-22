@@ -182,6 +182,14 @@ export class TaskService {
       .pipe(catchError(this.handleError));
   }
 
+  public shouldReloadTasks(submission: SubmissionResponse): boolean {
+    return submission.status === 'COMPLETED' && submission.isCorrect === true;
+  }
+
+  public shouldPollStatus(submission: SubmissionResponse): boolean {
+    return submission.status === 'PENDING' || submission.status === 'IN_PROGRESS';
+  }
+
   public getUserSkills(): Observable<ApiResponse<TaskUserSkill[]>> {
     return this.apiService
       .get<ApiResponse<TaskUserSkill[]>>(APP_CONSTANTS.API_ENDPOINTS.USER_SKILLS)
