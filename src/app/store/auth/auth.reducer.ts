@@ -30,6 +30,9 @@ import {
   checkAuthSessionSuccess,
   checkAuthSessionFailure,
   updateUserXp,
+  updateProfile,
+  updateProfileSuccess,
+  updateProfileFailure,
 } from './auth.actions';
 
 export const authReducer = createReducer(
@@ -223,4 +226,22 @@ export const authReducer = createReducer(
         : state.user,
     };
   }),
+  on(updateProfile, (state) => ({
+    ...state,
+    isUpdatingProfile: true,
+    updateProfileError: null,
+  })),
+
+  on(updateProfileSuccess, (state, { user }) => ({
+    ...state,
+    isUpdatingProfile: false,
+    user: user,
+    updateProfileError: null,
+  })),
+
+  on(updateProfileFailure, (state, { error }) => ({
+    ...state,
+    isUpdatingProfile: false,
+    updateProfileError: error,
+  })),
 );

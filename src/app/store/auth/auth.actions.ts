@@ -9,6 +9,7 @@ import {
   ResetPasswordRequest,
   CompleteOnboardingRequest,
   TourGuide,
+  UpdateUserProfileRequest,
 } from '@app/core';
 
 export const registerUser = createAction(
@@ -165,3 +166,18 @@ export const checkAuthSessionFailure = createAction(
 );
 
 export const updateUserXp = createAction('[Auth] Update User XP', props<{ xpToAdd: number }>());
+
+export const updateProfile = createAction(
+  '[Auth] Update Profile',
+  props<{ request: UpdateUserProfileRequest }>(),
+);
+
+export const updateProfileSuccess = createAction(
+  '[Auth API] Update Profile Success',
+  props<{ user: User }>(),
+);
+
+export const updateProfileFailure = createAction(
+  '[Auth API] Update Profile Failure',
+  props<{ error: AppError }>(),
+);

@@ -124,3 +124,13 @@ export const selectUserXp = createSelector(selectCurrentUser, (user) => {
     return 0;
   }
 });
+
+export const selectIsUpdatingProfile = createSelector(
+  selectAuthState,
+  ({ isUpdatingProfile }: AuthState) => isUpdatingProfile,
+);
+
+export const selectUpdateProfileError = createSelector(
+  selectAuthState,
+  ({ updateProfileError }: AuthState) => updateProfileError,
+);

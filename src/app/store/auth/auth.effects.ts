@@ -50,6 +50,9 @@ import {
   checkAuthSession,
   checkAuthSessionSuccess,
   checkAuthSessionFailure,
+  updateProfile,
+  updateProfileSuccess,
+  updateProfileFailure,
 } from './auth.actions';
 import { selectCurrentUser } from './auth.selectors';
 import { AppState } from '../app.state';
@@ -143,9 +146,17 @@ export class AuthEffects {
       ofType(login),
       switchMap(({ request }) =>
         this.authService.login(request).pipe(
-          map(({ data }) => loginSuccess({ user: mapUserApiResponseToUser(data) })),
-          catchError((httpError: HttpErrorResponse) => {
-            const appError = this.errorHandlerService.getError(httpError);
+          switchMap(() =>
+            this.authService.getUserProfile().pipe(
+              map(({ data }) => loginSuccess({ user: mapUserApiResponseToUser(data) })),
+              catchError((error: HttpErrorResponse) => {
+                const appError = this.errorHandlerService.getError(error);
+                return of(loginFailure({ error: appError }));
+              }),
+            ),
+          ),
+          catchError((error: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(error);
             return of(loginFailure({ error: appError }));
           }),
         ),
@@ -242,6 +253,27 @@ export class AuthEffects {
           catchError((httpError: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(httpError);
             return of(resetPasswordFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public updateProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateProfile),
+      switchMap(({ request }) =>
+        this.authService.updateUserProfile(request).pipe(
+          map((response) => {
+            // On success, we map the raw API user to our clean User model
+            // and dispatch the success action.
+            return updateProfileSuccess({
+              user: mapUserApiResponseToUser(response.data),
+            });
+          }),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(updateProfileFailure({ error: appError }));
           }),
         ),
       ),
@@ -479,6 +511,7 @@ export class AuthEffects {
           updateTourStatusFailure,
           resetPasswordFailure,
           resendVerificationFailure,
+          updateProfileFailure,
         ),
         tap(({ error }) => {
           this.toastService.showError(

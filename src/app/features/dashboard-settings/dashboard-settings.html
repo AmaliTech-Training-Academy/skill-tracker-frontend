@@ -1,0 +1,33 @@
+<form class="profile-form" (ngSubmit)="onSubmit()" [formGroup]="form">
+  <div class="form-row">
+    <app-input-field
+      label="Full Name"
+      type="text"
+      id="fullName"
+      placeholder="Enter full name"
+      [control]="form.controls.fullName"
+    />
+
+    <app-input-field
+      label="Email"
+      type="email"
+      id="email"
+      placeholder="Enter email"
+      [control]="form.controls.email"
+    />
+  </div>
+
+  <div class="form-field">
+    <label for="bio">Bio</label>
+    <textarea
+      id="bio"
+      rows="4"
+      formControlName="bio"
+      placeholder="Tell us about yourself..."
+    ></textarea>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" class="btn-primary" [disabled]="form.invalid">Save</button>
+  </div>
+</form>
