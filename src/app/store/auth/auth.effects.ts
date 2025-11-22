@@ -280,6 +280,17 @@ export class AuthEffects {
     ),
   );
 
+  public updateProfileSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateProfileSuccess),
+        tap(() => {
+          this.toastService.showSuccess('Profile Updated', '');
+        }),
+      ),
+    { dispatch: false },
+  );
+
   public registerSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
