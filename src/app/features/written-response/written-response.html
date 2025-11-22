@@ -24,12 +24,6 @@
     <div>
       <p>Loading task details...</p>
     </div>
-
-  } @else if (error$ | async; as error) {
-    <div>
-      <p>Error: {{ error }}</p>
-    </div>
-
   } @else if (!quizCompleted) {
     <form (ngSubmit)="(false)">
       <div class="questions-content">
@@ -91,10 +85,10 @@
           <button
             type="button"
             class="next"
-            [disabled]="!((userAnswer$ | async) ?? '').trim().length"
+            [disabled]="(isSubmitting$ | async) || !((userAnswer$ | async) ?? '').trim().length"
             (click)="submitTask()"
           >
-            <label for="">Submit</label> >
+            <label for="">{{ (isSubmitting$ | async) ? 'Submitting...' : 'Submit' }}</label> >
           </button>
         </div>
       </div>

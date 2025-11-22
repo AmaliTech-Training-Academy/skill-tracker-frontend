@@ -1,9 +1,16 @@
+export interface EvaluationCriteria {
+  [key: string]: string;
+}
+
+export interface Rubric {
+  [key: string]: string;
+}
 export interface WrittenResponseTaskContent {
   contentType: string;
   prompt: string;
   detailedInstructions: string;
-  evaluationCriteria: any; 
-  rubric: any; 
+  evaluationCriteria: EvaluationCriteria;
+  rubric: Rubric;
   hints: string[];
   expectedLength: string;
 }

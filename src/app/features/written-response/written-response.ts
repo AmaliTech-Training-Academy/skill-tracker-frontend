@@ -22,6 +22,8 @@ import {
   selectWrittenResponseXpReward,
   selectWrittenResponseHints,
   selectWrittenResponseExpectedDuration,
+  selectWrittenResponseIsSubmitting,
+  selectWrittenResponseSubmissionStatus,
 } from './store/written-response.selectors';
 import * as WrittenResponseActions from './store/written-response.action';
 import { TextArea } from './components/text-area/text-area';
@@ -46,12 +48,18 @@ export class WrittenResponse implements OnInit, OnDestroy {
   public expectedDuration$: Observable<number> = this.store.select(
     selectWrittenResponseExpectedDuration,
   );
+  public isSubmitting$: Observable<boolean> = this.store.select(selectWrittenResponseIsSubmitting);
+  public submissionStatus$: Observable<string | null> = this.store.select(
+    selectWrittenResponseSubmissionStatus,
+  );
 
   public progressValue: number = 0;
   public timerLabel: string = '00:00';
   public quizCompleted: boolean = false;
   private intervalId?: ReturnType<typeof setInterval>;
   private timerSubscription!: Subscription;
+  private submissionStatusSubscription!: Subscription;
+  private taskId: string | null = null;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -62,10 +70,10 @@ export class WrittenResponse implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const taskId = this.route.snapshot.paramMap.get('id');
+    this.taskId = this.route.snapshot.paramMap.get('id');
 
-    if (taskId) {
-      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId }));
+    if (this.taskId) {
+      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId: this.taskId }));
     } else {
       this.toast.showError('Task Error', 'The task is not available, try a different task');
       this.router.navigateByUrl('/dashboard/tasks');
@@ -83,6 +91,14 @@ export class WrittenResponse implements OnInit, OnDestroy {
       }
     });
 
+    this.submissionStatusSubscription = this.submissionStatus$.subscribe((status) => {
+      if (status === 'PENDING') {
+        this.progressValue = 100;
+        this.completeQuiz();
+        this.cd.markForCheck();
+      }
+    });
+
     this.progressValue = 0;
   }
 
@@ -92,6 +108,9 @@ export class WrittenResponse implements OnInit, OnDestroy {
     }
     if (this.timerSubscription) {
       this.timerSubscription.unsubscribe();
+    }
+    if (this.submissionStatusSubscription) {
+      this.submissionStatusSubscription.unsubscribe();
     }
     this.store.dispatch(WrittenResponseActions.clearWrittenResponseState());
   }
@@ -126,8 +145,24 @@ export class WrittenResponse implements OnInit, OnDestroy {
   }
 
   public submitTask(): void {
-    this.progressValue = 100;
-    this.completeQuiz();
+    if (!this.taskId) {
+      this.toast.showError('Error', 'Task ID is missing');
+      return;
+    }
+
+    this.userAnswer$.pipe(take(1)).subscribe((answer) => {
+      if (!answer || answer.trim().length === 0) {
+        this.toast.showError('Error', 'Please provide an answer before submitting');
+        return;
+      }
+
+      this.store.dispatch(
+        WrittenResponseActions.submitWrittenResponseTask({
+          taskId: this.taskId!,
+          answer: answer,
+        }),
+      );
+    });
   }
 
   public reviewTask(): void {

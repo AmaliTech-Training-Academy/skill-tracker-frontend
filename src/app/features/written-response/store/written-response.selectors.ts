@@ -53,3 +53,17 @@ export const selectWrittenResponseExpectedDuration = createSelector(
   selectWrittenResponseTask,
   (task) => task?.estimatedDurationInMinutes || 0,
 );
+export const selectWrittenResponseSubmissionId = createSelector(
+  selectWrittenResponseState,
+  (state) => state.submissionId,
+);
+
+export const selectWrittenResponseSubmissionStatus = createSelector(
+  selectWrittenResponseState,
+  (state) => state.submissionStatus,
+);
+
+export const selectWrittenResponseIsSubmitting = createSelector(
+  selectWrittenResponseState,
+  (state) => state.isSubmitting,
+);

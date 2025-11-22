@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { WrittenResponseTask } from './written-response.state';
+import { WrittenResponseTask, WrittenResponseSubmissionResponse } from './written-response.state';
 
 export const loadWrittenResponseTask = createAction(
   '[Written Response] Load Task Details',
@@ -19,6 +19,21 @@ export const loadWrittenResponseTaskFailure = createAction(
 export const updateWrittenResponseUserAnswer = createAction(
   '[Written Response] Update User Answer',
   props<{ answer: string }>(),
+);
+
+export const submitWrittenResponseTask = createAction(
+  '[Written Response] Submit Task',
+  props<{ taskId: string; answer: string }>(),
+);
+
+export const submitWrittenResponseTaskSuccess = createAction(
+  '[Written Response] Submit Task Success',
+  props<{ response: WrittenResponseSubmissionResponse }>(),
+);
+
+export const submitWrittenResponseTaskFailure = createAction(
+  '[Written Response] Submit Task Failure',
+  props<{ error: string }>(),
 );
 
 export const clearWrittenResponseState = createAction('[Written Response] Clear State');

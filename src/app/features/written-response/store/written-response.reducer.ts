@@ -49,4 +49,22 @@ export const writtenResponseReducer = createReducer(
       ...initialWrittenResponseState,
     }),
   ),
+  on(WrittenResponseActions.submitWrittenResponseTask, (state) => ({
+    ...state,
+    isSubmitting: true,
+    error: null,
+  })),
+
+  on(WrittenResponseActions.submitWrittenResponseTaskSuccess, (state, { response }) => ({
+    ...state,
+    isSubmitting: false,
+    submissionId: response.data.submissionId,
+    submissionStatus: response.data.status,
+  })),
+
+  on(WrittenResponseActions.submitWrittenResponseTaskFailure, (state, { error }) => ({
+    ...state,
+    isSubmitting: false,
+    error,
+  })),
 );
