@@ -1,6 +1,16 @@
-import { Component, ViewChild, ElementRef, Input, ChangeDetectionStrategy, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, ChangeDetectionStrategy, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { 
+   SpeechRecognitionAlternative,
+   SpeechRecognitionErrorEvent, 
+   SpeechRecognitionEvent, 
+   SpeechRecognitionResult, 
+   SpeechRecognitionResultList,
+  SpeechRecognition,
+SpeechRecognitionConstructor,
+ } from './text-area.model';
+
 
 @Component({
   selector: 'app-text-area',
@@ -10,7 +20,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './text-area.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextArea implements OnInit, OnChanges {
+export class TextArea implements OnInit, OnChanges, OnDestroy {
   @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
   @Input() textValue: string = '';
 
@@ -18,22 +28,22 @@ export class TextArea implements OnInit, OnChanges {
   isRecording: boolean = false;
   @Output() textChange = new EventEmitter<string>();
 
-  private recognition: any;
+  private recognition: SpeechRecognition | null = null;
   private isRecognitionSupported: boolean = false;
 
   constructor(private cdr: ChangeDetectorRef) {
     // Check if browser supports Speech Recognition
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
     
-    if (SpeechRecognition) {
+    if (SpeechRecognitionClass) {
       this.isRecognitionSupported = true;
-      this.recognition = new SpeechRecognition();
+      this.recognition = new SpeechRecognitionClass();
       this.recognition.continuous = true;
       this.recognition.interimResults = true;
       this.recognition.lang = 'en-US';
 
       // Handle speech recognition results
-      this.recognition.onresult = (event: any) => {
+      this.recognition.onresult = (event: SpeechRecognitionEvent) => {
         let interimTranscript = '';
         let finalTranscript = '';
 
@@ -54,7 +64,7 @@ export class TextArea implements OnInit, OnChanges {
       };
 
       // Handle errors
-      this.recognition.onerror = (event: any) => {
+      this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         if (event.error === 'no-speech') {
           console.log('No speech detected. Please try again.');
@@ -67,7 +77,7 @@ export class TextArea implements OnInit, OnChanges {
       this.recognition.onend = () => {
         if (this.isRecording) {
           // Restart if still in recording mode
-          this.recognition.start();
+          this.recognition?.start();
         }
       };
     }
@@ -88,7 +98,7 @@ export class TextArea implements OnInit, OnChanges {
   }
 
   toggleRecording(): void {
-    if (!this.isRecognitionSupported) {
+    if (!this.isRecognitionSupported || !this.recognition) {
       alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
       return;
     }
