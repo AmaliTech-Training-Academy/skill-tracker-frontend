@@ -1,33 +1,46 @@
-<form class="profile-form" (ngSubmit)="onSubmit()" [formGroup]="form">
-  <div class="form-row">
-    <app-input-field
-      label="Full Name"
-      type="text"
-      id="fullName"
-      placeholder="Enter full name"
-      [control]="form.controls.fullName"
-    />
-
-    <app-input-field
-      label="Email"
-      type="email"
-      id="email"
-      placeholder="Enter email"
-      [control]="form.controls.email"
-    />
+<section class="dashboard-settings">
+  <div class="header">
+    @if (!user()?.avatarUrl) {
+      <img class="profile-icon" src="/assets/fallback-profile-icon.png" alt="avatar" />
+    } @else {
+      <img class="profile-icon" [src]="user()?.avatarUrl" alt="avatar" />
+    }
+    <div>
+      <h2>Account Information</h2>
+      <p>Update your personal details</p>
+    </div>
   </div>
+  <form class="profile-form" (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div class="form-row">
+      <app-input-field
+        label="Full Name"
+        type="text"
+        id="fullName"
+        placeholder="Enter full name"
+        [control]="form.controls.fullName"
+      />
 
-  <div class="form-field">
-    <label for="bio">Bio</label>
-    <textarea
-      id="bio"
-      rows="4"
-      formControlName="bio"
-      placeholder="Tell us about yourself..."
-    ></textarea>
-  </div>
+      <app-input-field
+        label="Email"
+        type="email"
+        id="email"
+        placeholder="Enter email"
+        [control]="form.controls.email"
+      />
+    </div>
 
-  <div class="form-actions">
-    <button type="submit" class="btn-primary" [disabled]="form.invalid">Save</button>
-  </div>
-</form>
+    <div class="form-field">
+      <label for="bio">Bio</label>
+      <textarea
+        id="bio"
+        rows="4"
+        formControlName="bio"
+        placeholder="Tell us about yourself..."
+      ></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="form.invalid">Save</button>
+    </div>
+  </form>
+</section>

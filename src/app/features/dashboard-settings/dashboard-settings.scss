@@ -1,0 +1,98 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+@use 'components' as *;
+
+:host {
+  display: block;
+  padding: var(--space-lg) var(--space-lg);
+}
+
+.dashboard-settings {
+  background-color: var(--color-white);
+  padding: var(--space-lg);
+
+  .profile-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  .header {
+    @include flex($direction: row, $align: center, $gap: 16px);
+    margin-bottom: var(--space-lg);
+    color: var(--color-gray-text-strong);
+
+    h2 {
+      @include h12;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .profile-form {
+    @include flex($direction: column, $gap: var(--space-lg));
+  }
+
+  .form-row {
+    @include grid($columns: 1, $gap: var(--space-lg));
+  }
+
+  .form-field {
+    @include flex($direction: column, $gap: var(--space-sm));
+    textarea {
+      color: var(--color-gray-stroke-strong);
+      padding: var(--space-sm);
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #888888;
+    }
+  }
+
+  .form-actions {
+    @include flex(row, flex-end);
+    .btn-primary {
+      @include button-primary;
+      width: auto;
+      flex: 0 0 auto;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+@include tablet {
+  :host {
+    padding: var(--space-xl) var(--space-2xl);
+  }
+
+  .dashboard-settings {
+    padding: var(--space-2xl) var(--space-xl);
+
+    .profile-icon {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+    }
+
+    .header {
+      h2 {
+        @include h10;
+        margin-bottom: 4px;
+      }
+
+      p {
+        @include h13;
+      }
+    }
+
+    .form-row {
+      @include grid($columns: 2, $gap: var(--space-2xl));
+    }
+  }
+}
