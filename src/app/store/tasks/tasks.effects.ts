@@ -124,8 +124,8 @@ export class TasksEffects {
       ofType(TasksActions.loadUserSkills),
       switchMap(() =>
         this.taskService.getUserSkills().pipe(
-          map((skills) => {
-            const skillNames = ['All Skills', ...skills.map(({ skillName }) => skillName)];
+          map(({ data }) => {
+            const skillNames = ['All Skills', ...data.map(({ skillName }) => skillName)];
             return TasksActions.loadUserSkillsSuccess({ skills: skillNames });
           }),
           catchError(() =>
