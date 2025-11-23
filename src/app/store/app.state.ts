@@ -11,7 +11,7 @@ import { McqGenerationState } from './mcqs/mcq.state';
 import { mcqGenerationReducer } from './mcqs/mcq.reducer';
 import { onboardingReducer } from './onboarding/onboarding.reducer';
 import { OnboardingState } from './onboarding/onboarding.state';
-
+import { websocketReducer } from './websocket/websocket.reducer';
 
 export interface AppState {
   auth: AuthState;
@@ -30,4 +30,5 @@ export const appState = {
   dashboard: dashboardReducer,
   mcqGeneration: mcqGenerationReducer,
   onboarding: onboardingReducer,
+  websocket: websocketReducer,
 };

@@ -47,6 +47,7 @@
     "@ngrx/router-store": "^20.0.1",
     "@ngrx/store": "^20.0.1",
     "@ngrx/store-devtools": "^20.0.1",
+    "@stomp/stompjs": "^7.2.1",
     "@swimlane/ngx-charts": "^23.1.0",
     "angular-shepherd": "^20.0.0",
     "canvas-confetti": "^1.9.3",
