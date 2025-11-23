@@ -81,7 +81,6 @@ describe('WrittenResponse Component', () => {
       },
     };
 
-    // Setup selectSignal to return appropriate signals
     mockStore.selectSignal.mockImplementation((selector: unknown) => {
       const selectorString = selector?.toString() || '';
 
