@@ -20,6 +20,7 @@ import {
   Task,
 } from '@app/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TaskType } from '@app/core/models/tasks-model';
 
 const POLLING_INTERVAL_MS = 2000;
 
@@ -58,8 +59,13 @@ export class TasksEffects {
     () =>
       this.actions$.pipe(
         ofType(TasksActions.startTask),
-        tap(({ taskId }) => {
-          this.router.navigate([APP_CONSTANTS.APP_ROUTES.CODING_ASSESSMENT, taskId]);
+        tap(({ taskId, taskType }) => {
+          const routeMap = {
+            [TaskType.CODING]: APP_CONSTANTS.APP_ROUTES.CODING_ASSESSMENT,
+            [TaskType.ESSAY]: APP_CONSTANTS.APP_ROUTES.WRITTEN_ASSESSMENT,
+            [TaskType.MULTIPLE_CHOICE]: APP_CONSTANTS.APP_ROUTES.MULTIPLE_CHOICE,
+          };
+          this.router.navigate([routeMap[taskType], taskId]);
         }),
       ),
     { dispatch: false },

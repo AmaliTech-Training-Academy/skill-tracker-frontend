@@ -121,6 +121,8 @@ describe('TasksDashboard', () => {
   it('should dispatch startTask when task is started', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
     component.onStartTask('t1');
-    expect(dispatchSpy).toHaveBeenCalledWith(startTask({ taskId: 't1' }));
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      startTask({ taskId: 't1', taskType: TaskType.CODING }),
+    );
   });
 });

@@ -15,6 +15,6 @@ export const appEffects = [
   OnboardingEffects,
   TasksEffects,
   McqGenerationEffects,
-  WrittenResponseEffects
+  WrittenResponseEffects,
   WebSocketEffects,
 ];

@@ -18,6 +18,8 @@ export const APP_CONSTANTS = {
     EMAIL_VERIFICATION: '/email-verification',
     DASHBOARD: '/dashboard',
     CODING_ASSESSMENT: '/dashboard/tasks/coding-assessment',
+    WRITTEN_ASSESSMENT: '/dashboard/tasks/written-assessment',
+    MULTIPLE_CHOICE: '/dashboard/tasks/multiple-choice',
   },
   API_ENDPOINTS: {
     REGISTER: '/auth/register',
