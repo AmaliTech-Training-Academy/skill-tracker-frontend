@@ -45,6 +45,7 @@ export const APP_CONSTANTS = {
     SUBMISSIONS: '/submissions',
     CODE_EXECUTE: '/code/execute',
     USER_SKILLS: '/skills/me',
+    UPDATE_PROFILE: '/users/profile',
   },
   APP_ERRORS: {
     RESET_TOKEN: {

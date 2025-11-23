@@ -1,4 +1,5 @@
 $font-family-primary: 'Roboto', sans-serif;
+$output-console-font: 'Space Grotesk', 'Courier New', monospace;
 
 @mixin typography($size, $line-height, $weight) {
   font-size: $size;

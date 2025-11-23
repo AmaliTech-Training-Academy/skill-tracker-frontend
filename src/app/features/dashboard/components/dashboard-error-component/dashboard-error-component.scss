@@ -1,18 +1,19 @@
 @use 'mixins' as *;
 @use 'colors' as *;
 @use 'typography' as *;
+@use 'components' as *;
 
 :host {
   display: block;
 }
 
-$error-bg: #fef2f2;
-$error-border: #dc2626;
-$error-color: #db2a27;
-$error-btn-color-hover: #fef2f2;
-$error-title-color: #db2a27;
-$error-btn-bg-hover: #b91c1c;
-$error-btn-border: #b91c1c;
+$error-bg: #fff;
+$error-border: #d9d9d9;
+$error-color: #3366ff;
+$error-btn-color-hover: #142fe1;
+$error-title-color: #4f4f4f;
+$error-btn-bg-hover: #3366ff;
+$error-btn-border: #3366ff;
 
 .error {
   padding: var(--space-md) var(--space-xl);
@@ -51,6 +52,7 @@ $error-btn-border: #b91c1c;
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.6;
+    color: var(--color-gray-stroke-strong);
   }
 
   .error-button {
@@ -58,18 +60,13 @@ $error-btn-border: #b91c1c;
     padding: var(--space-xs) var(--space-md);
     font-size: 0.875rem;
     font-weight: 600;
-    color: $error-btn-border;
-    background-color: transparent;
-    border: 1px solid #b91c1c;
+    color: var(--color-white);
+    background-color: var(--color-brand-text);
+    border: 1px solid #3366ff;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s ease;
     align-self: flex-start;
-
-    &:hover {
-      background-color: $error-btn-bg-hover;
-      color: $error-btn-color-hover;
-    }
   }
 }
 

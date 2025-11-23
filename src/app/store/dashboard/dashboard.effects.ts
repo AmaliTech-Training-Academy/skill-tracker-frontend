@@ -78,7 +78,9 @@ export class DashboardEffects {
       ofType(loadUserSkills),
       switchMap(() =>
         this.dashboardService.getUserSkills().pipe(
-          map((skills) => loadUserSkillsSuccess({ skills })),
+          map(({ data }) => {
+            return loadUserSkillsSuccess({ skills: data });
+          }),
           catchError((error: HttpErrorResponse) => {
             const appError = this.errorHandlerService.getError(error);
             return of(loadUserSkillsFailure({ error: appError }));

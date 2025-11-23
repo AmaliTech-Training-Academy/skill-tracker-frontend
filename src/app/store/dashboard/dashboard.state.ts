@@ -1,17 +1,11 @@
-import {
-  AppError,
-  DashboardData,
-  RecommendedTaskUI,
-  SkillTrajectoryData,
-  UserSelectedSkill,
-} from '@app/core';
+import { AppError, DashboardData, TaskUI, SkillTrajectoryData, UserSelectedSkill } from '@app/core';
 
 export interface DashboardState {
   data: DashboardData | null;
   isDashboardAnalyticsLoading: boolean;
   isDashboardAnalyticsError: AppError | null;
 
-  recommendedTasks: RecommendedTaskUI[];
+  recommendedTasks: TaskUI[];
   isRecommendedTasksLoading: boolean;
   isRecommendedTasksError: AppError | null;
 
@@ -23,6 +17,7 @@ export interface DashboardState {
   isUserSkillsLoading: boolean;
   isUserSkillsError: AppError | null;
   selectedSkillId: string | null;
+  selectedSkillName: string | null;
 }
 
 export const initialDashboardState: DashboardState = {
@@ -42,4 +37,5 @@ export const initialDashboardState: DashboardState = {
   isUserSkillsLoading: false,
   isUserSkillsError: null,
   selectedSkillId: null,
+  selectedSkillName: null,
 };

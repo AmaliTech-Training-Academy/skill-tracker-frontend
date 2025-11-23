@@ -1,0 +1,106 @@
+@use 'colors' as *;
+@use 'mixins' as *;
+@use 'skeletons' as *;
+
+.task-card-skeleton {
+  @include flex($direction: row, $align: flex-start, $gap: 11px);
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  background-color: $white;
+  border: 1px solid $text-gray;
+  border-radius: 0.25rem;
+}
+
+.icon-wrapper-skeleton {
+  @extend .skeleton-placeholder;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-content-skeleton {
+  @include flex($direction: column, $gap: 0.25rem);
+  flex: 1;
+  position: relative;
+}
+
+.title-row-skeleton {
+  @include flex($direction: row, $justify: space-between, $align: flex-start);
+}
+
+.title-group-skeleton {
+  @include flex($direction: column, $gap: 0.25rem);
+  flex: 1;
+}
+
+.title-skeleton {
+  @extend .skeleton-placeholder;
+  height: 1.25rem;
+  width: 70%;
+}
+
+.description-skeleton {
+  @extend .skeleton-placeholder;
+  height: 1rem;
+  width: 90%;
+}
+
+.meta-tags-skeleton {
+  @include flex($direction: row, $align: center, $gap: 0.313rem);
+  flex-shrink: 0;
+
+  .tag-skeleton {
+    @extend .skeleton-placeholder;
+    height: 1rem;
+    width: 2.25rem;
+    border-radius: 1.5rem;
+  }
+}
+
+.card-footer-skeleton {
+  @include flex($direction: column, $align: flex-start, $gap: 0.25rem);
+}
+
+.details-skeleton {
+  @include flex($direction: row, $align: center, $gap: 0.875rem);
+
+  .detail-item-skeleton {
+    @extend .skeleton-placeholder;
+    height: 0.875rem;
+    width: 4rem;
+  }
+}
+
+.action-section-skeleton {
+  width: 100%;
+
+  .start-button-skeleton {
+    @extend .skeleton-placeholder;
+    height: 2.5rem;
+    width: 5rem;
+    border-radius: 0.25rem;
+  }
+}
+
+@include mobile-large {
+  .card-content-skeleton {
+    .card-footer-skeleton {
+      @include flex($direction: row, $justify: space-between, $align: center);
+    }
+
+    .action-section-skeleton {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: auto;
+
+      .start-button-skeleton {
+        width: 5.875rem;
+        height: 2rem;
+        padding: 0.375rem;
+      }
+    }
+  }
+}

@@ -30,7 +30,6 @@ describe('WrittenResponse Component', () => {
     };
   };
 
-  // Mock signals
   let mockTaskTitle: WritableSignal<string>;
   let mockTaskDifficulty: WritableSignal<string>;
   let mockXpReward: WritableSignal<number>;

@@ -21,8 +21,7 @@
       [isRecommendedTasksLoading]="isRecommendedTasksLoading()"
       [recommendedTasksError]="selectRecommendedTasksError()"
       [userSkills]="userSkills()"
-      [selectedSkill]="selectedSkillId()"
-      (selectSkill)="onSkillChange($event)"
+      [selectedSkill]="selectedSkillName()"
       (retry)="getRecommendedTasks()"
       (skillChange)="onRecommendedTasksSkillChange($event)"
     />
