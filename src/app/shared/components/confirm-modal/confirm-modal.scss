@@ -2,6 +2,7 @@
 @use 'mixins' as *;
 @use 'typography' as *;
 @use 'components' as *;
+@use 'sass:color';
 
 .modal-overlay {
   position: fixed;
@@ -59,7 +60,7 @@
     font-weight: 500;
 
     &:hover {
-      background-color: darken($brand-fill, 5%);
+      background-color: color.adjust($brand-fill, $lightness: -5%);
     }
   }
 }

@@ -63,15 +63,43 @@
     </section>
   }
 
-  @if (submissionResult()?.success) {
-    <app-task-complete [xpEarned]="xpEarned()" (continue)="onTaskComplete()" />
-  }
-
-  @if (submissionResult() && !submissionResult()?.success) {
-    <app-task-failure
-      [errorMessage]="submissionResult()?.error || 'An error occurred'"
-      (tryAgain)="onTryAgain()"
-      (backToDashboard)="onBackToDashboard()"
-    />
+  @switch (submissionStatus()) {
+    @case ('completed') {
+      <app-task-complete [xpEarned]="xpEarned()" (continue)="onTaskComplete()" />
+    }
+    @case ('failed') {
+      <app-task-complete
+        [xpEarned]="0"
+        [title]="'Task Failed!'"
+        [message]="'Your solution did not pass all tests. Review the feedback and try again.'"
+        [buttonText]="'Try Again'"
+        [showSecondaryButton]="true"
+        [secondaryButtonText]="'Back to Dashboard'"
+        [robotAlt]="'Failed Robot'"
+        (continue)="onTryAgain()"
+        (secondary)="onBackToDashboard()"
+      />
+    }
+    @case ('processing') {
+      <app-task-complete
+        [xpEarned]="0"
+        [title]="'Processing Submission'"
+        [message]="submissionState().error || 'Getting feedback on your submission'"
+        [buttonText]="submissionState().error ? 'Retry' : 'Continue to Dashboard'"
+        [showLoadingSpinner]="!submissionState().error"
+        [robotAlt]="'Processing Robot'"
+        (continue)="submissionState().error ? onRetryFeedback() : onTaskComplete()"
+      />
+    }
+    @case ('error') {
+      <app-task-complete
+        [xpEarned]="0"
+        [title]="'Submission Error!'"
+        [message]="submissionState().error || 'Failed to submit your solution. Please try again.'"
+        [buttonText]="'Retry Submission'"
+        [robotAlt]="'Error Robot'"
+        (continue)="onRetrySubmission()"
+      />
+    }
   }
 </main>
