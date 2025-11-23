@@ -45,7 +45,6 @@ describe('WrittenResponse Component', () => {
   let mockQuizCompleted: WritableSignal<boolean>;
 
   beforeEach(async () => {
-    // Initialize all signals
     mockTaskTitle = signal('Test Task');
     mockTaskDifficulty = signal('Medium');
     mockXpReward = signal(100);
