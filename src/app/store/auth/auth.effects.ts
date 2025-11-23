@@ -265,8 +265,6 @@ export class AuthEffects {
       switchMap(({ request }) =>
         this.authService.updateUserProfile(request).pipe(
           map((response) => {
-            // On success, we map the raw API user to our clean User model
-            // and dispatch the success action.
             return updateProfileSuccess({
               user: mapUserApiResponseToUser(response.data),
             });
