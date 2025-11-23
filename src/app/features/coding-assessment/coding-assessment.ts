@@ -32,6 +32,7 @@ import {
 import * as TasksActions from '@app/store/tasks/tasks.actions';
 import * as AuthActions from '@app/store/auth/auth.actions';
 import { TaskType, CodingTaskContent } from '@app/core/models/tasks-model';
+import { APP_CONSTANTS } from '@app/core';
 
 const DEFAULT_DURATION_MINUTES = 30;
 const DESKTOP_BREAKPOINT = 1024;
@@ -168,7 +169,7 @@ export class CodingAssessment implements OnInit, OnDestroy {
       this.store.dispatch(AuthActions.updateUserXp({ xpToAdd: xpEarned }));
     }
     this.store.dispatch(TasksActions.clearSubmissionResult());
-    this.router.navigate(['/dashboard/tasks']);
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
   }
 
   public onRetryFeedback(): void {
@@ -200,6 +201,6 @@ export class CodingAssessment implements OnInit, OnDestroy {
 
   public onBackToDashboard(): void {
     this.store.dispatch(TasksActions.clearSubmissionResult());
-    this.router.navigate(['/dashboard/tasks']);
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
   }
 }
