@@ -51,8 +51,7 @@
 
 @mixin button-transparent {
   @include button-base;
-  background-color: $gray-fill;
-  border: 2px solid $gray-fill !important;
+  background-color: transparent;
   color: $brand-text;
 
   &:hover {

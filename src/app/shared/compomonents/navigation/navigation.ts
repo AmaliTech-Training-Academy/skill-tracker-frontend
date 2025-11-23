@@ -8,6 +8,9 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectIsAuthenticated } from '@app/store/auth/auth.selectors';
+import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
 @Component({
   selector: 'app-navigation',
@@ -20,6 +23,7 @@ import { Subject, filter, takeUntil } from 'rxjs';
 export class Navigation implements OnInit, OnDestroy {
   public isMobileMenuOpen = false;
   public showOnlyLogo = false;
+  public isAuthenticated = this.store.selectSignal(selectIsAuthenticated);
 
   public readonly minimalLogoRoutes = [
     '/login',
@@ -41,6 +45,7 @@ export class Navigation implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private store: Store,
   ) {}
 
   ngOnInit(): void {
@@ -78,5 +83,9 @@ export class Navigation implements OnInit, OnDestroy {
 
   public toggleMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  public navigateToDashboard(): void {
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
   }
 }

@@ -14,8 +14,12 @@
       </div>
 
       <div class="nav-actions">
-        <a routerLink="/login" class="login-btn">Login</a>
-        <button routerLink="/signup" class="signup-btn">Sign Up</button>
+        @if (isAuthenticated()) {
+          <button (click)="navigateToDashboard()" class="dashboard-btn">Go to Dashboard</button>
+        } @else {
+          <a routerLink="/login" class="login-btn">Login</a>
+          <button routerLink="/signup" class="signup-btn">Sign Up</button>
+        }
       </div>
 
       <button class="hamburger" (click)="toggleMenu()">
@@ -43,7 +47,13 @@
   </div>
 
   <div class="mobile-actions">
-    <a routerLink="/login" class="mobile-login" (click)="toggleMenu()">Login</a>
-    <a routerLink="/signup" class="mobile-signup" (click)="toggleMenu()">Sign Up</a>
+    @if (isAuthenticated()) {
+      <button (click)="navigateToDashboard(); toggleMenu()" class="mobile-login">
+        Go to Dashboard
+      </button>
+    } @else {
+      <a routerLink="/login" class="mobile-login" (click)="toggleMenu()">Login</a>
+      <a routerLink="/signup" class="mobile-signup" (click)="toggleMenu()">Sign Up</a>
+    }
   </div>
 </div>
