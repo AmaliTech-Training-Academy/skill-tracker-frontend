@@ -162,3 +162,5 @@ export const selectXpEarned = createSelector(
   selectSubmissionResult,
   (result) => result?.xpEarned || 0,
 );
+
+export const selectTasksLoading = createSelector(selectTasksState, ({ loading }) => loading);

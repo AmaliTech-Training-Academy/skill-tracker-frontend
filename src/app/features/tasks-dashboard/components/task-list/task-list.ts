@@ -1,14 +1,25 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { TaskUI } from '@app/core/models/tasks-model';
 import { TasksCard } from '../tasks-card/tasks-card';
+import { TaskCardSkeleton } from '../task-card-skeleton/task-card-skeleton';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
 import { selectTimeRanges } from '@app/store/tasks/tasks.selectors';
 import { Store } from '@ngrx/store';
 
+type ViewState = 'loading' | 'empty' | 'data';
+
+interface TaskSection {
+  title: string;
+  tasks: TaskUI[];
+  emptyMessage: string;
+  showDropdown?: boolean;
+  viewState: ViewState;
+}
+
 @Component({
   selector: 'app-task-list',
-  imports: [TasksCard, CustomDropdown],
+  imports: [TasksCard, TaskCardSkeleton, CustomDropdown],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,11 +30,36 @@ export class TaskList {
   public todayTasks = input.required<TaskUI[]>();
   public previousTasks = input.required<TaskUI[]>();
   public selectedTimeRange = input<string | undefined>();
+  public loading = input<boolean>(false);
 
   public timeRangeChanged = output<string>();
   public startTask = output<string>();
 
   public timeRanges = this.store.selectSignal(selectTimeRanges);
+  public skeletonItems = Array.from({ length: 3 });
+
+  public taskSections = computed<TaskSection[]>(() => {
+    const getViewState = (tasks: TaskUI[]): ViewState => {
+      if (this.loading()) return 'loading';
+      return tasks.length ? 'data' : 'empty';
+    };
+
+    return [
+      {
+        title: "Today's Tasks",
+        tasks: this.todayTasks(),
+        emptyMessage: 'No tasks scheduled for today.',
+        viewState: getViewState(this.todayTasks()),
+      },
+      {
+        title: 'Previous Tasks',
+        tasks: this.previousTasks(),
+        emptyMessage: 'No tasks found for the selected time period.',
+        showDropdown: true,
+        viewState: getViewState(this.previousTasks()),
+      },
+    ];
+  });
 
   public onTimeRangeChange(timeRange: string): void {
     this.timeRangeChanged.emit(timeRange);
