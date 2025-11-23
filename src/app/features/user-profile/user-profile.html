@@ -1,0 +1,59 @@
+<section class="dashboard-profile">
+  <div class="header">
+    @if (!user()?.avatarUrl) {
+      <img class="profile-icon" src="/assets/fallback-profile-icon.png" alt="avatar" />
+    } @else {
+      <img class="profile-icon" [src]="user()?.avatarUrl" alt="avatar" />
+    }
+    <div>
+      <h2>{{ user()?.fullName ?? 'Update Full Name' }}</h2>
+      <p class="profile-type">{{ user()?.premiumTier }}</p>
+      <p class="desktop-bio">{{ user()?.bio ?? 'Update Bio' }}</p>
+      <div class="desktop-details">
+        <div>
+          <app-icon name="mail" [size]="20" />
+          <p>{{ user()?.email }}</p>
+        </div>
+        <div>
+          <app-icon name="clock" [size]="20" />
+          <p>{{ user()?.createdAt | date: 'MMMM d, y' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="bio">{{ user()?.bio ?? 'Update Bio' }}</p>
+
+  <div class="details">
+    <div>
+      <app-icon name="mail" [size]="20" />
+      <p>{{ user()?.email }}</p>
+    </div>
+    <div>
+      <app-icon name="clock" [size]="20" />
+      <p>{{ user()?.createdAt | date: 'MMMM d, y' }}</p>
+    </div>
+  </div>
+</section>
+<section class="stats-grid">
+  <app-stat-card
+    title="Current Streak"
+    [value]="(userStats()?.currentStreakInDays ?? 0) + ' days'"
+    [iconName]="'flame'"
+  />
+  <app-stat-card
+    title="Longest Streak"
+    [value]="(userStats()?.longestStreakInDays ?? 0) + ' days'"
+    [iconName]="'flame'"
+  />
+  <app-stat-card
+    title="Task Completed"
+    [value]="userStats()?.totalTasksCompleted ?? 0"
+    iconName="clipboard-check"
+  />
+  <app-stat-card title="Leaderboard" [value]="'Top ' + globalRank() + '%'" iconName="chart-line" />
+</section>
+<section class="skill-interests">
+  <div class="current-skills">
+    <p>Current Skills</p>
+  </div>
+</section>

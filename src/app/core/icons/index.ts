@@ -14,6 +14,8 @@ import {
   ClipboardCheck,
   BrainCircuit,
   CircleAlert,
+  Mail,
+  Clock,
 } from 'lucide-angular';
 
 export const appIcons = {
@@ -32,4 +34,6 @@ export const appIcons = {
   ClipboardCheck,
   BrainCircuit,
   CircleAlert,
+  Mail,
+  Clock,
 };

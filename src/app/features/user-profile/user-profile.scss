@@ -1,0 +1,202 @@
+@use 'typography' as *;
+@use 'mixins' as *;
+@use 'components' as *;
+@use 'colors' as *;
+
+:host {
+  display: block;
+  padding: var(--space-lg) var(--space-lg);
+}
+
+.dashboard-profile {
+  background-color: var(--color-white);
+  padding: var(--space-lg);
+
+  .profile-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  .header {
+    @include flex($direction: row, $align: flex-start, $gap: 16px);
+    margin-bottom: var(--space-lg);
+    color: var(--color-gray-text-strong);
+
+    h2 {
+      @include h12;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .profile-type {
+    display: inline-block;
+    font-size: 12px;
+    background-color: var(--color-green-success);
+    color: var(--color-white);
+    border-radius: 24px;
+    text-align: center;
+    padding: 2px 10px;
+  }
+
+  .details {
+    @include flex($direction: column, $gap: var(--space-sm));
+    margin-top: 16px;
+
+    & > div {
+      @include flex($direction: row, $align: center, $gap: 4px);
+      color: var(--color-gray-text-weak);
+
+      app-icon {
+        line-height: 0.5;
+      }
+    }
+  }
+
+  .bio {
+    color: var(--color-gray-stroke-strong);
+  }
+
+  .desktop-bio,
+  .desktop-details {
+    display: none;
+  }
+}
+
+.stats-grid {
+  @include flex($direction: row, $gap: var(--space-md));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-lg) 0;
+  margin-bottom: var(--space-2xl);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  app-stat-card {
+    flex: 0 0 80%;
+    scroll-snap-align: end;
+  }
+}
+
+.skill-interests {
+  background-color: var(--color-white);
+  padding: var(--space-lg);
+
+  .current-skills {
+    p {
+      @include h13;
+      color: var(--color-gray-text-weak);
+      margin-bottom: var(--space-md);
+    }
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid $gray-stroke-weak;
+  @include h13;
+  border-radius: 8px;
+  padding: 6px 12px;
+  margin: 6px 6px;
+  background-color: var(--color-brand-text);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+
+  .icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .emoji-icon {
+    line-height: 1;
+    font-size: 18px;
+  }
+
+  &.selected {
+    background-color: $brand-text;
+    color: var(--color-white);
+    border-color: $brand-text;
+  }
+
+  &:hover {
+    border-color: $brand-text;
+  }
+}
+
+@include tablet {
+  :host {
+    padding: var(--space-xl) var(--space-2xl);
+  }
+
+  .dashboard-profile {
+    padding: var(--space-xl) var(--space-lg);
+    .profile-icon {
+      width: 96px;
+      height: 96px;
+    }
+
+    .header {
+      h2 {
+        @include h13;
+      }
+    }
+
+    .desktop-bio {
+      display: block;
+      margin-top: 12px;
+      color: var(--color-gray-text-weak);
+    }
+
+    .desktop-details {
+      display: block;
+      @include flex($direction: row, $gap: var(--space-2xl));
+      margin-top: 16px;
+
+      & > div {
+        @include flex($direction: row, $align: center, $gap: 4px);
+        color: var(--color-gray-text-weak);
+
+        app-icon {
+          line-height: 0.5;
+        }
+      }
+    }
+
+    .bio {
+      display: none;
+    }
+
+    .details {
+      display: none;
+    }
+  }
+
+  .stats-grid {
+    @include grid($columns: 4, $gap: var(--space-lg));
+    margin-top: 4px;
+    margin-bottom: 0;
+    padding: var(--space-xl) 0;
+
+    app-stat-card {
+      flex: 0 0 100%;
+      scroll-snap-align: end;
+    }
+  }
+
+  .skill-interests {
+    background-color: var(--color-white);
+    padding: var(--space-xl) var(--space-lg);
+  }
+}
