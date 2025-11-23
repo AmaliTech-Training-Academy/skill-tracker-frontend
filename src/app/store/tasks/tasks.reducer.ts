@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as TasksActions from './tasks.actions';
 import { initialTasksState, TasksState } from './tasks.state';
+import { SubmissionStatus } from '@app/core/models/tasks-model';
 
 export const tasksReducer = createReducer(
   initialTasksState,
@@ -110,6 +111,10 @@ export const tasksReducer = createReducer(
       error: null,
       executionResult: null,
       submissionResult: null,
+      submissionState: {
+        status: SubmissionStatus.IDLE,
+        canRetry: false,
+      },
       userCode: '',
       timer: {
         isRunning: false,
@@ -221,16 +226,28 @@ export const tasksReducer = createReducer(
     (state): TasksState => ({
       ...state,
       submitting: true,
+      submissionState: {
+        ...state.submissionState,
+        status: SubmissionStatus.SUBMITTING,
+        error: undefined,
+        canRetry: false,
+      },
       error: null,
     }),
   ),
 
   on(
     TasksActions.submitTaskSolutionSuccess,
-    (state, { xpEarned }): TasksState => ({
+    (state, { submissionId, xpEarned }): TasksState => ({
       ...state,
       submitting: false,
-      submissionResult: { success: true, xpEarned },
+      submissionResult: { success: true, submissionId, xpEarned },
+      submissionState: {
+        ...state.submissionState,
+        status: SubmissionStatus.PROCESSING,
+        submissionId,
+        canRetry: false,
+      },
       error: null,
     }),
   ),
@@ -241,6 +258,12 @@ export const tasksReducer = createReducer(
       ...state,
       submitting: false,
       submissionResult: { success: false, error },
+      submissionState: {
+        ...state.submissionState,
+        status: SubmissionStatus.ERROR,
+        error,
+        canRetry: true,
+      },
       error,
     }),
   ),
@@ -268,4 +291,61 @@ export const tasksReducer = createReducer(
       userCode: savedCode,
     };
   }),
+
+  on(TasksActions.getSubmissionStatusSuccess, (state, { submission }): TasksState => {
+    const isCompleted = submission.status === 'COMPLETED' || submission.status === 'ERROR';
+    const isCorrect = submission.isCorrect === true;
+
+    return {
+      ...state,
+      submissionState: {
+        ...state.submissionState,
+        status: isCompleted
+          ? isCorrect
+            ? SubmissionStatus.COMPLETED
+            : SubmissionStatus.FAILED
+          : SubmissionStatus.PROCESSING,
+        feedback: submission.feedback,
+        canRetry: isCompleted && !isCorrect,
+      },
+    };
+  }),
+
+  on(
+    TasksActions.getSubmissionStatusFailure,
+    (state, { error }): TasksState => ({
+      ...state,
+      submissionState: {
+        ...state.submissionState,
+        status: SubmissionStatus.PROCESSING,
+        error,
+        canRetry: true,
+      },
+    }),
+  ),
+
+  on(
+    TasksActions.retryFeedback,
+    (state): TasksState => ({
+      ...state,
+      submissionState: {
+        ...state.submissionState,
+        status: SubmissionStatus.PROCESSING,
+        error: undefined,
+        canRetry: false,
+      },
+    }),
+  ),
+
+  on(
+    TasksActions.retrySubmission,
+    (state): TasksState => ({
+      ...state,
+      submissionState: {
+        status: SubmissionStatus.IDLE,
+        canRetry: false,
+      },
+      submissionResult: null,
+    }),
+  ),
 );

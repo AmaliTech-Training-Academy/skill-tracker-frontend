@@ -4,6 +4,7 @@ import {
   CompletedPeriod,
   Task,
   CodeExecutionResponse,
+  SubmissionResponse,
 } from '@app/core/models/tasks-model';
 
 export const loadTasks = createAction('[Tasks Dashboard] Load Tasks');
@@ -113,6 +114,31 @@ export const submitTaskSolutionFailure = createAction(
 );
 
 export const clearSubmissionResult = createAction('[Tasks] Clear Submission Result');
+
+export const getSubmissionStatus = createAction(
+  '[Tasks] Get Submission Status',
+  props<{ submissionId: string }>(),
+);
+
+export const getSubmissionStatusSuccess = createAction(
+  '[Tasks API] Get Submission Status Success',
+  props<{ submission: SubmissionResponse }>(),
+);
+
+export const getSubmissionStatusFailure = createAction(
+  '[Tasks API] Get Submission Status Failure',
+  props<{ error: string }>(),
+);
+
+export const retryFeedback = createAction(
+  '[Tasks] Retry Feedback',
+  props<{ submissionId: string }>(),
+);
+
+export const retrySubmission = createAction(
+  '[Tasks] Retry Submission',
+  props<{ taskId: string; code: string; languageId: number }>(),
+);
 
 export const updateUserCode = createAction(
   '[Coding Assessment] Update User Code',

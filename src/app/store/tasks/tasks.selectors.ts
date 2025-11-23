@@ -162,3 +162,18 @@ export const selectXpEarned = createSelector(
   selectSubmissionResult,
   (result) => result?.xpEarned || 0,
 );
+
+export const selectSubmissionId = createSelector(
+  selectSubmissionResult,
+  (result) => result?.submissionId || null,
+);
+
+export const selectSubmissionState = createSelector(
+  selectTasksState,
+  (state) => state.submissionState,
+);
+
+export const selectSubmissionStatus = createSelector(
+  selectSubmissionState,
+  (state) => state.status,
+);
