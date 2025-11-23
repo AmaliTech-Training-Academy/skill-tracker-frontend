@@ -238,7 +238,6 @@ describe('Tasks Reducer', () => {
       const state = tasksReducer(stateWithSubmission, action);
 
       expect(state.submissionResult).toBe(null);
-      // submissionState is not reset by clearSubmissionResult
       expect(state.submissionState.status).toBe(SubmissionStatus.COMPLETED);
     });
   });

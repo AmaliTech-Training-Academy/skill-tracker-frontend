@@ -102,22 +102,39 @@ describe('TasksCard', () => {
     expect(statusCompleted.textContent).toBe('Completed');
   });
 
-  it('should display correct icon for abc type', () => {
+  it('should display correct icon for CODING task type', () => {
     const iconImg = fixture.nativeElement.querySelector('.icon-image');
+    const iconWrapper = fixture.nativeElement.querySelector('.icon-wrapper');
 
     expect(iconImg).toBeTruthy();
-    expect(iconImg.src).toContain('abc.png');
+    expect(iconImg.src).toContain('code-task.png');
+    expect(iconWrapper.classList.contains('icon-code')).toBe(true);
   });
 
-  it('should display correct icon for pencil type', () => {
-    const pencilTask = { ...mockTask, icon: TaskIcon.PENCIL };
-    fixture.componentRef.setInput('task', pencilTask);
+  it('should display correct icon for ESSAY task type', () => {
+    const essayTask = { ...mockTask, type: TaskType.ESSAY };
+    fixture.componentRef.setInput('task', essayTask);
     fixture.detectChanges();
 
     const iconImg = fixture.nativeElement.querySelector('.icon-image');
+    const iconWrapper = fixture.nativeElement.querySelector('.icon-wrapper');
 
     expect(iconImg).toBeTruthy();
     expect(iconImg.src).toContain('pencil.png');
+    expect(iconWrapper.classList.contains('icon-pencil')).toBe(true);
+  });
+
+  it('should display correct icon for MULTIPLE_CHOICE task type', () => {
+    const mcqTask = { ...mockTask, type: TaskType.MULTIPLE_CHOICE };
+    fixture.componentRef.setInput('task', mcqTask);
+    fixture.detectChanges();
+
+    const iconImg = fixture.nativeElement.querySelector('.icon-image');
+    const iconWrapper = fixture.nativeElement.querySelector('.icon-wrapper');
+
+    expect(iconImg).toBeTruthy();
+    expect(iconImg.src).toContain('abc.png');
+    expect(iconWrapper.classList.contains('icon-abc')).toBe(true);
   });
 
   it('should call onStartTask when start button is clicked', () => {

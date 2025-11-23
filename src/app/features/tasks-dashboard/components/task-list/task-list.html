@@ -1,40 +1,45 @@
 <section class="tasks-list-section">
-  <div class="list-container">
-    <h2 class="list-title">Today's Tasks</h2>
+  @for (section of taskSections(); track section.title) {
+    @let title = section.title;
+    @let tasks = section.tasks;
+    @let emptyMessage = section.emptyMessage;
+    @let showDropdown = section.showDropdown;
+    @let viewState = section.viewState;
 
-    @if (todayTasks().length) {
+    <div class="list-container">
+      @if (showDropdown) {
+        <div class="list-header">
+          <h2 class="list-title">{{ title }}</h2>
+          <app-custom-dropdown
+            [options]="timeRanges()"
+            [selectedValue]="selectedTimeRange()"
+            (selectionChange)="onTimeRangeChange($event)"
+          />
+        </div>
+      } @else {
+        <h2 class="list-title">{{ title }}</h2>
+      }
+
       <div class="cards-wrapper">
-        @for (task of todayTasks(); track task.id) {
-          <app-tasks-card [task]="task" (startTask)="onStartTask($event)" />
+        @switch (viewState) {
+          @case ('loading') {
+            @for (i of skeletonItems; track i) {
+              <app-task-card-skeleton />
+            }
+          }
+          @case ('data') {
+            @for (task of tasks; track task.id) {
+              <app-tasks-card [task]="task" [isCompleted]="true" />
+            }
+          }
         }
       </div>
-    } @else {
-      <div class="empty-state">
-        <p class="empty-message">No tasks scheduled for today.</p>
-      </div>
-    }
-  </div>
 
-  <div class="list-container">
-    <div class="list-header">
-      <h2 class="list-title">Previous Tasks</h2>
-      <app-custom-dropdown
-        [options]="timeRanges()"
-        [selectedValue]="selectedTimeRange()"
-        (selectionChange)="onTimeRangeChange($event)"
-      />
+      @if (viewState === 'empty') {
+        <div class="empty-state">
+          <p class="empty-message">{{ emptyMessage }}</p>
+        </div>
+      }
     </div>
-
-    @if (previousTasks().length) {
-      <div class="cards-wrapper">
-        @for (task of previousTasks(); track task.id) {
-          <app-tasks-card [task]="task" [isCompleted]="true" />
-        }
-      </div>
-    } @else {
-      <div class="empty-state">
-        <p class="empty-message">No tasks found for the selected time period.</p>
-      </div>
-    }
-  </div>
+  }
 </section>

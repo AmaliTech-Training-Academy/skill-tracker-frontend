@@ -41,7 +41,7 @@ export class TaskService {
       httpParams = httpParams.set('skillName', params.skillName);
     }
 
-    if (params.completedPeriod) {
+    if (params.completedPeriod && params.completedPeriod !== 'ALL_PERIODS') {
       httpParams = httpParams.set('completedPeriod', params.completedPeriod);
     }
 
@@ -50,6 +50,10 @@ export class TaskService {
         ApiResponse<GroupedTasksResponse>
       >(APP_CONSTANTS.API_ENDPOINTS.MY_TASKS, { params: httpParams })
       .pipe(catchError(this.handleError));
+  }
+
+  public formatSkillNames(skills: TaskUserSkill[]): string[] {
+    return ['All Skills', ...skills.map(({ skillName }) => skillName)];
   }
 
   public getSuggestedTasks(params: SuggestedTasksParams): Observable<ApiResponse<Task[]>> {
