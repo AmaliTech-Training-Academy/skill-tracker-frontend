@@ -2,6 +2,7 @@
 @use 'mixins' as *;
 @use 'typography' as *;
 @use 'components' as *;
+@use 'sass:color';
 
 .modal-overlay {
   position: fixed;
@@ -18,22 +19,34 @@
 .modal-content {
   background-color: $white;
   border-radius: 1rem;
-  padding: 3.5rem 5.813rem;
+  padding: 1.188rem 1.688rem;
   width: 100%;
   max-width: 650px;
   @include flex($direction: column, $align: center, $gap: 1rem);
   text-align: center;
+
+  @include mobile-large {
+    padding: 3.5rem 5.813rem;
+  }
 }
 
 .modal-title {
-  @include typography(1.75rem, 2.25rem, 600);
+  @include typography(1.25rem, 1.5rem, 600);
   color: $gray-text-strong;
+
+  @include mobile-large {
+    @include typography(1.75rem, 2.25rem, 600);
+  }
 }
 
 .modal-message {
-  @include h11;
+  @include h13;
   color: $gray-text-weak;
   margin-bottom: 1rem;
+
+  @include mobile-large {
+    @include h11;
+  }
 }
 
 .actions {
@@ -59,7 +72,7 @@
     font-weight: 500;
 
     &:hover {
-      background-color: darken($brand-fill, 5%);
+      background-color: color.adjust($brand-fill, $lightness: -5%);
     }
   }
 }

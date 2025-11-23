@@ -13,6 +13,7 @@ import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
 })
 export class TasksCard {
   public task = input.required<TaskUI>();
+  public isCompleted = input<boolean>(false);
   public startTask = output<string>();
 
   private taskTypeIconMap = {

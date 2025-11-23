@@ -29,7 +29,11 @@
           }
           @case ('data') {
             @for (task of tasks; track task.id) {
-              <app-tasks-card [task]="task" (startTask)="onStartTask($event)" />
+              <app-tasks-card
+                [task]="task"
+                [isCompleted]="title === 'Previous Tasks'"
+                (startTask)="onStartTask($event)"
+              />
             }
           }
         }
