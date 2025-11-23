@@ -102,4 +102,9 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./layout/page-not-found/page-not-found').then((c) => c.PageNotFound),
+  },
 ];
