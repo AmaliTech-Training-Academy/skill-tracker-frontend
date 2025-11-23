@@ -4,11 +4,11 @@ import {
   ChangeDetectorRef,
   ChangeDetectionStrategy,
   OnDestroy,
-  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { Subscription, filter, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '@app/core';
 import { Router } from '@angular/router';
@@ -51,12 +51,11 @@ export class WrittenResponse implements OnInit, OnDestroy {
   public isSubmitting = this.store.selectSignal(selectWrittenResponseIsSubmitting);
   public taskId = this.store.selectSignal(selectWrittenResponseTaskId);
   public quizCompleted = this.store.selectSignal(selectWrittenResponseQuizCompleted);
-  public task = this.store.selectSignal(selectWrittenResponseTask);
 
   public progressValue: number = 0;
   public timerLabel: string = '00:00';
   private intervalId?: ReturnType<typeof setInterval>;
-  private timerStarted: boolean = false;
+  private taskSubscription?: Subscription;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -64,23 +63,27 @@ export class WrittenResponse implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private toast: ToastService,
     private router: Router,
-  ) {
-    effect(() => {
-      const task = this.task();
-      if (task && !this.intervalId && !this.timerStarted) {
-        this.timerStarted = true;
-        const duration = task.estimatedDurationInMinutes || 10;
-        const totalSeconds = duration * 60;
-        this.startTimer(totalSeconds);
-      }
-    });
-  }
+  ) {}
 
   ngOnInit(): void {
     const routeTaskId = this.route.snapshot.paramMap.get('id');
 
     if (routeTaskId) {
       this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId: routeTaskId }));
+
+      this.taskSubscription = this.store
+        .select(selectWrittenResponseTask)
+        .pipe(
+          filter((task) => task !== null),
+          take(1),
+        )
+        .subscribe((task) => {
+          if (task) {
+            const duration = task.estimatedDurationInMinutes || 10;
+            const totalSeconds = duration * 60;
+            this.startTimer(totalSeconds);
+          }
+        });
     } else {
       this.toast.showError('Task Error', 'The task is not available, try a different task');
       this.store.dispatch(
@@ -95,6 +98,9 @@ export class WrittenResponse implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
+    }
+    if (this.taskSubscription) {
+      this.taskSubscription.unsubscribe();
     }
     this.store.dispatch(WrittenResponseActions.clearWrittenResponseState());
   }
