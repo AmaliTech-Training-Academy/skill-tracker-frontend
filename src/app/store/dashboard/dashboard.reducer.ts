@@ -14,6 +14,7 @@ import {
   loadUserSkillsSuccess,
   loadUserSkillsFailure,
   setSelectedSkill,
+  setSelectedSkillName,
 } from './dashboard.actions';
 
 export const dashboardReducer = createReducer(
@@ -77,6 +78,7 @@ export const dashboardReducer = createReducer(
     isUserSkillsLoading: false,
     isUserSkillsError: null,
     selectedSkillId: skills.length > 0 ? skills[0].skillId : null,
+    selectedSkillName: skills.length > 0 ? skills[0].skillName : null,
   })),
   on(loadUserSkillsFailure, (state, { error }) => ({
     ...state,
@@ -86,5 +88,9 @@ export const dashboardReducer = createReducer(
   on(setSelectedSkill, (state, { skillId }) => ({
     ...state,
     selectedSkillId: skillId,
+  })),
+  on(setSelectedSkillName, (state, { skillName }) => ({
+    ...state,
+    selectedSkillName: skillName,
   })),
 );
