@@ -14,9 +14,7 @@
       <div class="xp-reward">+{{ xpEarned() }} XP</div>
     }
 
-    <p class="modal-message">
-      {{ getDefaultMessage() }}
-    </p>
+    <p class="modal-message" [innerHTML]="getDefaultMessage()"></p>
 
     <div class="actions">
       <button class="continue-button" (click)="continue.emit()">

@@ -7,6 +7,8 @@ import {
 } from './written-response.state';
 import { ApiService } from '@app/core';
 import { APP_CONSTANTS } from '@app/core';
+import { ApiResponse } from '@app/core';
+import { SubmissionResponse } from '@app/core/models/tasks-model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,5 +28,10 @@ export class WrittenResponseService {
   ): Observable<WrittenResponseSubmissionResponse> {
     const url = `${APP_CONSTANTS.API_ENDPOINTS.SUBMIT}`;
     return this.api.post<WrittenResponseSubmissionResponse>(url, submission);
+  }
+
+  public getSubmissionStatus(submissionId: string): Observable<ApiResponse<SubmissionResponse>> {
+    const url = `${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/${submissionId}`;
+    return this.api.get<ApiResponse<SubmissionResponse>>(url);
   }
 }

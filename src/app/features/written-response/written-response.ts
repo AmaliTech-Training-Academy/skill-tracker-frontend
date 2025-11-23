@@ -26,14 +26,34 @@ import {
   selectWrittenResponseTaskId,
   selectWrittenResponseQuizCompleted,
   selectWrittenResponseTask,
+  selectWrittenResponseSubmission,
+  selectWrittenResponseFeedback,
+  selectWrittenResponseSubmissionStatus,
 } from './store/written-response.selectors';
 import * as WrittenResponseActions from './store/written-response.action';
 import { TextArea } from './components/text-area/text-area';
+import { TaskComplete } from '@app/shared/components/task-complete/task-complete';
+
+interface FeedbackOverall {
+  totalScore?: number;
+  maxXP?: number;
+  percentage?: number;
+  summary?: string;
+  keyImprovements?: string[];
+}
+
+interface FeedbackEvaluation {
+  overall?: FeedbackOverall;
+}
+
+interface TaskFeedback {
+  evaluation?: FeedbackEvaluation;
+}
 
 @Component({
   selector: 'app-written-response',
   standalone: true,
-  imports: [CommonModule, TextArea, FormsModule],
+  imports: [CommonModule, TextArea, FormsModule, TaskComplete],
   templateUrl: './written-response.html',
   styleUrls: ['./written-response.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,6 +71,58 @@ export class WrittenResponse implements OnInit, OnDestroy {
   public isSubmitting = this.store.selectSignal(selectWrittenResponseIsSubmitting);
   public taskId = this.store.selectSignal(selectWrittenResponseTaskId);
   public quizCompleted = this.store.selectSignal(selectWrittenResponseQuizCompleted);
+  public submission = this.store.selectSignal(selectWrittenResponseSubmission);
+  public feedback = this.store.selectSignal(selectWrittenResponseFeedback);
+  public submissionStatus = this.store.selectSignal(selectWrittenResponseSubmissionStatus);
+
+  public getModalTitle(): string {
+    const status = this.submissionStatus();
+    const submission = this.submission();
+
+    if (status === 'COMPLETED') {
+      return submission?.isCorrect ? 'Task Complete!' : 'Task Failed!';
+    }
+    if (status === 'PENDING' || status === 'IN_PROGRESS') {
+      return 'Processing Submission';
+    }
+    return 'Task Submitted';
+  }
+
+  public getModalMessage(): string {
+    const status = this.submissionStatus();
+    const submission = this.submission();
+    const feedback = this.feedback() as TaskFeedback;
+
+    if (status === 'COMPLETED') {
+      if (submission?.isCorrect) {
+        return `<strong>Congratulations!</strong> You've earned <strong>+${submission?.scoreEarned || this.xpReward()} XP</strong> for completing this task successfully.`;
+      } else {
+        const evaluation = feedback?.evaluation;
+        const overall = evaluation?.overall;
+
+        let message = `<strong>Score: ${overall?.totalScore || 0}/${overall?.maxXP || this.xpReward()}</strong> (${overall?.percentage || 0}%)<br><br>`;
+
+        if (overall?.summary) {
+          const summary = overall.summary;
+          const shortSummary = summary.length > 150 ? summary.substring(0, 150) + '...' : summary;
+          message += `${shortSummary}<br><br>`;
+        }
+
+        if (overall?.keyImprovements && overall.keyImprovements.length > 0) {
+          const topImprovements = overall.keyImprovements.slice(0, 2);
+          message += `<strong>Key Areas to Improve:</strong><br>${topImprovements.map((imp: string) => `• ${imp}`).join('<br>')}`;
+        }
+
+        return message;
+      }
+    }
+
+    if (status === 'PENDING' || status === 'IN_PROGRESS') {
+      return 'Getting feedback on your submission. This may take a moment...';
+    }
+
+    return 'Your response has been submitted successfully!';
+  }
 
   public progressValue: number = 0;
   public timerLabel: string = '00:00';
@@ -159,5 +231,13 @@ export class WrittenResponse implements OnInit, OnDestroy {
 
   public reviewTask(): void {
     this.store.dispatch(WrittenResponseActions.reviewWrittenResponseTask());
+  }
+
+  public onTaskComplete(): void {
+    this.router.navigateByUrl('/dashboard/tasks');
+  }
+
+  public onBackToDashboard(): void {
+    this.router.navigateByUrl('/dashboard/tasks');
   }
 }
