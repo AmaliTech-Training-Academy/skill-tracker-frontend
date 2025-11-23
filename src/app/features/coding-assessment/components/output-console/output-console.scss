@@ -8,6 +8,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 328px;
 }
 
 .console-container {
@@ -59,27 +60,27 @@
 }
 
 .tab-buttons {
-  @include flex($direction: row, $gap: 0.5rem);
+  @include flex($direction: row, $gap: 2rem);
 }
 
 .tab-button {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0 0.813rem;
   background-color: transparent;
-  color: $gray-fill;
+  color: $gray-inactive;
   border: none;
-  border-radius: 6px;
-  @include typography(0.875rem, 1.25rem, 500);
+  @include typography(0.875rem, 1.313rem, 700);
+  font-family: $output-console-font;
+  border-bottom: transparent 3px solid;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
     color: $background-white;
   }
 
   &.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: $background-white;
+    color: $gray-fill;
+    border-bottom: $gray-fill 3px solid;
   }
 }
 
@@ -128,15 +129,15 @@
     margin-bottom: 0.5rem;
 
     pre {
-      @include typography(0.875rem, 1.25rem, 400);
-      font-family: 'Courier New', monospace;
+      @include typography(0.9rem, 1.5rem, 500);
+      font-family: $output-console-font;
       margin: 0;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
     &.success pre {
-      color: $green-success-fill;
+      color: $green-success-text;
     }
 
     &.error pre {
@@ -156,7 +157,7 @@
   border-left: 4px solid $gray-fill;
 
   &.passed {
-    border-left-color: $green-success-fill;
+    border-left-color: $green-text;
   }
 
   &.failed {
@@ -181,8 +182,8 @@
   text-transform: uppercase;
 
   &.passed {
-    background-color: rgba($green-success-fill, 0.2);
-    color: $green-success-fill;
+    background-color: rgba($green-text, 0.2);
+    color: $green-text;
   }
 
   &.failed {

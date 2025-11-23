@@ -52,6 +52,7 @@
 
     .mobile-editor {
       height: 60%;
+      min-height: 550px;
     }
 
     .mobile-console {
@@ -71,12 +72,13 @@
 
     .desktop-workspace {
       @include flex($direction: column);
-      height: 100vh;
+      min-height: calc(100vh - 8rem);
       display: flex;
 
       .desktop-top-row {
         @include grid($columns: 2, $gap: 0);
-        height: calc(100vh - 150px);
+        min-height: 510px;
+        flex: 1;
 
         .desktop-description {
           overflow-y: auto;
