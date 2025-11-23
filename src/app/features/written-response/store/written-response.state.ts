@@ -1,3 +1,5 @@
+import { SubmissionResponse } from '@app/core/models/tasks-model';
+
 export interface EvaluationCriteria {
   [key: string]: string;
 }
@@ -70,6 +72,8 @@ export interface WrittenResponseState {
   isSubmitting: boolean;
   taskId: string | null;
   quizCompleted: boolean;
+  submission: SubmissionResponse | null;
+  feedback: SubmissionResponse['feedback'] | null;
 }
 
 export const initialWrittenResponseState: WrittenResponseState = {
@@ -82,4 +86,6 @@ export const initialWrittenResponseState: WrittenResponseState = {
   isSubmitting: false,
   taskId: null,
   quizCompleted: false,
+  submission: null,
+  feedback: null,
 };

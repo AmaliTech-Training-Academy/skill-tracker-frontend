@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, timer, from } from 'rxjs';
 import { ToastService } from '@app/core';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, takeWhile } from 'rxjs/operators';
 import * as WrittenResponseActions from './written-response.action';
 import { WrittenResponseService } from './written-response-service';
+import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
+import { loadTasks } from '@app/store/tasks/tasks.actions';
+import { Store } from '@ngrx/store';
+import { ApiResponse } from '@app/core';
+import { SubmissionResponse } from '@app/core/models/tasks-model';
+
+const POLLING_INTERVAL_MS = 2000;
 
 @Injectable()
 export class WrittenResponseEffects {
@@ -12,6 +19,8 @@ export class WrittenResponseEffects {
     private actions$: Actions,
     private writtenResponseService: WrittenResponseService,
     private toastService: ToastService,
+    private taskService: TaskService,
+    private store: Store,
   ) {}
 
   public loadWrittenResponseTask$ = createEffect(() =>
@@ -77,6 +86,55 @@ export class WrittenResponseEffects {
     ),
   );
 
+  public autoRequestFeedback$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(WrittenResponseActions.submitWrittenResponseTaskSuccess),
+      map(({ response }) =>
+        WrittenResponseActions.getWrittenResponseSubmissionStatus({
+          submissionId: response.data.submissionId,
+        }),
+      ),
+    ),
+  );
+
+  public getSubmissionStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(WrittenResponseActions.getWrittenResponseSubmissionStatus),
+      switchMap(({ submissionId }) =>
+        this.writtenResponseService.getSubmissionStatus(submissionId).pipe(
+          switchMap((response) => this.handleSubmissionStatusResponse(response)),
+          catchError((error) => {
+            this.toastService.showError('Status Error', 'Failed to get submission status');
+            return of(
+              WrittenResponseActions.getWrittenResponseSubmissionStatusFailure({
+                error: 'Failed to get submission status',
+              }),
+            );
+          }),
+        ),
+      ),
+    ),
+  );
+
+  public pollSubmissionStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(WrittenResponseActions.getWrittenResponseSubmissionStatusSuccess),
+      switchMap(({ submission }) => {
+        if (this.taskService.shouldPollStatus(submission)) {
+          return timer(POLLING_INTERVAL_MS).pipe(
+            map(() =>
+              WrittenResponseActions.getWrittenResponseSubmissionStatus({
+                submissionId: submission.id,
+              }),
+            ),
+            takeWhile(() => true, true),
+          );
+        }
+        return of();
+      }),
+    ),
+  );
+
   public submitSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -98,6 +156,23 @@ export class WrittenResponseEffects {
       ),
     { dispatch: false },
   );
+
+  private handleSubmissionStatusResponse(response: ApiResponse<SubmissionResponse>) {
+    if (this.taskService.shouldReloadTasks(response.data)) {
+      return from([
+        WrittenResponseActions.getWrittenResponseSubmissionStatusSuccess({
+          submission: response.data,
+        }),
+        loadTasks(),
+        WrittenResponseActions.completeWrittenResponseQuiz(),
+      ]);
+    }
+    return of(
+      WrittenResponseActions.getWrittenResponseSubmissionStatusSuccess({
+        submission: response.data,
+      }),
+    );
+  }
 
   private extractErrorMessage(
     error: { error?: { message?: string }; message?: string },

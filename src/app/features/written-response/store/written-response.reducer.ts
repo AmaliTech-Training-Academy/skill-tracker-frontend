@@ -83,4 +83,16 @@ export const writtenResponseReducer = createReducer(
     ...state,
     quizCompleted: false,
   })),
+
+  on(WrittenResponseActions.getWrittenResponseSubmissionStatusSuccess, (state, { submission }) => ({
+    ...state,
+    submission,
+    feedback: submission.feedback,
+    submissionStatus: submission.status,
+  })),
+
+  on(WrittenResponseActions.getWrittenResponseSubmissionStatusFailure, (state, { error }) => ({
+    ...state,
+    error,
+  })),
 );
