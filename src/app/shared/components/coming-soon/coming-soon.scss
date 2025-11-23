@@ -1,0 +1,55 @@
+@use 'mixins' as *;
+
+$primary-color: #3366ff;
+$bg-color: #fff;
+$text-dark: #1f2937;
+$text-light: #6b7280;
+$white: #ffffff;
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.coming-soon-container {
+  @include flex($direction: row, $justify: center, $align: center);
+  min-height: 95vh;
+  padding: 2rem;
+  background-color: $bg-color;
+  border-radius: 12px;
+}
+
+.content-wrapper {
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $text-dark;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: $text-light;
+  margin: 0 0 2.5rem 0;
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: $primary-color;
+  color: $white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--color-brand-stroke-strong);
+  }
+}

@@ -55,5 +55,10 @@
 <section class="skill-interests">
   <div class="current-skills">
     <p>Current Skills</p>
+    @for (skill of userSkills(); track skill) {
+      <button type="button" class="badge">
+        <span class="label">{{ skill.skillName }}</span>
+      </button>
+    }
   </div>
 </section>

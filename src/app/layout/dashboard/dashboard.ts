@@ -39,12 +39,6 @@ export class Dashboard implements OnInit {
       tourId: 'sidebar-skill-arena',
     },
     {
-      icon: 'star',
-      label: 'Badges',
-      route: '/dashboard/achievements',
-      tourId: 'sidebar-achievements',
-    },
-    {
       icon: 'users',
       label: 'Groups',
       route: '/dashboard/groups',

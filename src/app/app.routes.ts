@@ -100,6 +100,19 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/user-profile/user-profile').then((c) => c.UserProfile),
       },
+      {
+        path: 'leaderboard',
+        loadComponent: () =>
+          import('./features/leaderboard/leaderboard').then((c) => c.Leaderboard),
+      },
+      {
+        path: 'skill-arena',
+        loadComponent: () => import('./features/skill-arena/skill-arena').then((c) => c.SkillArena),
+      },
+      {
+        path: 'groups',
+        loadComponent: () => import('./features/groups/groups').then((c) => c.Groups),
+      },
     ],
   },
   {
