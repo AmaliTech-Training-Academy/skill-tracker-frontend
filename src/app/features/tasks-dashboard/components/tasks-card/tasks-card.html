@@ -3,7 +3,6 @@
 @let description = task().description;
 @let xp = task().xpReward;
 @let time = task().estimatedDuration + ' min';
-@let status = task().status;
 @let skill = task().skillName;
 @let difficulty = task().difficulty;
 
@@ -32,13 +31,13 @@
         <span class="divider"></span>
         <span class="detail-item">{{ difficulty | capitalize }}</span>
       </div>
-      @if (status === 'COMPLETED') {
+      @if (isCompleted()) {
         <span class="status-completed">Completed</span>
       }
     </div>
 
     <div class="action-section">
-      @if (status !== 'COMPLETED') {
+      @if (!isCompleted()) {
         <button class="start-button" (click)="onStartTask()" role="button" aria-label="Start Task">
           Start
         </button>

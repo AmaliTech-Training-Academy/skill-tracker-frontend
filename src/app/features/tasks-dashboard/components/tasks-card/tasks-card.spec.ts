@@ -91,6 +91,7 @@ describe('TasksCard', () => {
   it('should show completed status for completed tasks', () => {
     const completedTask = { ...mockTask, status: TaskStatus.COMPLETED };
     fixture.componentRef.setInput('task', completedTask);
+    fixture.componentRef.setInput('isCompleted', true);
     fixture.detectChanges();
 
     const startButton = fixture.nativeElement.querySelector('.start-button');

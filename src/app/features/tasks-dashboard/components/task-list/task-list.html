@@ -28,7 +28,7 @@
     @if (previousTasks().length) {
       <div class="cards-wrapper">
         @for (task of previousTasks(); track task.id) {
-          <app-tasks-card [task]="task" (startTask)="onStartTask($event)" />
+          <app-tasks-card [task]="task" [isCompleted]="true" />
         }
       </div>
     } @else {
