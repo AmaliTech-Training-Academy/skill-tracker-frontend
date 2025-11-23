@@ -56,6 +56,9 @@ export class TasksDashboard implements OnInit {
   }
 
   public onStartTask(taskId: string): void {
-    this.store.dispatch(startTask({ taskId }));
+    const task = [...this.todayTasks()].find((t) => t.id === taskId);
+    if (task) {
+      this.store.dispatch(startTask({ taskId, taskType: task.type }));
+    }
   }
 }

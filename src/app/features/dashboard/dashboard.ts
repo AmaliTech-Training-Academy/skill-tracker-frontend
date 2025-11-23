@@ -24,6 +24,7 @@ import {
   setSelectedSkill,
   setSelectedSkillName,
 } from '@app/store/dashboard/dashboard.actions';
+import { startTask } from '@app/store/tasks/tasks.actions';
 import {
   selectIsDashboardAnalyticsLoading,
   selectDashboardAnalyticsError,
@@ -205,5 +206,12 @@ export class Dashboard implements OnInit, AfterViewInit {
 
   public getUserSkills(): void {
     this.store.dispatch(loadUserSkills());
+  }
+
+  public onStartTask(taskId: string): void {
+    const task = this.recommendedTasks().find((t) => t.id === taskId);
+    if (task) {
+      this.store.dispatch(startTask({ taskId, taskType: task.type }));
+    }
   }
 }
