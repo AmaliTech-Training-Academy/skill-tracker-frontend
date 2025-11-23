@@ -1,0 +1,120 @@
+<div class="multiple-choice">
+  <div class="task-title-progress">
+    <div class="task-name">
+      <label for="">Task</label>
+      <img src="assets/left-progress-arrow.png" alt="progress forward" />
+      <label class="task-label" for="">{{ taskTitle() }}</label>
+    </div>
+
+    <div class="progress-bar">
+      <progress [value]="progressValue" max="100"></progress>
+    </div>
+  </div>
+
+  <div class="group1">
+    <div class="timer1">
+      <label class="timer-text"
+        ><i>{{ timerLabel }}</i></label
+      >
+      <img src="assets/timer-clock.png" alt="timer icon" />
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div>
+      <p>Loading task details...</p>
+    </div>
+  } @else if (!quizCompleted()) {
+    <form (ngSubmit)="(false)">
+      <div class="questions-content">
+        <div class="task-title-level-data">
+          <h1 class="task-title">{{ taskTitle() }}</h1>
+
+          <div class="task-level">
+            <label class="level" for="">{{ taskDifficulty() }}</label>
+            <div class="point">{{ xpReward() }} XP</div>
+            <div class="timer">
+              <label class="timer-text"
+                ><i>{{ timerLabel }}</i></label
+              >
+              <img src="assets/timer-clock.png" alt="timer icon" />
+            </div>
+          </div>
+        </div>
+
+        <div class="question-track-level">
+          <label class="level" for="">{{ taskDifficulty() }}</label>
+        </div>
+
+        <div class="question-answers">
+          <h1 class="question">
+            {{ prompt() }}
+          </h1>
+
+          <div class="question-answer">
+            <div class="textarea-container">
+              <app-text-area
+                [textValue]="userAnswer()"
+                (textChange)="onUserTyping($event)"
+                (keydown.enter)="$event.stopPropagation()"
+              >
+              </app-text-area>
+            </div>
+          </div>
+        </div>
+
+        <div class="hint">
+          <img src="assets/hint-bulb.png" alt="" />
+          <div class="hint-text">
+            <p>
+              Hint: <br />
+              @if (hints().length) {
+                {{ hints()[0] }}
+              } @else {
+                No hints provided for this task.
+              }
+            </p>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button class="previous" disabled>
+            <label for="">Drafting...</label>
+          </button>
+
+          <button
+            type="button"
+            class="next"
+            [disabled]="isSubmitting() || !userAnswer().trim().length"
+            (click)="submitTask()"
+          >
+            <label for="">{{ isSubmitting() ? 'Submitting...' : 'Submit' }}</label> >
+          </button>
+        </div>
+      </div>
+    </form>
+  }
+
+  @if (quizCompleted()) {
+    <div class="group2">
+      @if (userAnswer(); as userAnswer) {
+        <div class="quiz-complete">
+          <img src="assets/checked-circle.png" alt="checked circle" />
+          <p>Task Submitted</p>
+          <p class="mark">Task Completed</p>
+          <p class="outof">You can review your answer below.</p>
+
+          <div class="review-answer">
+            <h3>Your Submitted Response:</h3>
+            <p>{{ userAnswer }}</p>
+          </div>
+
+          <div class="buttons">
+            <button class="previous" (click)="reviewTask()"><label>Review / Edit</label></button>
+            <button class="next" disabled><label>Task Complete</label></button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

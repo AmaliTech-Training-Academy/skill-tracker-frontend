@@ -40,6 +40,7 @@ export const APP_CONSTANTS = {
     SKILLS: '/skills',
     TASKS: '/tasks',
     MY_TASKS: '/tasks/my-tasks',
+    SUBMIT: '/submissions',
     RUN_CODE: '/submissions/run-code',
     SUBMISSIONS: '/submissions',
     CODE_EXECUTE: '/code/execute',

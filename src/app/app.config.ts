@@ -16,6 +16,7 @@ import { provideRouterStore } from '@ngrx/router-store';
 import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 import { LucideAngularModule } from 'lucide-angular';
 import { appIcons } from '@app/core';
+import { writtenResponseReducer } from './features/written-response/store/written-response.reducer';
 
 import { appState } from './store';
 import { appEffects } from './store/app.effects';

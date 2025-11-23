@@ -11,6 +11,8 @@ import { McqGenerationState } from './mcqs/mcq.state';
 import { mcqGenerationReducer } from './mcqs/mcq.reducer';
 import { onboardingReducer } from './onboarding/onboarding.reducer';
 import { OnboardingState } from './onboarding/onboarding.state';
+import { WrittenResponseState } from '@app/features/written-response/store/written-response.state';
+import { writtenResponseReducer } from '@app/features/written-response/store/written-response.reducer';
 import { websocketReducer } from './websocket/websocket.reducer';
 
 export interface AppState {
@@ -21,6 +23,7 @@ export interface AppState {
   dashboard: DashboardState;
   mcqGeneration: McqGenerationState;
   onboarding: OnboardingState;
+  writtenResponse: WrittenResponseState
 }
 
 export const appState = {
@@ -30,5 +33,6 @@ export const appState = {
   dashboard: dashboardReducer,
   mcqGeneration: mcqGenerationReducer,
   onboarding: onboardingReducer,
+  writtenResponse: writtenResponseReducer,
   websocket: websocketReducer,
 };

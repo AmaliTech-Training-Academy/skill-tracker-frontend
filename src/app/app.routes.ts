@@ -84,11 +84,18 @@ export const routes: Routes = [
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
       {
+
+        path: 'tasks/written-assessment/:id',
+        loadComponent: () =>
+          import('./features/written-response/written-response').then((c) => c.WrittenResponse),
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./features/dashboard-settings/dashboard-settings').then(
             (c) => c.DashboardSettings,
           ),
+
       },
       {
         path: 'tasks/multiple-choice/:id',

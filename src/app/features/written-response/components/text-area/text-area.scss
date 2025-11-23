@@ -1,0 +1,101 @@
+@use 'mixins' as *;
+@use 'variables' as *;
+@use 'colors' as *;
+@use 'typography' as *;
+@use 'components' as *;
+
+.input-container {
+  @include flex(center, center, column);
+}
+
+.input-wrapper {
+  width: 100%;
+  background: $white;
+  border-radius: 0.5rem;
+  border: 1px solid $gray-stroke-weak;
+  padding: 1rem;
+  margin-top: 10px;
+}
+
+.text-input {
+  width: 100%;
+  min-height: 50px;
+  resize: none;
+  border: none;
+  outline: none;
+  color: $gray-text-strong;
+  font-size: 1rem;
+  @include h9;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: $background-raised;
+  @include h9;
+
+  button {
+    @include h9;
+    color: $gray-stroke-strong;
+  }
+}
+
+.format-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: inherit;
+  font-size: 1.25rem;
+  transition: color 0.2s;
+  color: $background-raised;
+}
+
+.italic-text {
+  font-style: italic;
+  font-family: serif;
+}
+
+.bold-text {
+  font-weight: bold;
+}
+
+.underline-text {
+  text-decoration: underline;
+}
+
+.strikethrough-text {
+  text-decoration: line-through;
+}
+
+.code-text {
+  font-family: monospace;
+  font-size: 1rem;
+}
+
+.divider {
+  width: 1px;
+  height: 1.25rem;
+  background-color: $gray-stroke-strong;
+}
+
+.voice-button-container {
+  @include flex(center, flex-end);
+}
+
+.voice-btn {
+  border: none;
+  cursor: pointer;
+  padding: 1rem;
+  background-color: transparent;
+
+  @include flex(row, center, center);
+  width: 48px;
+  height: 48px;
+
+  .wave {
+    margin-right: 60px;
+  }
+}
