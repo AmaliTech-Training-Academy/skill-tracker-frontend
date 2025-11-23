@@ -22,6 +22,7 @@ import {
   loadDashboardTrajectory,
   loadUserSkills,
   setSelectedSkill,
+  setSelectedSkillName,
 } from '@app/store/dashboard/dashboard.actions';
 import {
   selectIsDashboardAnalyticsLoading,
@@ -35,6 +36,7 @@ import {
   selectUserSkills,
   selectTrajectoryData,
   selectSelectedSkillId,
+  selectSelectedSkillName,
 } from '@app/store/dashboard/dashboard.selectors';
 import { selectCurrentUser } from '@app/store/auth/auth.selectors';
 
@@ -102,10 +104,14 @@ export class Dashboard implements OnInit, AfterViewInit {
   public userStats = this.store.selectSignal(selectUserStats);
   public skillsInProgressCount = this.store.selectSignal(selectSkillsInProgressCount);
   public primarySkillProgress = this.store.selectSignal(selectPrimarySkillProgress);
-  public recommendedTasks = this.store.selectSignal(selectRecommendedTasks);
   public isRecommendedTasksLoading = this.store.selectSignal(selectIsRecommendedTasksLoading);
   public selectRecommendedTasksError = this.store.selectSignal(selectRecommendedTasksError);
   public selectedSkillId = this.store.selectSignal(selectSelectedSkillId);
+  public recommendedTasks = this.store.selectSignal(selectRecommendedTasks);
+  public selectedSkillName = this.store.selectSignal(selectSelectedSkillName);
+
+  public recommendedTasksSelectedSkillName = signal<string | null>(null);
+  public progressSelectedSkillId = signal<string | null>(null);
 
   constructor(
     private shepherdService: ShepherdService,
@@ -160,13 +166,17 @@ export class Dashboard implements OnInit, AfterViewInit {
   }
 
   public onRecommendedTasksSkillChange(skillName: string): void {
+    this.recommendedTasksSelectedSkillName.set(skillName);
+
+    this.store.dispatch(setSelectedSkillName({ skillName }));
     this.store.dispatch(loadRecommendedTasks({ skillName }));
   }
 
   public onSkillChange(skillId: string): void {
-    this.store.dispatch(setSelectedSkill({ skillId }));
-
+    this.progressSelectedSkillId.set(skillId);
     const granularity = this.selectedPeriod();
+
+    this.store.dispatch(setSelectedSkill({ skillId }));
     this.store.dispatch(loadDashboardTrajectory({ skillId, granularity }));
   }
 

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser, selectUserXp } from '@app/store/auth/auth.selectors';
 import { AppState } from '@app/store';
 
 @Component({
   selector: 'app-dashboard-navigation',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, RouterLink],
   templateUrl: './dashboard-navigation.html',
   styleUrl: './dashboard-navigation.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

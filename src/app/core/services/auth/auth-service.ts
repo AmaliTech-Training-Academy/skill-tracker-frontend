@@ -11,6 +11,7 @@ import {
   UserEmailRequest,
   ResetPasswordRequest,
   TourGuide,
+  UpdateUserProfileRequest,
 } from '../../models/auth.model';
 import { APP_CONSTANTS } from '../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
@@ -74,5 +75,12 @@ export class AuthService {
 
   public getUserProfile(): Observable<UserResponse> {
     return this.api.get<UserResponse>(API_ENDPOINTS.PROFILE);
+  }
+
+  public updateUserProfile(payload: UpdateUserProfileRequest): Observable<UserResponse> {
+    return this.api.update<UserResponse, UpdateUserProfileRequest>(
+      API_ENDPOINTS.UPDATE_PROFILE,
+      payload,
+    );
   }
 }

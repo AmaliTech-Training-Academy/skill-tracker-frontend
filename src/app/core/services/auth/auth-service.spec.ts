@@ -7,7 +7,13 @@ import { APP_CONSTANTS } from '../../constants/app.constants';
 import { environment } from '../../../../environments/environment';
 import { of } from 'rxjs';
 
-import { CompleteOnboardingRequest, UserSkill, SkillLevel } from '../../models/auth.model';
+import {
+  CompleteOnboardingRequest,
+  UserSkill,
+  SkillLevel,
+  UpdateUserProfileRequest,
+  UserResponse,
+} from '../../models/auth.model';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -138,6 +144,34 @@ describe('AuthService', () => {
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({});
       req.flush(null);
+    });
+  });
+
+  describe('updateUserProfile', () => {
+    it('should send POST request to update user profile with payload', () => {
+      const mockPayload: UpdateUserProfileRequest = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+      };
+
+      const mockResponse: UserResponse = {
+        id: '1',
+        email: 'jane.doe@example.com',
+        firstName: 'Jane',
+        lastName: 'Doe',
+      };
+
+      const apiUpdateSpy = jest.spyOn(apiService, 'update').mockReturnValue(of(mockResponse));
+
+      service.updateUserProfile(mockPayload).subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
+
+      expect(apiUpdateSpy).toHaveBeenCalledWith(
+        APP_CONSTANTS.API_ENDPOINTS.UPDATE_PROFILE,
+        mockPayload,
+      );
     });
   });
 });

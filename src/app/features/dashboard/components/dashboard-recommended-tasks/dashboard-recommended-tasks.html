@@ -4,8 +4,8 @@
 
     <select
       class="styled-select"
-      [ngModel]="selectedSkillName"
-      (ngModelChange)="onSelectSkill($event)"
+      [ngModel]="selectedSkill"
+      (ngModelChange)="onSelectSkillName($event)"
     >
       @for (skill of userSkills; track skill.skillId) {
         <option [ngValue]="skill.skillName">{{ skill.skillName }}</option>
@@ -23,7 +23,7 @@
       />
     } @else {
       @for (task of recommendations; track task.id) {
-        <app-recommended-tasks-card [task]="task" />
+        <app-tasks-card [task]="task" (startTask)="onStartTask($event)" />
       }
     }
   </div>

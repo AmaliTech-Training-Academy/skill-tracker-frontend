@@ -84,9 +84,21 @@ export const routes: Routes = [
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
       {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/dashboard-settings/dashboard-settings').then(
+            (c) => c.DashboardSettings,
+          ),
+      },
+      {
         path: 'tasks/multiple-choice/:id',
         loadComponent: () =>
           import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
+      },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/user-profile/user-profile').then((c) => c.UserProfile),
       },
       {
         path: 'leaderboard',
@@ -102,5 +114,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/groups/groups').then((c) => c.Groups),
       },
     ],
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./layout/page-not-found/page-not-found').then((c) => c.PageNotFound),
   },
 ];
