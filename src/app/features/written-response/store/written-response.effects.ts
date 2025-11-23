@@ -17,11 +17,11 @@ export class WrittenResponseEffects {
   public loadWrittenResponseTask$ = createEffect(() =>
     this.actions$.pipe(
       ofType(WrittenResponseActions.loadWrittenResponseTask),
-      switchMap((action) =>
-        this.writtenResponseService.fetchWrittenResponseTask(action.taskId).pipe(
-          map((response) =>
+      switchMap(({ taskId }) =>
+        this.writtenResponseService.fetchWrittenResponseTask(taskId).pipe(
+          map(({ data }) =>
             WrittenResponseActions.loadWrittenResponseTaskSuccess({
-              task: response.data,
+              task: data,
             }),
           ),
           catchError((error) =>
@@ -42,13 +42,13 @@ export class WrittenResponseEffects {
   public submitWrittenResponseTask$ = createEffect(() =>
     this.actions$.pipe(
       ofType(WrittenResponseActions.submitWrittenResponseTask),
-      switchMap((action) =>
+      switchMap(({ taskId, answer }) =>
         this.writtenResponseService
           .submitWrittenResponse({
-            taskId: action.taskId,
+            taskId,
             answer: {
               answerType: 'ESSAY',
-              submissionText: action.answer,
+              submissionText: answer,
             },
           })
           .pipe(
