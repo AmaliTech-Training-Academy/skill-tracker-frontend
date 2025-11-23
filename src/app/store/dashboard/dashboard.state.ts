@@ -1,17 +1,11 @@
-import {
-  AppError,
-  DashboardData,
-  RecommendedTaskUI,
-  SkillTrajectoryData,
-  UserSelectedSkill,
-} from '@app/core';
+import { AppError, DashboardData, TaskUI, SkillTrajectoryData, UserSelectedSkill } from '@app/core';
 
 export interface DashboardState {
   data: DashboardData | null;
   isDashboardAnalyticsLoading: boolean;
   isDashboardAnalyticsError: AppError | null;
 
-  recommendedTasks: RecommendedTaskUI[];
+  recommendedTasks: TaskUI[];
   isRecommendedTasksLoading: boolean;
   isRecommendedTasksError: AppError | null;
 

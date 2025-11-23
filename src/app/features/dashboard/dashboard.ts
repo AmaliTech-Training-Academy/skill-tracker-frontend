@@ -102,10 +102,10 @@ export class Dashboard implements OnInit, AfterViewInit {
   public userStats = this.store.selectSignal(selectUserStats);
   public skillsInProgressCount = this.store.selectSignal(selectSkillsInProgressCount);
   public primarySkillProgress = this.store.selectSignal(selectPrimarySkillProgress);
-  public recommendedTasks = this.store.selectSignal(selectRecommendedTasks);
   public isRecommendedTasksLoading = this.store.selectSignal(selectIsRecommendedTasksLoading);
   public selectRecommendedTasksError = this.store.selectSignal(selectRecommendedTasksError);
   public selectedSkillId = this.store.selectSignal(selectSelectedSkillId);
+  public recommendedTasks = this.store.selectSignal(selectRecommendedTasks);
 
   constructor(
     private shepherdService: ShepherdService,
