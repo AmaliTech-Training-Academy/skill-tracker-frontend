@@ -54,6 +54,10 @@ a[href^='#']:target {
   display: none;
   align-items: center;
   gap: 24px;
+
+  .dashboard-btn {
+    @include button-transparent;
+  }
 }
 
 .login-btn {
