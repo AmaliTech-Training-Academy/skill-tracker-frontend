@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, timer, from } from 'rxjs';
 import { ToastService } from '@app/core';
-import { catchError, map, switchMap, tap, takeWhile } from 'rxjs/operators';
+import { catchError, map, switchMap, tap, filter, takeUntil } from 'rxjs/operators';
 import * as WrittenResponseActions from './written-response.action';
 import { WrittenResponseService } from './written-response-service';
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
@@ -119,19 +119,22 @@ export class WrittenResponseEffects {
   public pollSubmissionStatus$ = createEffect(() =>
     this.actions$.pipe(
       ofType(WrittenResponseActions.getWrittenResponseSubmissionStatusSuccess),
-      switchMap(({ submission }) => {
-        if (this.taskService.shouldPollStatus(submission)) {
-          return timer(POLLING_INTERVAL_MS).pipe(
-            map(() =>
-              WrittenResponseActions.getWrittenResponseSubmissionStatus({
-                submissionId: submission.id,
-              }),
+      filter(({ submission }) => this.taskService.shouldPollStatus(submission)),
+      switchMap(({ submission }) =>
+        timer(0, POLLING_INTERVAL_MS).pipe(
+          map(() =>
+            WrittenResponseActions.getWrittenResponseSubmissionStatus({
+              submissionId: submission.id,
+            }),
+          ),
+          takeUntil(
+            this.actions$.pipe(
+              ofType(WrittenResponseActions.getWrittenResponseSubmissionStatusSuccess),
+              filter(({ submission }) => !this.taskService.shouldPollStatus(submission)),
             ),
-            takeWhile(() => true, true),
-          );
-        }
-        return of();
-      }),
+          ),
+        ),
+      ),
     ),
   );
 
