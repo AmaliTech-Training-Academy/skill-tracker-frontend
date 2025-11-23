@@ -31,6 +31,10 @@
     &.icon-pencil {
       background-color: $green-success-fill;
     }
+
+    &.icon-code {
+      background-color: $brand-fill;
+    }
   }
 
   .card-content {
@@ -40,6 +44,10 @@
 
     .title-row {
       @include flex($direction: row, $justify: space-between, $align: flex-start);
+
+      @include tablet {
+        @include flex($direction: row, $justify: space-between, $align: flex-start, $gap: 1.8rem);
+      }
 
       .title-group {
         @include flex($direction: column, $gap: 0.25rem);
@@ -57,6 +65,12 @@
         .description {
           @include h14;
           color: $gray-stroke-strong;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          line-clamp: 2;
+          overflow: hidden;
+          text-overflow: ellipsis;
 
           @include mobile-large {
             @include typography(1rem, 1.25rem, 400);
@@ -146,7 +160,7 @@
     }
   }
 
-  @include mobile-large {
+  @include tablet {
     .card-content {
       .card-footer {
         @include flex($direction: row, $justify: space-between, $align: center);

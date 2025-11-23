@@ -6,6 +6,7 @@ import {
   selectSkillFilter,
   selectFilteredPreviousTasks,
   selectTimeRangeFilter,
+  selectTasksLoading,
 } from '@app/store/tasks/tasks.selectors';
 import {
   changeSkillFilter,
@@ -34,6 +35,7 @@ export class TasksDashboard implements OnInit {
   public previousTasks = this.store.selectSignal(selectFilteredPreviousTasks);
   public selectedSkill = this.store.selectSignal(selectSkillFilter);
   public selectedTimeRange = this.store.selectSignal(selectTimeRangeFilter);
+  public loading = this.store.selectSignal(selectTasksLoading);
 
   public get selectedTimeRangeString(): string {
     return completedPeriodToString(this.selectedTimeRange());

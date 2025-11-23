@@ -1,24 +1,20 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { AppError, RecommendedTaskUI, UserSelectedSkill } from '@app/core';
+import { AppError, UserSelectedSkill } from '@app/core';
+import { TaskUI } from '@app/core/models/tasks-model';
 import { DashboardErrorComponent } from '../dashboard-error-component/dashboard-error-component';
-import { RecommendedTasksCard } from '../recommended-tasks-card/recommended-tasks-card';
 import { RecommendedTasksCardSkeleton } from '../recommended-tasks-card-skeleton/recommended-tasks-card-skeleton';
 import { FormsModule } from '@angular/forms';
+import { TasksCard } from '@app/features/tasks-dashboard/components/tasks-card/tasks-card';
 
 @Component({
   selector: 'app-dashboard-recommended-tasks',
-  imports: [
-    DashboardErrorComponent,
-    RecommendedTasksCard,
-    RecommendedTasksCardSkeleton,
-    FormsModule,
-  ],
+  imports: [DashboardErrorComponent, TasksCard, RecommendedTasksCardSkeleton, FormsModule],
   templateUrl: './dashboard-recommended-tasks.html',
   styleUrl: './dashboard-recommended-tasks.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardRecommendedTasks {
-  @Input({ required: true }) public recommendations: RecommendedTaskUI[] = [];
+  @Input({ required: true }) public recommendations: TaskUI[] = [];
   @Input() public isRecommendedTasksLoading = false;
   @Input() public recommendedTasksError: AppError | null = null;
   @Input() public userSkills: UserSelectedSkill[] = [];
@@ -26,6 +22,8 @@ export class DashboardRecommendedTasks {
   @Output() public selectSkill = new EventEmitter<string>();
   @Output() public retry = new EventEmitter<void>();
   @Output() public skillChange = new EventEmitter<string>();
+
+  @Output() public startTask = new EventEmitter<string>();
 
   public get skillOptions(): string[] {
     return this.userSkills.map((skill) => skill.skillName);
@@ -49,5 +47,9 @@ export class DashboardRecommendedTasks {
 
   public handleRetryClick() {
     this.retry.emit();
+  }
+
+  public onStartTask(taskId: string): void {
+    this.startTask.emit(taskId);
   }
 }

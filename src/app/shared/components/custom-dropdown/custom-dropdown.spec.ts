@@ -59,15 +59,6 @@ describe('CustomDropdown', () => {
     expect(component.isOpen()).toBeFalsy();
   });
 
-  it('should close dropdown when closeDropdown is called', () => {
-    component.toggleDropdown();
-    expect(component.isOpen()).toBeTruthy();
-
-    component.closeDropdown();
-
-    expect(component.isOpen()).toBeFalsy();
-  });
-
   it('should handle keyboard events on trigger', () => {
     const trigger = fixture.nativeElement.querySelector('.dropdown-trigger');
 
@@ -98,5 +89,35 @@ describe('CustomDropdown', () => {
     const selectedValue = fixture.nativeElement.querySelector('.selected-value');
 
     expect(selectedValue.textContent).toBe('Select an option');
+  });
+
+  it('should close dropdown when clicking outside', () => {
+    component.toggleDropdown();
+    expect(component.isOpen()).toBeTruthy();
+
+    const outsideElement = document.createElement('div');
+    document.body.appendChild(outsideElement);
+
+    const clickEvent = new Event('click', { bubbles: true });
+    Object.defineProperty(clickEvent, 'target', { value: outsideElement });
+
+    component.onDocumentClick(clickEvent);
+
+    expect(component.isOpen()).toBeFalsy();
+
+    document.body.removeChild(outsideElement);
+  });
+
+  it('should not close dropdown when clicking inside', () => {
+    component.toggleDropdown();
+    expect(component.isOpen()).toBeTruthy();
+
+    const insideElement = fixture.nativeElement.querySelector('.dropdown-trigger');
+    const clickEvent = new Event('click', { bubbles: true });
+    Object.defineProperty(clickEvent, 'target', { value: insideElement });
+
+    component.onDocumentClick(clickEvent);
+
+    expect(component.isOpen()).toBeTruthy();
   });
 });
