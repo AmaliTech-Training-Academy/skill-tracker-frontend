@@ -100,7 +100,6 @@ describe('WrittenResponse Component', () => {
       return mockTaskTitle;
     });
 
-    // Setup select to return observable
     mockStore.select.mockReturnValue(of(10));
 
     await TestBed.configureTestingModule({
