@@ -14,6 +14,8 @@ import {
 } from './tasks.selectors';
 import { APP_CONSTANTS } from '@app/core';
 
+const POLLING_INTERVAL_MS = 2000;
+
 @Injectable()
 export class TasksEffects {
   constructor(
@@ -261,7 +263,7 @@ export class TasksEffects {
       ofType(TasksActions.getSubmissionStatusSuccess),
       switchMap(({ submission }) => {
         if (this.taskService.shouldPollStatus(submission)) {
-          return timer(2000).pipe(
+          return timer(POLLING_INTERVAL_MS).pipe(
             map(() => TasksActions.getSubmissionStatus({ submissionId: submission.id })),
             takeWhile(() => true, true),
           );
