@@ -78,3 +78,13 @@ export const selectWrittenResponseQuizCompleted = createSelector(
   selectWrittenResponseState,
   ({ quizCompleted }) => quizCompleted,
 );
+
+export const selectWrittenResponseSubmission = createSelector(
+  selectWrittenResponseState,
+  ({ submission }) => submission,
+);
+
+export const selectWrittenResponseFeedback = createSelector(
+  selectWrittenResponseState,
+  ({ feedback }) => feedback,
+);

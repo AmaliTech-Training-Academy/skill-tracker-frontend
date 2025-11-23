@@ -13,9 +13,9 @@
 
   <div class="group1">
     <div class="timer1">
-      <label class="timer-text"
-        ><i>{{ timerLabel }}</i></label
-      >
+      <p class="timer-text">
+        <i>{{ timerLabel }}</i>
+      </p>
       <img src="assets/timer-clock.png" alt="timer icon" />
     </div>
   </div>
@@ -34,9 +34,9 @@
             <label class="level" for="">{{ taskDifficulty() }}</label>
             <div class="point">{{ xpReward() }} XP</div>
             <div class="timer">
-              <label class="timer-text"
-                ><i>{{ timerLabel }}</i></label
-              >
+              <p class="timer-text">
+                <i>{{ timerLabel }}</i>
+              </p>
               <img src="assets/timer-clock.png" alt="timer icon" />
             </div>
           </div>
@@ -96,25 +96,60 @@
   }
 
   @if (quizCompleted()) {
-    <div class="group2">
-      @if (userAnswer(); as userAnswer) {
-        <div class="quiz-complete">
-          <img src="assets/checked-circle.png" alt="checked circle" />
-          <p>Task Submitted</p>
-          <p class="mark">Task Completed</p>
-          <p class="outof">You can review your answer below.</p>
-
-          <div class="review-answer">
-            <h3>Your Submitted Response:</h3>
-            <p>{{ userAnswer }}</p>
-          </div>
-
-          <div class="buttons">
-            <button class="previous" (click)="reviewTask()"><label>Review / Edit</label></button>
-            <button class="next" disabled><label>Task Complete</label></button>
-          </div>
-        </div>
+    @switch (submissionStatus()) {
+      @case ('COMPLETED') {
+        @if (submission()?.isCorrect) {
+          <app-task-complete
+            [xpEarned]="xpReward()"
+            [title]="getModalTitle()"
+            [message]="getModalMessage()"
+            (continue)="onTaskComplete()"
+          />
+        } @else {
+          <app-task-complete
+            [xpEarned]="0"
+            [title]="getModalTitle()"
+            [message]="getModalMessage()"
+            [buttonText]="'Try Again'"
+            [showSecondaryButton]="true"
+            [secondaryButtonText]="'Back to Dashboard'"
+            [robotAlt]="'Failed Robot'"
+            (continue)="reviewTask()"
+            (secondary)="onBackToDashboard()"
+          />
+        }
       }
-    </div>
+      @case ('PENDING') {
+        <app-task-complete
+          [xpEarned]="0"
+          [title]="getModalTitle()"
+          [message]="getModalMessage()"
+          [buttonText]="'Continue to Dashboard'"
+          [showLoadingSpinner]="true"
+          [robotAlt]="'Processing Robot'"
+          (continue)="onBackToDashboard()"
+        />
+      }
+      @case ('IN_PROGRESS') {
+        <app-task-complete
+          [xpEarned]="0"
+          [title]="getModalTitle()"
+          [message]="getModalMessage()"
+          [buttonText]="'Continue to Dashboard'"
+          [showLoadingSpinner]="true"
+          [robotAlt]="'Processing Robot'"
+          (continue)="onBackToDashboard()"
+        />
+      }
+      @default {
+        <app-task-complete
+          [xpEarned]="0"
+          [title]="getModalTitle()"
+          [message]="getModalMessage()"
+          [buttonText]="'Continue to Dashboard'"
+          (continue)="onBackToDashboard()"
+        />
+      }
+    }
   }
 </div>
