@@ -150,3 +150,15 @@ export const selectSubmissionStatus = createSelector(
   selectSubmissionState,
   (state) => state.status,
 );
+
+export const selectTotalUserXp = createSelector(selectTasksState, ({ totalUserXp }) => totalUserXp);
+
+export const selectTotalUserXpLoading = createSelector(
+  selectTasksState,
+  ({ isLoadingTotalUserXp }) => isLoadingTotalUserXp,
+);
+
+export const selectTotalUserXpError = createSelector(
+  selectTasksState,
+  ({ totalUserXpError }) => totalUserXpError,
+);

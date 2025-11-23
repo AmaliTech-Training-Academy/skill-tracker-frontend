@@ -14,6 +14,7 @@ import { LucideAngularModule } from 'lucide-angular';
 
 import { getSteps as defaultSteps, defaultStepOptions } from './dashboard.config';
 import { TrajectoryGranularity } from '@app/core';
+import { loadTotalUserXp } from '@app/store/tasks';
 
 import { AppState } from '@app/store/app.state';
 import {
@@ -123,6 +124,7 @@ export class Dashboard implements OnInit, AfterViewInit {
   ngOnInit() {
     this.getDashboardAnalytics();
     this.getUserSkills();
+    this.store.dispatch(loadTotalUserXp());
   }
 
   ngAfterViewInit() {
