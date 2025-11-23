@@ -4,8 +4,8 @@
 
     <select
       class="styled-select"
-      [ngModel]="selectedSkillName"
-      (ngModelChange)="onSelectSkill($event)"
+      [ngModel]="selectedSkill"
+      (ngModelChange)="onSelectSkillName($event)"
     >
       @for (skill of userSkills; track skill.skillId) {
         <option [ngValue]="skill.skillName">{{ skill.skillName }}</option>

@@ -17,6 +17,7 @@ export interface DashboardState {
   isUserSkillsLoading: boolean;
   isUserSkillsError: AppError | null;
   selectedSkillId: string | null;
+  selectedSkillName: string | null;
 }
 
 export const initialDashboardState: DashboardState = {
@@ -36,4 +37,5 @@ export const initialDashboardState: DashboardState = {
   isUserSkillsLoading: false,
   isUserSkillsError: null,
   selectedSkillId: null,
+  selectedSkillName: null,
 };

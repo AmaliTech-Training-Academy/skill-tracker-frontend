@@ -57,6 +57,11 @@ export const loadUserSkillsFailure = createAction(
 );
 
 export const setSelectedSkill = createAction(
-  '[Dashboard Page] Set Selected Skill',
+  '[Dashboard Page] Set Selected Skill Id',
   props<{ skillId: string }>(),
+);
+
+export const setSelectedSkillName = createAction(
+  '[Dashboard Page] Set Selected Skill Name',
+  props<{ skillName: string }>(),
 );
