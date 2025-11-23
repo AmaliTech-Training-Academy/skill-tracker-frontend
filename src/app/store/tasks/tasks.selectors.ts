@@ -3,6 +3,8 @@ import { TasksState } from './tasks.state';
 import { TaskUI, CompletedPeriod } from '@app/core/models/tasks-model';
 import { PROGRAMMING_LANGUAGES } from '@app/core/constants/programming-languages';
 
+const PYTHON_LANGUAGE_ID = 71;
+
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
 
 export const selectCurrentTask = createSelector(
@@ -66,14 +68,14 @@ export const selectTestResults = createSelector(
 export const selectUserCode = createSelector(selectTasksState, ({ userCode }) => userCode);
 
 export const selectCurrentTaskLanguageId = createSelector(selectCurrentTask, (task) => {
-  if (!task?.skillName) return 113;
+  if (!task?.skillName) return PYTHON_LANGUAGE_ID;
 
   const skillName = task.skillName.toLowerCase();
   const language = PROGRAMMING_LANGUAGES.find((lang) =>
     lang.name.toLowerCase().includes(skillName),
   );
 
-  return language?.id || 113;
+  return language?.id || PYTHON_LANGUAGE_ID;
 });
 
 export const selectTodayTasks = createSelector(
