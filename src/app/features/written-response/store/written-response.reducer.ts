@@ -67,4 +67,20 @@ export const writtenResponseReducer = createReducer(
     isSubmitting: false,
     error,
   })),
+
+  on(WrittenResponseActions.completeWrittenResponseQuiz, (state) => ({
+    ...state,
+    quizCompleted: true,
+  })),
+
+  on(WrittenResponseActions.loadWrittenResponseTask, (state, { taskId }) => ({
+    ...state,
+    taskId,
+    loading: true,
+    error: null,
+  })),
+  on(WrittenResponseActions.reviewWrittenResponseTask, (state) => ({
+    ...state,
+    quizCompleted: false,
+  })),
 );

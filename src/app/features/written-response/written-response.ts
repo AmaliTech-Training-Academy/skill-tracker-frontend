@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Observable, Subscription, take } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ToastService } from '@app/core';
 import { Router } from '@angular/router';
@@ -23,7 +23,9 @@ import {
   selectWrittenResponseHints,
   selectWrittenResponseExpectedDuration,
   selectWrittenResponseIsSubmitting,
-  selectWrittenResponseSubmissionStatus,
+  selectWrittenResponseTaskId,
+  selectWrittenResponseQuizCompleted,
+  selectWrittenResponseTask,
 } from './store/written-response.selectors';
 import * as WrittenResponseActions from './store/written-response.action';
 import { TextArea } from './components/text-area/text-area';
@@ -37,29 +39,23 @@ import { TextArea } from './components/text-area/text-area';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WrittenResponse implements OnInit, OnDestroy {
-  public taskTitle$: Observable<string> = this.store.select(selectWrittenResponseTitle);
-  public taskDifficulty$: Observable<string> = this.store.select(selectWrittenResponseDifficulty);
-  public xpReward$: Observable<number> = this.store.select(selectWrittenResponseXpReward);
-  public prompt$: Observable<string | undefined> = this.store.select(selectWrittenResponsePrompt);
-  public hints$: Observable<string[]> = this.store.select(selectWrittenResponseHints);
-  public userAnswer$: Observable<string> = this.store.select(selectWrittenResponseUserAnswer);
-  public loading$: Observable<boolean> = this.store.select(selectWrittenResponseLoading);
-  public error$: Observable<string | null> = this.store.select(selectWrittenResponseError);
-  public expectedDuration$: Observable<number> = this.store.select(
-    selectWrittenResponseExpectedDuration,
-  );
-  public isSubmitting$: Observable<boolean> = this.store.select(selectWrittenResponseIsSubmitting);
-  public submissionStatus$: Observable<string | null> = this.store.select(
-    selectWrittenResponseSubmissionStatus,
-  );
+  public taskTitle = this.store.selectSignal(selectWrittenResponseTitle);
+  public taskDifficulty = this.store.selectSignal(selectWrittenResponseDifficulty);
+  public xpReward = this.store.selectSignal(selectWrittenResponseXpReward);
+  public prompt = this.store.selectSignal(selectWrittenResponsePrompt);
+  public hints = this.store.selectSignal(selectWrittenResponseHints);
+  public userAnswer = this.store.selectSignal(selectWrittenResponseUserAnswer);
+  public loading = this.store.selectSignal(selectWrittenResponseLoading);
+  public error = this.store.selectSignal(selectWrittenResponseError);
+  public expectedDuration = this.store.selectSignal(selectWrittenResponseExpectedDuration);
+  public isSubmitting = this.store.selectSignal(selectWrittenResponseIsSubmitting);
+  public taskId = this.store.selectSignal(selectWrittenResponseTaskId);
+  public quizCompleted = this.store.selectSignal(selectWrittenResponseQuizCompleted);
 
   public progressValue: number = 0;
   public timerLabel: string = '00:00';
-  public quizCompleted: boolean = false;
   private intervalId?: ReturnType<typeof setInterval>;
-  private timerSubscription!: Subscription;
-  private submissionStatusSubscription!: Subscription;
-  private taskId: string | null = null;
+  private taskSubscription?: Subscription;
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -70,34 +66,28 @@ export class WrittenResponse implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.taskId = this.route.snapshot.paramMap.get('id');
+    const routeTaskId = this.route.snapshot.paramMap.get('id');
 
-    if (this.taskId) {
-      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId: this.taskId }));
+    if (routeTaskId) {
+      this.store.dispatch(WrittenResponseActions.loadWrittenResponseTask({ taskId: routeTaskId }));
+
+      this.taskSubscription = this.store
+        .select(selectWrittenResponseTask)
+        .pipe(filter((task) => task !== null))
+        .subscribe((task) => {
+          if (!this.intervalId && task) {
+            const duration = task.estimatedDurationInMinutes || 10;
+            const totalSeconds = duration * 60;
+            this.startTimer(totalSeconds);
+          }
+        });
     } else {
       this.toast.showError('Task Error', 'The task is not available, try a different task');
-      this.router.navigateByUrl('/dashboard/tasks');
       this.store.dispatch(
         WrittenResponseActions.loadWrittenResponseTaskFailure({ error: 'Task ID not provided.' }),
       );
+      this.router.navigateByUrl('/dashboard/tasks');
     }
-
-    this.timerSubscription = this.expectedDuration$.pipe(take(1)).subscribe((duration) => {
-      if (duration && duration > 0) {
-        const totalSeconds = duration * 60;
-        this.startTimer(totalSeconds);
-      } else {
-        this.startTimer(10 * 60);
-      }
-    });
-
-    this.submissionStatusSubscription = this.submissionStatus$.subscribe((status) => {
-      if (status === 'PENDING') {
-        this.progressValue = 100;
-        this.completeQuiz();
-        this.cd.markForCheck();
-      }
-    });
 
     this.progressValue = 0;
   }
@@ -106,11 +96,8 @@ export class WrittenResponse implements OnInit, OnDestroy {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
-    if (this.timerSubscription) {
-      this.timerSubscription.unsubscribe();
-    }
-    if (this.submissionStatusSubscription) {
-      this.submissionStatusSubscription.unsubscribe();
+    if (this.taskSubscription) {
+      this.taskSubscription.unsubscribe();
     }
     this.store.dispatch(WrittenResponseActions.clearWrittenResponseState());
   }
@@ -120,12 +107,12 @@ export class WrittenResponse implements OnInit, OnDestroy {
     this.updateTimerLabel(timeRemaining);
 
     this.intervalId = setInterval(() => {
-      if (timeRemaining > 0 && !this.quizCompleted) {
+      if (timeRemaining > 0 && !this.quizCompleted()) {
         timeRemaining--;
         this.updateTimerLabel(timeRemaining);
         this.cd.detectChanges();
       } else if (timeRemaining === 0) {
-        this.completeQuiz();
+        this.store.dispatch(WrittenResponseActions.completeWrittenResponseQuiz());
       }
     }, 1000);
   }
@@ -145,35 +132,29 @@ export class WrittenResponse implements OnInit, OnDestroy {
   }
 
   public submitTask(): void {
-    if (!this.taskId) {
+    const taskId = this.taskId();
+
+    if (!taskId) {
       this.toast.showError('Error', 'Task ID is missing');
       return;
     }
 
-    this.userAnswer$.pipe(take(1)).subscribe((answer) => {
-      if (!answer || answer.trim().length === 0) {
-        this.toast.showError('Error', 'Please provide an answer before submitting');
-        return;
-      }
+    const answer = this.userAnswer();
 
-      this.store.dispatch(
-        WrittenResponseActions.submitWrittenResponseTask({
-          taskId: this.taskId!,
-          answer: answer,
-        }),
-      );
-    });
+    if (!answer || answer.trim().length === 0) {
+      this.toast.showError('Error', 'Please provide an answer before submitting');
+      return;
+    }
+
+    this.store.dispatch(
+      WrittenResponseActions.submitWrittenResponseTask({
+        taskId: taskId,
+        answer: answer,
+      }),
+    );
   }
 
   public reviewTask(): void {
-    this.quizCompleted = false;
-    this.progressValue = 50;
-  }
-
-  private completeQuiz(): void {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-    this.quizCompleted = true;
+    this.store.dispatch(WrittenResponseActions.reviewWrittenResponseTask());
   }
 }

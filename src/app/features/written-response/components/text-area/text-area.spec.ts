@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { SimpleChange } from '@angular/core';
 import { TextArea } from './text-area';
+import { ToastService } from '@app/core';
 
 interface MockSpeechRecognitionEvent {
   resultIndex: number;
@@ -92,6 +93,10 @@ describe('TextArea Component', () => {
   let component: TextArea;
   let fixture: ComponentFixture<TextArea>;
   let mockSpeechRecognition: MockSpeechRecognition;
+  let mockToastService: {
+    showError: jest.Mock;
+    showSuccess: jest.Mock;
+  };
 
   beforeEach(async () => {
     mockSpeechRecognition = new MockSpeechRecognition();
@@ -103,8 +108,14 @@ describe('TextArea Component', () => {
       value: MockSpeechRecognitionConstructor,
     });
 
+    mockToastService = {
+      showError: jest.fn(),
+      showSuccess: jest.fn(),
+    };
+
     await TestBed.configureTestingModule({
       imports: [TextArea, FormsModule],
+      providers: [{ provide: ToastService, useValue: mockToastService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TextArea);
@@ -135,6 +146,19 @@ describe('TextArea Component', () => {
     expect(component.text).toBe('Initial text');
   });
 
+  it('should initialize speech recognition on ngOnInit', () => {
+    fixture.detectChanges();
+    expect(component['isRecognitionSupported']).toBe(true);
+    expect(component['recognition']).toBeTruthy();
+  });
+
+  it('should configure speech recognition properties', () => {
+    fixture.detectChanges();
+    expect(mockSpeechRecognition.continuous).toBe(true);
+    expect(mockSpeechRecognition.interimResults).toBe(true);
+    expect(mockSpeechRecognition.lang).toBe('en-US');
+  });
+
   it('should update text when textValue changes in ngOnChanges', () => {
     const changes = {
       textValue: new SimpleChange(null, 'New text', false),
@@ -159,20 +183,28 @@ describe('TextArea Component', () => {
     expect(emitSpy).toHaveBeenCalledWith('Test text');
   });
 
-  it('should toggle isRecording state when toggleRecording is called', () => {
+  it('should start recording when toggle is called and not recording', () => {
+    fixture.detectChanges();
     const startSpy = jest.spyOn(mockSpeechRecognition, 'start');
+
+    component.toggleRecording();
+
+    expect(component.isRecording).toBe(true);
+    expect(startSpy).toHaveBeenCalled();
+  });
+
+  it('should stop recording when toggle is called and already recording', () => {
+    fixture.detectChanges();
     const stopSpy = jest.spyOn(mockSpeechRecognition, 'stop');
 
     component.toggleRecording();
-    expect(component.isRecording).toBe(true);
-    expect(startSpy).toHaveBeenCalled();
-
     component.toggleRecording();
+
     expect(component.isRecording).toBe(false);
     expect(stopSpy).toHaveBeenCalled();
   });
 
-  it('should show alert when speech recognition is not supported', () => {
+  it('should show error when speech recognition is not supported', () => {
     Object.defineProperty(window, 'SpeechRecognition', {
       writable: true,
       configurable: true,
@@ -181,20 +213,18 @@ describe('TextArea Component', () => {
 
     const newFixture = TestBed.createComponent(TextArea);
     const newComponent = newFixture.componentInstance;
-
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+    newFixture.detectChanges();
 
     newComponent.toggleRecording();
 
-    expect(alertSpy).toHaveBeenCalledWith(
+    expect(mockToastService.showError).toHaveBeenCalledWith(
+      'Speech Error',
       'Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.',
     );
-    expect(newComponent.isRecording).toBe(false);
-
-    alertSpy.mockRestore();
   });
 
   it('should handle speech recognition results', () => {
+    fixture.detectChanges();
     const emitSpy = jest.spyOn(component.textChange, 'emit');
     component.text = 'Initial ';
 
@@ -219,8 +249,7 @@ describe('TextArea Component', () => {
   });
 
   it('should handle speech recognition errors', () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
+    fixture.detectChanges();
     component.isRecording = true;
 
     const mockErrorEvent: MockSpeechRecognitionErrorEvent = {
@@ -233,12 +262,14 @@ describe('TextArea Component', () => {
     }
 
     expect(component.isRecording).toBe(false);
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Speech recognition error:', 'no-speech');
-
-    consoleErrorSpy.mockRestore();
+    expect(mockToastService.showError).toHaveBeenCalledWith(
+      'Speech Error',
+      'No speech detected. Please try again.',
+    );
   });
 
   it('should restart recognition when it ends while still recording', () => {
+    fixture.detectChanges();
     const startSpy = jest.spyOn(mockSpeechRecognition, 'start');
 
     component.isRecording = true;
@@ -251,6 +282,7 @@ describe('TextArea Component', () => {
   });
 
   it('should not restart recognition when it ends and not recording', () => {
+    fixture.detectChanges();
     const startSpy = jest.spyOn(mockSpeechRecognition, 'start');
 
     component.isRecording = false;
@@ -263,6 +295,7 @@ describe('TextArea Component', () => {
   });
 
   it('should stop recognition on component destroy if recording', () => {
+    fixture.detectChanges();
     const stopSpy = jest.spyOn(mockSpeechRecognition, 'stop');
 
     component.isRecording = true;
@@ -272,6 +305,7 @@ describe('TextArea Component', () => {
   });
 
   it('should not stop recognition on component destroy if not recording', () => {
+    fixture.detectChanges();
     const stopSpy = jest.spyOn(mockSpeechRecognition, 'stop');
 
     component.isRecording = false;
@@ -281,26 +315,19 @@ describe('TextArea Component', () => {
   });
 
   it('should handle error when starting speech recognition', () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    fixture.detectChanges();
     const startSpy = jest.spyOn(mockSpeechRecognition, 'start').mockImplementation(() => {
       throw new Error('Recognition start failed');
     });
 
     component.toggleRecording();
 
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error starting speech recognition:',
-      expect.any(Error),
+    expect(mockToastService.showError).toHaveBeenCalledWith(
+      'Speech Error',
+      'Error starting speech recognition',
     );
 
-    consoleErrorSpy.mockRestore();
     startSpy.mockRestore();
-  });
-
-  it('should set recognition properties correctly on initialization', () => {
-    expect(mockSpeechRecognition.continuous).toBe(true);
-    expect(mockSpeechRecognition.interimResults).toBe(true);
-    expect(mockSpeechRecognition.lang).toBe('en-US');
   });
 
   it('should focus and set cursor position after applying format', (done) => {
@@ -321,5 +348,54 @@ describe('TextArea Component', () => {
       expect(setSelectionSpy).toHaveBeenCalled();
       done();
     }, 10);
+  });
+
+  it('should not initialize speech recognition if not supported', () => {
+    Object.defineProperty(window, 'SpeechRecognition', {
+      writable: true,
+      configurable: true,
+      value: undefined,
+    });
+
+    const newFixture = TestBed.createComponent(TextArea);
+    const newComponent = newFixture.componentInstance;
+    newFixture.detectChanges();
+
+    expect(newComponent['isRecognitionSupported']).toBe(false);
+    expect(newComponent['recognition']).toBeNull();
+  });
+
+  it('should call markForCheck after handling speech result', () => {
+    fixture.detectChanges();
+    const markForCheckSpy = jest.spyOn(component['cdr'], 'markForCheck');
+
+    const mockEvent: MockSpeechRecognitionEvent = {
+      resultIndex: 0,
+      results: {
+        length: 1,
+        0: {
+          isFinal: true,
+          length: 1,
+          0: { transcript: 'test', confidence: 0.9 },
+        },
+      },
+    };
+
+    if (mockSpeechRecognition.onresult) {
+      mockSpeechRecognition.onresult(mockEvent);
+    }
+
+    expect(markForCheckSpy).toHaveBeenCalled();
+  });
+
+  it('should call markForCheck after stopping recording', () => {
+    fixture.detectChanges();
+    component.toggleRecording();
+
+    const markForCheckSpy = jest.spyOn(component['cdr'], 'markForCheck');
+
+    component.toggleRecording();
+
+    expect(markForCheckSpy).toHaveBeenCalled();
   });
 });

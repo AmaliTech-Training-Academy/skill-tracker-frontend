@@ -1,16 +1,25 @@
-import { Component, ViewChild, ElementRef, Input, ChangeDetectionStrategy, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  Input,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectorRef,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { 
-   SpeechRecognitionAlternative,
-   SpeechRecognitionErrorEvent, 
-   SpeechRecognitionEvent, 
-   SpeechRecognitionResult, 
-   SpeechRecognitionResultList,
+import { ToastService } from '@app/core';
+import {
+  SpeechRecognitionErrorEvent,
+  SpeechRecognitionEvent,
   SpeechRecognition,
-SpeechRecognitionConstructor,
- } from './text-area.model';
-
+} from './text-area.model';
 
 @Component({
   selector: 'app-text-area',
@@ -21,70 +30,24 @@ SpeechRecognitionConstructor,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextArea implements OnInit, OnChanges, OnDestroy {
-  @ViewChild('textarea') textarea!: ElementRef<HTMLTextAreaElement>;
-  @Input() textValue: string = '';
+  @ViewChild('textarea') public textarea!: ElementRef<HTMLTextAreaElement>;
+  @Input() public textValue: string = '';
 
-  text: string = '';
-  isRecording: boolean = false;
-  @Output() textChange = new EventEmitter<string>();
+  public text: string = '';
+  public isRecording: boolean = false;
+  @Output() public textChange = new EventEmitter<string>();
 
   private recognition: SpeechRecognition | null = null;
   private isRecognitionSupported: boolean = false;
 
-  constructor(private cdr: ChangeDetectorRef) {
-    // Check if browser supports Speech Recognition
-    const SpeechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
-    
-    if (SpeechRecognitionClass) {
-      this.isRecognitionSupported = true;
-      this.recognition = new SpeechRecognitionClass();
-      this.recognition.continuous = true;
-      this.recognition.interimResults = true;
-      this.recognition.lang = 'en-US';
-
-      // Handle speech recognition results
-      this.recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = '';
-        let finalTranscript = '';
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
-          if (event.results[i].isFinal) {
-            finalTranscript += transcript + ' ';
-          } else {
-            interimTranscript += transcript;
-          }
-        }
-
-        if (finalTranscript) {
-          this.text += finalTranscript;
-          this.onTextChange();
-          this.cdr.markForCheck();
-        }
-      };
-
-      // Handle errors
-      this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        console.error('Speech recognition error:', event.error);
-        if (event.error === 'no-speech') {
-          console.log('No speech detected. Please try again.');
-        }
-        this.isRecording = false;
-        this.cdr.markForCheck();
-      };
-
-      // Handle when recognition ends
-      this.recognition.onend = () => {
-        if (this.isRecording) {
-          // Restart if still in recording mode
-          this.recognition?.start();
-        }
-      };
-    }
-  }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService,
+  ) {}
 
   ngOnInit(): void {
     this.text = this.textValue;
+    this.initializeSpeechRecognition();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -92,73 +55,158 @@ export class TextArea implements OnInit, OnChanges, OnDestroy {
       this.text = changes['textValue'].currentValue;
     }
   }
-  
-  onTextChange(): void {
-    this.textChange.emit(this.text);
-  }
-
-  toggleRecording(): void {
-    if (!this.isRecognitionSupported || !this.recognition) {
-      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
-      return;
-    }
-
-    if (this.isRecording) {
-      // Stop recording
-      this.recognition.stop();
-      this.isRecording = false;
-    } else {
-      // Start recording
-      try {
-        this.recognition.start();
-        this.isRecording = true;
-      } catch (error) {
-        console.error('Error starting speech recognition:', error);
-      }
-    }
-    this.cdr.markForCheck();
-  }
 
   ngOnDestroy(): void {
-    // Clean up speech recognition
     if (this.recognition && this.isRecording) {
       this.recognition.stop();
     }
   }
 
-  applyFormat(format: string): void {
+  private initializeSpeechRecognition(): void {
+    const speechRecognitionClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!speechRecognitionClass) {
+      return;
+    }
+
+    this.isRecognitionSupported = true;
+    this.recognition = new speechRecognitionClass();
+    this.configureSpeechRecognition();
+    this.setupSpeechRecognitionHandlers();
+  }
+
+  private configureSpeechRecognition(): void {
+    if (!this.recognition) {
+      return;
+    }
+
+    this.recognition.continuous = true;
+    this.recognition.interimResults = true;
+    this.recognition.lang = 'en-US';
+  }
+
+  private setupSpeechRecognitionHandlers(): void {
+    if (!this.recognition) {
+      return;
+    }
+
+    this.recognition.onresult = (event: SpeechRecognitionEvent) => {
+      this.handleSpeechRecognitionResult(event);
+    };
+
+    this.recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      this.handleSpeechRecognitionError(event);
+    };
+
+    this.recognition.onend = () => {
+      this.handleSpeechRecognitionEnd();
+    };
+  }
+
+  private handleSpeechRecognitionResult(event: SpeechRecognitionEvent): void {
+    let finalTranscript = '';
+
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+        finalTranscript += transcript + ' ';
+      }
+    }
+
+    if (finalTranscript) {
+      this.text += finalTranscript;
+      this.onTextChange();
+      this.cdr.markForCheck();
+    }
+  }
+
+  private handleSpeechRecognitionError(event: SpeechRecognitionErrorEvent): void {
+    if (event.error === 'no-speech') {
+      this.toastService.showError('Speech Error', 'No speech detected. Please try again.');
+    }
+    this.isRecording = false;
+    this.cdr.markForCheck();
+  }
+
+  private handleSpeechRecognitionEnd(): void {
+    if (this.isRecording) {
+      this.recognition?.start();
+    }
+  }
+
+  public onTextChange(): void {
+    this.textChange.emit(this.text);
+  }
+
+  public toggleRecording(): void {
+    if (!this.isRecognitionSupported || !this.recognition) {
+      this.toastService.showError(
+        'Speech Error',
+        'Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.',
+      );
+      return;
+    }
+
+    if (this.isRecording) {
+      this.stopRecording();
+    } else {
+      this.startRecording();
+    }
+  }
+
+  private startRecording(): void {
+    try {
+      this.recognition?.start();
+      this.isRecording = true;
+      this.cdr.markForCheck();
+    } catch {
+      this.toastService.showError('Speech Error', 'Error starting speech recognition');
+    }
+  }
+
+  private stopRecording(): void {
+    this.recognition?.stop();
+    this.isRecording = false;
+    this.cdr.markForCheck();
+  }
+
+  public applyFormat(format: string): void {
     const element = this.textarea.nativeElement;
     const start = element.selectionStart;
     const end = element.selectionEnd;
     const selectedText = this.text.substring(start, end);
 
-    let formattedText = '';
-
-    switch (format) {
-      case 'italic':
-        formattedText = `*${selectedText}*`;
-        break;
-      case 'bold':
-        formattedText = `**${selectedText}**`;
-        break;
-      case 'underline':
-        formattedText = `__${selectedText}__`;
-        break;
-      case 'strikethrough':
-        formattedText = `~~${selectedText}~~`;
-        break;
-      case 'code':
-        formattedText = `\`${selectedText}\``;
-        break;
-      default:
-        formattedText = selectedText;
-    }
-
+    const formattedText = this.getFormattedText(format, selectedText);
     this.text = this.text.substring(0, start) + formattedText + this.text.substring(end);
 
+    this.focusAndSetCursor(element, start, formattedText.length);
+  }
+
+  private getFormattedText(format: string, text: string): string {
+    switch (format) {
+      case 'italic':
+        return `*${text}*`;
+      case 'bold':
+        return `**${text}**`;
+      case 'underline':
+        return `__${text}__`;
+      case 'strikethrough':
+        return `~~${text}~~`;
+      case 'code':
+        return `\`${text}\``;
+      default:
+        return text;
+    }
+  }
+
+  private focusAndSetCursor(
+    element: HTMLTextAreaElement,
+    start: number,
+    formattedLength: number,
+  ): void {
     setTimeout(() => {
       element.focus();
-      element.setSelectionRange(start + formattedText.length, start + formattedText.length);
+      element.setSelectionRange(start + formattedLength, start + formattedLength);
     }, 0);
   }
 }

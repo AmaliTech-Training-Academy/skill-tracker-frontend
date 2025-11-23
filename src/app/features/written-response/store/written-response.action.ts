@@ -35,5 +35,6 @@ export const submitWrittenResponseTaskFailure = createAction(
   '[Written Response] Submit Task Failure',
   props<{ error: string }>(),
 );
-
+export const completeWrittenResponseQuiz = createAction('[Written Response] Complete Quiz');
+export const reviewWrittenResponseTask = createAction('[Written Response] Review Task');
 export const clearWrittenResponseState = createAction('[Written Response] Clear State');

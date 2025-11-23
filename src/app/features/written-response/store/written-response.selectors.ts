@@ -6,22 +6,22 @@ export const selectWrittenResponseState =
 
 export const selectWrittenResponseTask = createSelector(
   selectWrittenResponseState,
-  (state) => state.task,
+  ({ task }) => task,
 );
 
 export const selectWrittenResponseLoading = createSelector(
   selectWrittenResponseState,
-  (state) => state.loading,
+  ({ loading }) => loading,
 );
 
 export const selectWrittenResponseError = createSelector(
   selectWrittenResponseState,
-  (state) => state.error,
+  ({ error }) => error,
 );
 
 export const selectWrittenResponseUserAnswer = createSelector(
   selectWrittenResponseState,
-  (state) => state.userAnswer,
+  ({ userAnswer }) => userAnswer,
 );
 
 export const selectWrittenResponsePrompt = createSelector(
@@ -53,17 +53,28 @@ export const selectWrittenResponseExpectedDuration = createSelector(
   selectWrittenResponseTask,
   (task) => task?.estimatedDurationInMinutes || 0,
 );
+
 export const selectWrittenResponseSubmissionId = createSelector(
   selectWrittenResponseState,
-  (state) => state.submissionId,
+  ({ submissionId }) => submissionId,
 );
 
 export const selectWrittenResponseSubmissionStatus = createSelector(
   selectWrittenResponseState,
-  (state) => state.submissionStatus,
+  ({ submissionStatus }) => submissionStatus,
 );
 
 export const selectWrittenResponseIsSubmitting = createSelector(
   selectWrittenResponseState,
-  (state) => state.isSubmitting,
+  ({ isSubmitting }) => isSubmitting,
+);
+
+export const selectWrittenResponseTaskId = createSelector(
+  selectWrittenResponseState,
+  ({ taskId }) => taskId,
+);
+
+export const selectWrittenResponseQuizCompleted = createSelector(
+  selectWrittenResponseState,
+  ({ quizCompleted }) => quizCompleted,
 );

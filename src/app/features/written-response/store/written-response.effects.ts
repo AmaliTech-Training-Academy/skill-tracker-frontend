@@ -17,7 +17,6 @@ export class WrittenResponseEffects {
   public loadWrittenResponseTask$ = createEffect(() =>
     this.actions$.pipe(
       ofType(WrittenResponseActions.loadWrittenResponseTask),
-
       switchMap((action) =>
         this.writtenResponseService.fetchWrittenResponseTask(action.taskId).pipe(
           map((response) =>
@@ -25,18 +24,16 @@ export class WrittenResponseEffects {
               task: response.data,
             }),
           ),
-
-          catchError((error) => {
-            const errorMessage =
-              error.error?.message ||
-              error.message ||
-              'An unknown error occurred while loading the written response task.';
-            return of(
+          catchError((error) =>
+            of(
               WrittenResponseActions.loadWrittenResponseTaskFailure({
-                error: errorMessage,
+                error: this.extractErrorMessage(
+                  error,
+                  'An unknown error occurred while loading the written response task.',
+                ),
               }),
-            );
-          }),
+            ),
+          ),
         ),
       ),
     ),
@@ -58,19 +55,25 @@ export class WrittenResponseEffects {
             map((response) =>
               WrittenResponseActions.submitWrittenResponseTaskSuccess({ response }),
             ),
-            catchError((error) => {
-              const errorMessage =
-                error.error?.message ||
-                error.message ||
-                'An unknown error occurred while submitting the task.';
-              return of(
+            catchError((error) =>
+              of(
                 WrittenResponseActions.submitWrittenResponseTaskFailure({
-                  error: errorMessage,
+                  error: this.extractErrorMessage(
+                    error,
+                    'An unknown error occurred while submitting the task.',
+                  ),
                 }),
-              );
-            }),
+              ),
+            ),
           ),
       ),
+    ),
+  );
+
+  public completeQuizOnSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(WrittenResponseActions.submitWrittenResponseTaskSuccess),
+      map(() => WrittenResponseActions.completeWrittenResponseQuiz()),
     ),
   );
 
@@ -95,4 +98,11 @@ export class WrittenResponseEffects {
       ),
     { dispatch: false },
   );
+
+  private extractErrorMessage(
+    error: { error?: { message?: string }; message?: string },
+    defaultMessage: string,
+  ): string {
+    return error.error?.message || error.message || defaultMessage;
+  }
 }

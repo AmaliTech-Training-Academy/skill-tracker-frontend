@@ -68,6 +68,8 @@ export interface WrittenResponseState {
   submissionId: string | null;
   submissionStatus: string | null;
   isSubmitting: boolean;
+  taskId: string | null;
+  quizCompleted: boolean;
 }
 
 export const initialWrittenResponseState: WrittenResponseState = {
@@ -78,4 +80,6 @@ export const initialWrittenResponseState: WrittenResponseState = {
   submissionId: null,
   submissionStatus: null,
   isSubmitting: false,
+  taskId: null,
+  quizCompleted: false,
 };
