@@ -18,6 +18,9 @@ describe('TasksEffects', () => {
     getTaskById: jest.MockedFunction<TaskService['getTaskById']>;
     executeCode: jest.MockedFunction<TaskService['executeCode']>;
     submitTask: jest.MockedFunction<TaskService['submitTask']>;
+    getSubmissionStatus: jest.MockedFunction<TaskService['getSubmissionStatus']>;
+    shouldReloadTasks: jest.MockedFunction<TaskService['shouldReloadTasks']>;
+    shouldPollStatus: jest.MockedFunction<TaskService['shouldPollStatus']>;
   };
   let toastService: {
     showError: jest.MockedFunction<ToastService['showError']>;
@@ -55,6 +58,9 @@ describe('TasksEffects', () => {
       getTaskById: jest.fn(),
       executeCode: jest.fn(),
       submitTask: jest.fn(),
+      getSubmissionStatus: jest.fn(),
+      shouldReloadTasks: jest.fn(),
+      shouldPollStatus: jest.fn(),
     };
     const toastServiceSpy = {
       showError: jest.fn(),
@@ -198,26 +204,42 @@ describe('TasksEffects', () => {
   });
 
   describe('submitTaskSolution$', () => {
-    it('should always return success with pending submission', (done) => {
+    it('should submit task and return success', (done) => {
       const action = TasksActions.submitTaskSolution({
         taskId: '1',
         code: 'solution',
         languageId: 97,
       });
 
-      store.overrideSelector(selectCurrentTaskLanguageId, 97);
-      store.setState({
-        tasks: {
-          currentTask: { ...mockTask, xpReward: 100 },
+      const mockSubmissionResponse = {
+        success: true,
+        message: 'Submitted successfully',
+        data: {
+          id: 'sub-123',
+          submissionId: 'sub-123',
+          status: 'PENDING' as const,
         },
-      });
+        metadata: { traceId: 'test', timestamp: '2024-01-01' },
+      };
+
+      taskService.submitTask.mockReturnValue(of(mockSubmissionResponse));
+      store.overrideSelector(selectCurrentTaskLanguageId, 97);
+      store.overrideSelector(selectCurrentTask, { ...mockTask, xpReward: 100 });
 
       actions$ = of(action);
 
       effects.submitTaskSolution$.subscribe((result) => {
         expect(result).toEqual(
-          TasksActions.submitTaskSolutionSuccess({ submissionId: 'pending', xpEarned: 100 }),
+          TasksActions.submitTaskSolutionSuccess({ submissionId: 'sub-123', xpEarned: 100 }),
         );
+        expect(taskService.submitTask).toHaveBeenCalledWith({
+          taskId: '1',
+          answer: {
+            answerType: 'CODING',
+            code: 'solution',
+            languageId: 97,
+          },
+        });
         done();
       });
     });
