@@ -52,7 +52,12 @@ export class Dashboard implements OnInit {
     },
   ];
   public footerItems = [
-    { icon: 'settings', label: 'Settings', route: '/settings', tourId: 'sidebar-settings' },
+    {
+      icon: 'settings',
+      label: 'Settings',
+      route: '/dashboard/settings',
+      tourId: 'sidebar-settings',
+    },
   ];
 
   public ngOnInit(): void {

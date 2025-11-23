@@ -84,3 +84,8 @@ export const selectSelectedSkillId = createSelector(
   selectDashboardState,
   ({ selectedSkillId }: DashboardState) => selectedSkillId,
 );
+
+export const selectSelectedSkillName = createSelector(
+  selectDashboardState,
+  ({ selectedSkillName }: DashboardState) => selectedSkillName,
+);

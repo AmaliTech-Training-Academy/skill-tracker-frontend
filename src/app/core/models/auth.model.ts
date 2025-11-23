@@ -58,6 +58,7 @@ export interface UserApiResponse {
   id: string;
   email: string;
   username: string | null;
+  fullName?: string | null;
   role: UserRole;
   state: UserState;
   tourStatus?: TourGuide;
@@ -110,6 +111,14 @@ export interface CompleteOnboardingRequest {
 
 export interface UserEmailRequest {
   email: string;
+}
+
+export interface UpdateUserProfileRequest {
+  fullName: string;
+  avatarUrl: string;
+  bio: string;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
 }
 
 export type UserResponse = ApiResponse<UserApiResponse>;
