@@ -51,9 +51,7 @@ a[href^='#']:target {
 }
 
 .nav-actions {
-  display: none;
-  align-items: center;
-  gap: 24px;
+  @include flex($align: center, $gap: 1.5rem);
 
   .dashboard-btn {
     @include button-transparent;
