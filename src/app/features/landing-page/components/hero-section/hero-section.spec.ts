@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { HeroSection } from './hero-section';
 import { APP_CONSTANTS } from '@app/core/constants/app.constants';
 
@@ -7,15 +8,23 @@ describe('HeroSection', () => {
   let component: HeroSection;
   let fixture: ComponentFixture<HeroSection>;
   let compiled: HTMLElement;
+  let mockStore: Partial<Store>;
 
   beforeEach(async () => {
     const routerSpy = {
       navigateByUrl: jest.fn(),
     };
 
+    mockStore = {
+      selectSignal: jest.fn().mockReturnValue(() => false),
+    };
+
     await TestBed.configureTestingModule({
       imports: [HeroSection],
-      providers: [{ provide: Router, useValue: routerSpy }],
+      providers: [
+        { provide: Router, useValue: routerSpy },
+        { provide: Store, useValue: mockStore },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeroSection);
