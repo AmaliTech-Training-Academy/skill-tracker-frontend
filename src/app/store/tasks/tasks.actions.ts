@@ -5,6 +5,7 @@ import {
   Task,
   CodeExecutionResponse,
   SubmissionResponse,
+  TaskType,
 } from '@app/core/models/tasks-model';
 
 export const loadTasks = createAction('[Tasks Dashboard] Load Tasks');
@@ -29,7 +30,10 @@ export const changeTimeRangeFilter = createAction(
   props<{ period: CompletedPeriod }>(),
 );
 
-export const startTask = createAction('[Task Card] Start Task', props<{ taskId: string }>());
+export const startTask = createAction(
+  '[Task Card] Start Task',
+  props<{ taskId: string; taskType: TaskType }>(),
+);
 
 export const loadCurrentTask = createAction(
   '[Coding Assessment] Load Current Task',
