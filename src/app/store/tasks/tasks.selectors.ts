@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TasksState } from './tasks.state';
-import { TaskUI, CompletedPeriod } from '@app/core/models/tasks-model';
+import { TaskUI } from '@app/core/models/tasks-model';
 import { PROGRAMMING_LANGUAGES } from '@app/core/constants/programming-languages';
 
 export const selectTasksState = createFeatureSelector<TasksState>('tasks');
@@ -114,42 +114,11 @@ export const selectFilteredTodayTasks = createSelector(
 export const selectFilteredPreviousTasks = createSelector(
   selectAllPreviousTasks,
   selectSkillFilter,
-  selectTimeRangeFilter,
-  (tasks: TaskUI[], skill: string, timeRange: CompletedPeriod) => {
-    let filteredTasks = tasks;
-
-    if (skill !== 'All Skills' && skill) {
-      filteredTasks = filteredTasks.filter((task) => task.skillName === skill);
+  (tasks: TaskUI[], skill: string) => {
+    if (skill === 'All Skills' || !skill) {
+      return tasks;
     }
-
-    if (timeRange && timeRange !== CompletedPeriod.ALL_PERIODS) {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-      const last7Days = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const last30Days = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-      filteredTasks = filteredTasks.filter((task) => {
-        const taskDate = new Date(task.createdAt);
-
-        switch (timeRange) {
-          case CompletedPeriod.TODAY:
-            return taskDate >= today;
-          case CompletedPeriod.YESTERDAY:
-            return taskDate >= yesterday && taskDate < today;
-          case CompletedPeriod.LAST_7_DAYS:
-            return taskDate >= last7Days;
-          case CompletedPeriod.LAST_30_DAYS:
-            return taskDate >= last30Days;
-          case CompletedPeriod.OLDER:
-            return taskDate < last30Days;
-          default:
-            return true;
-        }
-      });
-    }
-
-    return filteredTasks;
+    return tasks.filter((task) => task.skillName === skill);
   },
 );
 

@@ -7,7 +7,11 @@ import { map, catchError, switchMap, tap, withLatestFrom, takeWhile } from 'rxjs
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
 import * as TasksActions from './tasks.actions';
-import { selectCurrentTaskLanguageId, selectCurrentTask } from './tasks.selectors';
+import {
+  selectCurrentTaskLanguageId,
+  selectCurrentTask,
+  selectTimeRangeFilter,
+} from './tasks.selectors';
 import { APP_CONSTANTS } from '@app/core';
 
 @Injectable()
@@ -23,14 +27,20 @@ export class TasksEffects {
   public loadTasks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.loadTasks),
-      switchMap(() =>
-        this.taskService.getAllTasks().pipe(
+      withLatestFrom(this.store.select(selectTimeRangeFilter)),
+      switchMap(([, timeRangeFilter]) => {
+        return this.taskService.getAllTasks({ completedPeriod: timeRangeFilter }).pipe(
           map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
-          catchError((error) =>
-            of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' })),
-          ),
-        ),
-      ),
+          catchError(() => of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' }))),
+        );
+      }),
+    ),
+  );
+
+  public reloadTasksOnTimeFilter$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changeTimeRangeFilter),
+      map(() => TasksActions.loadTasks()),
     ),
   );
 
@@ -124,10 +134,9 @@ export class TasksEffects {
       ofType(TasksActions.loadUserSkills),
       switchMap(() =>
         this.taskService.getUserSkills().pipe(
-          map(({ data }) => {
-            const skillNames = ['All Skills', ...data.map(({ skillName }) => skillName)];
-            return TasksActions.loadUserSkillsSuccess({ skills: skillNames });
-          }),
+          map(({ data }) =>
+            TasksActions.loadUserSkillsSuccess({ skills: this.taskService.formatSkillNames(data) }),
+          ),
           catchError(() =>
             of(TasksActions.loadUserSkillsFailure({ error: 'Failed to load user skills' })),
           ),
