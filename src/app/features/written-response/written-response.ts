@@ -34,7 +34,7 @@ import * as WrittenResponseActions from './store/written-response.action';
 import { TextArea } from './components/text-area/text-area';
 import { TaskComplete } from '@app/shared/components/task-complete/task-complete';
 
-interface FeedbackOverall {
+export interface FeedbackOverall {
   totalScore?: number;
   maxXP?: number;
   percentage?: number;
@@ -42,11 +42,11 @@ interface FeedbackOverall {
   keyImprovements?: string[];
 }
 
-interface FeedbackEvaluation {
+export interface FeedbackEvaluation {
   overall?: FeedbackOverall;
 }
 
-interface TaskFeedback {
+export interface TaskFeedback {
   evaluation?: FeedbackEvaluation;
 }
 

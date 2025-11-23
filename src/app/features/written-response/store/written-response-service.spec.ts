@@ -7,6 +7,9 @@ import {
   WrittenResponseSubmission,
   WrittenResponseSubmissionResponse,
 } from './written-response.state';
+import { ApiResponse } from '@app/core';
+import { SubmissionResponse } from '@app/core/models/tasks-model';
+import { TaskFeedback } from '../written-response';
 
 describe('WrittenResponseService', () => {
   let service: WrittenResponseService;
@@ -17,53 +20,69 @@ describe('WrittenResponseService', () => {
 
   const mockTask: WrittenResponseTask = {
     taskId: 'task-123',
-    taskDefinitionId: 'def-456',
+    taskDefinitionId: 'def-123',
     title: 'Test Task',
     description: 'Test Description',
     skillName: 'Writing',
-    type: 'WRITTEN_RESPONSE',
+    type: 'ESSAY',
     difficulty: 'Medium',
     content: {
       contentType: 'essay',
-      prompt: 'Write your response',
-      detailedInstructions: 'Be detailed',
-      evaluationCriteria: {},
-      rubric: {},
+      prompt: 'Write about testing',
+      detailedInstructions: 'Write detailed instructions',
+      evaluationCriteria: { clarity: 'Clear writing' },
+      rubric: { excellent: '90-100' },
       hints: ['Hint 1'],
       expectedLength: '500 words',
     },
     version: 1,
     isPublished: true,
-    estimatedDurationInMinutes: 30,
+    estimatedDurationInMinutes: 15,
     xpReward: 100,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  };
-
-  const mockTaskResponse = {
-    data: mockTask,
-    success: true,
-    message: 'Task retrieved successfully',
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-01',
   };
 
   const mockSubmission: WrittenResponseSubmission = {
     taskId: 'task-123',
     answer: {
       answerType: 'ESSAY',
-      submissionText: 'My answer text',
+      submissionText: 'Test submission',
     },
   };
 
   const mockSubmissionResponse: WrittenResponseSubmissionResponse = {
     success: true,
-    message: 'Submission accepted for evaluation.',
+    message: 'Submission successful',
     data: {
-      submissionId: '6fc824bb-87d6-4836-9a69-84bd4a31e15b',
+      submissionId: 'sub-123',
       status: 'PENDING',
     },
     metadata: {
       traceId: 'trace-123',
-      timestamp: '2025-11-22T12:16:48.418291549Z',
+      timestamp: '2024-01-01T00:00:00Z',
+    },
+  };
+
+  const mockStatusResponse: ApiResponse<SubmissionResponse> = {
+    success: true,
+    message: 'Status retrieved',
+    data: {
+      id: 'sub-123',
+      submissionId: 'sub-123',
+      status: 'COMPLETED',
+      isCorrect: true,
+      scoreEarned: 100,
+      feedback: {
+        evaluation: {
+          overall: {
+            totalScore: 100,
+            maxXP: 100,
+            percentage: 100,
+            summary: 'Excellent work!',
+          },
+        },
+      },
     },
   };
 
@@ -85,198 +104,152 @@ describe('WrittenResponseService', () => {
   });
 
   describe('fetchWrittenResponseTask', () => {
-    it('should fetch task with correct URL', (done) => {
-      const taskId = 'task-123';
-      const expectedUrl = `${APP_CONSTANTS.API_ENDPOINTS.TASKS}/${taskId}`;
+    it('should fetch task by ID', () => {
+      const expectedResponse = {
+        data: mockTask,
+        success: true,
+        message: 'Task retrieved successfully',
+      };
 
-      mockApiService.get.mockReturnValue(of(mockTaskResponse));
-
-      service.fetchWrittenResponseTask(taskId).subscribe((response) => {
-        expect(mockApiService.get).toHaveBeenCalledWith(expectedUrl);
-        expect(response).toEqual(mockTaskResponse);
-        expect(response.data).toEqual(mockTask);
-        expect(response.success).toBe(true);
-        done();
-      });
-    });
-
-    it('should return task data with correct structure', (done) => {
-      mockApiService.get.mockReturnValue(of(mockTaskResponse));
+      mockApiService.get.mockReturnValue(of(expectedResponse));
 
       service.fetchWrittenResponseTask('task-123').subscribe((response) => {
-        expect(response.data.taskId).toBe('task-123');
-        expect(response.data.title).toBe('Test Task');
-        expect(response.data.xpReward).toBe(100);
-        expect(response.success).toBe(true);
-        expect(response.message).toBe('Task retrieved successfully');
-        done();
+        expect(response).toEqual(expectedResponse);
       });
+
+      expect(mockApiService.get).toHaveBeenCalledWith(
+        `${APP_CONSTANTS.API_ENDPOINTS.TASKS}/task-123`,
+      );
     });
 
-    it('should handle different taskIds', (done) => {
-      const taskId = 'different-task-456';
-      const expectedUrl = `${APP_CONSTANTS.API_ENDPOINTS.TASKS}/${taskId}`;
+    it('should call correct API endpoint for task fetch', () => {
+      mockApiService.get.mockReturnValue(of({}));
 
-      mockApiService.get.mockReturnValue(of(mockTaskResponse));
+      service.fetchWrittenResponseTask('test-task-id');
 
-      service.fetchWrittenResponseTask(taskId).subscribe(() => {
-        expect(mockApiService.get).toHaveBeenCalledWith(expectedUrl);
-        done();
-      });
-    });
-
-    it('should call ApiService.get exactly once', (done) => {
-      mockApiService.get.mockReturnValue(of(mockTaskResponse));
-
-      service.fetchWrittenResponseTask('task-123').subscribe(() => {
-        expect(mockApiService.get).toHaveBeenCalledTimes(1);
-        done();
-      });
-    });
-
-    it('should return observable that can be subscribed to', () => {
-      mockApiService.get.mockReturnValue(of(mockTaskResponse));
-
-      const result = service.fetchWrittenResponseTask('task-123');
-
-      expect(result).toBeDefined();
-      expect(typeof result.subscribe).toBe('function');
+      expect(mockApiService.get).toHaveBeenCalledWith(
+        `${APP_CONSTANTS.API_ENDPOINTS.TASKS}/test-task-id`,
+      );
     });
   });
 
   describe('submitWrittenResponse', () => {
-    it('should submit response with correct URL and payload', (done) => {
-      const expectedUrl = `${APP_CONSTANTS.API_ENDPOINTS.SUBMIT}`;
-
+    it('should submit written response', () => {
       mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
 
       service.submitWrittenResponse(mockSubmission).subscribe((response) => {
-        expect(mockApiService.post).toHaveBeenCalledWith(expectedUrl, mockSubmission);
         expect(response).toEqual(mockSubmissionResponse);
-        done();
       });
+
+      expect(mockApiService.post).toHaveBeenCalledWith(
+        APP_CONSTANTS.API_ENDPOINTS.SUBMIT,
+        mockSubmission,
+      );
     });
 
-    it('should return submission response with correct structure', (done) => {
+    it('should call correct API endpoint for submission', () => {
       mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
 
-      service.submitWrittenResponse(mockSubmission).subscribe((response) => {
-        expect(response.success).toBe(true);
-        expect(response.message).toBe('Submission accepted for evaluation.');
-        expect(response.data.submissionId).toBe('6fc824bb-87d6-4836-9a69-84bd4a31e15b');
-        expect(response.data.status).toBe('PENDING');
-        expect(response.metadata.traceId).toBe('trace-123');
-        done();
-      });
+      service.submitWrittenResponse(mockSubmission);
+
+      expect(mockApiService.post).toHaveBeenCalledWith(
+        APP_CONSTANTS.API_ENDPOINTS.SUBMIT,
+        mockSubmission,
+      );
     });
 
-    it('should pass correct submission object', (done) => {
-      mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
-
-      service.submitWrittenResponse(mockSubmission).subscribe(() => {
-        const callArgs = mockApiService.post.mock.calls[0];
-        const passedSubmission = callArgs[1] as WrittenResponseSubmission;
-
-        expect(passedSubmission.taskId).toBe('task-123');
-        expect(passedSubmission.answer.answerType).toBe('ESSAY');
-        expect(passedSubmission.answer.submissionText).toBe('My answer text');
-        done();
-      });
-    });
-
-    it('should handle different submission payloads', (done) => {
-      const differentSubmission: WrittenResponseSubmission = {
-        taskId: 'task-789',
+    it('should handle submission with essay answer type', () => {
+      const essaySubmission: WrittenResponseSubmission = {
+        taskId: 'task-456',
         answer: {
           answerType: 'ESSAY',
-          submissionText: 'Different answer',
+          submissionText: 'My essay response',
         },
       };
 
       mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
 
-      service.submitWrittenResponse(differentSubmission).subscribe(() => {
-        expect(mockApiService.post).toHaveBeenCalledWith(
-          APP_CONSTANTS.API_ENDPOINTS.SUBMIT,
-          differentSubmission,
-        );
-        done();
+      service.submitWrittenResponse(essaySubmission).subscribe();
+
+      expect(mockApiService.post).toHaveBeenCalledWith(
+        APP_CONSTANTS.API_ENDPOINTS.SUBMIT,
+        essaySubmission,
+      );
+    });
+  });
+
+  describe('getSubmissionStatus', () => {
+    it('should get submission status by ID', () => {
+      mockApiService.get.mockReturnValue(of(mockStatusResponse));
+
+      service.getSubmissionStatus('sub-123').subscribe((response) => {
+        expect(response).toEqual(mockStatusResponse);
       });
+
+      expect(mockApiService.get).toHaveBeenCalledWith(
+        `${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/sub-123`,
+      );
     });
 
-    it('should call ApiService.post exactly once', (done) => {
-      mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
+    it('should call correct API endpoint for status check', () => {
+      mockApiService.get.mockReturnValue(of(mockStatusResponse));
 
-      service.submitWrittenResponse(mockSubmission).subscribe(() => {
-        expect(mockApiService.post).toHaveBeenCalledTimes(1);
-        done();
-      });
+      service.getSubmissionStatus('test-submission-id');
+
+      expect(mockApiService.get).toHaveBeenCalledWith(
+        `${APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS}/test-submission-id`,
+      );
     });
 
-    it('should return observable that can be subscribed to', () => {
-      mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
+    it('should return submission response with feedback', () => {
+      const responseWithFeedback = {
+        ...mockStatusResponse,
+        data: {
+          ...mockStatusResponse.data,
+          submissionId: 'sub-123',
+          feedback: {
+            evaluation: {
+              overall: {
+                totalScore: 85,
+                maxXP: 100,
+                percentage: 85,
+                summary: 'Good work with room for improvement',
+                keyImprovements: ['Better structure', 'More examples'],
+              },
+            },
+          },
+        },
+      };
 
-      const result = service.submitWrittenResponse(mockSubmission);
+      mockApiService.get.mockReturnValue(of(responseWithFeedback));
 
-      expect(result).toBeDefined();
-      expect(typeof result.subscribe).toBe('function');
-    });
-
-    it('should submit with ESSAY answer type', (done) => {
-      mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
-
-      service.submitWrittenResponse(mockSubmission).subscribe(() => {
-        const callArgs = mockApiService.post.mock.calls[0];
-        const passedSubmission = callArgs[1] as WrittenResponseSubmission;
-
-        expect(passedSubmission.answer.answerType).toBe('ESSAY');
-        done();
-      });
-    });
-
-    it('should include metadata in response', (done) => {
-      mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
-
-      service.submitWrittenResponse(mockSubmission).subscribe((response) => {
-        expect(response.metadata).toBeDefined();
-        expect(response.metadata.traceId).toBeDefined();
-        expect(response.metadata.timestamp).toBeDefined();
-        done();
+      service.getSubmissionStatus('sub-123').subscribe(({ data }) => {
+        expect(data.feedback).toBeDefined();
+        expect((data.feedback as TaskFeedback)?.evaluation?.overall?.totalScore).toBe(85);
       });
     });
   });
 
-  describe('API endpoint configuration', () => {
-    it('should use correct TASKS endpoint', (done) => {
-      mockApiService.get.mockReturnValue(of(mockTaskResponse));
+  describe('API endpoint constants', () => {
+    it('should use correct endpoints for all methods', () => {
+      mockApiService.get.mockReturnValue(of({}));
+      mockApiService.post.mockReturnValue(of({}));
 
-      service.fetchWrittenResponseTask('test-id').subscribe(() => {
-        const calledUrl = mockApiService.get.mock.calls[0][0] as string;
-        expect(calledUrl).toContain(APP_CONSTANTS.API_ENDPOINTS.TASKS);
-        done();
-      });
-    });
+      service.fetchWrittenResponseTask('task-1');
+      expect(mockApiService.get).toHaveBeenCalledWith(
+        expect.stringContaining(APP_CONSTANTS.API_ENDPOINTS.TASKS),
+      );
 
-    it('should use correct SUBMIT endpoint', (done) => {
-      mockApiService.post.mockReturnValue(of(mockSubmissionResponse));
+      service.submitWrittenResponse(mockSubmission);
+      expect(mockApiService.post).toHaveBeenCalledWith(
+        APP_CONSTANTS.API_ENDPOINTS.SUBMIT,
+        mockSubmission,
+      );
 
-      service.submitWrittenResponse(mockSubmission).subscribe(() => {
-        const calledUrl = mockApiService.post.mock.calls[0][0] as string;
-        expect(calledUrl).toBe(APP_CONSTANTS.API_ENDPOINTS.SUBMIT);
-        done();
-      });
-    });
-  });
-
-  describe('Service instantiation', () => {
-    it('should inject ApiService', () => {
-      expect(service['api']).toBeDefined();
-    });
-
-    it('should be provided in root', () => {
-      const metadata = (WrittenResponseService as unknown as { ɵprov?: { providedIn: string } })
-        .ɵprov;
-      expect(metadata?.providedIn).toBe('root');
+      service.getSubmissionStatus('sub-1');
+      expect(mockApiService.get).toHaveBeenCalledWith(
+        expect.stringContaining(APP_CONSTANTS.API_ENDPOINTS.SUBMISSIONS),
+      );
     });
   });
 });

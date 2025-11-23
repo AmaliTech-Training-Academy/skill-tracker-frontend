@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { signal, WritableSignal } from '@angular/core';
 import { of } from 'rxjs';
-import { WrittenResponse } from './written-response';
+import { WrittenResponse, TaskFeedback } from './written-response';
 import { ToastService } from '@app/core';
 import * as WrittenResponseActions from './store/written-response.action';
+import { SubmissionResponse } from '@app/core/models/tasks-model';
 
 describe('WrittenResponse Component', () => {
   let component: WrittenResponse;
@@ -42,6 +43,9 @@ describe('WrittenResponse Component', () => {
   let mockIsSubmitting: WritableSignal<boolean>;
   let mockTaskId: WritableSignal<string | null>;
   let mockQuizCompleted: WritableSignal<boolean>;
+  let mockSubmission: WritableSignal<SubmissionResponse | null>;
+  let mockFeedback: WritableSignal<TaskFeedback | null>;
+  let mockSubmissionStatus: WritableSignal<string | null>;
 
   beforeEach(async () => {
     mockTaskTitle = signal('Test Task');
@@ -56,6 +60,9 @@ describe('WrittenResponse Component', () => {
     mockIsSubmitting = signal(false);
     mockTaskId = signal<string | null>('task-123');
     mockQuizCompleted = signal(false);
+    mockSubmission = signal<SubmissionResponse | null>(null);
+    mockFeedback = signal<TaskFeedback | null>(null);
+    mockSubmissionStatus = signal(null);
 
     mockStore = {
       selectSignal: jest.fn(),
@@ -80,24 +87,7 @@ describe('WrittenResponse Component', () => {
       },
     };
 
-    mockStore.selectSignal.mockImplementation((selector: unknown) => {
-      const selectorString = selector?.toString() || '';
-
-      if (selectorString.includes('Title')) return mockTaskTitle;
-      if (selectorString.includes('Difficulty')) return mockTaskDifficulty;
-      if (selectorString.includes('XpReward')) return mockXpReward;
-      if (selectorString.includes('Prompt')) return mockPrompt;
-      if (selectorString.includes('Hints')) return mockHints;
-      if (selectorString.includes('UserAnswer')) return mockUserAnswer;
-      if (selectorString.includes('Loading')) return mockLoading;
-      if (selectorString.includes('Error')) return mockError;
-      if (selectorString.includes('ExpectedDuration')) return mockExpectedDuration;
-      if (selectorString.includes('IsSubmitting')) return mockIsSubmitting;
-      if (selectorString.includes('TaskId')) return mockTaskId;
-      if (selectorString.includes('QuizCompleted')) return mockQuizCompleted;
-
-      return mockTaskTitle;
-    });
+    mockStore.selectSignal.mockReturnValue(signal('default'));
 
     mockStore.select.mockReturnValue(of(10));
 
@@ -113,6 +103,13 @@ describe('WrittenResponse Component', () => {
 
     fixture = TestBed.createComponent(WrittenResponse);
     component = fixture.componentInstance;
+
+    Object.defineProperty(component, 'taskId', { get: () => mockTaskId });
+    Object.defineProperty(component, 'userAnswer', { get: () => mockUserAnswer });
+    Object.defineProperty(component, 'submissionStatus', { get: () => mockSubmissionStatus });
+    Object.defineProperty(component, 'submission', { get: () => mockSubmission });
+    Object.defineProperty(component, 'feedback', { get: () => mockFeedback });
+    Object.defineProperty(component, 'xpReward', { get: () => mockXpReward });
   });
 
   afterEach(() => {
@@ -224,5 +221,175 @@ describe('WrittenResponse Component', () => {
 
   it('should initialize timer label to 00:00', () => {
     expect(component.timerLabel).toBe('00:00');
+  });
+
+  describe('submitTask', () => {
+    it('should submit task with valid data', () => {
+      mockTaskId.set('task-123');
+      mockUserAnswer.set('Test answer');
+      const dispatchSpy = jest.spyOn(mockStore, 'dispatch');
+
+      component.submitTask();
+
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        WrittenResponseActions.submitWrittenResponseTask({
+          taskId: 'task-123',
+          answer: 'Test answer',
+        }),
+      );
+    });
+
+    it('should show error when taskId is missing', () => {
+      mockTaskId.set(null);
+      const toastSpy = jest.spyOn(mockToastService, 'showError');
+
+      component.submitTask();
+
+      expect(toastSpy).toHaveBeenCalledWith('Error', 'Task ID is missing');
+    });
+
+    it('should show error when answer is empty', () => {
+      mockTaskId.set('task-123');
+      mockUserAnswer.set('');
+      const toastSpy = jest.spyOn(mockToastService, 'showError');
+
+      component.submitTask();
+
+      expect(toastSpy).toHaveBeenCalledWith('Error', 'Please provide an answer before submitting');
+    });
+  });
+
+  describe('getModalTitle', () => {
+    it('should return "Task Complete!" for completed correct submission', () => {
+      mockSubmissionStatus.set('COMPLETED');
+      mockSubmission.set({
+        id: 'sub-1',
+        submissionId: 'sub-1',
+        status: 'COMPLETED',
+        isCorrect: true,
+      });
+
+      expect(component.getModalTitle()).toBe('Task Complete!');
+    });
+
+    it('should return "Task Failed!" for completed incorrect submission', () => {
+      mockSubmissionStatus.set('COMPLETED');
+      mockSubmission.set({
+        id: 'sub-1',
+        submissionId: 'sub-1',
+        status: 'COMPLETED',
+        isCorrect: false,
+      });
+
+      expect(component.getModalTitle()).toBe('Task Failed!');
+    });
+
+    it('should return "Processing Submission" for pending status', () => {
+      mockSubmissionStatus.set('PENDING');
+
+      expect(component.getModalTitle()).toBe('Processing Submission');
+    });
+
+    it('should return "Processing Submission" for in progress status', () => {
+      mockSubmissionStatus.set('IN_PROGRESS');
+
+      expect(component.getModalTitle()).toBe('Processing Submission');
+    });
+
+    it('should return "Task Submitted" for default case', () => {
+      mockSubmissionStatus.set('UNKNOWN');
+
+      expect(component.getModalTitle()).toBe('Task Submitted');
+    });
+  });
+
+  describe('getModalMessage', () => {
+    it('should return success message for correct submission', () => {
+      mockSubmissionStatus.set('COMPLETED');
+      mockSubmission.set({
+        id: 'sub-1',
+        submissionId: 'sub-1',
+        status: 'COMPLETED',
+        isCorrect: true,
+        scoreEarned: 100,
+      });
+
+      const result = component.getModalMessage();
+
+      expect(result).toContain('Congratulations!');
+      expect(result).toContain('+100 XP');
+    });
+
+    it('should return failure message with feedback for incorrect submission', () => {
+      mockSubmissionStatus.set('COMPLETED');
+      mockSubmission.set({
+        id: 'sub-1',
+        submissionId: 'sub-1',
+        status: 'COMPLETED',
+        isCorrect: false,
+      });
+      mockFeedback.set({
+        evaluation: {
+          overall: {
+            totalScore: 60,
+            maxXP: 100,
+            percentage: 60,
+            summary: 'Good effort but needs improvement',
+            keyImprovements: ['Better structure', 'More examples'],
+          },
+        },
+      });
+      mockXpReward.set(100);
+
+      const result = component.getModalMessage();
+
+      expect(result).toContain('Score: 60/100');
+      expect(result).toContain('(60%)');
+      expect(result).toContain('Good effort but needs improvement');
+      expect(result).toContain('Better structure');
+      expect(result).toContain('More examples');
+    });
+
+    it('should return processing message for pending status', () => {
+      mockSubmissionStatus.set('PENDING');
+
+      const result = component.getModalMessage();
+
+      expect(result).toBe('Getting feedback on your submission. This may take a moment...');
+    });
+
+    it('should return processing message for in progress status', () => {
+      mockSubmissionStatus.set('IN_PROGRESS');
+
+      const result = component.getModalMessage();
+
+      expect(result).toBe('Getting feedback on your submission. This may take a moment...');
+    });
+
+    it('should return default message for unknown status', () => {
+      mockSubmissionStatus.set('UNKNOWN');
+
+      const result = component.getModalMessage();
+
+      expect(result).toBe('Your response has been submitted successfully!');
+    });
+  });
+
+  describe('navigation methods', () => {
+    it('should navigate to tasks dashboard on task complete', () => {
+      const routerSpy = jest.spyOn(mockRouter, 'navigateByUrl');
+
+      component.onTaskComplete();
+
+      expect(routerSpy).toHaveBeenCalledWith('/dashboard/tasks');
+    });
+
+    it('should navigate to tasks dashboard on back to dashboard', () => {
+      const routerSpy = jest.spyOn(mockRouter, 'navigateByUrl');
+
+      component.onBackToDashboard();
+
+      expect(routerSpy).toHaveBeenCalledWith('/dashboard/tasks');
+    });
   });
 });
