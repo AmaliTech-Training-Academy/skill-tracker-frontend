@@ -35,6 +35,11 @@ export const selectGoalStatus = createSelector(
   (data) => data?.goalStatus ?? [],
 );
 
+export const selectGlobalRank = createSelector(
+  selectDashboardData,
+  (data) => data?.globalRank ?? 0,
+);
+
 export const selectRecommendedTasks = createSelector(
   selectDashboardState,
   ({ recommendedTasks }) => recommendedTasks,

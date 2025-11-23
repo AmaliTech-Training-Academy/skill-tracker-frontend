@@ -35,13 +35,15 @@
         <img
           class="navbar-profile--avatar"
           [src]="user()?.avatarUrl || '/assets/fallback-profile-icon.png'"
-          [alt]="'Profile picture of ' + (user()?.username || user()?.email)"
+          [alt]="'Profile picture of ' + (user()?.fullName || user()?.email)"
           loading="lazy"
           width="40"
           height="40"
         />
         <div>
-          <p class="navbar-profile--name">{{ user()?.username || user()?.email }}</p>
+          <a routerLink="/dashboard/profile" class="navbar-profile--name">{{
+            user()?.fullName || user()?.email
+          }}</a>
           <p class="navbar-profile--type">{{ user()?.premiumTier }}</p>
         </div>
       </div>

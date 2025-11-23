@@ -95,6 +95,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
       },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/user-profile/user-profile').then((c) => c.UserProfile),
+      },
     ],
   },
 ];
