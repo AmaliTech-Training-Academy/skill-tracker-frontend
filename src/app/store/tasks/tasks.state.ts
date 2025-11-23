@@ -1,3 +1,4 @@
+import { AppError } from '@app/core';
 import {
   TaskUI,
   CompletedPeriod,
@@ -40,6 +41,9 @@ export interface TasksState {
     endTime: number | null;
     taskId: string | null;
   };
+  totalUserXp: number;
+  isLoadingTotalUserXp: boolean;
+  totalUserXpError: AppError | null;
 }
 
 export const initialTasksState: TasksState = {
@@ -68,4 +72,7 @@ export const initialTasksState: TasksState = {
     endTime: null,
     taskId: null,
   },
+  totalUserXp: 0,
+  isLoadingTotalUserXp: false,
+  totalUserXpError: null,
 };
