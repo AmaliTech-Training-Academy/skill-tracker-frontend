@@ -348,4 +348,20 @@ export const tasksReducer = createReducer(
       submissionResult: null,
     }),
   ),
+
+  on(
+    TasksActions.loadTotalUserXp,
+    (state): TasksState => ({
+      ...state,
+      isLoadingTotalUserXp: true,
+      error: null,
+    }),
+  ),
+
+  on(TasksActions.loadTotalUserXpSuccess, (state, { totalUserXp }) => ({
+    ...state,
+    totalUserXp,
+    isLoadingTotalUserXp: false,
+    error: null,
+  })),
 );

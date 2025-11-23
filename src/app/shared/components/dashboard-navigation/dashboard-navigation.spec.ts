@@ -4,7 +4,8 @@ import { By } from '@angular/platform-browser';
 import { LucideAngularModule } from 'lucide-angular';
 import { provideMockStore } from '@ngrx/store/testing';
 import { appIcons } from '@app/core';
-import { selectCurrentUser, selectUserXp } from '@app/store/auth/auth.selectors';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { selectTotalUserXp } from '@app/store/tasks';
 import { RouterTestingModule } from '@angular/router/testing';
 import { RouterLink } from '@angular/router';
 
@@ -22,7 +23,7 @@ describe('DashboardNavigation', () => {
         provideMockStore({
           selectors: [
             { selector: selectCurrentUser, value: { username: 'Test User' } },
-            { selector: selectUserXp, value: 100 },
+            { selector: selectTotalUserXp, value: 100 },
           ],
         }),
       ],
@@ -42,8 +43,8 @@ describe('DashboardNavigation', () => {
     expect(component.user()?.username).toBe('Test User');
   });
 
-  it('should select userXp from the store', () => {
-    expect(component.userXp()).toBe(100);
+  it('should select totalUserxp from the store', () => {
+    expect(component.totalUserxp()).toBe(100);
   });
 
   it('should emit toggleSidebar event when onToggleSidebar is called', () => {
@@ -53,7 +54,7 @@ describe('DashboardNavigation', () => {
     expect(component.toggleSidebar.emit).toHaveBeenCalled();
   });
 
-  it('should call onToggleSidebar when the menu button is clicked', () => {
+  it('should call onToggleSidebar when the menu button is clicked (if present)', () => {
     const onToggleSpy = jest.spyOn(component, 'onToggleSidebar');
 
     const menuButton = fixture.debugElement.query(By.css('.menu-button'));
@@ -63,7 +64,7 @@ describe('DashboardNavigation', () => {
     expect(onToggleSpy).toHaveBeenCalled();
   });
 
-  it('should render router links in the template', () => {
+  it('should render router links in the template (if any)', () => {
     const links = fixture.debugElement.queryAll(By.directive(RouterLink));
     expect(links.length).toBeGreaterThan(0);
   });

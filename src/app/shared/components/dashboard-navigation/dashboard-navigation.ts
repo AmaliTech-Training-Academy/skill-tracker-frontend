@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { LucideAngularModule } from 'lucide-angular';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { selectCurrentUser, selectUserXp } from '@app/store/auth/auth.selectors';
+import { selectCurrentUser } from '@app/store/auth/auth.selectors';
+import { selectTotalUserXp } from '@app/store/tasks';
 import { AppState } from '@app/store';
 
 @Component({
@@ -16,7 +17,7 @@ export class DashboardNavigation {
   @Output() public toggleSidebar = new EventEmitter<void>();
   @Input({ required: true }) public isSidebarOpen!: boolean;
   public user = this.store.selectSignal(selectCurrentUser);
-  public userXp = this.store.selectSignal(selectUserXp);
+  public totalUserxp = this.store.selectSignal(selectTotalUserXp);
 
   constructor(private store: Store<AppState>) {}
   public onToggleSidebar(): void {

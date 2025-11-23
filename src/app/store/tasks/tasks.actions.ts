@@ -6,6 +6,7 @@ import {
   CodeExecutionResponse,
   SubmissionResponse,
 } from '@app/core/models/tasks-model';
+import { AppError } from '@app/core';
 
 export const loadTasks = createAction('[Tasks Dashboard] Load Tasks');
 
@@ -148,4 +149,14 @@ export const updateUserCode = createAction(
 export const restoreUserCode = createAction(
   '[Coding Assessment] Restore User Code',
   props<{ taskId: string }>(),
+);
+
+export const loadTotalUserXp = createAction('[User Xp] Load Total User Xp');
+export const loadTotalUserXpSuccess = createAction(
+  '[User Xp] Load Total User Xp Success',
+  props<{ totalUserXp: number }>(),
+);
+export const loadTotalUserXpFailure = createAction(
+  '[User Xp] Load Total Xp Failure',
+  props<{ error: AppError | null }>(),
 );

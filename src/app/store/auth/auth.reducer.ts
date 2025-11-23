@@ -29,7 +29,6 @@ import {
   checkAuthSession,
   checkAuthSessionSuccess,
   checkAuthSessionFailure,
-  updateUserXp,
   updateProfile,
   updateProfileSuccess,
   updateProfileFailure,
@@ -200,32 +199,7 @@ export const authReducer = createReducer(
     checkAuthSessionError: error,
     isAuthCheckComplete: true,
   })),
-  on(updateUserXp, (state, { xpToAdd }) => {
-    const currentXp =
-      state.user?.totalXp ||
-      (() => {
-        try {
-          return parseInt(localStorage.getItem('userXp') || '0', 10);
-        } catch {
-          return 0;
-        }
-      })();
-    const newXp = currentXp + xpToAdd;
-    try {
-      localStorage.setItem('userXp', newXp.toString());
-    } catch {
-      // Ignore localStorage errors in tests
-    }
-    return {
-      ...state,
-      user: state.user
-        ? {
-            ...state.user,
-            totalXp: newXp,
-          }
-        : state.user,
-    };
-  }),
+
   on(updateProfile, (state) => ({
     ...state,
     isUpdatingProfile: true,

@@ -12,7 +12,14 @@ import {
   selectCurrentTask,
   selectTimeRangeFilter,
 } from './tasks.selectors';
-import { APP_CONSTANTS } from '@app/core';
+import {
+  ApiResponse,
+  APP_CONSTANTS,
+  ErrorHandlerService,
+  GroupedTasksResponse,
+  Task,
+} from '@app/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 const POLLING_INTERVAL_MS = 2000;
 
@@ -24,6 +31,7 @@ export class TasksEffects {
     private router: Router,
     private toastService: ToastService,
     private store: Store,
+    private errorHandlerService: ErrorHandlerService,
   ) {}
 
   public loadTasks$ = createEffect(() =>
@@ -272,4 +280,29 @@ export class TasksEffects {
       }),
     ),
   );
+
+  public loadTotalUserXp$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.loadTotalUserXp),
+      switchMap(() =>
+        this.taskService.getAllTasks().pipe(
+          map((response) => {
+            const totalUserXp = this.calculateTotalXp(response);
+            return TasksActions.loadTotalUserXpSuccess({ totalUserXp });
+          }),
+          catchError((httpError: HttpErrorResponse) => {
+            const appError = this.errorHandlerService.getError(httpError);
+            return of(TasksActions.loadTotalUserXpFailure({ error: appError }));
+          }),
+        ),
+      ),
+    ),
+  );
+
+  private calculateTotalXp(response: ApiResponse<GroupedTasksResponse>): number {
+    return response.data.completed.content.reduce(
+      (sum: number, task: Task) => sum + task.xpReward,
+      0,
+    );
+  }
 }
