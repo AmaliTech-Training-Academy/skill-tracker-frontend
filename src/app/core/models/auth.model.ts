@@ -58,6 +58,7 @@ export interface UserApiResponse {
   id: string;
   email: string;
   username: string | null;
+  fullName?: string | null;
   role: UserRole;
   state: UserState;
   tourStatus?: TourGuide;
@@ -74,13 +75,16 @@ export interface User {
   email: string;
   avatarUrl?: string;
   username: string | null;
+  fullName?: string | null;
   role: UserRole;
+  bio?: string | null;
   state: UserState;
   tourStatus?: TourGuide;
   isVerified: boolean;
   premiumTier: PremiumTier;
   language: string;
   timezone: string;
+  createdAt?: string;
   updatedAt: string;
   lastLoginAt: string | null;
   totalXp?: number;
@@ -107,6 +111,14 @@ export interface CompleteOnboardingRequest {
 
 export interface UserEmailRequest {
   email: string;
+}
+
+export interface UpdateUserProfileRequest {
+  fullName: string;
+  avatarUrl: string;
+  bio: string;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
 }
 
 export type UserResponse = ApiResponse<UserApiResponse>;

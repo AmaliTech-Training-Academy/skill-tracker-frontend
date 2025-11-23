@@ -39,12 +39,6 @@ export class Dashboard implements OnInit {
       tourId: 'sidebar-skill-arena',
     },
     {
-      icon: 'star',
-      label: 'Badges',
-      route: '/dashboard/achievements',
-      tourId: 'sidebar-achievements',
-    },
-    {
       icon: 'users',
       label: 'Groups',
       route: '/dashboard/groups',
@@ -52,7 +46,12 @@ export class Dashboard implements OnInit {
     },
   ];
   public footerItems = [
-    { icon: 'settings', label: 'Settings', route: '/settings', tourId: 'sidebar-settings' },
+    {
+      icon: 'settings',
+      label: 'Settings',
+      route: '/dashboard/settings',
+      tourId: 'sidebar-settings',
+    },
   ];
 
   public ngOnInit(): void {

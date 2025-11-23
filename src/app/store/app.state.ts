@@ -13,6 +13,7 @@ import { onboardingReducer } from './onboarding/onboarding.reducer';
 import { OnboardingState } from './onboarding/onboarding.state';
 import { WrittenResponseState } from '@app/features/written-response/store/written-response.state';
 import { writtenResponseReducer } from '@app/features/written-response/store/written-response.reducer';
+import { websocketReducer } from './websocket/websocket.reducer';
 
 export interface AppState {
   auth: AuthState;
@@ -32,6 +33,6 @@ export const appState = {
   dashboard: dashboardReducer,
   mcqGeneration: mcqGenerationReducer,
   onboarding: onboardingReducer,
-  writtenResponse: writtenResponseReducer
-
+  writtenResponse: writtenResponseReducer,
+  websocket: websocketReducer,
 };

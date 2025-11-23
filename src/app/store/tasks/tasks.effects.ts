@@ -2,13 +2,19 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
-import { map, catchError, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { of, timer, from } from 'rxjs';
+import { map, catchError, switchMap, tap, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { TaskService } from '@app/features/tasks-dashboard/services/task.service';
 import { ToastService } from '@app/core/services/toast/toast-service';
 import * as TasksActions from './tasks.actions';
-import { selectCurrentTaskLanguageId, selectCurrentTask } from './tasks.selectors';
+import {
+  selectCurrentTaskLanguageId,
+  selectCurrentTask,
+  selectTimeRangeFilter,
+} from './tasks.selectors';
 import { APP_CONSTANTS } from '@app/core';
+
+const POLLING_INTERVAL_MS = 2000;
 
 @Injectable()
 export class TasksEffects {
@@ -23,14 +29,20 @@ export class TasksEffects {
   public loadTasks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.loadTasks),
-      switchMap(() =>
-        this.taskService.getAllTasks().pipe(
+      withLatestFrom(this.store.select(selectTimeRangeFilter)),
+      switchMap(([, timeRangeFilter]) => {
+        return this.taskService.getAllTasks({ completedPeriod: timeRangeFilter }).pipe(
           map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
-          catchError((error) =>
-            of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' })),
-          ),
-        ),
-      ),
+          catchError(() => of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' }))),
+        );
+      }),
+    ),
+  );
+
+  public reloadTasksOnTimeFilter$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changeTimeRangeFilter),
+      map(() => TasksActions.loadTasks()),
     ),
   );
 
@@ -124,10 +136,9 @@ export class TasksEffects {
       ofType(TasksActions.loadUserSkills),
       switchMap(() =>
         this.taskService.getUserSkills().pipe(
-          map(({ data }) => {
-            const skillNames = ['All Skills', ...data.map(({ skillName }) => skillName)];
-            return TasksActions.loadUserSkillsSuccess({ skills: skillNames });
-          }),
+          map(({ data }) =>
+            TasksActions.loadUserSkillsSuccess({ skills: this.taskService.formatSkillNames(data) }),
+          ),
           catchError(() =>
             of(TasksActions.loadUserSkillsFailure({ error: 'Failed to load user skills' })),
           ),
@@ -159,14 +170,105 @@ export class TasksEffects {
         this.store.select(selectCurrentTaskLanguageId),
         this.store.select(selectCurrentTask),
       ),
-      switchMap(([{ taskId, code }, languageId, currentTask]) => {
-        const xpEarned = currentTask?.xpReward || 0;
-        return of(
+      switchMap(([action, languageId, currentTask]) =>
+        this.handleTaskSubmission(action, languageId, currentTask),
+      ),
+    ),
+  );
+
+  public getSubmissionStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.getSubmissionStatus),
+      switchMap(({ submissionId }) => this.handleSubmissionStatus(submissionId, 'Status Error')),
+    ),
+  );
+
+  public retryFeedback$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.retryFeedback),
+      switchMap(({ submissionId }) => this.handleSubmissionStatus(submissionId, 'Retry Failed')),
+    ),
+  );
+
+  private handleTaskSubmission(
+    action: { taskId: string; code: string },
+    languageId: number,
+    currentTask: { xpReward?: number } | null,
+  ) {
+    return this.taskService
+      .submitTask({
+        taskId: action.taskId,
+        answer: {
+          answerType: 'CODING',
+          code: action.code,
+          languageId,
+        },
+      })
+      .pipe(
+        map((response) =>
           TasksActions.submitTaskSolutionSuccess({
-            submissionId: 'pending',
-            xpEarned,
+            submissionId: response.data.submissionId,
+            xpEarned: currentTask?.xpReward || 0,
           }),
+        ),
+        catchError((error) => {
+          this.toastService.showError('Submission Error', 'Failed to submit solution');
+          return of(TasksActions.submitTaskSolutionFailure({ error: 'Failed to submit solution' }));
+        }),
+      );
+  }
+
+  private handleSubmissionStatus(submissionId: string, errorTitle: string) {
+    return this.taskService.getSubmissionStatus(submissionId).pipe(
+      switchMap((response) => {
+        if (this.taskService.shouldReloadTasks(response.data)) {
+          return from([
+            TasksActions.getSubmissionStatusSuccess({ submission: response.data }),
+            TasksActions.loadTasks(),
+          ]);
+        }
+        return of(TasksActions.getSubmissionStatusSuccess({ submission: response.data }));
+      }),
+      catchError((error) => {
+        this.toastService.showError(errorTitle, 'Failed to get submission status');
+        return of(
+          TasksActions.getSubmissionStatusFailure({ error: 'Failed to get submission status' }),
         );
+      }),
+    );
+  }
+
+  public retrySubmission$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.retrySubmission),
+      map((action) =>
+        TasksActions.submitTaskSolution({
+          taskId: action.taskId,
+          code: action.code,
+          languageId: action.languageId,
+        }),
+      ),
+    ),
+  );
+
+  public autoRequestFeedback$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.submitTaskSolutionSuccess),
+      map(({ submissionId }) => TasksActions.getSubmissionStatus({ submissionId })),
+    ),
+  );
+
+  public pollSubmissionStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.getSubmissionStatusSuccess),
+      switchMap(({ submission }) => {
+        if (this.taskService.shouldPollStatus(submission)) {
+          return timer(POLLING_INTERVAL_MS).pipe(
+            map(() => TasksActions.getSubmissionStatus({ submissionId: submission.id })),
+            takeWhile(() => true, true),
+          );
+        }
+        return of();
       }),
     ),
   );

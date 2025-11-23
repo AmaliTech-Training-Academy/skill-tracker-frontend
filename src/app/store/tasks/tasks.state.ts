@@ -1,4 +1,10 @@
-import { TaskUI, CompletedPeriod, Task, CodeExecutionResponse } from '@app/core/models/tasks-model';
+import {
+  TaskUI,
+  CompletedPeriod,
+  Task,
+  CodeExecutionResponse,
+  SubmissionStatus,
+} from '@app/core/models/tasks-model';
 
 export interface TasksState {
   pendingTasks: TaskUI[];
@@ -16,9 +22,17 @@ export interface TasksState {
   executionResult: CodeExecutionResponse | null;
   submissionResult: {
     success: boolean;
+    submissionId?: string;
     xpEarned?: number;
     error?: string;
   } | null;
+  submissionState: {
+    status: SubmissionStatus;
+    submissionId?: string;
+    error?: string;
+    canRetry: boolean;
+    feedback?: Record<string, unknown>;
+  };
   error: string | null;
   timer: {
     isRunning: boolean;
@@ -43,6 +57,10 @@ export const initialTasksState: TasksState = {
   submitting: false,
   executionResult: null,
   submissionResult: null,
+  submissionState: {
+    status: SubmissionStatus.IDLE,
+    canRetry: false,
+  },
   error: null,
   timer: {
     isRunning: false,

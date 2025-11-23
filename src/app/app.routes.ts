@@ -84,15 +84,47 @@ export const routes: Routes = [
           import('./features/coding-assessment/coding-assessment').then((c) => c.CodingAssessment),
       },
       {
+
         path: 'tasks/written-assessment/:id',
         loadComponent: () =>
           import('./features/written-response/written-response').then((c) => c.WrittenResponse),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/dashboard-settings/dashboard-settings').then(
+            (c) => c.DashboardSettings,
+          ),
+
       },
       {
         path: 'tasks/multiple-choice/:id',
         loadComponent: () =>
           import('./features/multiple-choice/multiple-choice').then((c) => c.MultipleChoice),
       },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./features/user-profile/user-profile').then((c) => c.UserProfile),
+      },
+      {
+        path: 'leaderboard',
+        loadComponent: () =>
+          import('./features/leaderboard/leaderboard').then((c) => c.Leaderboard),
+      },
+      {
+        path: 'skill-arena',
+        loadComponent: () => import('./features/skill-arena/skill-arena').then((c) => c.SkillArena),
+      },
+      {
+        path: 'groups',
+        loadComponent: () => import('./features/groups/groups').then((c) => c.Groups),
+      },
     ],
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./layout/page-not-found/page-not-found').then((c) => c.PageNotFound),
   },
 ];

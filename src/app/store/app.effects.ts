@@ -4,9 +4,9 @@ import { UIEffects } from './ui/ui.effects';
 import { McqGenerationEffects } from './mcqs/mcq.effects';
 import { WrittenResponseEffects } from '@app/features/written-response/store/written-response.effects';
 
-
 import { DashboardEffects } from './dashboard/dashboard.effects';
 import { TasksEffects } from './tasks/tasks.effects';
+import { WebSocketEffects } from './websocket/websocket.effects';
 
 export const appEffects = [
   AuthEffects,
@@ -16,5 +16,5 @@ export const appEffects = [
   TasksEffects,
   McqGenerationEffects,
   WrittenResponseEffects
+  WebSocketEffects,
 ];
-

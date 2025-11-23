@@ -4,6 +4,7 @@
     [todayTasks]="todayTasks()"
     [previousTasks]="previousTasks()"
     [selectedTimeRange]="selectedTimeRangeString"
+    [loading]="loading()"
     (timeRangeChanged)="onTimeRangeChanged($event)"
     (startTask)="onStartTask($event)"
   />

@@ -3,12 +3,12 @@ import { TaskType, TaskDifficulty, TaskContentType, Task } from '@app/core/model
 
 describe('Tasks Selectors', () => {
   describe('selectCurrentTaskLanguageId', () => {
-    it('should return 113 (Python) when no task', () => {
+    it('should return 71 (Python) when no task', () => {
       const result = selectCurrentTaskLanguageId.projector(null);
-      expect(result).toBe(113);
+      expect(result).toBe(71);
     });
 
-    it('should return 113 (Python) when task has no skillName', () => {
+    it('should return 71 (Python) when task has no skillName', () => {
       const task: Task = {
         id: '1',
         title: 'Test',
@@ -31,10 +31,10 @@ describe('Tasks Selectors', () => {
         version: 1,
       };
       const result = selectCurrentTaskLanguageId.projector(task);
-      expect(result).toBe(113);
+      expect(result).toBe(71);
     });
 
-    it('should return 97 for JavaScript task', () => {
+    it('should return 63 for JavaScript task', () => {
       const task: Task = {
         id: '1',
         title: 'Test',
@@ -57,10 +57,10 @@ describe('Tasks Selectors', () => {
         version: 1,
       };
       const result = selectCurrentTaskLanguageId.projector(task);
-      expect(result).toBe(97);
+      expect(result).toBe(63);
     });
 
-    it('should return 113 for Python task', () => {
+    it('should return 71 for Python task', () => {
       const task: Task = {
         id: '1',
         title: 'Test',
@@ -83,10 +83,10 @@ describe('Tasks Selectors', () => {
         version: 1,
       };
       const result = selectCurrentTaskLanguageId.projector(task);
-      expect(result).toBe(113);
+      expect(result).toBe(71);
     });
 
-    it('should return 113 (Python) for unknown skill', () => {
+    it('should return 71 (Python) for unknown skill', () => {
       const task: Task = {
         id: '1',
         title: 'Test',
@@ -109,7 +109,7 @@ describe('Tasks Selectors', () => {
         version: 1,
       };
       const result = selectCurrentTaskLanguageId.projector(task);
-      expect(result).toBe(113);
+      expect(result).toBe(71);
     });
 
     it('should be case insensitive', () => {
@@ -135,7 +135,7 @@ describe('Tasks Selectors', () => {
         version: 1,
       };
       const result = selectCurrentTaskLanguageId.projector(task);
-      expect(result).toBe(97);
+      expect(result).toBe(63);
     });
   });
 });

@@ -6,7 +6,7 @@ import {
   RecommendedTasksResponse,
   TrajectoryGranularity,
   SkillTrajectoryResponse,
-  UserSelectedSkill,
+  UserSelectedSkillsResponse,
 } from '../../models/dashboard.model';
 import { APP_CONSTANTS, SKIP_ERROR_NOTIFICATION } from '../../constants/app.constants';
 import { ApiService } from '../../services/api/api-service';
@@ -46,7 +46,7 @@ export class DashboardService {
     return this.api.get<SkillTrajectoryResponse>(url, options);
   }
 
-  public getUserSkills(): Observable<UserSelectedSkill[]> {
-    return this.api.get<UserSelectedSkill[]>(API_ENDPOINTS.USER_SKILLS);
+  public getUserSkills(): Observable<UserSelectedSkillsResponse> {
+    return this.api.get<UserSelectedSkillsResponse>(API_ENDPOINTS.USER_SKILLS);
   }
 }

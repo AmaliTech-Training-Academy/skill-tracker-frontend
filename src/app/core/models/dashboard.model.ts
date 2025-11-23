@@ -1,5 +1,5 @@
 import { ApiResponse, SkillLevel } from './auth.model';
-import { TaskIcon, TaskStatus } from './tasks-model';
+import { TaskIcon, TaskStatus, TaskUI } from './tasks-model';
 
 export interface UserStats {
   totalTasksCompleted: number;
@@ -97,5 +97,6 @@ export interface SkillTrajectoryData {
 }
 
 export type DashboardResponse = ApiResponse<DashboardData>;
-export type RecommendedTasksResponse = ApiResponse<RecommendedTaskUI[]>;
+export type RecommendedTasksResponse = ApiResponse<TaskUI[]>;
 export type SkillTrajectoryResponse = ApiResponse<SkillTrajectoryData[]>;
+export type UserSelectedSkillsResponse = ApiResponse<UserSelectedSkill[]>;
