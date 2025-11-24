@@ -34,6 +34,8 @@ import * as WrittenResponseActions from './store/written-response.action';
 import { TextArea } from './components/text-area/text-area';
 import { TaskComplete } from '@app/shared/components/task-complete/task-complete';
 
+const PERCENTAGE_MAX = 100;
+
 export interface FeedbackOverall {
   totalScore?: number;
   maxXP?: number;
@@ -95,12 +97,12 @@ export class WrittenResponse implements OnInit, OnDestroy {
 
     if (status === 'COMPLETED') {
       if (submission?.isCorrect) {
-        return `<strong>Congratulations!</strong> You've earned <strong>+${submission?.scoreEarned || this.xpReward()} XP</strong> for completing this task successfully.`;
+        return `<strong>Congratulations!</strong> You've earned <strong>+${this.xpReward()} XP</strong> for completing this task successfully.`;
       } else {
         const evaluation = feedback?.evaluation;
         const overall = evaluation?.overall;
 
-        let message = `<strong>Score: ${overall?.totalScore || 0}/${overall?.maxXP || this.xpReward()}</strong> (${overall?.percentage || 0}%)<br><br>`;
+        let message = `<strong>Score: ${overall?.totalScore || 0}/${PERCENTAGE_MAX}</strong> (${overall?.percentage || 0}%)<br><br>`;
 
         if (overall?.summary) {
           const summary = overall.summary;

@@ -181,7 +181,7 @@ export class CodingAssessment implements OnInit, OnDestroy {
       this.store.dispatch(AuthActions.updateUserXp({ xpToAdd: xpEarned }));
     }
     this.store.dispatch(TasksActions.clearSubmissionResult());
-    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
+    this.router.navigateByUrl(APP_CONSTANTS.APP_ROUTES.DASHBOARD_TASKS);
   }
 
   public onRetryFeedback(): void {
