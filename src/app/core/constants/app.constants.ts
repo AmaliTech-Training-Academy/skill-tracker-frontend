@@ -17,6 +17,7 @@ export const APP_CONSTANTS = {
     RESET_PASSWORD: '/reset-password',
     EMAIL_VERIFICATION: '/email-verification',
     DASHBOARD: '/dashboard',
+    DASHBOARD_TASKS: '/dashboard/tasks',
     CODING_ASSESSMENT: '/dashboard/tasks/coding-assessment',
     WRITTEN_ASSESSMENT: '/dashboard/tasks/written-assessment',
     MULTIPLE_CHOICE: '/dashboard/tasks/multiple-choice',
