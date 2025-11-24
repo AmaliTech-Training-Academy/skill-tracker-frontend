@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Store } from '@ngrx/store';
-import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { NGX_MONACO_EDITOR_CONFIG } from 'ngx-monaco-editor-v2';
 import { CodingAssessment } from './coding-assessment';
@@ -9,6 +9,7 @@ import { CodeExecutionResult, TestCaseResult } from './models/coding-assessment.
 import { selectCurrentTask } from '@app/store/tasks/tasks.selectors';
 import * as TasksActions from '@app/store/tasks/tasks.actions';
 import { ToastService } from '@app/core/services/toast/toast-service';
+import { APP_CONSTANTS } from '@app/core';
 
 describe('CodingAssessment', () => {
   let component: CodingAssessment;
@@ -16,6 +17,7 @@ describe('CodingAssessment', () => {
   let mockStore: Partial<Store>;
   let mockRoute: Partial<ActivatedRoute>;
   let mockToastService: Partial<ToastService>;
+  let mockRouter: Partial<Router>;
 
   const mockTask: Task = {
     id: 't1',
@@ -56,6 +58,10 @@ describe('CodingAssessment', () => {
       showInfo: jest.fn(),
     };
 
+    mockRouter = {
+      navigateByUrl: jest.fn(),
+    };
+
     (mockStore.selectSignal as jest.Mock).mockImplementation(
       (selector: (state: object) => unknown) => {
         if (selector.toString().includes('currentTask')) return signal(mockTask);
@@ -88,6 +94,7 @@ describe('CodingAssessment', () => {
         { provide: Store, useValue: mockStore },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: ToastService, useValue: mockToastService },
+        { provide: Router, useValue: mockRouter },
         { provide: NGX_MONACO_EDITOR_CONFIG, useValue: {} },
       ],
     }).compileComponents();
@@ -155,5 +162,23 @@ describe('CodingAssessment', () => {
     const newCode = 'console.log("edited");';
     component.onCodeChanged(newCode);
     expect(component['userHasEditedCode']()).toBe(true);
+  });
+
+  describe('navigation methods', () => {
+    it('should navigate to tasks dashboard on task complete', () => {
+      const routerSpy = jest.spyOn(mockRouter, 'navigateByUrl');
+
+      component.onTaskComplete();
+
+      expect(routerSpy).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.DASHBOARD_TASKS);
+    });
+
+    it('should navigate to dashboard on back to dashboard', () => {
+      const routerSpy = jest.spyOn(mockRouter, 'navigateByUrl');
+
+      component.onBackToDashboard();
+
+      expect(routerSpy).toHaveBeenCalledWith(APP_CONSTANTS.APP_ROUTES.DASHBOARD);
+    });
   });
 });
