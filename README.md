@@ -1,4 +1,4 @@
-# SkillTrakerFrontend
+# SkillTracker Frontend
 
 SkillBoost is a dynamic, personalized platform designed to help users develop and track their technical and communication skills through AI-generated challenges, comprehensive feedback, and progress tracking.
 
