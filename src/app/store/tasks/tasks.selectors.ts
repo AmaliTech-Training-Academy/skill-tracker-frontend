@@ -162,3 +162,23 @@ export const selectTotalUserXpError = createSelector(
   selectTasksState,
   ({ totalUserXpError }) => totalUserXpError,
 );
+
+export const selectPendingTasksPagination = createSelector(
+  selectTasksState,
+  ({ pendingTasksPagination }) => pendingTasksPagination,
+);
+
+export const selectCompletedTasksPagination = createSelector(
+  selectTasksState,
+  ({ completedTasksPagination }) => completedTasksPagination,
+);
+
+export const selectCurrentPendingPage = createSelector(
+  selectTasksState,
+  ({ currentPendingPage }) => currentPendingPage,
+);
+
+export const selectCurrentCompletedPage = createSelector(
+  selectTasksState,
+  ({ currentCompletedPage }) => currentCompletedPage,
+);

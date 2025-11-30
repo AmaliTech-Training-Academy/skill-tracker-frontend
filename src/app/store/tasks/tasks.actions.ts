@@ -164,3 +164,13 @@ export const loadTotalUserXpFailure = createAction(
   '[User Xp] Load Total Xp Failure',
   props<{ error: AppError | null }>(),
 );
+
+export const changeTodayTasksPage = createAction(
+  '[Tasks Dashboard] Change Today Tasks Page',
+  props<{ page: number }>(),
+);
+
+export const changePreviousTasksPage = createAction(
+  '[Tasks Dashboard] Change Previous Tasks Page',
+  props<{ page: number }>(),
+);

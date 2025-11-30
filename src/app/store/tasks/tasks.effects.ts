@@ -11,6 +11,8 @@ import {
   selectCurrentTaskLanguageId,
   selectCurrentTask,
   selectTimeRangeFilter,
+  selectCurrentPendingPage,
+  selectCurrentCompletedPage,
 } from './tasks.selectors';
 import {
   ApiResponse,
@@ -38,12 +40,22 @@ export class TasksEffects {
   public loadTasks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.loadTasks),
-      withLatestFrom(this.store.select(selectTimeRangeFilter)),
-      switchMap(([, timeRangeFilter]) => {
-        return this.taskService.getAllTasks({ completedPeriod: timeRangeFilter }).pipe(
-          map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
-          catchError(() => of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' }))),
-        );
+      withLatestFrom(
+        this.store.select(selectTimeRangeFilter),
+        this.store.select(selectCurrentPendingPage),
+        this.store.select(selectCurrentCompletedPage),
+      ),
+      switchMap(([, timeRangeFilter, pendingPage, completedPage]) => {
+        return this.taskService
+          .getAllTasks({
+            completedPeriod: timeRangeFilter,
+            pendingPage,
+            completedPage,
+          })
+          .pipe(
+            map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
+            catchError(() => of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' }))),
+          );
       }),
     ),
   );
@@ -311,4 +323,18 @@ export class TasksEffects {
       0,
     );
   }
+
+  public changeTodayTasksPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changeTodayTasksPage),
+      map(() => TasksActions.loadTasks()),
+    ),
+  );
+
+  public changePreviousTasksPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changePreviousTasksPage),
+      map(() => TasksActions.loadTasks()),
+    ),
+  );
 }
