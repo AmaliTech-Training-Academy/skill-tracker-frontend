@@ -10,9 +10,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { TasksDashboard } from './tasks-dashboard';
 import {
-  selectFilteredTodayTasks,
+  selectTodayTasks,
   selectSkillFilter,
-  selectFilteredPreviousTasks,
+  selectAllPreviousTasks,
   selectTimeRangeFilter,
 } from '@app/store/tasks/tasks.selectors';
 import {
@@ -29,6 +29,8 @@ import {
   changeSkillFilter,
   startTask,
   changeTimeRangeFilter,
+  changeTodayTasksPage,
+  changePreviousTasksPage,
 } from '@app/store/tasks/tasks.actions';
 
 describe('TasksDashboard', () => {
@@ -68,8 +70,8 @@ describe('TasksDashboard', () => {
       providers: [
         provideMockStore({
           selectors: [
-            { selector: selectFilteredTodayTasks, value: mockTasks },
-            { selector: selectFilteredPreviousTasks, value: [] },
+            { selector: selectTodayTasks, value: mockTasks },
+            { selector: selectAllPreviousTasks, value: [] },
             { selector: selectSkillFilter, value: 'All' },
             { selector: selectTimeRangeFilter, value: CompletedPeriod.YESTERDAY },
           ],
@@ -124,5 +126,17 @@ describe('TasksDashboard', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       startTask({ taskId: 't1', taskType: TaskType.CODING }),
     );
+  });
+
+  it('should dispatch changeTodayTasksPage when today page changes', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    component.onTodayPageChange(2);
+    expect(dispatchSpy).toHaveBeenCalledWith(changeTodayTasksPage({ page: 2 }));
+  });
+
+  it('should dispatch changePreviousTasksPage when previous page changes', () => {
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    component.onPreviousPageChange(3);
+    expect(dispatchSpy).toHaveBeenCalledWith(changePreviousTasksPage({ page: 3 }));
   });
 });

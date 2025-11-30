@@ -11,6 +11,9 @@ import {
   selectCurrentTaskLanguageId,
   selectCurrentTask,
   selectTimeRangeFilter,
+  selectCurrentPendingPage,
+  selectCurrentCompletedPage,
+  selectSkillFilter,
 } from './tasks.selectors';
 import {
   ApiResponse,
@@ -38,12 +41,25 @@ export class TasksEffects {
   public loadTasks$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.loadTasks),
-      withLatestFrom(this.store.select(selectTimeRangeFilter)),
-      switchMap(([, timeRangeFilter]) => {
-        return this.taskService.getAllTasks({ completedPeriod: timeRangeFilter }).pipe(
-          map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
-          catchError(() => of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' }))),
-        );
+      withLatestFrom(
+        this.store.select(selectTimeRangeFilter),
+        this.store.select(selectCurrentPendingPage),
+        this.store.select(selectCurrentCompletedPage),
+        this.store.select(selectSkillFilter),
+      ),
+      switchMap(([, timeRangeFilter, pendingPage, completedPage, skillFilter]) => {
+        const skillName = skillFilter === 'All Skills' ? undefined : skillFilter;
+        return this.taskService
+          .getAllTasks({
+            completedPeriod: timeRangeFilter,
+            pendingPage,
+            completedPage,
+            skillName,
+          })
+          .pipe(
+            map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
+            catchError(() => of(TasksActions.loadTasksFailure({ error: 'Failed to load tasks' }))),
+          );
       }),
     ),
   );
@@ -51,6 +67,13 @@ export class TasksEffects {
   public reloadTasksOnTimeFilter$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.changeTimeRangeFilter),
+      map(() => TasksActions.loadTasks()),
+    ),
+  );
+
+  public reloadTasksOnSkillFilter$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changeSkillFilter),
       map(() => TasksActions.loadTasks()),
     ),
   );
@@ -311,4 +334,18 @@ export class TasksEffects {
       0,
     );
   }
+
+  public changeTodayTasksPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changeTodayTasksPage),
+      map(() => TasksActions.loadTasks()),
+    ),
+  );
+
+  public changePreviousTasksPage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changePreviousTasksPage),
+      map(() => TasksActions.loadTasks()),
+    ),
+  );
 }

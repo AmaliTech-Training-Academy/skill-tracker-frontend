@@ -1,9 +1,10 @@
 import { Component, input, output, computed } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
-import { TaskUI } from '@app/core/models/tasks-model';
+import { TaskUI, PagedResponse } from '@app/core/models/tasks-model';
 import { TasksCard } from '../tasks-card/tasks-card';
 import { TaskCardSkeleton } from '../task-card-skeleton/task-card-skeleton';
 import { CustomDropdown } from '@app/shared/components/custom-dropdown/custom-dropdown';
+import { Pagination } from '@app/shared/components/pagination/pagination';
 import { selectTimeRanges } from '@app/store/tasks/tasks.selectors';
 import { Store } from '@ngrx/store';
 
@@ -19,7 +20,7 @@ interface TaskSection {
 
 @Component({
   selector: 'app-task-list',
-  imports: [TasksCard, TaskCardSkeleton, CustomDropdown],
+  imports: [TasksCard, TaskCardSkeleton, CustomDropdown, Pagination],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,11 +30,15 @@ export class TaskList {
 
   public todayTasks = input.required<TaskUI[]>();
   public previousTasks = input.required<TaskUI[]>();
+  public todayTasksPagination = input.required<PagedResponse<TaskUI>>();
+  public previousTasksPagination = input.required<PagedResponse<TaskUI>>();
   public selectedTimeRange = input<string | undefined>();
   public loading = input<boolean>(false);
 
   public timeRangeChanged = output<string>();
   public startTask = output<string>();
+  public todayPageChanged = output<number>();
+  public previousPageChanged = output<number>();
 
   public timeRanges = this.store.selectSignal(selectTimeRanges);
   public skeletonItems = Array.from({ length: 3 });
@@ -67,5 +72,13 @@ export class TaskList {
 
   public onStartTask(taskId: string): void {
     this.startTask.emit(taskId);
+  }
+
+  public onTodayPageChange(page: number): void {
+    this.todayPageChanged.emit(page);
+  }
+
+  public onPreviousPageChange(page: number): void {
+    this.previousPageChanged.emit(page);
   }
 }

@@ -17,13 +17,15 @@ export const tasksReducer = createReducer(
 
   on(TasksActions.loadTasksSuccess, (state, { data }): TasksState => {
     const {
-      pending: { content: pendingContent },
-      completed: { content: completedContent },
+      pending: { content: pendingContent, ...pendingPagination },
+      completed: { content: completedContent, ...completedPagination },
     } = data;
     return {
       ...state,
       pendingTasks: pendingContent,
       completedTasks: completedContent,
+      pendingTasksPagination: { content: pendingContent, ...pendingPagination },
+      completedTasksPagination: { content: completedContent, ...completedPagination },
       loading: false,
       error: null,
     };
@@ -364,4 +366,20 @@ export const tasksReducer = createReducer(
     isLoadingTotalUserXp: false,
     error: null,
   })),
+
+  on(
+    TasksActions.changeTodayTasksPage,
+    (state, { page }): TasksState => ({
+      ...state,
+      currentPendingPage: page - 1, // API uses 0-based indexing
+    }),
+  ),
+
+  on(
+    TasksActions.changePreviousTasksPage,
+    (state, { page }): TasksState => ({
+      ...state,
+      currentCompletedPage: page - 1, // API uses 0-based indexing
+    }),
+  ),
 );

@@ -5,11 +5,16 @@ import {
   Task,
   CodeExecutionResponse,
   SubmissionStatus,
+  PagedResponse,
 } from '@app/core/models/tasks-model';
 
 export interface TasksState {
   pendingTasks: TaskUI[];
   completedTasks: TaskUI[];
+  pendingTasksPagination: PagedResponse<TaskUI> | null;
+  completedTasksPagination: PagedResponse<TaskUI> | null;
+  currentPendingPage: number;
+  currentCompletedPage: number;
   currentTask: Task | null;
   userCode: string;
   skills: string[];
@@ -49,6 +54,10 @@ export interface TasksState {
 export const initialTasksState: TasksState = {
   pendingTasks: [],
   completedTasks: [],
+  pendingTasksPagination: null,
+  completedTasksPagination: null,
+  currentPendingPage: 0,
+  currentCompletedPage: 0,
   currentTask: null,
   userCode: '',
   skills: ['All Skills'],

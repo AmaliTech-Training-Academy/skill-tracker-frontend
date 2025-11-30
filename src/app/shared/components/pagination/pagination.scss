@@ -1,0 +1,67 @@
+@use 'mixins' as *;
+@use 'colors' as *;
+
+.pagination-container {
+  @include flex(row, flex-end, center);
+  margin-top: 1rem;
+
+  .pagination-wrapper {
+    @include flex(row, center, center);
+    border: 1px solid $text-gray;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+}
+
+.pagination-btn {
+  @include flex(row, center, center);
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-right: 1px solid $text-gray;
+  background: $white;
+  color: $gray-text-strong;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &:hover:not(:disabled) {
+    background: $gray-fill;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.active {
+    background: $brand-text;
+    color: $white;
+
+    &:hover {
+      background: $brand-stroke-strong;
+    }
+  }
+}
+
+.pagination-ellipsis {
+  @include flex(row, center, center);
+  min-width: 2rem;
+  height: 2rem;
+  color: $gray-text-weak;
+  font-size: 0.875rem;
+}
+
+.prev-btn,
+.next-btn {
+  img {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}

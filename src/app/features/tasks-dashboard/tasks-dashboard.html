@@ -3,9 +3,13 @@
   <app-task-list
     [todayTasks]="todayTasks()"
     [previousTasks]="previousTasks()"
+    [todayTasksPagination]="todayTasksPagination()!"
+    [previousTasksPagination]="previousTasksPagination()!"
     [selectedTimeRange]="selectedTimeRangeString"
     [loading]="loading()"
     (timeRangeChanged)="onTimeRangeChanged($event)"
     (startTask)="onStartTask($event)"
+    (todayPageChanged)="onTodayPageChange($event)"
+    (previousPageChanged)="onPreviousPageChange($event)"
   />
 </section>

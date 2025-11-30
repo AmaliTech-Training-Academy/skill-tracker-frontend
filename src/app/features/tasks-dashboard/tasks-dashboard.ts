@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TaskHeader } from './components/task-header/task-header';
 import {
-  selectFilteredTodayTasks,
+  selectTodayTasks,
   selectSkillFilter,
-  selectFilteredPreviousTasks,
+  selectAllPreviousTasks,
   selectTimeRangeFilter,
   selectTasksLoading,
+  selectPendingTasksPagination,
+  selectCompletedTasksPagination,
 } from '@app/store/tasks/tasks.selectors';
 import {
   changeSkillFilter,
@@ -14,6 +16,8 @@ import {
   loadTasks,
   loadUserSkills,
   startTask,
+  changeTodayTasksPage,
+  changePreviousTasksPage,
 } from '@app/store/tasks/tasks.actions';
 import { TaskList } from './components/task-list/task-list';
 import {
@@ -31,8 +35,11 @@ import {
 export class TasksDashboard implements OnInit {
   constructor(private store: Store) {}
 
-  public todayTasks = this.store.selectSignal(selectFilteredTodayTasks);
-  public previousTasks = this.store.selectSignal(selectFilteredPreviousTasks);
+  public todayTasks = this.store.selectSignal(selectTodayTasks);
+  public previousTasks = this.store.selectSignal(selectAllPreviousTasks);
+  public todayTasksPagination = this.store.selectSignal(selectPendingTasksPagination);
+  public previousTasksPagination = this.store.selectSignal(selectCompletedTasksPagination);
+
   public selectedSkill = this.store.selectSignal(selectSkillFilter);
   public selectedTimeRange = this.store.selectSignal(selectTimeRangeFilter);
   public loading = this.store.selectSignal(selectTasksLoading);
@@ -60,5 +67,13 @@ export class TasksDashboard implements OnInit {
     if (task) {
       this.store.dispatch(startTask({ taskId, taskType: task.type }));
     }
+  }
+
+  public onTodayPageChange(page: number): void {
+    this.store.dispatch(changeTodayTasksPage({ page }));
+  }
+
+  public onPreviousPageChange(page: number): void {
+    this.store.dispatch(changePreviousTasksPage({ page }));
   }
 }

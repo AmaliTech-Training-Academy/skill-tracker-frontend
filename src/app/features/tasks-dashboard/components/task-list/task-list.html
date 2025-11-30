@@ -44,6 +44,34 @@
           <p class="empty-message">{{ emptyMessage }}</p>
         </div>
       }
+
+      @if (viewState === 'data') {
+        @if (title === "Today's Tasks") {
+          @let number = todayTasksPagination().number;
+          @let totalPages = todayTasksPagination().totalPages;
+          @let totalElements = todayTasksPagination().totalElements;
+          <app-pagination
+            [paginationData]="{
+              currentPage: number + 1,
+              totalPages: totalPages,
+              totalElements: totalElements,
+            }"
+            (pageChanged)="onTodayPageChange($event)"
+          />
+        } @else {
+          @let number = previousTasksPagination().number;
+          @let totalPages = previousTasksPagination().totalPages;
+          @let totalElements = previousTasksPagination().totalElements;
+          <app-pagination
+            [paginationData]="{
+              currentPage: number + 1,
+              totalPages: totalPages,
+              totalElements: totalElements,
+            }"
+            (pageChanged)="onPreviousPageChange($event)"
+          />
+        }
+      }
     </div>
   }
 </section>
