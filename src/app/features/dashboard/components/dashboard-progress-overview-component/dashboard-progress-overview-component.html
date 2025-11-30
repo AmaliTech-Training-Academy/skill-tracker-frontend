@@ -58,7 +58,7 @@
     @if (primarySkillProgress; as firstSkill) {
       <app-progress-bar
         [currentXp]="firstSkill.currentXp"
-        [totalXp]="firstSkill.currentLevelTotalXp"
+        [totalXp]="firstSkill.xpToNextLevel"
         [levelName]="firstSkill?.nextLevel ?? ''"
       />
     } @else {
