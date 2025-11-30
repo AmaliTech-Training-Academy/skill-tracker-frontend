@@ -13,7 +13,7 @@ import { Store } from '@ngrx/store';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { getSteps as defaultSteps, defaultStepOptions } from './dashboard.config';
-import { TrajectoryGranularity } from '@app/core';
+import { SkillTrajectoryData, TrajectoryGranularity } from '@app/core';
 import { loadTotalUserXp } from '@app/store/tasks';
 
 import { AppState } from '@app/store/app.state';
@@ -76,12 +76,29 @@ export class Dashboard implements OnInit, AfterViewInit {
 
   public progressChartData = computed(() => {
     const apiData = this.trajectoryData();
+    const period = this.selectedPeriod();
 
+    switch (period) {
+      case TrajectoryGranularity.DAILY:
+        return this.generateDailyData(apiData);
+
+      case TrajectoryGranularity.WEEKLY:
+        return this.generateWeeklyData(apiData);
+
+      case TrajectoryGranularity.MONTHLY:
+        return this.generateMonthlyData(apiData);
+
+      default:
+        return [];
+    }
+  });
+
+  private generateDailyData(apiData: SkillTrajectoryData[]) {
     const startOfWeek = this.getMonday(new Date());
 
-    return Array.from({ length: 7 }).map((_, i) => {
+    return Array.from({ length: 7 }).map((_, index) => {
       const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
+      date.setDate(startOfWeek.getDate() + index);
 
       const found = apiData?.find(
         (d) => new Date(d.snapshotDate).toDateString() === date.toDateString(),
@@ -92,7 +109,73 @@ export class Dashboard implements OnInit, AfterViewInit {
         value: found ? found.averageXpEarned : 0,
       };
     });
-  });
+  }
+
+  private getWeekOfMonth(date: Date): number {
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const dayOfWeek = firstDay.getDay() || 7;
+
+    return Math.ceil((date.getDate() + dayOfWeek - 1) / 7);
+  }
+
+  private generateWeeklyData(apiData: SkillTrajectoryData[]) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+
+    const weeks = [1, 2, 3, 4, 5];
+
+    return weeks.map((week) => {
+      const matchingItems = apiData?.filter((d) => {
+        const dDate = new Date(d.snapshotDate);
+        return (
+          dDate.getFullYear() === year &&
+          dDate.getMonth() === month &&
+          this.getWeekOfMonth(dDate) === week
+        );
+      });
+
+      const totalXp = matchingItems.reduce((sum, item) => sum + item.averageXpEarned, 0);
+
+      return {
+        label: `Week ${week}`,
+        value: totalXp || 0,
+      };
+    });
+  }
+
+  private generateMonthlyData(apiData: SkillTrajectoryData[]) {
+    const year = new Date().getFullYear();
+
+    const monthLabels = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return monthLabels.map((label, monthIndex) => {
+      const matchingItems = apiData?.filter((d) => {
+        const dDate = new Date(d.snapshotDate);
+        return dDate.getFullYear() === year && dDate.getMonth() === monthIndex;
+      });
+
+      const totalXp = matchingItems.reduce((sum, item) => sum + item.averageXpEarned, 0);
+
+      return {
+        label,
+        value: totalXp || 0,
+      };
+    });
+  }
 
   private getMonday(date: Date) {
     const d = new Date(date);
