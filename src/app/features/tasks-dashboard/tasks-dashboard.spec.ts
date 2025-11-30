@@ -10,9 +10,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { TasksDashboard } from './tasks-dashboard';
 import {
-  selectFilteredTodayTasks,
+  selectTodayTasks,
   selectSkillFilter,
-  selectFilteredPreviousTasks,
+  selectAllPreviousTasks,
   selectTimeRangeFilter,
 } from '@app/store/tasks/tasks.selectors';
 import {
@@ -70,8 +70,8 @@ describe('TasksDashboard', () => {
       providers: [
         provideMockStore({
           selectors: [
-            { selector: selectFilteredTodayTasks, value: mockTasks },
-            { selector: selectFilteredPreviousTasks, value: [] },
+            { selector: selectTodayTasks, value: mockTasks },
+            { selector: selectAllPreviousTasks, value: [] },
             { selector: selectSkillFilter, value: 'All' },
             { selector: selectTimeRangeFilter, value: CompletedPeriod.YESTERDAY },
           ],

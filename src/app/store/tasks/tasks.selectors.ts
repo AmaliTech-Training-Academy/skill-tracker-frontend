@@ -1,6 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { TasksState } from './tasks.state';
-import { TaskUI } from '@app/core/models/tasks-model';
 import { PROGRAMMING_LANGUAGES } from '@app/core/constants/programming-languages';
 
 const PYTHON_LANGUAGE_ID = 71;
@@ -100,28 +99,6 @@ export const selectTimeRanges = createSelector(selectTasksState, ({ timeRanges }
 export const selectTimeRangeFilter = createSelector(
   selectTasksState,
   ({ selectedTimeRange }) => selectedTimeRange,
-);
-
-export const selectFilteredTodayTasks = createSelector(
-  selectTodayTasks,
-  selectSkillFilter,
-  (tasks: TaskUI[], skill: string) => {
-    if (skill === 'All Skills' || !skill) {
-      return tasks;
-    }
-    return tasks.filter((task) => task.skillName === skill);
-  },
-);
-
-export const selectFilteredPreviousTasks = createSelector(
-  selectAllPreviousTasks,
-  selectSkillFilter,
-  (tasks: TaskUI[], skill: string) => {
-    if (skill === 'All Skills' || !skill) {
-      return tasks;
-    }
-    return tasks.filter((task) => task.skillName === skill);
-  },
 );
 
 export const selectSubmissionResult = createSelector(

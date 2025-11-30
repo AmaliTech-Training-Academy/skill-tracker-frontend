@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TaskHeader } from './components/task-header/task-header';
 import {
-  selectFilteredTodayTasks,
+  selectTodayTasks,
   selectSkillFilter,
-  selectFilteredPreviousTasks,
+  selectAllPreviousTasks,
   selectTimeRangeFilter,
   selectTasksLoading,
   selectPendingTasksPagination,
@@ -35,8 +35,8 @@ import {
 export class TasksDashboard implements OnInit {
   constructor(private store: Store) {}
 
-  public todayTasks = this.store.selectSignal(selectFilteredTodayTasks);
-  public previousTasks = this.store.selectSignal(selectFilteredPreviousTasks);
+  public todayTasks = this.store.selectSignal(selectTodayTasks);
+  public previousTasks = this.store.selectSignal(selectAllPreviousTasks);
   public todayTasksPagination = this.store.selectSignal(selectPendingTasksPagination);
   public previousTasksPagination = this.store.selectSignal(selectCompletedTasksPagination);
 

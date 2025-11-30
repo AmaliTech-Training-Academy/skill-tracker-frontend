@@ -13,6 +13,7 @@ import {
   selectTimeRangeFilter,
   selectCurrentPendingPage,
   selectCurrentCompletedPage,
+  selectSkillFilter,
 } from './tasks.selectors';
 import {
   ApiResponse,
@@ -44,13 +45,16 @@ export class TasksEffects {
         this.store.select(selectTimeRangeFilter),
         this.store.select(selectCurrentPendingPage),
         this.store.select(selectCurrentCompletedPage),
+        this.store.select(selectSkillFilter),
       ),
-      switchMap(([, timeRangeFilter, pendingPage, completedPage]) => {
+      switchMap(([, timeRangeFilter, pendingPage, completedPage, skillFilter]) => {
+        const skillName = skillFilter === 'All Skills' ? undefined : skillFilter;
         return this.taskService
           .getAllTasks({
             completedPeriod: timeRangeFilter,
             pendingPage,
             completedPage,
+            skillName,
           })
           .pipe(
             map((response) => TasksActions.loadTasksSuccess({ data: response.data })),
@@ -63,6 +67,13 @@ export class TasksEffects {
   public reloadTasksOnTimeFilter$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TasksActions.changeTimeRangeFilter),
+      map(() => TasksActions.loadTasks()),
+    ),
+  );
+
+  public reloadTasksOnSkillFilter$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TasksActions.changeSkillFilter),
       map(() => TasksActions.loadTasks()),
     ),
   );
