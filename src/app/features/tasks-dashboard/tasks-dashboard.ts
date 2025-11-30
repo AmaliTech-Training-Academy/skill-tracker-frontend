@@ -7,6 +7,8 @@ import {
   selectFilteredPreviousTasks,
   selectTimeRangeFilter,
   selectTasksLoading,
+  selectPendingTasksPagination,
+  selectCompletedTasksPagination,
 } from '@app/store/tasks/tasks.selectors';
 import {
   changeSkillFilter,
@@ -14,6 +16,8 @@ import {
   loadTasks,
   loadUserSkills,
   startTask,
+  changeTodayTasksPage,
+  changePreviousTasksPage,
 } from '@app/store/tasks/tasks.actions';
 import { TaskList } from './components/task-list/task-list';
 import {
@@ -33,6 +37,9 @@ export class TasksDashboard implements OnInit {
 
   public todayTasks = this.store.selectSignal(selectFilteredTodayTasks);
   public previousTasks = this.store.selectSignal(selectFilteredPreviousTasks);
+  public todayTasksPagination = this.store.selectSignal(selectPendingTasksPagination);
+  public previousTasksPagination = this.store.selectSignal(selectCompletedTasksPagination);
+
   public selectedSkill = this.store.selectSignal(selectSkillFilter);
   public selectedTimeRange = this.store.selectSignal(selectTimeRangeFilter);
   public loading = this.store.selectSignal(selectTasksLoading);
@@ -60,5 +67,13 @@ export class TasksDashboard implements OnInit {
     if (task) {
       this.store.dispatch(startTask({ taskId, taskType: task.type }));
     }
+  }
+
+  public onTodayPageChange(page: number): void {
+    this.store.dispatch(changeTodayTasksPage({ page }));
+  }
+
+  public onPreviousPageChange(page: number): void {
+    this.store.dispatch(changePreviousTasksPage({ page }));
   }
 }
