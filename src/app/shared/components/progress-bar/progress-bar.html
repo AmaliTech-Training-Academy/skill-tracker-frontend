@@ -9,7 +9,9 @@
     <div class="progress-bar-track">
       <div class="progress-bar-fill" [style.width.%]="progressPercent()"></div>
     </div>
-    <span class="progress-ratio"> {{ currentXp | number }}XP / {{ totalXp | number }}XP </span>
+    <span class="progress-ratio">
+      {{ currentXp | number }}XP / {{ currentXp + totalXp | number }}XP
+    </span>
   </div>
 
   <div class="progress-footer">

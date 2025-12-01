@@ -45,8 +45,8 @@ describe('ProgressBar', () => {
     component.levelName = 'Level 5';
     fixture.detectChanges();
 
-    expect(component.progressPercent()).toBe(50);
-    expect(component.xpNeeded()).toBe(50);
+    expect(component.progressPercent()).toBe(33.33333333333333);
+    expect(component.xpNeeded()).toBe(100);
 
     const titleEl = fixture.debugElement.query(By.css('.progress-title')).nativeElement;
     const ratioEl = fixture.debugElement.query(By.css('.progress-ratio')).nativeElement;
@@ -54,9 +54,9 @@ describe('ProgressBar', () => {
     const fillEl = fixture.debugElement.query(By.css('.progress-bar-fill')).nativeElement;
 
     expect(titleEl.textContent).toContain('Progress to Level 5');
-    expect(ratioEl.textContent).toContain('50XP / 100XP');
-    expect(footerEl.textContent).toContain('50 XP needed');
-    expect(fillEl.style.width).toBe('50%');
+    expect(ratioEl.textContent).toContain('50XP / 150XP');
+    expect(footerEl.textContent).toContain('100 XP needed to proceed to the next level');
+    expect(fillEl.style.width).toBe('33.33333333333333%');
   });
 
   it('should handle large numbers and format them with commas', () => {
@@ -64,16 +64,16 @@ describe('ProgressBar', () => {
     component.totalXp = 5000;
     fixture.detectChanges();
 
-    expect(component.progressPercent()).toBe(25);
-    expect(component.xpNeeded()).toBe(3750);
+    expect(component.progressPercent()).toBe(20);
+    expect(component.xpNeeded()).toBe(5000);
 
     const ratioEl = fixture.debugElement.query(By.css('.progress-ratio')).nativeElement;
     const footerEl = fixture.debugElement.query(By.css('.progress-footer span')).nativeElement;
     const fillEl = fixture.debugElement.query(By.css('.progress-bar-fill')).nativeElement;
 
-    expect(ratioEl.textContent).toContain('1,250XP / 5,000XP');
-    expect(footerEl.textContent).toContain('3,750 XP needed to proceed to the next level');
-    expect(fillEl.style.width).toBe('25%');
+    expect(ratioEl.textContent).toContain('1,250XP / 6,250XP');
+    expect(footerEl.textContent).toContain('5,000 XP needed to proceed to the next level');
+    expect(fillEl.style.width).toBe('20%');
   });
 
   it('should handle division by zero safely', () => {

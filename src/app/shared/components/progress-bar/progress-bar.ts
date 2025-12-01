@@ -15,10 +15,10 @@ export class ProgressBar {
 
   public progressPercent: Signal<number> = computed(() => {
     if (this.totalXp === 0) return 0;
-    return (this.currentXp / this.totalXp) * 100;
+    return (this.currentXp / (this.currentXp + this.totalXp)) * 100;
   });
 
   public xpNeeded: Signal<number> = computed(() => {
-    return this.totalXp - this.currentXp;
+    return this.totalXp;
   });
 }
