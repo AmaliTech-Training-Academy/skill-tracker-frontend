@@ -17,8 +17,4 @@ export class ProgressBar {
     if (this.totalXp === 0) return 0;
     return (this.currentXp / (this.currentXp + this.totalXp)) * 100;
   });
-
-  public xpNeeded: Signal<number> = computed(() => {
-    return this.totalXp;
-  });
 }

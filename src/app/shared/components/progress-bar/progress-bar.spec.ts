@@ -26,7 +26,7 @@ describe('ProgressBar', () => {
     fixture.detectChanges();
 
     expect(component.progressPercent()).toBe(0);
-    expect(component.xpNeeded()).toBe(100);
+    expect(component.totalXp).toBe(100);
 
     const titleEl = fixture.debugElement.query(By.css('.progress-title')).nativeElement;
     const ratioEl = fixture.debugElement.query(By.css('.progress-ratio')).nativeElement;
@@ -46,7 +46,7 @@ describe('ProgressBar', () => {
     fixture.detectChanges();
 
     expect(component.progressPercent()).toBe(33.33333333333333);
-    expect(component.xpNeeded()).toBe(100);
+    expect(component.totalXp).toBe(100);
 
     const titleEl = fixture.debugElement.query(By.css('.progress-title')).nativeElement;
     const ratioEl = fixture.debugElement.query(By.css('.progress-ratio')).nativeElement;
@@ -65,7 +65,7 @@ describe('ProgressBar', () => {
     fixture.detectChanges();
 
     expect(component.progressPercent()).toBe(20);
-    expect(component.xpNeeded()).toBe(5000);
+    expect(component.totalXp).toBe(5000);
 
     const ratioEl = fixture.debugElement.query(By.css('.progress-ratio')).nativeElement;
     const footerEl = fixture.debugElement.query(By.css('.progress-footer span')).nativeElement;
@@ -82,7 +82,7 @@ describe('ProgressBar', () => {
     fixture.detectChanges();
 
     expect(component.progressPercent()).toBe(0);
-    expect(component.xpNeeded()).toBe(0);
+    expect(component.totalXp).toBe(0);
 
     const ratioEl = fixture.debugElement.query(By.css('.progress-ratio')).nativeElement;
     const fillEl = fixture.debugElement.query(By.css('.progress-bar-fill')).nativeElement;
