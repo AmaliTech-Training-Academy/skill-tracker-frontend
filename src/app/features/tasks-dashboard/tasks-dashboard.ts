@@ -18,6 +18,7 @@ import {
   startTask,
   changeTodayTasksPage,
   changePreviousTasksPage,
+  loadTotalUserXp,
 } from '@app/store/tasks/tasks.actions';
 import { TaskList } from './components/task-list/task-list';
 import {
@@ -51,6 +52,7 @@ export class TasksDashboard implements OnInit {
   public ngOnInit(): void {
     this.store.dispatch(loadTasks());
     this.store.dispatch(loadUserSkills());
+    this.store.dispatch(loadTotalUserXp());
   }
 
   public onSkillChange(skill: string): void {

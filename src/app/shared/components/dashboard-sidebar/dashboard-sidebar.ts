@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { Store } from '@ngrx/store';
@@ -7,6 +7,7 @@ import { AppState } from '@app/store';
 import { logout } from '@app/store/auth/auth.actions';
 import { selectIsLoggingOut } from '@app/store/auth/auth.selectors';
 import { AppIcon } from '../app-icon/app-icon';
+import { APP_CONSTANTS } from '@app/core';
 
 interface MenuItem {
   icon: string;
@@ -14,6 +15,8 @@ interface MenuItem {
   route: string;
   tourId: string;
 }
+
+const { FULL_PAGE_ROUTES } = APP_CONSTANTS;
 
 @Component({
   selector: 'app-dashboard-sidebar',
@@ -31,7 +34,10 @@ export class DashboardSidebar {
 
   public isSubmitting = this.store.selectSignal(selectIsLoggingOut);
 
-  constructor(private store: Store<AppState>) {}
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+  ) {}
 
   public onNavigate(): void {
     this.navigated.emit();
@@ -44,5 +50,9 @@ export class DashboardSidebar {
 
   public getRouterLinkOptions(route: string): { exact: boolean } {
     return { exact: route !== '/dashboard/tasks' };
+  }
+
+  public startFreeTrial() {
+    this.router.navigateByUrl(`${FULL_PAGE_ROUTES.PLAN_CONFIRMATION}/2`);
   }
 }

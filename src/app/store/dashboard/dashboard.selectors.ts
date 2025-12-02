@@ -25,11 +25,6 @@ export const selectSkillsInProgressCount = createSelector(
   (data) => data?.skillProgress?.length ?? 0,
 );
 
-export const selectPrimarySkillProgress = createSelector(
-  selectDashboardData,
-  (data) => data?.skillProgress?.[0] ?? null,
-);
-
 export const selectGoalStatus = createSelector(
   selectDashboardData,
   (data) => data?.goalStatus ?? [],
@@ -83,6 +78,19 @@ export const selectIsUserSkillsLoading = createSelector(
 export const selectSelectedSkillId = createSelector(
   selectDashboardState,
   ({ selectedSkillId }: DashboardState) => selectedSkillId,
+);
+
+export const selectPrimarySkillProgress = createSelector(
+  selectDashboardData,
+  selectSelectedSkillId,
+  (data, selectedSkillId) => {
+    const skills = data?.skillProgress ?? [];
+    if (skills.length === 0) return null;
+
+    if (!selectedSkillId) return skills[0];
+
+    return skills.find((skill) => skill.skillId === selectedSkillId) ?? null;
+  },
 );
 
 export const selectSelectedSkillName = createSelector(

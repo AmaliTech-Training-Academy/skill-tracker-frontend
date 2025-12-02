@@ -66,7 +66,7 @@ export class ProgressChart implements OnChanges {
 
     return [
       {
-        name: 'XP',
+        name: 'AVERAGE XP',
         series,
       },
     ];
